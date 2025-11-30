@@ -49,7 +49,7 @@ const Categories = () => {
               to={`/products/${encodeURIComponent(
                 (c.name || "").toLowerCase()
               )}`}
-              className="relative group overflow-hidden rounded-xl h-41 w-37 md:w-52 md:h-56 transition-all items-center flex justify-center duration-300"
+              className="relative group overflow-hidden rounded-xl h-43 w-37 md:w-52 md:h-58 transition-all items-center flex justify-center duration-300"
               aria-label={`View ${c.name}`}
             >
               <img
