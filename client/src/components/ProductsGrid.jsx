@@ -4,7 +4,7 @@ import Loader from "./Loader";
 
 const ProductsGrid = ({ products = [], loading = false }) => {
   return (
-    <section id="products" className="py-2 py-12">
+    <section id="products" className=" py-12">
       <div className="max-w-6xl mx-auto px-2">
         <div className="flex flex-col  items-center justify-center ">
           <h2 className="text-2xl font-medium text-center tracking-tighter text-slate-900">
