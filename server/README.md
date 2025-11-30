@@ -104,8 +104,8 @@ timestamps
 caption: String (optional)
 postUrl: String (required, validated as Instagram URL)
 timestamps
-```
-
+`````
+  
 ### 4.5 Admin (`models/Admin.js`)
 ```
 name: String
