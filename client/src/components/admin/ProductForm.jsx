@@ -28,7 +28,20 @@ const ProductForm = ({ onSave, onCancel }) => {
   }, []);
 
   const handleFiles = (e) => {
-    setImages(Array.from(e.target.files || []));
+    const files = Array.from(e.target.files || []);
+    const validFiles = [];
+
+    files.forEach((file) => {
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error(`File ${file.name} is too large. Max size is 2MB.`);
+      } else {
+        validFiles.push(file);
+      }
+    });
+
+    if (validFiles.length > 0) {
+      setImages(validFiles);
+    }
   };
 
   const handleSubmit = (e) => {

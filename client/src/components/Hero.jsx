@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import adminService from "../services/adminService";
+import toast from "react-hot-toast";
 
 const Hero = () => {
   const [images, setImages] = useState([]);
@@ -9,6 +10,7 @@ const Hero = () => {
       const list = adminService.loadHeroImages();
       setImages(Array.isArray(list) ? list : []);
     } catch (e) {
+      toast.error("Failed to load hero images" + e.message);
       setImages(["/pic1.jpg"]);
     }
   }, []);
@@ -19,6 +21,7 @@ const Hero = () => {
       <img
         src={heroSrc}
         alt="Designer outfit banner"
+        lazy="loading"
         className="absolute inset-0 w-full h-full object-cover"
       />
       <div className="absolute inset-0 bg-black/40"></div>

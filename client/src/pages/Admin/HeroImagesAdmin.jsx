@@ -147,7 +147,20 @@ const HeroImagesAdmin = () => {
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => setFile(e.target.files?.[0] || null)}
+                onChange={(e) => {
+                  const selectedFile = e.target.files?.[0];
+                  if (selectedFile) {
+                    if (selectedFile.size > 2 * 1024 * 1024) {
+                      toast.error("File is too large. Max size is 2MB.");
+                      e.target.value = null; // Reset input
+                      setFile(null);
+                    } else {
+                      setFile(selectedFile);
+                    }
+                  } else {
+                    setFile(null);
+                  }
+                }}
                 className="hidden"
                 id="gallery-file-upload"
               />

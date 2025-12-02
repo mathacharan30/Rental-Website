@@ -214,7 +214,20 @@ const CategoriesAdmin = () => {
                 key={fileKey}
                 type="file"
                 accept="image/*"
-                onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                onChange={(e) => {
+                  const selectedFile = e.target.files?.[0];
+                  if (selectedFile) {
+                    if (selectedFile.size > 2 * 1024 * 1024) {
+                      toast.error("File is too large. Max size is 2MB.");
+                      e.target.value = null; // Reset input
+                      setImageFile(null);
+                    } else {
+                      setImageFile(selectedFile);
+                    }
+                  } else {
+                    setImageFile(null);
+                  }
+                }}
                 className="hidden"
                 id="cat-file-upload"
               />
