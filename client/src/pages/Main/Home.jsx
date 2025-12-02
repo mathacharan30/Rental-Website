@@ -48,7 +48,7 @@ const Home = () => {
         <ProductsGrid products={productList} loading={loading} />
         <Gallery images={galleryImages} />
         <Testimonials />
-        <Reels />
+        {/* <Reels /> */}
       </main>
       <Footer />
     </motion.div>
