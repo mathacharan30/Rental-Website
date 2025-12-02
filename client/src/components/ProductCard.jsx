@@ -6,7 +6,7 @@ const ProductCard = ({ product }) => {
   return (
     <Link
       to={`/product/${product.id}`}
-      className="relative group bg-base-off-white w-[180px] md:w-58 pb-4  overflow-hidden  translate-y-1 block"
+      className="relative group bg-base-off-white w-[170px] md:w-56 pb-4  overflow-hidden  translate-y-1 block"
     >
       <div className="relative h-68 md:h-78 overflow-hidden">
         <img
