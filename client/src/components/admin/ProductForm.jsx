@@ -5,7 +5,9 @@ import { X } from "lucide-react";
 const ProductForm = ({ onSave, onCancel }) => {
   const [title, setTitle] = useState("");
   const [categoryId, setCategoryId] = useState("");
-  const [price, setPrice] = useState("");
+  const [rentPrice, setRentPrice] = useState("");
+  const [commissionPrice, setCommissionPrice] = useState("");
+  const [advanceAmount, setAdvanceAmount] = useState("");
   const [stock, setStock] = useState(0);
   const [rating, setRating] = useState(0);
   const [description, setDescription] = useState("");
@@ -54,8 +56,12 @@ const ProductForm = ({ onSave, onCancel }) => {
       toast.error("Please select a category");
       return;
     }
-    if (!price) {
-      toast.error("Please enter a price");
+    if (!rentPrice) {
+      toast.error("Please enter a rent price");
+      return;
+    }
+    if (commissionPrice === "") {
+      toast.error("Please enter a commission price");
       return;
     }
 
@@ -63,8 +69,14 @@ const ProductForm = ({ onSave, onCancel }) => {
     fd.append("name", title);
     fd.append("category", categoryId);
 
-    const priceNum = parseFloat(String(price).replace(/[^0-9.]/g, ""));
-    fd.append("price", isNaN(priceNum) ? "0" : String(priceNum));
+    const rentPriceNum = parseFloat(String(rentPrice).replace(/[^0-9.]/g, ""));
+    fd.append("rentPrice", isNaN(rentPriceNum) ? "0" : String(rentPriceNum));
+
+    const commissionPriceNum = parseFloat(String(commissionPrice).replace(/[^0-9.]/g, ""));
+    fd.append("commissionPrice", isNaN(commissionPriceNum) ? "0" : String(commissionPriceNum));
+
+    const advanceAmountNum = parseFloat(String(advanceAmount).replace(/[^0-9.]/g, ""));
+    fd.append("advanceAmount", isNaN(advanceAmountNum) ? "0" : String(advanceAmountNum));
 
     const stockNum = parseInt(String(stock).replace(/[^0-9-]/g, ""), 10);
     if (!Number.isNaN(stockNum))
@@ -85,7 +97,9 @@ const ProductForm = ({ onSave, onCancel }) => {
     // reset after save
     setTitle("");
     setCategoryId(categories[0]?._id || "");
-    setPrice("");
+    setRentPrice("");
+    setCommissionPrice("");
+    setAdvanceAmount("");
     setStock(0);
     setRating(0);
     setDescription("");
@@ -127,16 +141,63 @@ const ProductForm = ({ onSave, onCancel }) => {
 
         <div className="col-span-2 sm:col-span-1">
           <label className="block text-sm font-medium text-neutral-700 mb-1">
-            Price
+            Rent Price (₹)
           </label>
           <input
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
+            value={rentPrice}
+            onChange={(e) => setRentPrice(e.target.value)}
             placeholder="0.00"
             type="number"
             min="0"
             step="0.01"
             className="w-full border border-neutral-300 px-3 py-2 rounded-lg text-neutral-900 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition-all"
+          />
+        </div>
+
+        <div className="col-span-2 sm:col-span-1">
+          <label className="block text-sm font-medium text-neutral-700 mb-1">
+            Commission Price (₹)
+          </label>
+          <input
+            value={commissionPrice}
+            onChange={(e) => setCommissionPrice(e.target.value)}
+            placeholder="0.00"
+            type="number"
+            min="0"
+            step="0.01"
+            className="w-full border border-neutral-300 px-3 py-2 rounded-lg text-neutral-900 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition-all"
+          />
+        </div>
+
+        <div className="col-span-2 sm:col-span-1">
+          <label className="block text-sm font-medium text-neutral-700 mb-1">
+            Advance Amount (₹)
+          </label>
+          <input
+            value={advanceAmount}
+            onChange={(e) => setAdvanceAmount(e.target.value)}
+            placeholder="0.00"
+            type="number"
+            min="0"
+            step="0.01"
+            className="w-full border border-neutral-300 px-3 py-2 rounded-lg text-neutral-900 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition-all"
+          />
+        </div>
+
+        <div className="col-span-2 sm:col-span-1">
+          <label className="block text-sm font-medium text-neutral-700 mb-1">
+            Total Price (₹) — auto-computed
+          </label>
+          <input
+            readOnly
+            value={
+              rentPrice !== "" && commissionPrice !== ""
+                ? (parseFloat(rentPrice) || 0) + (parseFloat(commissionPrice) || 0)
+                : ""
+            }
+            placeholder="Rent + Commission"
+            type="number"
+            className="w-full border border-neutral-200 bg-neutral-50 px-3 py-2 rounded-lg text-neutral-500 outline-none cursor-not-allowed"
           />
         </div>
 

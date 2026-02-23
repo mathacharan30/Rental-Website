@@ -17,7 +17,17 @@ exports.getAllProducts = async (req, res) => {
 // POST /api/products
 exports.createProduct = async (req, res) => {
   try {
-    const { name, category, price, description, available, stock: stockRaw, rating: ratingRaw } = req.body;
+    const {
+      name,
+      category,
+      rentPrice: rentPriceRaw,
+      commissionPrice: commissionPriceRaw,
+      advanceAmount: advanceAmountRaw,
+      description,
+      available,
+      stock: stockRaw,
+      rating: ratingRaw,
+    } = req.body;
 
     if (!name) {
       return res.status(400).json({ message: 'Name is required' });
@@ -25,8 +35,25 @@ exports.createProduct = async (req, res) => {
     if (!category) {
       return res.status(400).json({ message: 'Category is required' });
     }
+    if (rentPriceRaw === undefined || rentPriceRaw === '') {
+      return res.status(400).json({ message: 'Rent price is required' });
+    }
+    if (commissionPriceRaw === undefined || commissionPriceRaw === '') {
+      return res.status(400).json({ message: 'Commission price is required' });
+    }
 
-    // Normalize optional fields
+    // Normalize fields
+    const rentPrice = Number(rentPriceRaw);
+    const commissionPrice = Number(commissionPriceRaw);
+    const advanceAmount = advanceAmountRaw !== undefined && advanceAmountRaw !== '' ? Math.round(Number(advanceAmountRaw)) : 0;
+
+    if (!Number.isFinite(rentPrice) || rentPrice < 0) {
+      return res.status(400).json({ message: 'Invalid rent price' });
+    }
+    if (!Number.isFinite(commissionPrice) || commissionPrice < 0) {
+      return res.status(400).json({ message: 'Invalid commission price' });
+    }
+
     const availableBool = typeof available === 'string' ? available === 'true' : !!available;
     const stockNum = stockRaw === undefined || stockRaw === '' ? undefined : Number(stockRaw);
     const ratingNum = ratingRaw === undefined || ratingRaw === '' ? undefined : Number(ratingRaw);
@@ -43,7 +70,10 @@ exports.createProduct = async (req, res) => {
     const payload = {
       name,
       category,
-      price,
+      rentPrice,
+      commissionPrice,
+      advanceAmount,
+      // price is auto-computed by pre-save hook
       description,
       available: availableBool,
       images,

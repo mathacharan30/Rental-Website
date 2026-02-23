@@ -157,8 +157,18 @@ const ProductDetail = () => {
                 </span>
               </div>
 
-              <div className="mt-2 text-2xl font-light text-pink-900">
-                {product.price}
+              <div className="mt-2 space-y-1">
+                <div className="text-2xl font-light text-pink-900">
+                  {product.price}
+                </div>
+                <div className="text-sm text-gray-500 flex flex-col gap-0.5">
+                  {/* <span>Rent: ₹{product.rentPrice} + Commission: ₹{product.commissionPrice}</span> */}
+                  {product.advanceAmount > 0 && (
+                    <span className="text-gray-600 font-medium">
+                      Advance: ₹{Number.isInteger(product.advanceAmount) ? product.advanceAmount : product.advanceAmount.toFixed(2)}
+                    </span>
+                  )}
+                </div>
               </div>
 
               <p className="mt-4 text-md text-gray-700 leading-tight ">

@@ -1,6 +1,12 @@
 import api from "./api";
 import { findCategoryIdBySlug } from "./categoryService";
 
+// Round to 2 decimal places and strip unnecessary trailing zeros
+function formatPrice(n) {
+  const rounded = Math.round((n + Number.EPSILON) * 100) / 100;
+  return parseFloat(rounded.toFixed(2));
+}
+
 export function mapProduct(p = {}) {
   let images = [];
   if (Array.isArray(p.images)) {
@@ -25,7 +31,12 @@ export function mapProduct(p = {}) {
     typeof p.category === "object" && p.category !== null
       ? p.category.name
       : p.category;
-  const priceDisplay = typeof p.price === "number" ? `₹${p.price}` : p.price;
+
+  const rentPrice = formatPrice(typeof p.rentPrice === "number" ? p.rentPrice : 0);
+  const commissionPrice = formatPrice(typeof p.commissionPrice === "number" ? p.commissionPrice : 0);
+  const advanceAmount = Math.round(typeof p.advanceAmount === "number" ? p.advanceAmount : 0);
+  const totalPrice = formatPrice(typeof p.price === "number" ? p.price : rentPrice + commissionPrice);
+  const priceDisplay = `₹${totalPrice}`;
 
   return {
     id: p._id || p.id,
@@ -34,6 +45,9 @@ export function mapProduct(p = {}) {
     images: images,
     category: categoryName || "",
     price: priceDisplay || "",
+    rentPrice,
+    commissionPrice,
+    advanceAmount,
     description: p.description || "",
     rating: typeof p.rating === "number" ? p.rating : 0,
     sizes: p.sizes || ["XS", "S", "M", "L", "XL"],
