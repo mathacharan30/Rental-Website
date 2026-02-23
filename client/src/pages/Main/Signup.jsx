@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, Link } from "react-router-dom";
-import { loginWithEmail, verifyEmail } from "../../services/firebaseAuthService";
-import { signOut } from "firebase/auth";
-import { auth } from "../../config/firebase";
 import api from "../../services/api";
 import toast from "react-hot-toast";
 
@@ -27,20 +24,11 @@ const Signup = () => {
     setLoading(true);
     const tid = toast.loading("Creating account…");
     try {
-      // Backend creates Firebase user + MongoDB customer profile
-      await api.post("/api/auth/signup", form);
-
-      // Sign in temporarily just to get currentUser for sendEmailVerification
-      await loginWithEmail(email, password);
-
-      // Send verification email via client SDK
-      await verifyEmail();
-
-      // Sign out — user must verify email before they can log in
-      await signOut(auth);
+      // Backend creates Firebase user, saves MongoDB profile, and sends verification email
+      const { data } = await api.post("/api/auth/signup", form);
 
       toast.success(
-        "Account created! Please check your email and verify your address before logging in.",
+        data.message || "Account created! Please check your email to verify your address before logging in.",
         { id: tid, duration: 6000 }
       );
       navigate("/login");

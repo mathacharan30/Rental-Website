@@ -5,7 +5,6 @@ import {
   signInWithEmailAndPassword,
   signOut,
   sendPasswordResetEmail,
-  sendEmailVerification,
   onAuthStateChanged,
 } from 'firebase/auth';
 import { auth } from '../config/firebase';
@@ -25,13 +24,6 @@ export async function logout() {
 // ─── Forgot password ─────────────────────────────────────────────────────────
 export async function sendPasswordReset(email) {
   await sendPasswordResetEmail(auth, email);
-}
-
-// ─── Send email verification ─────────────────────────────────────────────────
-export async function verifyEmail() {
-  if (auth.currentUser) {
-    await sendEmailVerification(auth.currentUser);
-  }
 }
 
 // ─── Get current Firebase ID token ───────────────────────────────────────────
