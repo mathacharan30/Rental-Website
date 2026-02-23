@@ -1,23 +1,17 @@
 const express = require('express');
-const router = express.Router();
-const { verifyToken } = require('../middlewares/authMiddleware');
-const {
-  registerUser,
-  registerAdmin,
-  login,
-  logout,
-  refreshToken,
-  profile,
-} = require('../controllers/authController');
+const router  = express.Router();
 
-// Optional user registration (enable if desired)
-router.post('/register', registerUser);
-// Dedicated admin register
-router.post('/admin/register', registerAdmin);
+const verifyFirebaseToken = require('../middlewares/verifyFirebaseToken');
+const attachUserRole      = require('../middlewares/attachUserRole');
+const { signup, me }      = require('../controllers/authController');
 
-router.post('/login', login); // Unified login
-router.post('/logout', logout);
-router.post('/token', refreshToken);
-router.get('/profile', verifyToken, profile);
+// POST /api/auth/signup  – customer self-registration
+router.post('/signup', signup);
+
+// GET  /api/auth/me      – return logged-in user's role + profile
+router.get('/me', verifyFirebaseToken, attachUserRole, me);
+
+// Alias kept for backwards-compat
+router.get('/profile', verifyFirebaseToken, attachUserRole, me);
 
 module.exports = router;

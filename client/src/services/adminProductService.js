@@ -1,3 +1,5 @@
+// Admin product service – the Firebase token is attached automatically
+// by the api.js interceptor; no manual token handling needed here.
 import api from "./api";
 import { mapProduct } from "./productService";
 
@@ -7,8 +9,6 @@ export async function listProducts() {
 }
 
 export async function createProduct(formData) {
-  // formData should contain: name, category (ObjectId), price (number), description, available, images[] (files)
-  
   const { data } = await api.post("/api/products/createProduct", formData);
   return data;
 }

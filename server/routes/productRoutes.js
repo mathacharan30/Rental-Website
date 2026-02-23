@@ -1,8 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { productUpload } = require('../middlewares/upload');
-const { verifyToken } = require('../middlewares/authMiddleware');
+const { productUpload }    = require('../middlewares/upload');
+const verifyFirebaseToken  = require('../middlewares/verifyFirebaseToken');
+const attachUserRole       = require('../middlewares/attachUserRole');
+const { allowRoles }       = require('../middlewares/roleMiddleware');
 const mongoose = require('mongoose');
+
+const storeGuard = [verifyFirebaseToken, attachUserRole, allowRoles(['store_owner', 'super_admin'])];
 const {
   getAllProducts,
   createProduct,
@@ -15,7 +19,7 @@ const {
 router.get('/', getAllProducts);
 router.get('/top-picks', getTopPicks);
 router.get('/:id', getProductById);
-router.post('/createProduct',verifyToken, productUpload.array('images', 4), createProduct);
-router.delete('/:id', verifyToken, deleteProduct);
+router.post('/createProduct', ...storeGuard, productUpload.array('images', 4), createProduct);
+router.delete('/:id',         ...storeGuard, deleteProduct);
 
 module.exports = router;

@@ -4,12 +4,13 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
 
-const productRoutes = require('./routes/productRoutes');
-const bannerRoutes = require('./routes/bannerRoutes');
-const instaRoutes = require('./routes/instaRoutes');
-const authRoutes = require('./routes/authRoutes');
-const categoryRoutes = require('./routes/categoryRoutes');
-const testimonialRoutes = require('./routes/testimonialRoutes');
+const productRoutes      = require('./routes/productRoutes');
+const bannerRoutes       = require('./routes/bannerRoutes');
+const instaRoutes        = require('./routes/instaRoutes');
+const authRoutes         = require('./routes/authRoutes');
+const categoryRoutes     = require('./routes/categoryRoutes');
+const testimonialRoutes  = require('./routes/testimonialRoutes');
+const superAdminRoutes   = require('./routes/superAdminRoutes');
 
 const app = express();
 
@@ -26,12 +27,13 @@ app.get('/', (req, res) => {
 });
 
 // API routes
-app.use('/api/products', productRoutes);
-app.use('/api/banners', bannerRoutes);
-app.use('/api/insta', instaRoutes);
-app.use('/api/auth', authRoutes); // unified login/register for users & admins
-app.use('/api/categories', categoryRoutes);
+app.use('/api/products',     productRoutes);
+app.use('/api/banners',      bannerRoutes);
+app.use('/api/insta',        instaRoutes);
+app.use('/api/auth',         authRoutes);
+app.use('/api/categories',   categoryRoutes);
 app.use('/api/testimonials', testimonialRoutes);
+app.use('/api/superadmin',   superAdminRoutes);
 
 // Start server after DB connection
 const PORT = process.env.PORT || 5000;

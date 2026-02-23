@@ -2,11 +2,13 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema(
   {
-    name: { type: String, trim: true, required: true },
-    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-    password: { type: String, required: true }, // hashed
-    role: { type: String, enum: ['user'], default: 'user' },
-    refreshTokens: [{ type: String }], // active refresh tokens for rotation
+    uid:       { type: String, required: true, unique: true }, // Firebase UID
+    email:     { type: String, required: true, unique: true, lowercase: true, trim: true },
+    role:      { type: String, enum: ['super_admin', 'store_owner', 'customer'], required: true },
+    storeName: { type: String, trim: true, default: null }, // store_owner only
+    name:      { type: String, trim: true, default: null },
+    phone:     { type: String, trim: true, default: null },
+    address:   { type: String, trim: true, default: null },
   },
   { timestamps: true }
 );

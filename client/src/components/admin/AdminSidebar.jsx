@@ -1,6 +1,6 @@
 import React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import { logout as logoutApi } from "../../services/authService";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { logout as firebaseLogout } from "../../services/firebaseAuthService";
 import toast from "react-hot-toast";
 
 // Lucide Icons
@@ -14,18 +14,19 @@ import {
 } from "lucide-react";
 
 const AdminSidebar = () => {
-  const navigate = useNavigate();
+  const navigate  = useNavigate();
+  const { storename } = useParams();
+  const base = `/admin/${storename}`;
 
   const logout = async () => {
-    const loadingToast = toast.loading("Logging out...");
+    const tid = toast.loading("Logging out...");
     try {
-      await logoutApi();
-      toast.success("Logged out successfully", { id: loadingToast });
+      await firebaseLogout();
+      toast.success("Logged out successfully", { id: tid });
+      navigate("/login", { replace: true });
     } catch (e) {
       console.error("Logout failed", e);
-      toast.error("Logout failed", { id: loadingToast });
-    } finally {
-      navigate("/admin/login", { replace: true });
+      toast.error("Logout failed", { id: tid });
     }
   };
 
@@ -40,7 +41,7 @@ const AdminSidebar = () => {
     <aside className="w-72 min-h-screen bg-white border-r dm-sans border-neutral-200 flex flex-col sticky top-0 h-screen">
       <div className="p-6 border-b border-neutral-100">
         <h3 className="text-xl font-bold text-neutral-900 tracking-tight">
-          Vyoma Admin
+          {storename ? `${storename} Admin` : "Vyoma Admin"}
         </h3>
       </div>
 
@@ -49,17 +50,17 @@ const AdminSidebar = () => {
           Management
         </div>
 
-        <NavLink to="/admin/products" className={linkClass}>
+        <NavLink to={`${base}/products`} className={linkClass}>
           <Box size={20} />
           Products
         </NavLink>
 
-        <NavLink to="/admin/categories" className={linkClass}>
+        <NavLink to={`${base}/categories`} className={linkClass}>
           <List size={20} />
           Categories
         </NavLink>
 
-        <NavLink to="/admin/testimonials" className={linkClass}>
+        <NavLink to={`${base}/testimonials`} className={linkClass}>
           <MessageCircle size={20} />
           Testimonials
         </NavLink>
@@ -68,12 +69,12 @@ const AdminSidebar = () => {
           Media
         </div>
 
-        <NavLink to="/admin/hero-images" className={linkClass}>
+        <NavLink to={`${base}/hero-images`} className={linkClass}>
           <Image size={20} />
           Gallery Images
         </NavLink>
 
-        <NavLink to="/admin/gallery" className={linkClass}>
+        <NavLink to={`${base}/gallery`} className={linkClass}>
           <Instagram size={20} />
           Instagram Posts
         </NavLink>

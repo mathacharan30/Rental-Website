@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-import { login } from "../../services/authService";
+import { useNavigate, Link } from "react-router-dom";
+import { loginWithEmail, fetchMe } from "../../services/firebaseAuthService";
+import { signOut } from "firebase/auth";
+import { auth } from "../../config/firebase";
 import toast from "react-hot-toast";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [email,    setEmail]    = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading,  setLoading]  = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,19 +18,39 @@ const Login = () => {
       toast.error("Please fill in all fields");
       return;
     }
-
     setLoading(true);
-    const loadingToast = toast.loading("Signing in...");
-
+    const tid = toast.loading("Signing in…");
     try {
-      await login({ email, password, role: "user" });
-      toast.success("Signed in successfully", { id: loadingToast });
-      navigate("/");
-    } catch (error) {
-      console.error("Login failed", error);
-      toast.error(error?.response?.data?.message || "Failed to sign in", {
-        id: loadingToast,
-      });
+      const firebaseUser = await loginWithEmail(email, password);
+
+      // Block login until email is verified
+      if (!firebaseUser.emailVerified) {
+        await signOut(auth);
+        toast.error(
+          "Please verify your email before logging in. Check your inbox.",
+          { id: tid, duration: 5000 }
+        );
+        setLoading(false);
+        return;
+      }
+
+      const profile = await fetchMe();
+
+      toast.success("Signed in successfully", { id: tid });
+
+      // Role-based redirect
+      if (profile?.role === "super_admin") {
+        navigate("/superadmin");
+      } else if (profile?.role === "store_owner" && profile.storeName) {
+        navigate(`/admin/${profile.storeName}`);
+      } else if (profile?.role === "customer" && profile.uid) {
+        navigate(`/${profile.uid}/profile`);
+      } else {
+        navigate("/");
+      }
+    } catch (err) {
+      console.error("Login failed", err);
+      toast.error(err?.message || "Failed to sign in", { id: tid });
     } finally {
       setLoading(false);
     }
@@ -66,22 +88,26 @@ const Login = () => {
             />
           </div>
 
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-black text-white py-2 rounded disabled:opacity-60"
-            >
-              {loading ? "Signing in..." : "Sign in"}
-            </button>
+          <div className="flex justify-end">
+            <Link to="/forgot-password" className="text-sm text-indigo-600 hover:underline">
+              Forgot password?
+            </Link>
           </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-black text-white py-2 rounded disabled:opacity-60"
+          >
+            {loading ? "Signing in…" : "Sign in"}
+          </button>
         </form>
 
         <p className="mt-4 text-sm text-gray-600 text-center">
           Don't have an account?{" "}
-          <a href="/signup" className="text-indigo-600 hover:underline">
+          <Link to="/signup" className="text-indigo-600 hover:underline">
             Create one
-          </a>
+          </Link>
         </p>
       </div>
     </motion.div>

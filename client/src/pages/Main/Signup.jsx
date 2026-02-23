@@ -1,42 +1,73 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-import { signup } from "../../services/authService";
+import { useNavigate, Link } from "react-router-dom";
+import { loginWithEmail, verifyEmail } from "../../services/firebaseAuthService";
+import { signOut } from "firebase/auth";
+import { auth } from "../../config/firebase";
+import api from "../../services/api";
 import toast from "react-hot-toast";
 
 const Signup = () => {
   const navigate = useNavigate();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({
+    name: "", email: "", password: "", phone: "", address: "",
+  });
   const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) =>
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const { name, email, password } = form;
     if (!name || !email || !password) {
-      toast.error("Please fill in all fields");
+      toast.error("Name, email and password are required");
       return;
     }
-
     setLoading(true);
-    const loadingToast = toast.loading("Creating account...");
-
+    const tid = toast.loading("Creating account…");
     try {
-      await signup({ name, email, password });
-      toast.success("Account created successfully", { id: loadingToast });
-      navigate("/");
-    } catch (error) {
-      console.error("Signup failed", error);
+      // Backend creates Firebase user + MongoDB customer profile
+      await api.post("/api/auth/signup", form);
+
+      // Sign in temporarily just to get currentUser for sendEmailVerification
+      await loginWithEmail(email, password);
+
+      // Send verification email via client SDK
+      await verifyEmail();
+
+      // Sign out — user must verify email before they can log in
+      await signOut(auth);
+
+      toast.success(
+        "Account created! Please check your email and verify your address before logging in.",
+        { id: tid, duration: 6000 }
+      );
+      navigate("/login");
+    } catch (err) {
+      console.error("Signup failed", err);
       toast.error(
-        error?.response?.data?.message || "Failed to create account",
-        {
-          id: loadingToast,
-        }
+        err?.response?.data?.message || err?.message || "Failed to create account",
+        { id: tid }
       );
     } finally {
       setLoading(false);
     }
   };
+
+  const field = (label, name, type = "text", placeholder = "") => (
+    <div>
+      <label className="block text-sm text-gray-600 mb-1">{label}</label>
+      <input
+        type={type}
+        name={name}
+        value={form[name]}
+        onChange={handleChange}
+        className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
+        placeholder={placeholder}
+      />
+    </div>
+  );
 
   return (
     <motion.div
@@ -48,57 +79,26 @@ const Signup = () => {
       <div className="w-full max-w-md bg-white border rounded-lg p-6 shadow-sm">
         <h2 className="text-2xl font-semibold mb-4">Create an account</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">
-              Full name
-            </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              placeholder="Your name"
-            />
-          </div>
+          {field("Full name",    "name",     "text",  "Your name")}
+          {field("Email",        "email",    "email", "you@example.com")}
+          {field("Password",     "password", "password", "Choose a password")}
+          {field("Phone number", "phone",    "tel",   "+91 98765 43210")}
+          {field("Address",      "address",  "text",  "Your address")}
 
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              placeholder="you@example.com"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm text-gray-600 mb-1">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              placeholder="Choose a password"
-            />
-          </div>
-
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-black text-white py-2 rounded disabled:opacity-60"
-            >
-              {loading ? "Creating account..." : "Create account"}
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-black text-white py-2 rounded disabled:opacity-60"
+          >
+            {loading ? "Creating account…" : "Create account"}
+          </button>
         </form>
 
         <p className="mt-4 text-sm text-gray-600 text-center">
           Already have an account?{" "}
-          <a href="/login" className="text-indigo-600 hover:underline">
+          <Link to="/login" className="text-indigo-600 hover:underline">
             Sign in
-          </a>
+          </Link>
         </p>
       </div>
     </motion.div>
