@@ -3,8 +3,11 @@
 import api from "./api";
 import { mapProduct } from "./productService";
 
-export async function listProducts() {
-  const { data } = await api.get("/api/products");
+export async function listProducts(storeName) {
+  // /mine returns only this store's products (auth token sent by api.js interceptor)
+  // storeName is passed as a query param so super_admin can view a specific store
+  const params = storeName ? { storeName } : {};
+  const { data } = await api.get("/api/products/mine", { params });
   return Array.isArray(data) ? data.map(mapProduct) : [];
 }
 

@@ -18,6 +18,7 @@ const productSchema = new mongoose.Schema(
       },
     ],
     available: { type: Boolean, default: true },
+    store: { type: mongoose.Schema.Types.ObjectId, ref: 'Store', default: null }, // owning store
   },
   { timestamps: true }
 );

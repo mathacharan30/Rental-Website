@@ -4,17 +4,20 @@ import { motion } from "framer-motion";
 import { BiLeftArrow } from "react-icons/bi";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import Footer from "../../components/Footer";
-import { openWhatsApp } from "../../services/whatsapp";
 import { getProductById } from "../../services/productService";
+import { createOrder } from "../../services/orderService";
+import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
 import Loader from "../../components/Loader";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { firebaseUser, role } = useAuth();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [ordering, setOrdering] = useState(false);
   const [selectedSize, setSelectedSize] = useState("");
 
   useEffect(() => {
@@ -75,28 +78,35 @@ const ProductDetail = () => {
   const rating = product.rating || 4.3;
   const sizes = product.sizes || ["XS", "S", "M", "L", "XL"];
 
-  const handleRent = () => {
+  const handleRent = async () => {
+    if (!firebaseUser) {
+      toast.error("Please login to rent");
+      navigate("/login");
+      return;
+    }
+    if (role !== "customer") {
+      toast.error("Only customers can place orders");
+      return;
+    }
     if (!selectedSize) {
       toast.error("Please select a size");
       return;
     }
-    toast.success("Opening WhatsApp for rental...");
-    openWhatsApp({
-      product,
-      action: "rent",
-      size: selectedSize,
-      link: window.location.href,
-    });
+    setOrdering(true);
+    const tid = toast.loading("Placing order…");
+    try {
+      await createOrder({ productId: product.id, size: selectedSize });
+      toast.success("Order placed successfully!", { id: tid });
+      navigate(`/${firebaseUser.uid}/profile`);
+    } catch (e) {
+      toast.error(e?.response?.data?.message || "Failed to place order", { id: tid });
+    } finally {
+      setOrdering(false);
+    }
   };
 
   const handleEnquire = () => {
-    toast.success("Opening WhatsApp for enquiry...");
-    openWhatsApp({
-      product,
-      action: "enquire",
-      size: selectedSize,
-      link: window.location.href,
-    });
+    toast("Enquiry feature coming soon!");
   };
 
   return (
@@ -208,9 +218,10 @@ const ProductDetail = () => {
             <div className="my-6  flex flex-col sm:flex-row gap-2">
               <button
                 onClick={handleRent}
-                className="px-6 py-3 cursor-pointer bg-pink-900 text-white rounded w-full sm:w-auto hover:bg-pink-800 transition"
+                disabled={ordering}
+                className="px-6 py-3 cursor-pointer bg-pink-900 text-white rounded w-full sm:w-auto hover:bg-pink-800 transition disabled:opacity-60"
               >
-                Rent Now
+                {ordering ? "Placing order…" : "Rent Now"}
               </button>
               <button
                 onClick={handleEnquire}

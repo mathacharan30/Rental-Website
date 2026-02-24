@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import ProductList from "../../components/admin/ProductList";
 import ProductForm from "../../components/admin/ProductForm";
 import Stats from "../../components/admin/Stats";
@@ -9,6 +10,7 @@ import Loader from "../../components/Loader";
 import { Plus } from "lucide-react";
 
 const ProductsAdmin = () => {
+  const { storename } = useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,11 +18,15 @@ const ProductsAdmin = () => {
   const load = async () => {
     setLoading(true);
     try {
-      const list = await adminProductService.listProducts();
+      const list = await adminProductService.listProducts(storename);
       setProducts(list);
     } catch (e) {
       console.error("Failed to load products", e);
-      toast.error("Failed to load products");
+      // Don't show an error toast for an empty store – just show the empty state
+      if (e?.response?.status !== 404) {
+        toast.error("Failed to load products");
+      }
+      setProducts([]);
     } finally {
       setLoading(false);
     }

@@ -9,6 +9,7 @@ const mongoose = require('mongoose');
 const storeGuard = [verifyFirebaseToken, attachUserRole, allowRoles(['store_owner', 'super_admin'])];
 const {
   getAllProducts,
+  getMyProducts,
   createProduct,
   deleteProduct,
   getProductById,
@@ -16,9 +17,10 @@ const {
   getTopPicks,
 } = require('../controllers/productController');
 
-router.get('/', getAllProducts);
+router.get('/',          getAllProducts);
 router.get('/top-picks', getTopPicks);
-router.get('/:id', getProductById);
+router.get('/mine',      ...storeGuard, getMyProducts);  // store-scoped list
+router.get('/:id',       getProductById);
 router.post('/createProduct', ...storeGuard, productUpload.array('images', 4), createProduct);
 router.delete('/:id',         ...storeGuard, deleteProduct);
 

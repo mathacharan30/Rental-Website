@@ -6,10 +6,7 @@ import toast from "react-hot-toast";
 // Lucide Icons
 import {
   Box,
-  List,
-  MessageCircle,
-  Image,
-  Instagram,
+  ShoppingBag,
   LogOut,
 } from "lucide-react";
 
@@ -55,28 +52,9 @@ const AdminSidebar = () => {
           Products
         </NavLink>
 
-        <NavLink to={`${base}/categories`} className={linkClass}>
-          <List size={20} />
-          Categories
-        </NavLink>
-
-        <NavLink to={`${base}/testimonials`} className={linkClass}>
-          <MessageCircle size={20} />
-          Testimonials
-        </NavLink>
-
-        <div className="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-4 px-4 mt-6">
-          Media
-        </div>
-
-        <NavLink to={`${base}/hero-images`} className={linkClass}>
-          <Image size={20} />
-          Gallery Images
-        </NavLink>
-
-        <NavLink to={`${base}/gallery`} className={linkClass}>
-          <Instagram size={20} />
-          Instagram Posts
+        <NavLink to={`${base}/orders`} className={linkClass}>
+          <ShoppingBag size={20} />
+          Orders
         </NavLink>
       </nav>
 

@@ -22,10 +22,7 @@ import CustomerProfile   from "./pages/Main/CustomerProfile";
 // Store-owner (admin) pages
 import AdminDashboard    from "./pages/Admin/Dashboard";
 import ProductsAdmin     from "./pages/Admin/ProductsAdmin";
-import TestimonialsAdmin from "./pages/Admin/TestimonialsAdmin";
-import CategoriesAdmin   from "./pages/Admin/CategoriesAdmin";
-import HeroImagesAdmin   from "./pages/Admin/HeroImagesAdmin";
-import InstaAdmin        from "./pages/Admin/InstaAdmin";
+import OrdersAdmin       from "./pages/Admin/OrdersAdmin";
 
 // Super admin pages
 import SuperAdminDashboard from "./pages/SuperAdmin/SuperAdminDashboard";
@@ -71,11 +68,8 @@ const App = () => {
                   </ProtectedRoute>
                 }
               >
-                <Route path="products"    element={<ProductsAdmin />} />
-                <Route path="categories"  element={<CategoriesAdmin />} />
-                <Route path="testimonials" element={<TestimonialsAdmin />} />
-                <Route path="hero-images" element={<HeroImagesAdmin />} />
-                <Route path="gallery"     element={<InstaAdmin />} />
+                <Route path="products" element={<ProductsAdmin />} />
+                <Route path="orders"   element={<OrdersAdmin />} />
               </Route>
 
               {/* ── Super admin ─────────────────────────── */}

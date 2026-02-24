@@ -6,6 +6,13 @@ import { getIdToken } from '../../services/firebaseAuthService';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
 
+// ─── Global-content panels managed by super-admin ────────────────────────────
+import CategoriesAdmin   from '../Admin/CategoriesAdmin';
+import HeroImagesAdmin   from '../Admin/HeroImagesAdmin';
+import InstaAdmin        from '../Admin/InstaAdmin';
+import TestimonialsAdmin from '../Admin/TestimonialsAdmin';
+import SuperAdminOrders  from './SuperAdminOrders';
+
 // ─── Helper to build an auth header ──────────────────────────────────────────
 async function authHeader() {
   const token = await getIdToken();
@@ -13,7 +20,7 @@ async function authHeader() {
 }
 
 // ─── Tabs ─────────────────────────────────────────────────────────────────────
-const TABS = ['View Stores', 'Add Store', 'All Users'];
+const TABS = ['View Stores', 'Add Store', 'All Users', 'Categories', 'Gallery Images', 'Instagram Posts', 'Testimonials', 'Orders'];
 
 export default function SuperAdminDashboard() {
   const { logout } = useAuth();
@@ -137,19 +144,19 @@ export default function SuperAdminDashboard() {
                 </thead>
                 <tbody>
                   {stores.map((s) => (
-                    <tr key={s.uid} className="border-t">
+                    <tr key={s._id} className="border-t">
                       <td className="px-4 py-2">{s.name}</td>
-                      <td className="px-4 py-2">{s.email}</td>
-                      <td className="px-4 py-2">{s.storeName}</td>
+                      <td className="px-4 py-2">{s.owner?.email || '—'}</td>
+                      <td className="px-4 py-2">{s.slug}</td>
                       <td className="px-4 py-2 flex gap-2">
                         <button
-                          onClick={() => navigate(`/admin/${s.storeName}`)}
+                          onClick={() => navigate(`/admin/${s.slug}`)}
                           className="text-indigo-600 hover:underline text-xs"
                         >
                           View store
                         </button>
                         <button
-                          onClick={() => handleDelete(s.uid)}
+                          onClick={() => handleDelete(s.owner?.uid)}
                           className="text-red-500 hover:underline text-xs"
                         >
                           Delete
@@ -231,6 +238,41 @@ export default function SuperAdminDashboard() {
                 </tbody>
               </table>
             )}
+          </section>
+        )}
+
+        {/* ──────────── Categories (global, managed by super-admin) ──────────── */}
+        {tab === 'Categories' && (
+          <section>
+            <CategoriesAdmin />
+          </section>
+        )}
+
+        {/* ──────────── Gallery Images ──────────── */}
+        {tab === 'Gallery Images' && (
+          <section>
+            <HeroImagesAdmin />
+          </section>
+        )}
+
+        {/* ──────────── Instagram Posts ──────────── */}
+        {tab === 'Instagram Posts' && (
+          <section>
+            <InstaAdmin />
+          </section>
+        )}
+
+        {/* ──────────── Testimonials ──────────── */}
+        {tab === 'Testimonials' && (
+          <section>
+            <TestimonialsAdmin />
+          </section>
+        )}
+
+        {/* ──────────── All Orders (with commission) ──────────── */}
+        {tab === 'Orders' && (
+          <section>
+            <SuperAdminOrders />
           </section>
         )}
       </div>

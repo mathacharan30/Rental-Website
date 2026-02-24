@@ -1,15 +1,44 @@
-const Product = require('../models/Product');
+const Product  = require('../models/Product');
 const cloudinary = require('../config/cloudinary');
 const Category = require('../models/Category');
+const Store    = require('../models/Store');
 const mongoose = require('mongoose');
 
-// GET /api/products
+// GET /api/products  (public – all products for the storefront)
 exports.getAllProducts = async (req, res) => {
   try {
-  const products = await Product.find().populate('category').sort({ createdAt: -1 });
+    const products = await Product.find().populate('category').sort({ createdAt: -1 });
     res.json(products);
   } catch (error) {
     console.error('[Products] Fetch error:', error.message);
+    res.status(500).json({ message: 'Server error fetching products' });
+  }
+};
+
+// GET /api/products/mine  (store_owner – only their own products)
+exports.getMyProducts = async (req, res) => {
+  try {
+    let storeId;
+
+    if (req.user.role === 'super_admin') {
+      // super_admin visits a specific store – slug passed as ?storeName=<slug>
+      const slug = req.query.storeName || null;
+      if (!slug) return res.json([]);
+      const store = await Store.findOne({ slug });
+      if (!store) return res.json([]);
+      storeId = store._id;
+    } else {
+      storeId = req.user.storeId || null;
+      if (!storeId) return res.json([]);
+    }
+
+    const products = await Product.find({ store: storeId })
+      .populate('category')
+      .sort({ createdAt: -1 });
+    console.log(`[Products] getMyProducts – storeId=${storeId} found=${products.length}`);
+    res.json(products);
+  } catch (error) {
+    console.error('[Products] GetMine error:', error.message);
     res.status(500).json({ message: 'Server error fetching products' });
   }
 };
@@ -58,7 +87,13 @@ exports.createProduct = async (req, res) => {
     const stockNum = stockRaw === undefined || stockRaw === '' ? undefined : Number(stockRaw);
     const ratingNum = ratingRaw === undefined || ratingRaw === '' ? undefined : Number(ratingRaw);
 
-    console.log('[Products] Create request body:', req.body);
+    console.log('[Products] Create – req.user:', JSON.stringify(req.user));
+
+    // storeId must be present for ownership tracking
+    if (!req.user.storeId) {
+      console.error('[Products] storeId is missing on req.user – aborting product creation');
+      return res.status(400).json({ message: 'Your account has no linked store. Contact the super admin.' });
+    }
 
     const images = [];
     if (req.files && req.files.length) {
@@ -77,6 +112,7 @@ exports.createProduct = async (req, res) => {
       description,
       available: availableBool,
       images,
+      store: req.user.storeId,
     };
 
     if (Number.isFinite(stockNum)) payload.stock = stockNum;
@@ -99,6 +135,11 @@ exports.deleteProduct = async (req, res) => {
     const product = await Product.findById(id);
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Ownership check: store_owners can only delete their own products
+    if (req.user.role === 'store_owner' && String(product.store) !== String(req.user.storeId)) {
+      return res.status(403).json({ message: 'Not authorised to delete this product' });
     }
 
     // Delete all images from Cloudinary
