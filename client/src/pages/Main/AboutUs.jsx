@@ -75,7 +75,7 @@ const AboutUs = () => (
           { step: '04', title: 'Return with Ease', desc: 'Drop it back after your event. No dry-cleaning needed — we take care of everything.' },
         ].map((s, i) => (
           <motion.div key={s.step} custom={i} variants={fadeUp} className="flex gap-6 items-start bg-white border rounded-2xl p-6">
-            <span className="text-3xl font-black text-pink-200 min-w-[3rem]">{s.step}</span>
+            <span className="text-3xl font-black text-pink-200 min-w-12 ">{s.step}</span>
             <div>
               <h3 className="font-bold text-lg">{s.title}</h3>
               <p className="text-neutral-500 text-sm mt-1">{s.desc}</p>

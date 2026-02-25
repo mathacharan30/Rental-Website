@@ -189,7 +189,7 @@ const AccordionItem = ({ q, a }) => {
         className="w-full flex justify-between items-center py-5 text-left gap-4 group"
       >
         <span className="font-semibold text-black group-hover:text-pink-600 transition text-sm md:text-base">{q}</span>
-        <span className={`text-xl font-light text-neutral-400 flex-shrink-0 transition-transform duration-300 ${open ? 'rotate-45' : ''}`}>+</span>
+        <span className={`text-xl font-light text-neutral-400 shrink-0 transition-transform duration-300 ${open ? 'rotate-45' : ''}`}>+</span>
       </button>
       <AnimatePresence initial={false}>
         {open && (
