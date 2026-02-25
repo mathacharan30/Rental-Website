@@ -9,12 +9,17 @@ import ProtectedRoute    from "./utils/ProtectedRoute";
 import ScrollToTop       from "./utils/ScrollToTop";
 
 // Public pages
-import Home              from "./pages/Main/Home";
-import Login             from "./pages/Main/Login";
-import Signup            from "./pages/Main/Signup";
-import ForgotPassword    from "./pages/Main/ForgotPassword";
-import Products          from "./pages/Main/Products";
-import ProductDetail     from "./pages/Main/ProductDetail";
+import Home                 from "./pages/Main/Home";
+import Login                from "./pages/Main/Login";
+import Signup               from "./pages/Main/Signup";
+import ForgotPassword       from "./pages/Main/ForgotPassword";
+import Products             from "./pages/Main/Products";
+import ProductDetail        from "./pages/Main/ProductDetail";
+import AboutUs              from "./pages/Main/AboutUs";
+import ContactUs            from "./pages/Main/ContactUs";
+import TermsAndConditions   from "./pages/Main/TermsAndConditions";
+import PrivacyPolicy        from "./pages/Main/PrivacyPolicy";
+import RefundPolicy         from "./pages/Main/RefundPolicy";
 
 // Customer pages
 import CustomerProfile   from "./pages/Main/CustomerProfile";
@@ -45,9 +50,14 @@ const App = () => {
               <Route path="/login"             element={<Login />} />
               <Route path="/signup"            element={<Signup />} />
               <Route path="/forgot-password"   element={<ForgotPassword />} />
-              <Route path="/products"          element={<Products />} />
-              <Route path="/products/:category" element={<Products />} />
-              <Route path="/product/:id"       element={<ProductDetail />} />
+              <Route path="/products"            element={<Products />} />
+              <Route path="/products/:category"  element={<Products />} />
+              <Route path="/product/:id"         element={<ProductDetail />} />
+              <Route path="/about"               element={<AboutUs />} />
+              <Route path="/contact"             element={<ContactUs />} />
+              <Route path="/terms"               element={<TermsAndConditions />} />
+              <Route path="/privacy"             element={<PrivacyPolicy />} />
+              <Route path="/refund"              element={<RefundPolicy />} />
 
               {/* ── Customer ───────────────────────────── */}
               <Route

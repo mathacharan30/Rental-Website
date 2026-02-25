@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -25,60 +26,35 @@ const Footer = () => {
               <div>
                 <h4 className="font-semibold text-neutral-100">Company</h4>
                 <ul className="mt-4 space-y-2 text-neutral-400">
-                  <li>
-                    <a href="#" className="hover:text-pink-900">
-                      About
-                    </a>
-                  </li>
+                  <li><Link to="/about"   className="hover:text-pink-400">About Us</Link></li>
+                  <li><Link to="/contact" className="hover:text-pink-400">Contact Us</Link></li>
                 </ul>
               </div>
               <div>
                 <h4 className="font-semibold text-neutral-100">How It Works</h4>
                 <ul className="mt-4 space-y-2 text-neutral-400">
-                  <li>
-                    <a href="#" className="hover:text-pink-900">
-                      Browse & Rent
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:text-pink-900">
-                      Delivery & Returns
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:text-pink-900">
-                      FAQs
-                    </a>
-                  </li>
+                  <li><Link to="/products"  className="hover:text-pink-400">Browse &amp; Rent</Link></li>
+                  <li><Link to="/refund"    className="hover:text-pink-400">Delivery &amp; Returns</Link></li>
+                  <li><Link to="/contact"   className="hover:text-pink-400">FAQs</Link></li>
                 </ul>
               </div>
               <div>
                 <h4 className="font-semibold text-neutral-100">Connect</h4>
                 <ul className="mt-4 space-y-2 text-neutral-400">
-                  <li>
-                    <a href="#" className="hover:text-pink-900">
-                      Instagram
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" className="hover:text-pink-900">
-                      Contact Us
-                    </a>
-                  </li>
+                  <li><a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-pink-400">Instagram</a></li>
+                  <li><a href="https://wa.me/918431094754" target="_blank" rel="noreferrer" className="hover:text-pink-400">WhatsApp</a></li>
+                  <li><a href="mailto:hello@peopleandstyle.in" className="hover:text-pink-400">Email Us</a></li>
                 </ul>
               </div>
             </div>
           </div>
 
           <div className="py-6 border-t border-neutral-700 flex flex-col sm:flex-row justify-between items-center text-sm text-neutral-500">
-            <p>© {new Date().getFullYear()} Vyoma Inc. All rights reserved.</p>
+            <p>© {new Date().getFullYear()} People &amp; Style. All rights reserved.</p>
             <div className="flex items-center gap-4 mt-4 sm:mt-0">
-              <a href="#" className="hover:text-pink-900">
-                Privacy Policy
-              </a>
-              <a href="#" className="hover:text-pink-900">
-                Terms of Service
-              </a>
+              <Link to="/privacy" className="hover:text-pink-400">Privacy Policy</Link>
+              <Link to="/terms"   className="hover:text-pink-400">Terms &amp; Conditions</Link>
+              <Link to="/refund"  className="hover:text-pink-400">Refund Policy</Link>
             </div>
           </div>
         </div>
