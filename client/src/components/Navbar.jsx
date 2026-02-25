@@ -54,9 +54,7 @@ const Navbar = () => {
               to="/"
               className="text-xl font-medium flex items-end justify-center tracking-tight text-pink-700"
             >
-              Vy
-              <span className="h-[13px] w-[13px] mb-1.5 bg-pink-700 rounded-full"></span>
-              ma
+              People & Style
             </Link>
 
             {/* Desktop nav — public / customer only */}

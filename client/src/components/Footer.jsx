@@ -14,9 +14,7 @@ const Footer = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 py-10">
             <div className="md:col-span-1">
               <h3 className="text-2xl font-display flex items-end font-bold text-pink-700">
-                VY
-                <span className="h-4.5 w-4.5 mb-2 bg-pink-700 rounded-full"></span>
-                MA
+                People & Style
               </h3>
               <p className="mt-2 text-neutral-400 max-w-xs">
                 Sustainable style, delivered. Rent designer wear for every

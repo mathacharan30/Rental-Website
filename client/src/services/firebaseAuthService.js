@@ -4,7 +4,6 @@
 import {
   signInWithEmailAndPassword,
   signOut,
-  sendPasswordResetEmail,
   onAuthStateChanged,
 } from 'firebase/auth';
 import { auth } from '../config/firebase';
@@ -22,8 +21,10 @@ export async function logout() {
 }
 
 // ─── Forgot password ─────────────────────────────────────────────────────────
+// Handled entirely by the backend so Firebase client SDK restrictions are avoided.
 export async function sendPasswordReset(email) {
-  await sendPasswordResetEmail(auth, email);
+  const { data } = await api.post('/api/auth/forgot-password', { email });
+  return data;
 }
 
 // ─── Get current Firebase ID token ───────────────────────────────────────────
