@@ -4,7 +4,7 @@ import {
   createTestimonial,
   deleteTestimonial,
 } from "../../services/testimonialService";
-import adminProductService from "../../services/adminProductService";
+import { getAllProducts } from "../../services/productService";
 import toast from "react-hot-toast";
 import Loader from "../../components/Loader";
 import Modal from "../../components/admin/Modal";
@@ -28,11 +28,11 @@ const TestimonialsAdmin = () => {
     try {
       const [ts, ps] = await Promise.all([
         listTestimonials(),
-        adminProductService.listProducts(),
+        getAllProducts(),
       ]);
       setTestimonials(ts);
       setProducts(ps);
-      if (ps?.length) setProductId(ps[0].id);
+      if (ps?.length && !productId) setProductId(ps[0].id);
     } catch (e) {
       console.error("Failed to load testimonials/products", e);
       toast.error("Failed to load data");
