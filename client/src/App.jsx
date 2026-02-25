@@ -20,6 +20,7 @@ import ContactUs            from "./pages/Main/ContactUs";
 import TermsAndConditions   from "./pages/Main/TermsAndConditions";
 import PrivacyPolicy        from "./pages/Main/PrivacyPolicy";
 import RefundPolicy         from "./pages/Main/RefundPolicy";
+import FAQ                  from "./pages/Main/FAQ";
 
 // Customer pages
 import CustomerProfile   from "./pages/Main/CustomerProfile";
@@ -58,6 +59,7 @@ const App = () => {
               <Route path="/terms"               element={<TermsAndConditions />} />
               <Route path="/privacy"             element={<PrivacyPolicy />} />
               <Route path="/refund"              element={<RefundPolicy />} />
+              <Route path="/faq"                 element={<FAQ />} />
 
               {/* ── Customer ───────────────────────────── */}
               <Route
