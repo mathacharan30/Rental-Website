@@ -48,28 +48,28 @@ const Products = () => {
 
   return (
     <motion.section
-      className="pt-5 bg-base-off-white"
+      className="pt-8 bg-[#0e0e0e] min-h-screen"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
+      transition={{ duration: 0.6 }}
     >
-      <div className="max-w-7xl mx-auto px-2">
+      <div className="max-w-7xl mx-auto px-4">
         <Link
           to="/"
-          className="text-sm flex items-center gap-1 text-neutral-600 hover:text-neutral-900 hover:underline transition-colors"
+          className="text-sm flex items-center gap-1.5 text-neutral-500 hover:text-violet-400 transition-colors"
         >
           <BiLeftArrow />
           Back to Home
         </Link>
 
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mt-3 mb-4 gap-3">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mt-4 mb-6 gap-3">
           <div>
-            <h1 className="text-2xl font-medium text-base-charcoal tracking-tighter ">
-              <span className="font-extrabold text-pink-800">//</span> {title}
+            <h1 className="text-3xl font-bold display-font tracking-tight">
+              <span className="text-white">{title}</span>
             </h1>
             {decodedCategory && (
-              <p className="text-sm text-neutral-600 mt-1">
-                Showing curated rentals for {decodedCategory}
+              <p className="text-sm text-neutral-500 mt-1">
+                Curated rentals for {decodedCategory}
               </p>
             )}
           </div>
@@ -80,17 +80,7 @@ const Products = () => {
             <Loader />
           </div>
         ) : items.length > 0 ? (
-          <div
-            className=" grid
-              grid-cols-2
-              sm:grid-cols-3
-              md:grid-cols-4
-              lg:grid-cols-5
-              gap-2
-              sm:gap-2
-              md:gap-2
-              mt-4"
-          >
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mt-4">
             {items.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

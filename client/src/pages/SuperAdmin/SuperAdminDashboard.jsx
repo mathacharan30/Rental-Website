@@ -225,7 +225,7 @@ export default function SuperAdminDashboard() {
                       <td className="px-4 py-2">{u.email}</td>
                       <td className="px-4 py-2">
                         <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                          u.role === 'super_admin'  ? 'bg-purple-100 text-purple-700' :
+                          u.role === 'super_admin'  ? 'bg-violet-100 text-violet-700' :
                           u.role === 'store_owner'  ? 'bg-blue-100 text-blue-700'    :
                                                       'bg-green-100 text-green-700'
                         }`}>

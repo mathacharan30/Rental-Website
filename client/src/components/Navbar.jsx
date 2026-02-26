@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { RxHamburgerMenu } from "react-icons/rx";
+import { IoClose } from "react-icons/io5";
 import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const menuRef = useRef(null);
   const { firebaseUser, role, storeName, uid, logout, loading } = useAuth();
   const navigate = useNavigate();
@@ -16,11 +18,16 @@ const Navbar = () => {
     const onKey = (e) => {
       if (e.key === "Escape") setOpen(false);
     };
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
     window.addEventListener("resize", onResize);
     window.addEventListener("keydown", onKey);
+    window.addEventListener("scroll", onScroll);
     return () => {
       window.removeEventListener("resize", onResize);
       window.removeEventListener("keydown", onKey);
+      window.removeEventListener("scroll", onScroll);
     };
   }, []);
 
@@ -39,51 +46,65 @@ const Navbar = () => {
   const dashboardLink = isSuperAdmin
     ? "/superadmin"
     : isAdmin
-    ? `/admin/${storeName}`
-    : null;
+      ? `/admin/${storeName}`
+      : null;
 
-  const dashboardLabel = isSuperAdmin ? "Super Admin" : isAdmin ? "Dashboard" : null;
+  const dashboardLabel = isSuperAdmin
+    ? "Super Admin"
+    : isAdmin
+      ? "Dashboard"
+      : null;
 
   return (
-    <header className="sticky top-0 z-50 bg-[#0a0a0a] border-b border-neutral-700">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="flex items-center justify-between py-2">
-          <div className="flex items-center gap-6">
+    <header
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "bg-[#0e0e0e]/90 backdrop-blur-md border-b border-white/5"
+          : "bg-transparent"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="flex items-center justify-between py-3">
+          <div className="flex items-center gap-8">
             {/* Logo */}
             <Link
               to="/"
-              className="text-xl font-medium flex items-end justify-center tracking-tight text-pink-700"
+              className="text-xl font-semibold tracking-tight text-white hover:opacity-80 transition-opacity"
             >
-              People & Style
+              people & style
             </Link>
 
             {/* Desktop nav — public / customer only */}
             {isPublicOrCustomer && (
               <nav
-                className="hidden md:flex items-center gap-6 text-sm text-neutral-100"
+                className="hidden md:flex items-center gap-1 text-sm"
                 aria-label="Primary Navigation"
               >
-                <a href="#categories" className="hover:text-pink-400 transition-colors">
-                  Categories
-                </a>
-                <a href="#products" className="hover:text-pink-400 transition-colors">
-                  Products
-                </a>
-                <a href="#gallery" className="hover:text-pink-400 transition-colors">
-                  Gallery
-                </a>
+                {[
+                  { href: "#categories", label: "Categories" },
+                  { href: "#products", label: "Rentals" },
+                  { href: "#gallery", label: "Gallery" },
+                ].map((item) => (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    className="px-3 py-1.5 rounded-full text-neutral-400 hover:text-white  transition-all duration-300"
+                  >
+                    {item.label}
+                  </a>
+                ))}
               </nav>
             )}
 
             {/* Desktop nav — admin / super admin */}
             {(isAdmin || isSuperAdmin) && (
               <nav
-                className="hidden md:flex items-center gap-6 text-sm text-neutral-100"
+                className="hidden md:flex items-center gap-1 text-sm"
                 aria-label="Admin Navigation"
               >
                 <Link
                   to={dashboardLink}
-                  className="hover:text-pink-400 transition-colors"
+                  className="px-3 py-1.5 rounded-full text-neutral-400 hover:text-white hover:bg-white/5 transition-all"
                 >
                   {dashboardLabel}
                 </Link>
@@ -92,50 +113,50 @@ const Navbar = () => {
           </div>
 
           {/* Desktop right-side auth actions */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             {!loading && (
               <div className="hidden md:flex items-center gap-3">
                 {!firebaseUser ? (
                   <>
                     <Link
                       to="/login"
-                      className="text-sm text-neutral-100 hover:text-pink-400 transition-colors hover:underline"
+                      className="text-sm text-neutral-400 hover:text-white transition-colors px-3 py-1.5 rounded-full hover:bg-white/5"
                     >
                       Log in
                     </Link>
                     <Link
                       to="/signup"
-                      className="text-sm bg-neutral-800 border border-neutral-600 text-neutral-100 px-3 py-1.5 rounded-md hover:opacity-90 transition-opacity"
+                      className="text-sm bg-violet-600 text-white py-1.5 px-5 rounded-lg hover:bg-violet-700 transition-colors"
                     >
-                      Sign up
+                      <span>Sign up</span>
                     </Link>
                   </>
                 ) : role === "customer" ? (
                   <>
                     <Link
                       to={`/${uid}/profile`}
-                      className="text-sm text-neutral-100 hover:text-pink-400 transition-colors"
+                      className="text-sm text-neutral-400 hover:text-white transition-colors px-3 py-1.5 rounded-full hover:bg-white/5"
                     >
                       Profile
                     </Link>
-                    <span className="text-xs text-neutral-500 capitalize border border-neutral-700 px-2 py-0.5 rounded-full">
+                    <span className="text-xs text-violet-400 capitalize border border-violet-500/20 bg-violet-500/10 px-3 py-1 rounded-lg">
                       customer
                     </span>
                     <button
                       onClick={handleLogout}
-                      className="text-sm text-neutral-400 hover:text-red-400 transition-colors"
+                      className="text-sm text-neutral-500 hover:text-red-400 transition-colors"
                     >
                       Logout
                     </button>
                   </>
                 ) : (
                   <>
-                    <span className="text-xs text-neutral-500 capitalize border border-neutral-700 px-2 py-0.5 rounded-full">
+                    <span className="text-xs text-violet-400 capitalize border border-violet-500/20 bg-violet-500/10 px-3 py-1 rounded-lg">
                       {role === "store_owner" ? "Store Admin" : "Super Admin"}
                     </span>
                     <button
                       onClick={handleLogout}
-                      className="text-sm text-neutral-400 hover:text-red-400 transition-colors"
+                      className="text-sm text-neutral-500 hover:text-red-400 transition-colors"
                     >
                       Logout
                     </button>
@@ -144,15 +165,18 @@ const Navbar = () => {
               </div>
             )}
 
-            {/* Hamburger */}
             <button
-              className="md:hidden"
+              className="md:hidden relative w-12 h-12 flex items-center justify-center rounded-xl "
               onClick={() => setOpen((s) => !s)}
               aria-expanded={open}
               aria-controls="mobile-menu"
               aria-label={open ? "Close menu" : "Open menu"}
             >
-              <RxHamburgerMenu className="text-neutral-100 text-xl" />
+              {open ? (
+                <IoClose className="text-white text-xl" />
+              ) : (
+                <RxHamburgerMenu className="text-white text-lg" />
+              )}
             </button>
           </div>
         </div>
@@ -162,35 +186,28 @@ const Navbar = () => {
           id="mobile-menu"
           ref={menuRef}
           className={`${
-            open ? "max-h-screen" : "max-h-0"
-          } md:hidden overflow-hidden transition-[max-height] duration-300 ease-in-out`}
+            open ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+          } md:hidden overflow-hidden transition-all duration-500 ease-in-out`}
           aria-hidden={!open}
         >
-          <div className="flex flex-col gap-2 pb-4 text-sm text-neutral-100">
+          <div className="flex flex-col gap-1 pb-4 text-sm">
             {/* Public / customer links */}
             {isPublicOrCustomer && (
               <>
-                <a
-                  href="#categories"
-                  onClick={handleMobileLink}
-                  className="block px-2 py-2 rounded hover:bg-neutral-800"
-                >
-                  Categories
-                </a>
-                <a
-                  href="#products"
-                  onClick={handleMobileLink}
-                  className="block px-2 py-2 rounded hover:bg-neutral-800"
-                >
-                  Products
-                </a>
-                <a
-                  href="#gallery"
-                  onClick={handleMobileLink}
-                  className="block px-2 py-2 rounded hover:bg-neutral-800"
-                >
-                  Gallery
-                </a>
+                {[
+                  { href: "#categories", label: "Categories" },
+                  { href: "#products", label: "Rentals" },
+                  { href: "#gallery", label: "Gallery" },
+                ].map((item) => (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    onClick={handleMobileLink}
+                    className="block px-4 py-3 rounded-xl text-neutral-300 hover:text-white hover:bg-white/5 transition-all"
+                  >
+                    {item.label}
+                  </a>
+                ))}
               </>
             )}
 
@@ -199,11 +216,13 @@ const Navbar = () => {
               <Link
                 to={dashboardLink}
                 onClick={handleMobileLink}
-                className="block px-2 py-2 rounded hover:bg-neutral-800"
+                className="block px-4 py-3 rounded-xl text-neutral-300 hover:text-white hover:bg-white/5"
               >
                 {dashboardLabel}
               </Link>
             )}
+
+            <div className="h-px bg-white/10 my-2" />
 
             {/* Auth actions */}
             {!firebaseUser ? (
@@ -211,16 +230,16 @@ const Navbar = () => {
                 <Link
                   to="/login"
                   onClick={handleMobileLink}
-                  className="block px-2 py-2 rounded hover:bg-neutral-800"
+                  className="block px-4 py-3 rounded-xl text-neutral-300 hover:text-white hover:bg-white/5"
                 >
                   Log in
                 </Link>
                 <Link
                   to="/signup"
                   onClick={handleMobileLink}
-                  className="block px-2 py-2 w-full bg-neutral-800 rounded text-white text-center"
+                  className="block mx-2 py-3 rounded-full text-center btn-funky"
                 >
-                  Sign up
+                  <span>Sign up</span>
                 </Link>
               </>
             ) : role === "customer" ? (
@@ -228,12 +247,12 @@ const Navbar = () => {
                 <Link
                   to={`/${uid}/profile`}
                   onClick={handleMobileLink}
-                  className="block px-2 py-2 rounded hover:bg-neutral-800"
+                  className="block px-4 py-3 rounded-xl text-neutral-300 hover:text-white hover:bg-white/5"
                 >
                   Profile
                 </Link>
-                <div className="flex items-center justify-between px-2 py-2">
-                  <span className="text-xs text-neutral-500 capitalize border border-neutral-700 px-2 py-0.5 rounded-full">
+                <div className="flex items-center justify-between px-4 py-3">
+                  <span className="text-xs text-violet-400 capitalize border border-violet-500/20 bg-violet-500/10 px-3 py-1 rounded-lg">
                     Customer
                   </span>
                   <button
@@ -245,8 +264,8 @@ const Navbar = () => {
                 </div>
               </>
             ) : (
-              <div className="flex items-center justify-between px-2 py-2">
-                <span className="text-xs text-neutral-500 capitalize border border-neutral-700 px-2 py-0.5 rounded-full">
+              <div className="flex items-center justify-between px-4 py-3">
+                <span className="text-xs text-violet-400 capitalize border border-violet-500/20 bg-violet-500/10 px-3 py-1 rounded-lg">
                   {role === "store_owner" ? "Store Admin" : "Super Admin"}
                 </span>
                 <button

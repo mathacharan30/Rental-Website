@@ -39,13 +39,13 @@ const Reels = () => {
   }, []);
 
   return (
-    <section className="py-14 bg-base-off-white">
+    <section className="py-14 bg-[#0e0e0e]">
       <div className="max-w-7xl mx-auto px-2">
         <div className="text-center">
-          <h2 className="text-2xl font-medium tracking-tighter">
-            <span className="font-extrabold text-pink-800">/</span> Style Reels
+          <h2 className="text-2xl font-semibold display-font text-white">
+            Style Reels
           </h2>
-          <p className="text-xs md:text-sm text-neutral-600 mt-2">
+          <p className="text-xs md:text-sm text-neutral-500 mt-2">
             Tap to watch reels in a clean modal player.
           </p>
         </div>
@@ -78,10 +78,10 @@ const Reels = () => {
             onClick={() => setOpen(null)}
           />
 
-          <div className="relative w-full max-w-md bg-white rounded-xl overflow-hidden shadow-xl z-10">
+          <div className="relative w-full max-w-md bg-[#1a1a1a] border border-white/10 rounded-xl overflow-hidden shadow-xl z-10">
             <button
               onClick={() => setOpen(null)}
-              className="absolute top-2 right-2 text-black text-sm underline"
+              className="absolute top-2 right-2 text-white text-sm bg-white/10 px-3 py-1 rounded-lg hover:bg-white/20 transition z-20"
             >
               Close
             </button>

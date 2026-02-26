@@ -29,36 +29,37 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#f7f7f7]">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-md shadow-sm w-full max-w-md border"
+    <div className="min-h-screen flex items-center justify-center bg-[#0e0e0e]">\n      <form\n        onSubmit={handleSubmit}\n        className="glass p-8 rounded-xl w-full max-w-md"
       >
-        <h2 className="text-2xl mb-4">Admin Login</h2>
-        {error && <div className="text-sm text-red-600 mb-2">{error}</div>}
-        <div className="mb-3">
-          <label className="block text-sm">Email</label>
+        <h2 className="text-2xl font-bold display-font gradient-text mb-6">
+          Admin Login
+        </h2>
+        {error && <div className="text-sm text-red-400 mb-2">{error}</div>}
+        <div className="mb-4">
+          <label className="block text-sm text-neutral-400 mb-1">Email</label>
           <input
-            className="border px-2 py-1 w-full"
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
-        <div className="mb-4">
-          <label className="block text-sm">Password</label>
+        <div className="mb-6">
+          <label className="block text-sm text-neutral-400 mb-1">
+            Password
+          </label>
           <input
             type="password"
-            className="border px-2 py-1 w-full"
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
         <button
           disabled={loading}
-          className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-60"
+          className="w-full btn-funky !rounded-xl disabled:opacity-60"
         >
-          {loading ? "Logging in..." : "Login"}
+          <span>{loading ? "Logging in..." : "Login →"}</span>
         </button>
       </form>
     </div>

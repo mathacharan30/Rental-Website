@@ -37,10 +37,10 @@ const Home = () => {
 
   return (
     <motion.div
-      className=""
+      className="bg-[#0e0e0e]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
+      transition={{ duration: 0.6 }}
     >
       <Hero />
       <main>

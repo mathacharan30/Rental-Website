@@ -7,7 +7,11 @@ import toast from "react-hot-toast";
 const Signup = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    name: "", email: "", password: "", phone: "", address: "",
+    name: "",
+    email: "",
+    password: "",
+    phone: "",
+    address: "",
   });
   const [loading, setLoading] = useState(false);
 
@@ -28,15 +32,18 @@ const Signup = () => {
       const { data } = await api.post("/api/auth/signup", form);
 
       toast.success(
-        data.message || "Account created! Please check your email to verify your address before logging in.",
-        { id: tid, duration: 6000 }
+        data.message ||
+          "Account created! Please check your email to verify your address before logging in.",
+        { id: tid, duration: 6000 },
       );
       navigate("/login");
     } catch (err) {
       console.error("Signup failed", err);
       toast.error(
-        err?.response?.data?.message || err?.message || "Failed to create account",
-        { id: tid }
+        err?.response?.data?.message ||
+          err?.message ||
+          "Failed to create account",
+        { id: tid },
       );
     } finally {
       setLoading(false);
@@ -45,13 +52,13 @@ const Signup = () => {
 
   const field = (label, name, type = "text", placeholder = "") => (
     <div>
-      <label className="block text-sm text-gray-600 mb-1">{label}</label>
+      <label className="block text-sm text-neutral-400 mb-1.5">{label}</label>
       <input
         type={type}
         name={name}
         value={form[name]}
         onChange={handleChange}
-        className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
+        className="w-full bg-white/5 border border-white/10 px-4 py-2.5 rounded-xl text-white placeholder-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all"
         placeholder={placeholder}
       />
     </div>
@@ -59,32 +66,41 @@ const Signup = () => {
 
   return (
     <motion.div
-      className="min-h-[70vh] flex items-center justify-center py-16 px-4"
+      className="min-h-[80vh] flex items-center justify-center py-16 px-4 relative"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
+      transition={{ duration: 0.6 }}
     >
-      <div className="w-full max-w-md bg-white border rounded-lg p-6 shadow-sm">
-        <h2 className="text-2xl font-semibold mb-4">Create an account</h2>
+      <div className="w-full max-w-md glass rounded-xl p-8 relative z-10">
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-bold display-font gradient-text">
+            Create Account
+          </h2>
+          <p className="text-neutral-500 text-sm mt-1">Create your account</p>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
-          {field("Full name",    "name",     "text",  "Your name")}
-          {field("Email",        "email",    "email", "you@example.com")}
-          {field("Password",     "password", "password", "Choose a password")}
-          {field("Phone number", "phone",    "tel",   "+91 98765 43210")}
-          {field("Address",      "address",  "text",  "Your address")}
+          {field("Full name", "name", "text", "Your name")}
+          {field("Email", "email", "email", "you@example.com")}
+          {field("Password", "password", "password", "Choose a password")}
+          {field("Phone number", "phone", "tel", "+91 98765 43210")}
+          {field("Address", "address", "text", "Your address")}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-black text-white py-2 rounded disabled:opacity-60"
+            className="w-full btn-funky !rounded-xl !py-3 disabled:opacity-60"
           >
-            {loading ? "Creating account…" : "Create account"}
+            <span>{loading ? "Creating account…" : "Create account →"}</span>
           </button>
         </form>
 
-        <p className="mt-4 text-sm text-gray-600 text-center">
+        <p className="mt-6 text-sm text-neutral-500 text-center">
           Already have an account?{" "}
-          <Link to="/login" className="text-indigo-600 hover:underline">
+          <Link
+            to="/login"
+            className="text-violet-400 hover:text-violet-300 transition-colors"
+          >
             Sign in
           </Link>
         </p>

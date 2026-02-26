@@ -1,12 +1,18 @@
-@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Syne:wght@400..800&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
 @import "tailwindcss";
 
 :root {
-  --primary-gold: #d4af37;
-  --secondary-mauve: #a35d6a;
-  --accent-pink: #831843;
-  --base-off-white: #f8f7f3;
-  --base-charcoal: #1e1e1e;
+  --primary: #7c3aed;
+  --primary-dark: #6d28d9;
+  --secondary: #a78bfa;
+  --accent: #c4b5fd;
+  --bg-dark: #0e0e0e;
+  --bg-card: #161616;
+  --bg-light: #fafafa;
+  --text-primary: #f2f0eb;
+  --text-secondary: #9a9590;
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 255, 255, 0.07);
 }
 
 html,
@@ -16,59 +22,113 @@ body,
 }
 
 body {
-  background-color: rgb(255, 251, 241);
-  color: var(--base-charcoal);
-  font-family: "DM Sans", system-ui, -apple-system, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial;
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  font-family:
+    "DM Sans",
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial;
 }
 
 .display-font {
-  font-family: "Bricolage Grotesque", "Raleway", sans-serif;
-}
-.playfair-display {
-  font-family: "Playfair Display", serif;
+  font-family: "Syne", "Space Grotesk", sans-serif;
 }
 
-.libre-baskerville {
-  font-family: "Libre Baskerville", serif;
+.space-grotesk {
+  font-family: "Space Grotesk", sans-serif;
 }
+
 .dm-sans {
   font-family: "DM Sans", sans-serif;
 }
 
-.accent-gold {
-  color: var(--primary-gold);
+/* Accent text */
+.gradient-text {
+  color: var(--secondary);
 }
 
-.accent-mauve {
-  color: var(--secondary-mauve);
+.gradient-text-alt {
+  color: var(--accent);
 }
 
+/* Subtle card */
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Primary button */
+.btn-funky {
+  background: var(--primary);
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 2rem;
+  border-radius: 1.75rem;
+  transition: all 0.2s ease;
+}
+.btn-funky:hover {
+  background: var(--primary-dark);
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.25);
+}
+.btn-funky span {
+  position: relative;
+  z-index: 1;
+}
+
+/* Outline button */
+.btn-outline-funky {
+  background: transparent;
+  color: var(--text-primary);
+  font-weight: 600;
+  padding: 0.75rem 2rem;
+  border-radius: 1.75rem;
+  border: 1.5px solid rgba(167, 139, 250, 0.35);
+  transition: all 0.2s ease;
+}
+.btn-outline-funky:hover {
+  border-color: var(--secondary);
+  background: rgba(167, 139, 250, 0.06);
+}
+
+/* Scrollbar */
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--accent-pink) var(--base-off-white);
+  scrollbar-color: #2a2a2a var(--bg-dark);
 }
 
 *::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
+  width: 6px;
+  height: 6px;
 }
 
 *::-webkit-scrollbar-track {
-  background: var(--base-off-white);
-  border-radius: 9999px;
+  background: var(--bg-dark);
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: var(--accent-pink);
+  background: #2a2a2a;
   border-radius: 9999px;
-  border: 3px solid var(--base-off-white);
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background-color: #6b1430;
+  background: #3a3a3a;
 }
 
 *::-webkit-scrollbar-corner {
-  background: var(--base-off-white);
+  background: var(--bg-dark);
+}
+
+/* Selection color */
+::selection {
+  background: rgba(212, 168, 83, 0.2);
+  color: white;
 }

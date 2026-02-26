@@ -2,33 +2,33 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Providers
-import { AuthProvider }  from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext";
 
 // Utils
-import ProtectedRoute    from "./utils/ProtectedRoute";
-import ScrollToTop       from "./utils/ScrollToTop";
+import ProtectedRoute from "./utils/ProtectedRoute";
+import ScrollToTop from "./utils/ScrollToTop";
 
 // Public pages
-import Home                 from "./pages/Main/Home";
-import Login                from "./pages/Main/Login";
-import Signup               from "./pages/Main/Signup";
-import ForgotPassword       from "./pages/Main/ForgotPassword";
-import Products             from "./pages/Main/Products";
-import ProductDetail        from "./pages/Main/ProductDetail";
-import AboutUs              from "./pages/Main/AboutUs";
-import ContactUs            from "./pages/Main/ContactUs";
-import TermsAndConditions   from "./pages/Main/TermsAndConditions";
-import PrivacyPolicy        from "./pages/Main/PrivacyPolicy";
-import RefundPolicy         from "./pages/Main/RefundPolicy";
-import FAQ                  from "./pages/Main/FAQ";
+import Home from "./pages/Main/Home";
+import Login from "./pages/Main/Login";
+import Signup from "./pages/Main/Signup";
+import ForgotPassword from "./pages/Main/ForgotPassword";
+import Products from "./pages/Main/Products";
+import ProductDetail from "./pages/Main/ProductDetail";
+import AboutUs from "./pages/Main/AboutUs";
+import ContactUs from "./pages/Main/ContactUs";
+import TermsAndConditions from "./pages/Main/TermsAndConditions";
+import PrivacyPolicy from "./pages/Main/DataPolicyPage";
+import RefundPolicy from "./pages/Main/RefundPolicy";
+import FAQ from "./pages/Main/FAQ";
 
 // Customer pages
-import CustomerProfile   from "./pages/Main/CustomerProfile";
+import CustomerProfile from "./pages/Main/CustomerProfile";
 
 // Store-owner (admin) pages
-import AdminDashboard    from "./pages/Admin/Dashboard";
-import ProductsAdmin     from "./pages/Admin/ProductsAdmin";
-import OrdersAdmin       from "./pages/Admin/OrdersAdmin";
+import AdminDashboard from "./pages/Admin/Dashboard";
+import ProductsAdmin from "./pages/Admin/ProductsAdmin";
+import OrdersAdmin from "./pages/Admin/OrdersAdmin";
 
 // Super admin pages
 import SuperAdminDashboard from "./pages/SuperAdmin/SuperAdminDashboard";
@@ -41,25 +41,25 @@ const App = () => {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <div className="min-h-screen dm-sans border-4 border-black tracking-tight bg-[#f7f7f7]">
+        <div className="min-h-screen dm-sans tracking-tight bg-[#0e0e0e] text-white">
           <ScrollToTop />
           <Navbar />
           <main>
             <Routes>
               {/* ── Public ─────────────────────────────── */}
-              <Route path="/"                  element={<Home />} />
-              <Route path="/login"             element={<Login />} />
-              <Route path="/signup"            element={<Signup />} />
-              <Route path="/forgot-password"   element={<ForgotPassword />} />
-              <Route path="/products"            element={<Products />} />
-              <Route path="/products/:category"  element={<Products />} />
-              <Route path="/product/:id"         element={<ProductDetail />} />
-              <Route path="/about"               element={<AboutUs />} />
-              <Route path="/contact"             element={<ContactUs />} />
-              <Route path="/terms"               element={<TermsAndConditions />} />
-              <Route path="/privacy"             element={<PrivacyPolicy />} />
-              <Route path="/refund"              element={<RefundPolicy />} />
-              <Route path="/faq"                 element={<FAQ />} />
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/products/:category" element={<Products />} />
+              <Route path="/product/:id" element={<ProductDetail />} />
+              <Route path="/about" element={<AboutUs />} />
+              <Route path="/contact" element={<ContactUs />} />
+              <Route path="/terms" element={<TermsAndConditions />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/refund" element={<RefundPolicy />} />
+              <Route path="/faq" element={<FAQ />} />
 
               {/* ── Customer ───────────────────────────── */}
               <Route
@@ -81,7 +81,7 @@ const App = () => {
                 }
               >
                 <Route path="products" element={<ProductsAdmin />} />
-                <Route path="orders"   element={<OrdersAdmin />} />
+                <Route path="orders" element={<OrdersAdmin />} />
               </Route>
 
               {/* ── Super admin ─────────────────────────── */}
@@ -103,21 +103,21 @@ const App = () => {
             style: {
               fontSize: "14px",
               padding: "10px 24px",
-              borderRadius: 50,
-              background: "rgba(255, 255, 255)",
-              color: "#000000",
-              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+              borderRadius: 16,
+              background: "rgba(20, 20, 20, 0.9)",
+              color: "#ffffff",
+              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
               backdropFilter: "blur(16px)",
-              border: "1px solid #e0e0e0",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
               fontFamily: "'DM Sans', sans-serif",
             },
             success: {
-              iconTheme: { primary: "#22c55e", secondary: "#ffffff" },
-              style: { borderLeft: "4px solid #22c55e", borderRight: "4px solid #22c55e" },
+              iconTheme: { primary: "#a855f7", secondary: "#ffffff" },
+              style: { borderLeft: "3px solid #a855f7" },
             },
             error: {
               iconTheme: { primary: "#ef4444", secondary: "#ffffff" },
-              style: { borderLeft: "4px solid #ef4444", borderRight: "4px solid #ef4444" },
+              style: { borderLeft: "3px solid #ef4444" },
             },
           }}
         />

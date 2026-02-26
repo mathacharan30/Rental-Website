@@ -24,42 +24,47 @@ const Testimonials = () => {
   }, []);
 
   return (
-    <section className="py-14 max-w-6xl mx-auto bg-base-off-white overflow-hidden">
-      <div className="px-2 items-center justify-center">
-        <div className="text-center mb-6">
-          <h2 className="text-2xl  tracking-tighter font-medium  text-base-charcoal">
-            <span className="font-extrabold text-pink-800">/</span> Straight
-            from the Source
+    <section className="py-20 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl md:text-4xl font-semibold display-font tracking-tight text-white">
+            Customer <span className="text-violet-400">Reviews</span>
           </h2>
-          <p className="text-xs md:text-sm text-neutral-600 mt-2 max-w-md mx-auto">
-            Voices of our community — elegance shared, stories told.
+          <p className="text-sm text-neutral-500 mt-3 max-w-md mx-auto">
+            What our customers say about their rental experience
           </p>
         </div>
+
         <div className="relative">
-          <div className="absolute left-0 z-10 h-full w-20 bg-linear-to-r from-[#f7f7f7] to-transparent"></div>
-          <div className="absolute right-0 z-10 h-full w-20 bg-linear-to-l from-[#f7f7f7] to-transparent"></div>
+          {/* Fade edges */}
+          <div className="absolute left-0 z-10 h-full w-24 bg-gradient-to-r from-[#0e0e0e] to-transparent" />
+          <div className="absolute right-0 z-10 h-full w-24 bg-gradient-to-l from-[#0e0e0e] to-transparent" />
+
           <Marquee
             pauseOnHover={true}
             gradient={false}
-            speed={50}
-            className="p-4"
+            speed={40}
+            className="py-4"
           >
             {quotes.concat(quotes).map((q, index) => (
               <div
                 key={`${q.id}-${index}`}
-                className="relative md:w-[300px] w-60  mx-2 bg-white text-base-off-white justify-between rounded-xl p-6 flex flex-col md:h-78 h-68"
+                className="relative md:w-[320px] w-64 mx-2 glass rounded-xl p-6 flex flex-col justify-between md:h-72 h-60 hover:border-white/15 transition-colors duration-300 group"
               >
-                <div className="w-8 h-8 text-7xl text-pink-800 absolute -top-4 -left-3">
-                  *
+                <div>
+                  <div className="text-3xl text-violet-400 font-bold mb-3">
+                    "
+                  </div>
+                  <p className="text-sm text-neutral-300 leading-relaxed">
+                    {q.text}
+                  </p>
                 </div>
-                <p className="text-base font-light text-neutral-900 leading-tight">
-                  {q.text}
-                </p>
-                <div className="mt-6 pt-4 border-t border-neutral-300">
-                  <p className="font-bold text-black tracking-tight">
+
+                <div className="mt-4 pt-4 border-t border-white/10">
+                  <p className="font-semibold text-white text-sm tracking-tight">
                     {q.name}
                   </p>
-                  <p className="text-sm text-pink-900">{q.handle}</p>
+                  <p className="text-xs text-violet-400">{q.handle}</p>
                 </div>
               </div>
             ))}
@@ -69,4 +74,5 @@ const Testimonials = () => {
     </section>
   );
 };
+
 export default Testimonials;

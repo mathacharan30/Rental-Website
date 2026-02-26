@@ -39,10 +39,10 @@ const ProductDetail = () => {
   if (loading) {
     return (
       <motion.div
-        className="min-h-[60vh] flex items-center justify-center bg-gray-50"
+        className="min-h-[60vh] flex items-center justify-center bg-[#0e0e0e]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 0.6 }}
       >
         <Loader />
       </motion.div>
@@ -52,23 +52,18 @@ const ProductDetail = () => {
   if (!product) {
     return (
       <motion.div
-        className="min-h-[60vh] flex items-center justify-center bg-gray-50"
+        className="min-h-[60vh] flex items-center justify-center bg-[#0e0e0e]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 0.6 }}
       >
-        <div className="text-center p-6 bg-white shadow-md rounded-lg">
-          <h2 className="text-2xl font-semibold text-gray-800">
-            Product not found
-          </h2>
-          <p className="mt-2 text-gray-500">
+        <div className="text-center p-8 glass rounded-2xl max-w-sm">
+          <h2 className="text-xl font-bold text-white">Product not found</h2>
+          <p className="mt-2 text-neutral-500 text-sm">
             The product you are looking for does not exist.
           </p>
-          <button
-            onClick={() => navigate(-1)}
-            className="mt-4 px-5 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition"
-          >
-            Go Back
+          <button onClick={() => navigate(-1)} className="mt-4 btn-funky">
+            <span>Go Back</span>
           </button>
         </div>
       </motion.div>
@@ -99,7 +94,9 @@ const ProductDetail = () => {
       toast.success("Order placed successfully!", { id: tid });
       navigate(`/${firebaseUser.uid}/profile`);
     } catch (e) {
-      toast.error(e?.response?.data?.message || "Failed to place order", { id: tid });
+      toast.error(e?.response?.data?.message || "Failed to place order", {
+        id: tid,
+      });
     } finally {
       setOrdering(false);
     }
@@ -111,128 +108,169 @@ const ProductDetail = () => {
 
   return (
     <motion.div
-      className="pt-5"
+      className="bg-[#0e0e0e] min-h-screen"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
+      transition={{ duration: 0.6 }}
     >
-      <div className="max-w-7xl mx-auto px-3">
+      {/* ── Top bar: back link ── */}
+      <div className="max-w-6xl mx-auto px-4 pt-6">
         <Link
           to={`/products/${encodeURIComponent(product.category)}`}
-          className="text-sm flex items-center gap-1 text-gray-600 hover:underline"
+          className="inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-violet-400 transition-colors"
         >
           <BiLeftArrow /> Back to Products
         </Link>
+      </div>
 
-        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white rounded-md overflow-hidden shadow-sm">
-            <img
-              src={product.image}
-              alt={product.title}
-              className="w-full h-[400px] md:h-[450px] object-contain"
-            />
-            <div className="p-2 items-center flex flex-row justify-center">
-              {product.images && product.images.length > 0 && (
-                <div className="mb-4 flex gap-2 overflow-x-auto">
-                  {product.images.map((imgUrl, index) => (
-                    <img
-                      key={index}
-                      src={imgUrl}
-                      alt={`${product.title} ${index + 1}`}
-                      className="w-16 h-16 object-cover rounded cursor-pointer border"
-                      onClick={() => setProduct({ ...product, image: imgUrl })}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
+      {/* ── Product name + rating — TOP ── */}
+      <motion.div
+        className="text-center mt-6 px-4"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+      >
+        <p className="text-xs uppercase tracking-[0.25em] text-violet-400 font-medium mb-2">
+          {product.category}
+        </p>
+        <h1 className="text-3xl md:text-5xl font-bold display-font text-white tracking-tight">
+          {product.title}
+        </h1>
+        <div className="flex items-center justify-center gap-1 mt-3">
+          {Array.from({ length: 5 }).map((_, i) =>
+            i < Math.floor(rating) ? (
+              <AiFillStar key={i} className="text-violet-400" />
+            ) : (
+              <AiOutlineStar key={i} className="text-violet-400/30" />
+            ),
+          )}
+          <span className="text-sm text-neutral-500 ml-1.5">
+            {rating.toFixed(1)}
+          </span>
+        </div>
+      </motion.div>
+
+      {/* ── Hero image — CENTER ── */}
+      <motion.div
+        className="relative max-w-2xl mx-auto mt-8 px-4"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
+        <div className="relative rounded-3xl overflow-hidden glass border border-white/[0.06]">
+          {/* Soft glow behind image */}
+          <div className="absolute inset-0 bg-gradient-to-b from-violet-600/[0.04] via-transparent to-violet-600/[0.04] pointer-events-none" />
+          <img
+            src={product.image}
+            alt={product.title}
+            className="w-full h-[400px] md:h-[520px] object-contain p-6 relative z-[1]"
+          />
+        </div>
+
+        {/* Thumbnail strip */}
+        {product.images && product.images.length > 0 && (
+          <div className="flex justify-center gap-2.5 mt-4 overflow-x-auto pb-1">
+            {product.images.map((imgUrl, index) => (
+              <img
+                key={index}
+                src={imgUrl}
+                alt={`${product.title} ${index + 1}`}
+                className="w-14 h-14 object-cover rounded-xl cursor-pointer border border-white/10 hover:border-violet-500/40 transition-all duration-200 hover:scale-105"
+                onClick={() => setProduct({ ...product, image: imgUrl })}
+              />
+            ))}
           </div>
+        )}
+      </motion.div>
 
-          <div className="flex flex-col justify-between font-light">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-semibold text-gray-900 tracking-tighter">
-                {product.title}
-              </h1>
+      {/* ── Details + Actions — BOTTOM ── */}
+      <motion.div
+        className="max-w-3xl mx-auto mt-10 px-4 pb-16"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.35 }}
+      >
+        {/* Price row */}
+        <div className="flex items-end justify-center gap-4 flex-wrap">
+          <span className="text-4xl font-bold gradient-text">
+            {product.price}
+          </span>
+          {product.advanceAmount > 0 && (
+            <span className="text-sm text-violet-400 font-medium pb-1">
+              Advance: ₹
+              {Number.isInteger(product.advanceAmount)
+                ? product.advanceAmount
+                : product.advanceAmount.toFixed(2)}
+            </span>
+          )}
+        </div>
 
-              <div className="flex items-center gap-1 ">
-                {Array.from({ length: 5 }).map((_, i) =>
-                  i < Math.floor(rating) ? (
-                    <AiFillStar key={i} className="text-yellow-500" />
-                  ) : (
-                    <AiOutlineStar key={i} className="text-yellow-500" />
-                  )
-                )}
-                <span className="text-sm text-gray-600 ml-1">
-                  {rating.toFixed(1)}
-                </span>
-              </div>
+        {/* Description */}
+        <p className="mt-5 text-sm text-neutral-400 leading-relaxed text-center max-w-xl mx-auto">
+          {product.description ||
+            "Elegant rental piece — perfect for special occasions. Contact us for custom durations and styling options."}
+        </p>
 
-              <div className="mt-2 space-y-1">
-                <div className="text-2xl font-light text-pink-900">
-                  {product.price}
-                </div>
-                <div className="text-sm text-gray-500 flex flex-col gap-0.5">
-                  {/* <span>Rent: ₹{product.rentPrice} + Commission: ₹{product.commissionPrice}</span> */}
-                  {product.advanceAmount > 0 && (
-                    <span className="text-gray-600 font-medium">
-                      Advance: ₹{Number.isInteger(product.advanceAmount) ? product.advanceAmount : product.advanceAmount.toFixed(2)}
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              <p className="mt-4 text-md text-gray-700 leading-tight ">
-                {product.description ||
-                  "Elegant rental piece — perfect for special occasions. Contact us for custom durations and styling options."}
-              </p>
-
-              <div className="mt-4">
-                <p className="text-sm font-medium text-gray-700 mb-2">Size</p>
-                <div className="flex flex-wrap gap-2">
-                  {sizes.map((size) => (
-                    <button
-                      key={size}
-                      onClick={() => setSelectedSize(size)}
-                      className={`px-4 py-2 border rounded-md transition ${
-                        selectedSize === size
-                          ? "bg-pink-900 text-white border-pink-900"
-                          : "text-gray-700 border-gray-300 hover:bg-gray-100"
-                      }`}
-                    >
-                      {size}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-4 flex flex-col gap-1 text-sm text-gray-600">
-                <div>
-                  <strong>Condition:</strong> Excellent
-                </div>
-                <div>
-                  <strong>Availability:</strong> Ready to rent
-                </div>
-              </div>
-            </div>
-
-            <div className="my-6  flex flex-col sm:flex-row gap-2">
-              <button
-                onClick={handleRent}
-                disabled={ordering}
-                className="px-6 py-3 cursor-pointer bg-pink-900 text-white rounded w-full sm:w-auto hover:bg-pink-800 transition disabled:opacity-60"
-              >
-                {ordering ? "Placing order…" : "Rent Now"}
-              </button>
-              <button
-                onClick={handleEnquire}
-                className="px-6 py-3 border cursor-pointer text-gray-700 rounded w-full sm:w-auto hover:bg-gray-100 transition"
-              >
-                Enquire Now
-              </button>
-            </div>
+        {/* Info chips */}
+        <div className="flex justify-center gap-4 mt-6 flex-wrap">
+          <div className="flex items-center gap-2 text-sm text-neutral-400 glass px-4 py-2 rounded-xl">
+            <span className="w-2 h-2 rounded-full bg-green-400" />
+            <span>
+              <strong className="text-neutral-300">Condition:</strong> Excellent
+            </span>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-neutral-400 glass px-4 py-2 rounded-xl">
+            <span className="w-2 h-2 rounded-full bg-violet-400" />
+            <span>
+              <strong className="text-neutral-300">Availability:</strong> Ready
+              to rent
+            </span>
           </div>
         </div>
-      </div>
+
+        {/* Divider */}
+        <div className="h-px bg-white/[0.06] my-8 max-w-md mx-auto" />
+
+        {/* Size selector */}
+        <div className="text-center">
+          <p className="text-sm font-medium text-neutral-300 mb-3">
+            Select Size
+          </p>
+          <div className="flex justify-center flex-wrap gap-2">
+            {sizes.map((size) => (
+              <button
+                key={size}
+                onClick={() => setSelectedSize(size)}
+                className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
+                  selectedSize === size
+                    ? "bg-violet-600 text-white shadow-lg shadow-violet-600/20"
+                    : "glass text-neutral-400 hover:text-white hover:border-violet-500/30"
+                }`}
+              >
+                {size}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Action buttons */}
+        <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
+          <button
+            onClick={handleRent}
+            disabled={ordering}
+            className="btn-funky !rounded-xl px-10 disabled:opacity-60"
+          >
+            <span>{ordering ? "Placing order…" : "Rent Now →"}</span>
+          </button>
+          <button
+            onClick={handleEnquire}
+            className="btn-outline-funky !rounded-xl px-10"
+          >
+            Enquire Now
+          </button>
+        </div>
+      </motion.div>
+
       <Footer />
     </motion.div>
   );

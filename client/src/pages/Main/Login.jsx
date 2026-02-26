@@ -8,9 +8,9 @@ import toast from "react-hot-toast";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [email,    setEmail]    = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading,  setLoading]  = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,7 +28,7 @@ const Login = () => {
         await signOut(auth);
         toast.error(
           "Please verify your email before logging in. Check your inbox.",
-          { id: tid, duration: 5000 }
+          { id: tid, duration: 5000 },
         );
         setLoading(false);
         return;
@@ -58,38 +58,53 @@ const Login = () => {
 
   return (
     <motion.div
-      className="min-h-[70vh] flex items-center justify-center py-16 px-4"
+      className="min-h-[80vh] flex items-center justify-center py-16 px-4 relative"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
+      transition={{ duration: 0.6 }}
     >
-      <div className="w-full max-w-md bg-white border rounded-lg p-6 shadow-sm">
-        <h2 className="text-2xl font-semibold mb-4">Sign in to your account</h2>
+      <div className="w-full max-w-md glass rounded-xl p-8 relative z-10">
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-bold display-font gradient-text">
+            Welcome back
+          </h2>
+          <p className="text-neutral-500 text-sm mt-1">
+            Sign in to your account
+          </p>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm text-gray-600 mb-1">Email</label>
+            <label className="block text-sm text-neutral-400 mb-1.5">
+              Email
+            </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              className="w-full bg-white/5 border border-white/10 px-4 py-2.5 rounded-xl text-white placeholder-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all"
               placeholder="you@example.com"
             />
           </div>
 
           <div>
-            <label className="block text-sm text-gray-600 mb-1">Password</label>
+            <label className="block text-sm text-neutral-400 mb-1.5">
+              Password
+            </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              className="w-full bg-white/5 border border-white/10 px-4 py-2.5 rounded-xl text-white placeholder-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all"
               placeholder="Your password"
             />
           </div>
 
           <div className="flex justify-end">
-            <Link to="/forgot-password" className="text-sm text-indigo-600 hover:underline">
+            <Link
+              to="/forgot-password"
+              className="text-sm text-violet-400 hover:text-violet-300 transition-colors"
+            >
               Forgot password?
             </Link>
           </div>
@@ -97,15 +112,18 @@ const Login = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-black text-white py-2 rounded disabled:opacity-60"
+            className="w-full btn-funky !rounded-xl !py-3 disabled:opacity-60"
           >
-            {loading ? "Signing in…" : "Sign in"}
+            <span>{loading ? "Signing in…" : "Sign in →"}</span>
           </button>
         </form>
 
-        <p className="mt-4 text-sm text-gray-600 text-center">
+        <p className="mt-6 text-sm text-neutral-500 text-center">
           Don't have an account?{" "}
-          <Link to="/signup" className="text-indigo-600 hover:underline">
+          <Link
+            to="/signup"
+            className="text-violet-400 hover:text-violet-300 transition-colors"
+          >
             Create one
           </Link>
         </p>
