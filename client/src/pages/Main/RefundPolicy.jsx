@@ -28,7 +28,8 @@ const RefundPolicy = () => (
     <div className="bg-black text-white py-14 px-4 rounded-b-3xl text-center">
       <p className="text-pink-400 text-xs font-semibold uppercase tracking-widest mb-2">Legal</p>
       <h1 className="text-4xl font-bold">Refund &amp; Cancellation Policy</h1>
-      <p className="mt-3 text-neutral-400 text-sm">Last updated: February 2026</p>
+      <p className="mt-2 text-neutral-300 text-sm font-medium">Kan Overseas &mdash; Handled by Sagar S</p>
+      <p className="mt-1 text-neutral-400 text-sm">Last updated: February 2026</p>
     </div>
 
     <div className="max-w-3xl mx-auto px-4 py-14">
@@ -49,7 +50,7 @@ const RefundPolicy = () => (
             </div>
           ))}
         </div>
-        <p className="text-sm mt-3 text-neutral-500">Refunds are credited to the original payment method within 5–7 business days.</p>
+        <p className="text-sm mt-3 text-neutral-500">Refunds will be credited back to the original payment method within <strong>7 business days</strong>.</p>
       </Section>
 
       <Section title="3. How to Cancel">
@@ -88,11 +89,36 @@ const RefundPolicy = () => (
         <p>Some orders may require a refundable security deposit. This deposit will be refunded within 3 business days after the item is returned in good condition.</p>
       </Section>
 
-      <Section title="8. Contact Us">
+      <Section title="8. Return Policy">
+        <p>
+          We have a <strong>7-day return policy</strong>. If you are not satisfied with your order, you may initiate a return within 7 days of delivery. The item must be returned in its original condition — unworn, undamaged, and with all tags intact.
+        </p>
+        <p>
+          To initiate a return, please contact us at <a href="mailto:hello@peopleandstyle.in" className="text-pink-600 hover:underline">hello@peopleandstyle.in</a> or call <a href="tel:+918431094754" className="text-pink-600 hover:underline">+91 84310 94754</a> within the 7-day window.
+        </p>
+      </Section>
+
+      <Section title="9. Exchange & Replacement">
+        <p>
+          All approved exchanges and replacements will be completed within <strong>7 business days</strong> from the date of approval. Once your exchange or replacement request is reviewed and accepted, we will process and dispatch the replacement item promptly.
+        </p>
+      </Section>
+
+      <Section title="10. Shipping Policy">
+        <p>
+          Products will be delivered within <strong>7–15 business days</strong> from the date of order confirmation. Delivery timelines may vary based on your location and product availability.
+        </p>
+        <p>
+          You will receive a tracking update once your order has been dispatched. For any shipping-related queries, feel free to reach out to us.
+        </p>
+      </Section>
+
+      <Section title="11. Contact Us">
         <p>
           For any refund or cancellation queries, reach us at:
         </p>
         <ul className="list-none space-y-1">
+          <li>🏢 <strong>Kan Overseas</strong> — Handled by Sagar S</li>
           <li>📧 <a href="mailto:hello@peopleandstyle.in" className="text-pink-600 hover:underline">hello@peopleandstyle.in</a></li>
           <li>📞 <a href="tel:+918431094754" className="text-pink-600 hover:underline">+91 84310 94754</a></li>
           <li>📍 Mysuru, Karnataka, India – 570026</li>
