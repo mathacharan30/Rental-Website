@@ -54,7 +54,7 @@ const productUpload = multer({
 const bannerUpload = multer({
   storage: bannerStorage,
   fileFilter: imageFileFilter,
-  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB limit
+  limits: { fileSize: 20 * 1024 * 1024 }, // 2MB limit
 });
 
 module.exports = { productUpload, bannerUpload, categoryUpload };

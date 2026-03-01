@@ -116,9 +116,18 @@ exports.createProduct = async (req, res) => {
 
     const images = [];
     if (req.files && req.files.length) {
-      for (const file of req.files) {
-        images.push({ url: file.path, publicId: file.filename });
+      console.log(`[Products] Create – ${req.files.length} file(s) received for upload`);
+      for (let i = 0; i < req.files.length; i++) {
+        const file = req.files[i];
+        if (file.path && file.filename) {
+          console.log(`[Products] Image ${i + 1} uploaded successfully → url: ${file.path} | publicId: ${file.filename}`);
+          images.push({ url: file.path, publicId: file.filename });
+        } else {
+          console.error(`[Products] Image ${i + 1} upload failed – missing url or publicId (originalname: ${file.originalname}, mimetype: ${file.mimetype})`);
+        }
       }
+    } else {
+      console.log('[Products] Create – no image files received');
     }
 
     const payload = {
