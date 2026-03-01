@@ -160,7 +160,7 @@ const ProductDetail = () => {
 
   return (
     <motion.div className="bg-[#0e0e0e] min-h-screen" {...fade}>
-      <div className="max-w-6xl mx-auto px-4 pt-6">
+      <div className="max-w-6xl mx-auto px-4 pt-2">
         <Link
           to={`/products/${encodeURIComponent(product.category)}`}
           className="inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-violet-400 transition-colors"
