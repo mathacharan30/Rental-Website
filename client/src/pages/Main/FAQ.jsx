@@ -120,7 +120,7 @@ const faqs = [
       },
       {
         q: "What if the outfit arrives damaged or stained?",
-        a: "Every garment is inspected and cleaned before dispatch. If you notice any damage upon arrival, photograph it immediately and contact us within 2 hours of delivery at hello@peopleandstyle.in or +91 84310 94754. We will arrange a replacement or issue a refund.",
+        a: "Every garment is inspected and cleaned before dispatch. If you notice any damage upon arrival, photograph it immediately and contact us within 2 hours of delivery at hello@peopleandstyle.in or +91 91876 68280. We will arrange a replacement or issue a refund.",
       },
       {
         q: "What if I lose the outfit?",
@@ -227,10 +227,10 @@ const faqs = [
             <li>
               📞{" "}
               <a
-                href="tel:+918431094754"
+                href="tel:+919187668280"
                 className="text-violet-400 hover:underline"
               >
-                +91 84310 94754
+                +91 91876 68280
               </a>
             </li>
             <li>

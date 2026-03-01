@@ -7,7 +7,7 @@ export function openWhatsApp({
 }) {
   try {
     const currentLink = link || window.location.href;
-    const number = (phone || "9606307685").replace(/[^0-9]/g, "");
+    const number = (phone || "9187668280").replace(/[^0-9]/g, "");
     const actionText = action === "rent" ? "rent" : "enquire";
     const parts = [
       `Hello! I'm interested to ${actionText} the following item:`,

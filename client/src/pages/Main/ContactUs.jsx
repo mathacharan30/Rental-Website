@@ -30,8 +30,8 @@ const contactDetails = [
       </svg>
     ),
     label: "Phone",
-    value: "+91 84310 94754",
-    href: "tel:+918431094754",
+    value: "+91 91876 68280",
+    href: "tel:+919187668280",
   },
   {
     icon: (
