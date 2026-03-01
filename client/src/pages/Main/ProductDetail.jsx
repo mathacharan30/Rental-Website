@@ -110,7 +110,19 @@ const ProductDetail = () => {
   };
 
   const handleEnquire = () => {
-    toast("Enquiry feature coming soon!");
+    const number = "919187668280";
+    const parts = [
+      `Product: ${product?.title ?? "N/A"}`,
+      product?.category ? `Category: ${product.category}` : null,
+      product?.price ? `Price: ₹${product.price}` : null,
+      selectedSize ? `Size: ${selectedSize}` : null,
+      product?.id ? `Product ID: ${product.id}` : null,
+      `Link: ${window.location.href}`,
+      "",
+      "Please tell me more about this product...",
+    ].filter(Boolean);
+    const text = encodeURIComponent(parts.join("\n"));
+    window.open(`https://wa.me/${number}?text=${text}`, "_blank", "noopener,noreferrer");
   };
 
   return (

@@ -172,7 +172,7 @@ const ContactUs = () => {
           {/* WhatsApp CTA */}
           <motion.a
             variants={fadeUp}
-            href="https://wa.me/918431094754"
+            href="https://wa.me/919187668280"
             target="_blank"
             rel="noreferrer"
             className="mt-6 flex items-center justify-center gap-3 bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-full transition"
