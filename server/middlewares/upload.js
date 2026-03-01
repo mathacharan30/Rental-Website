@@ -50,7 +50,6 @@ const categoryUpload = multer({
 const productUpload = multer({
   storage: productStorage,
   fileFilter: imageFileFilter,
-  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB limit
 });
 const bannerUpload = multer({
   storage: bannerStorage,

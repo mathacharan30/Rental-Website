@@ -59,11 +59,7 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
     const validFiles = [];
 
     files.forEach((file) => {
-      if (file.size > 2 * 1024 * 1024) {
-        toast.error(`File ${file.name} is too large. Max size is 2MB.`);
-      } else {
-        validFiles.push(file);
-      }
+      validFiles.push(file);
     });
 
     if (validFiles.length > 0) {
