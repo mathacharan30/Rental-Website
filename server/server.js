@@ -12,6 +12,7 @@ const categoryRoutes     = require('./routes/categoryRoutes');
 const testimonialRoutes  = require('./routes/testimonialRoutes');
 const superAdminRoutes   = require('./routes/superAdminRoutes');
 const orderRoutes        = require('./routes/orderRoutes');
+const paymentRoutes      = require('./routes/paymentRoutes');
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use('/api/categories',   categoryRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/superadmin',   superAdminRoutes);
 app.use('/api/orders',       orderRoutes);
+app.use('/api/payment',      paymentRoutes);
 
 // Start server after DB connection
 const PORT = process.env.PORT || 5000;
