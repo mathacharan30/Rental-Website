@@ -71,21 +71,21 @@ const InstaAdmin = () => {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900">
+          <h1 className="text-2xl font-bold text-white">
             Instagram Posts
           </h1>
           <p className="text-neutral-500 mt-1">Manage social media feed</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-pink-800 hover:bg-pink-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors shadow-sm"
+          className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
         >
           <Plus size={18} />
           Add Post
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="glass rounded-xl overflow-hidden">
         {loading ? (
           <div className="p-12 flex justify-center">
             <Loader />
@@ -99,9 +99,9 @@ const InstaAdmin = () => {
             {posts.map((p) => (
               <div
                 key={p._id}
-                className="group relative bg-neutral-50 rounded-xl overflow-hidden border border-neutral-200 p-5 "
+                className="group relative bg-white/5 rounded-xl overflow-hidden border border-white/10 p-5 "
               >
-                <p className="text-blue-600 "> {p.postUrl}</p>
+                <p className="text-violet-400 "> {p.postUrl}</p>
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
                   <div className="text-white font-medium truncate">
                     {p.caption || "(no caption)"}
@@ -134,12 +134,12 @@ const InstaAdmin = () => {
       >
         <form onSubmit={add} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
+            <label className="block text-sm font-medium text-neutral-300 mb-1">
               Image URL
             </label>
             <input
               type="url"
-              className="w-full border border-neutral-300 px-3 py-2 rounded-lg text-neutral-900 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition-all"
+              className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
               placeholder="https://..."
               value={postUrl}
               onChange={(e) => setPostUrl(e.target.value)}
@@ -147,28 +147,28 @@ const InstaAdmin = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
+            <label className="block text-sm font-medium text-neutral-300 mb-1">
               Caption (Optional)
             </label>
             <input
-              className="w-full border border-neutral-300 px-3 py-2 rounded-lg text-neutral-900 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition-all"
+              className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
               placeholder="e.g. New Arrival"
               value={caption}
               onChange={(e) => setCaption(e.target.value)}
             />
           </div>
 
-          <div className="flex gap-3 pt-4 border-t border-neutral-100">
+          <div className="flex gap-3 pt-4 border-t border-white/10">
             <button
               type="button"
               onClick={() => setIsModalOpen(false)}
-              className="flex-1 px-4 py-2 border border-neutral-300 text-neutral-700 rounded-lg hover:bg-neutral-50 transition-colors font-medium"
+              className="flex-1 px-4 py-2 border border-white/10 text-neutral-300 rounded-lg hover:bg-white/5 transition-colors font-medium"
             >
               Cancel
             </button>
             <button
               onClick={add}
-              className="flex-1 bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition-colors font-medium shadow-sm"
+              className="flex-1 bg-violet-600 text-white px-4 py-2 rounded-lg hover:bg-violet-700 transition-colors font-medium"
             >
               Add Link
             </button>

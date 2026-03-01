@@ -4,11 +4,11 @@ import toast from 'react-hot-toast';
 import Loader from '../../components/Loader';
 
 const STATUS_COLORS = {
-  pending:   'bg-yellow-100 text-yellow-700',
-  confirmed: 'bg-blue-100 text-blue-700',
-  active:    'bg-green-100 text-green-700',
-  completed: 'bg-gray-100 text-gray-600',
-  cancelled: 'bg-red-100 text-red-600',
+  pending:   'bg-yellow-500/10 text-yellow-400',
+  confirmed: 'bg-blue-500/10 text-blue-400',
+  active:    'bg-green-500/10 text-green-400',
+  completed: 'bg-neutral-500/10 text-neutral-400',
+  cancelled: 'bg-red-500/10 text-red-400',
 };
 
 const STATUSES = ['pending', 'confirmed', 'active', 'completed', 'cancelled'];
@@ -46,18 +46,18 @@ export default function SuperAdminOrders() {
   return (
     <div>
       <div className="mb-6">
-        <h2 className="text-lg font-semibold text-neutral-900">All Orders</h2>
+        <h2 className="text-lg font-semibold text-white">All Orders</h2>
         <p className="text-sm text-neutral-500 mt-0.5">Every order across all stores — includes commission breakdown</p>
       </div>
 
       {orders.length === 0 ? (
         <p className="text-gray-500 text-sm">No orders found.</p>
       ) : (
-        <div className="bg-white border rounded-xl overflow-hidden shadow-sm">
+        <div className="glass rounded-xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm border-collapse">
               <thead>
-                <tr className="bg-neutral-50 border-b text-xs uppercase text-neutral-500 font-semibold tracking-wider">
+                <tr className="bg-white/5 border-b border-white/10 text-xs uppercase text-neutral-500 font-semibold tracking-wider">
                   <th className="px-4 py-3">Product</th>
                   <th className="px-4 py-3">Store</th>
                   <th className="px-4 py-3">Customer</th>
@@ -71,37 +71,37 @@ export default function SuperAdminOrders() {
                   <th className="px-4 py-3">Update</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-neutral-100">
+              <tbody className="divide-y divide-white/5">
                 {orders.map((o) => (
-                  <tr key={o._id} className="hover:bg-neutral-50">
+                  <tr key={o._id} className="hover:bg-white/5">
                     {/* Product */}
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         {o.product?.images?.[0]?.url && (
-                          <img src={o.product.images[0].url} alt="" className="w-9 h-9 rounded object-cover border" />
+                          <img src={o.product.images[0].url} alt="" className="w-9 h-9 rounded object-cover border border-white/10" />
                         )}
-                        <span className="font-medium text-neutral-900 whitespace-nowrap">{o.product?.name || '—'}</span>
+                        <span className="font-medium text-white whitespace-nowrap">{o.product?.name || '—'}</span>
                       </div>
                     </td>
                     {/* Store */}
                     <td className="px-4 py-3 whitespace-nowrap">
-                      <span className="font-medium">{o.store?.name || '—'}</span>
+                      <span className="font-medium text-white">{o.store?.name || '—'}</span>
                       <br />
-                      <span className="text-xs text-neutral-400">{o.store?.slug}</span>
+                      <span className="text-xs text-neutral-500">{o.store?.slug}</span>
                     </td>
                     {/* Customer */}
                     <td className="px-4 py-3">
-                      <div className="font-medium">{o.customer?.name || '—'}</div>
-                      <div className="text-xs text-neutral-400">{o.customer?.email}</div>
-                      {o.customer?.phone && <div className="text-xs text-neutral-400">{o.customer.phone}</div>}
+                      <div className="font-medium text-white">{o.customer?.name || '—'}</div>
+                      <div className="text-xs text-neutral-500">{o.customer?.email}</div>
+                      {o.customer?.phone && <div className="text-xs text-neutral-500">{o.customer.phone}</div>}
                     </td>
                     {/* Size */}
-                    <td className="px-4 py-3">{o.size || '—'}</td>
+                    <td className="px-4 py-3 text-neutral-300">{o.size || '—'}</td>
                     {/* Prices */}
-                    <td className="px-4 py-3">₹{o.rentPrice}</td>
-                    <td className="px-4 py-3 text-indigo-600 font-medium">₹{o.commissionPrice}</td>
-                    <td className="px-4 py-3">₹{o.advanceAmount}</td>
-                    <td className="px-4 py-3 font-semibold">₹{o.totalPrice}</td>
+                    <td className="px-4 py-3 text-white">₹{o.rentPrice}</td>
+                    <td className="px-4 py-3 text-violet-400 font-medium">₹{o.commissionPrice}</td>
+                    <td className="px-4 py-3 text-neutral-300">₹{o.advanceAmount}</td>
+                    <td className="px-4 py-3 font-semibold text-white">₹{o.totalPrice}</td>
                     {/* Status */}
                     <td className="px-4 py-3">
                       <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[o.status]}`}>
@@ -109,7 +109,7 @@ export default function SuperAdminOrders() {
                       </span>
                     </td>
                     {/* Date */}
-                    <td className="px-4 py-3 text-neutral-400 whitespace-nowrap">
+                    <td className="px-4 py-3 text-neutral-500 whitespace-nowrap">
                       {new Date(o.createdAt).toLocaleDateString()}
                     </td>
                     {/* Status dropdown */}
@@ -117,9 +117,9 @@ export default function SuperAdminOrders() {
                       <select
                         value={o.status}
                         onChange={(e) => handleStatus(o._id, e.target.value)}
-                        className="text-xs border rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-indigo-400"
+                        className="text-xs bg-[#1a1a1a] border border-white/10 text-neutral-300 rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500"
                       >
-                        {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+                        {STATUSES.map((s) => <option key={s} value={s} className="bg-[#1a1a1a] text-neutral-300">{s}</option>)}
                       </select>
                     </td>
                   </tr>

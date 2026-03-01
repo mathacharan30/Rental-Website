@@ -5,7 +5,7 @@ import { BiLeftArrow } from "react-icons/bi";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import Footer from "../../components/Footer";
 import { getProductById } from "../../services/productService";
-import { createOrder } from "../../services/orderService";
+import { createPayment } from "../../services/paymentService";
 import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
 import Loader from "../../components/Loader";
@@ -88,16 +88,21 @@ const ProductDetail = () => {
       return;
     }
     setOrdering(true);
-    const tid = toast.loading("Placing order…");
+    const tid = toast.loading("Initiating payment…");
     try {
-      await createOrder({ productId: product.id, size: selectedSize });
-      toast.success("Order placed successfully!", { id: tid });
-      navigate(`/${firebaseUser.uid}/profile`);
+      const res = await createPayment({ productId: product.id, size: selectedSize });
+      toast.dismiss(tid);
+      if (res.checkoutUrl) {
+        // Redirect to PhonePe checkout page
+        window.location.href = res.checkoutUrl;
+      } else {
+        toast.error("Could not get payment URL. Please try again.");
+        setOrdering(false);
+      }
     } catch (e) {
-      toast.error(e?.response?.data?.message || "Failed to place order", {
+      toast.error(e?.response?.data?.message || "Failed to initiate payment", {
         id: tid,
       });
-    } finally {
       setOrdering(false);
     }
   };
@@ -157,13 +162,13 @@ const ProductDetail = () => {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6, delay: 0.2 }}
       >
-        <div className="relative rounded-3xl overflow-hidden glass border border-white/[0.06]">
+        <div className="relative rounded-3xl overflow-hidden glass border border-white/6">
           {/* Soft glow behind image */}
-          <div className="absolute inset-0 bg-gradient-to-b from-violet-600/[0.04] via-transparent to-violet-600/[0.04] pointer-events-none" />
+          <div className="absolute inset-0 bg-linear-to-b from-violet-600/4 via-transparent to-violet-600/4 pointer-events-none" />
           <img
             src={product.image}
             alt={product.title}
-            className="w-full h-[400px] md:h-[520px] object-contain p-6 relative z-[1]"
+            className="w-full h-[400px] md:h-[520px] object-contain p-6 relative z-1"
           />
         </div>
 
@@ -229,7 +234,7 @@ const ProductDetail = () => {
         </div>
 
         {/* Divider */}
-        <div className="h-px bg-white/[0.06] my-8 max-w-md mx-auto" />
+        <div className="h-px bg-white/6 my-8 max-w-md mx-auto" />
 
         {/* Size selector */}
         <div className="text-center">
@@ -258,13 +263,13 @@ const ProductDetail = () => {
           <button
             onClick={handleRent}
             disabled={ordering}
-            className="btn-funky !rounded-xl px-10 disabled:opacity-60"
+            className="btn-funky rounded-xl! px-10 disabled:opacity-60"
           >
-            <span>{ordering ? "Placing order…" : "Rent Now →"}</span>
+            <span>{ordering ? "Redirecting to payment…" : "Rent Now →"}</span>
           </button>
           <button
             onClick={handleEnquire}
-            className="btn-outline-funky !rounded-xl px-10"
+            className="btn-outline-funky rounded-xl! px-10"
           >
             Enquire Now
           </button>

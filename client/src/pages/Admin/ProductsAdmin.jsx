@@ -72,12 +72,12 @@ const ProductsAdmin = () => {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900">Products</h1>
+          <h1 className="text-2xl font-bold text-white">Products</h1>
           <p className="text-neutral-500 mt-1">Manage your product inventory</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors shadow-sm"
+          className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
         >
           <Plus size={20} />
           Add Product
@@ -88,7 +88,7 @@ const ProductsAdmin = () => {
         <Stats products={products} />
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="glass rounded-xl overflow-hidden">
         {loading ? (
           <div className="p-12 flex justify-center">
             <Loader />

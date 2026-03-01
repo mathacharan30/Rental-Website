@@ -264,7 +264,7 @@ const ContactUs = () => {
             <button
               type="submit"
               disabled={sending}
-              className="w-full btn-funky !rounded-xl disabled:opacity-60"
+              className="w-full btn-funky rounded-xl! disabled:opacity-60"
             >
               <span>{sending ? "Sending…" : "Send Message →"}</span>
             </button>

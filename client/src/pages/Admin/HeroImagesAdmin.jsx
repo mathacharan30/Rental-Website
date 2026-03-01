@@ -76,21 +76,21 @@ const HeroImagesAdmin = () => {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900">
+          <h1 className="text-2xl font-bold text-white">
             Gallery Images
           </h1>
           <p className="text-neutral-500 mt-1">Manage website gallery images</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-pink-800 hover:bg-pink-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors shadow-sm"
+          className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
         >
           <Plus size={18} />
           Upload Image
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="glass rounded-xl overflow-hidden">
         {dataLoading ? (
           <div className="p-12 flex justify-center">
             <Loader />
@@ -104,7 +104,7 @@ const HeroImagesAdmin = () => {
             {banners.map((b) => (
               <div
                 key={b._id}
-                className="group relative bg-neutral-50 rounded-xl overflow-hidden border border-neutral-200 aspect-4/3"
+                className="group relative bg-white/5 rounded-xl overflow-hidden border border-white/10 aspect-4/3"
               >
                 <img
                   src={b.imageUrl}
@@ -140,10 +140,10 @@ const HeroImagesAdmin = () => {
       >
         <form onSubmit={add} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
+            <label className="block text-sm font-medium text-neutral-300 mb-1">
               Image File
             </label>
-            <div className="border-2 border-dashed border-neutral-300 rounded-lg p-4 text-center hover:bg-neutral-50 transition-colors">
+            <div className="border-2 border-dashed border-white/10 rounded-lg p-4 text-center hover:bg-white/5 transition-colors">
               <input
                 type="file"
                 accept="image/*"
@@ -169,7 +169,7 @@ const HeroImagesAdmin = () => {
                 className="cursor-pointer flex flex-col items-center gap-2"
               >
                 <Plus size={28} />
-                <span className="text-sm text-neutral-600">
+                <span className="text-sm text-neutral-400">
                   {file ? file.name : "Click to upload image"}
                 </span>
               </label>
@@ -177,40 +177,40 @@ const HeroImagesAdmin = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
+            <label className="block text-sm font-medium text-neutral-300 mb-1">
               Title (Optional)
             </label>
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Summer Collection"
-              className="w-full border border-neutral-300 px-3 py-2 rounded-lg text-neutral-900 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition-all"
+              className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
+            <label className="block text-sm font-medium text-neutral-300 mb-1">
               Category (Optional)
             </label>
             <input
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               placeholder="e.g. Wedding"
-              className="w-full border border-neutral-300 px-3 py-2 rounded-lg text-neutral-900 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition-all"
+              className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
             />
           </div>
 
-          <div className="flex gap-3 pt-4 border-t border-neutral-100">
+          <div className="flex gap-3 pt-4 border-t border-white/10">
             <button
               type="button"
               onClick={() => setIsModalOpen(false)}
-              className="flex-1 px-4 py-2 border border-neutral-300 text-neutral-700 rounded-lg hover:bg-neutral-50 transition-colors font-medium"
+              className="flex-1 px-4 py-2 border border-white/10 text-neutral-300 rounded-lg hover:bg-white/5 transition-colors font-medium"
             >
               Cancel
             </button>
             <button
               disabled={loading}
-              className="flex-1 bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition-colors disabled:opacity-60 font-medium shadow-sm"
+              className="flex-1 bg-violet-600 text-white px-4 py-2 rounded-lg hover:bg-violet-700 transition-colors disabled:opacity-60 font-medium"
               type="submit"
             >
               {loading ? "Uploading..." : "Upload Image"}

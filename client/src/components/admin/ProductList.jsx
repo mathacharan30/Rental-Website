@@ -16,7 +16,7 @@ const ProductList = ({ products = [], onEdit, onDelete }) => {
     <div className="overflow-x-auto">
       <table className="w-full text-left border-collapse">
         <thead>
-          <tr className="bg-neutral-50 border-b border-neutral-200 text-xs uppercase text-neutral-500 font-semibold tracking-wider">
+          <tr className="bg-white/5 border-b border-white/10 text-xs uppercase text-neutral-500 font-semibold tracking-wider">
             <th className="px-6 py-4">Product</th>
             <th className="px-6 py-4">Category</th>
             <th className="px-6 py-4">Price</th>
@@ -24,15 +24,15 @@ const ProductList = ({ products = [], onEdit, onDelete }) => {
             <th className="px-6 py-4 text-right">Actions</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-neutral-100">
+        <tbody className="divide-y divide-white/5">
           {products.map((p) => (
             <tr
               key={p.id}
-              className="hover:bg-neutral-50 transition-colors group"
+              className="hover:bg-white/5 transition-colors group"
             >
               <td className="px-6 py-4">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-lg overflow-hidden bg-neutral-100 border border-neutral-200 shrink-0">
+                  <div className="w-12 h-12 rounded-lg overflow-hidden bg-white/5 border border-white/10 shrink-0">
                     <img
                       src={p.image}
                       alt={p.title}
@@ -40,7 +40,7 @@ const ProductList = ({ products = [], onEdit, onDelete }) => {
                     />
                   </div>
                   <div>
-                    <div className="font-medium text-neutral-900">
+                    <div className="font-medium text-white">
                       {p.title}
                     </div>
                     <div className="text-xs text-neutral-500 truncate max-w-[200px]">
@@ -50,20 +50,20 @@ const ProductList = ({ products = [], onEdit, onDelete }) => {
                 </div>
               </td>
               <td className="px-6 py-4 text-sm text-neutral-600">
-                <span className="px-2 py-1 bg-neutral-100 rounded-full text-xs font-medium">
+                <span className="px-2 py-1 bg-white/5 rounded-full text-xs font-medium text-neutral-300">
                   {p.category}
                 </span>
               </td>
-              <td className="px-6 py-4 text-sm font-medium text-neutral-900">
+              <td className="px-6 py-4 text-sm font-medium text-white">
                 {p.price}
               </td>
-              <td className="px-6 py-4 text-sm text-neutral-600">{p.stock}</td>
+              <td className="px-6 py-4 text-sm text-neutral-400">{p.stock}</td>
               <td className="px-6 py-4 text-right">
                 <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   {canEdit && (
                     <button
                       onClick={() => onEdit(p)}
-                      className="p-2 text-neutral-500 hover:text-pink-600 hover:bg-pink-50 rounded-lg transition-colors"
+                      className="p-2 text-neutral-500 hover:text-violet-400 hover:bg-violet-500/10 rounded-lg transition-colors"
                       title="Edit"
                     >
                       <Edit size={18} />
@@ -71,7 +71,7 @@ const ProductList = ({ products = [], onEdit, onDelete }) => {
                   )}
                   <button
                     onClick={() => onDelete(p.id)}
-                    className="p-2 text-neutral-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    className="p-2 text-neutral-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
                     title="Delete"
                   >
                     <Trash2 size={18} />

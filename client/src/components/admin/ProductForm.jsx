@@ -111,25 +111,25 @@ const ProductForm = ({ onSave, onCancel }) => {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div className="col-span-2">
-          <label className="block text-sm font-medium text-neutral-700 mb-1">
+          <label className="block text-sm font-medium text-neutral-300 mb-1">
             Product Name
           </label>
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="e.g. Elegant Wedding Dress"
-            className="w-full border border-neutral-300 px-3 py-2 rounded-lg text-neutral-900 focus:ring-2 focus:ring-pink-800 focus:border-pink-500 outline-none transition-all"
+            className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
           />
         </div>
 
         <div className="col-span-2 sm:col-span-1">
-          <label className="block text-sm font-medium text-neutral-700 mb-1">
+          <label className="block text-sm font-medium text-neutral-300 mb-1">
             Category
           </label>
           <select
             value={categoryId}
             onChange={(e) => setCategoryId(e.target.value)}
-            className="w-full border border-neutral-300 px-3 py-2 rounded-lg text-neutral-900 focus:ring-2 focus:ring-pink-800 focus:border-pink-500 outline-none transition-all"
+            className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
           >
             {categories.map((c) => (
               <option key={c._id} value={c._id}>
@@ -140,7 +140,7 @@ const ProductForm = ({ onSave, onCancel }) => {
         </div>
 
         <div className="col-span-2 sm:col-span-1">
-          <label className="block text-sm font-medium text-neutral-700 mb-1">
+          <label className="block text-sm font-medium text-neutral-300 mb-1">
             Rent Price (₹)
           </label>
           <input
@@ -150,12 +150,12 @@ const ProductForm = ({ onSave, onCancel }) => {
             type="number"
             min="0"
             step="0.01"
-            className="w-full border border-neutral-300 px-3 py-2 rounded-lg text-neutral-900 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition-all"
+            className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
           />
         </div>
 
         <div className="col-span-2 sm:col-span-1">
-          <label className="block text-sm font-medium text-neutral-700 mb-1">
+          <label className="block text-sm font-medium text-neutral-300 mb-1">
             Commission Price (₹)
           </label>
           <input
@@ -165,12 +165,12 @@ const ProductForm = ({ onSave, onCancel }) => {
             type="number"
             min="0"
             step="0.01"
-            className="w-full border border-neutral-300 px-3 py-2 rounded-lg text-neutral-900 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition-all"
+            className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
           />
         </div>
 
         <div className="col-span-2 sm:col-span-1">
-          <label className="block text-sm font-medium text-neutral-700 mb-1">
+          <label className="block text-sm font-medium text-neutral-300 mb-1">
             Advance Amount (₹)
           </label>
           <input
@@ -180,12 +180,12 @@ const ProductForm = ({ onSave, onCancel }) => {
             type="number"
             min="0"
             step="0.01"
-            className="w-full border border-neutral-300 px-3 py-2 rounded-lg text-neutral-900 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition-all"
+            className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
           />
         </div>
 
         <div className="col-span-2 sm:col-span-1">
-          <label className="block text-sm font-medium text-neutral-700 mb-1">
+          <label className="block text-sm font-medium text-neutral-300 mb-1">
             Total Price (₹) — auto-computed
           </label>
           <input
@@ -197,15 +197,15 @@ const ProductForm = ({ onSave, onCancel }) => {
             }
             placeholder="Rent + Commission"
             type="number"
-            className="w-full border border-neutral-200 bg-neutral-50 px-3 py-2 rounded-lg text-neutral-500 outline-none cursor-not-allowed"
+            className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-neutral-500 outline-none cursor-not-allowed"
           />
         </div>
 
         <div className="col-span-2">
-          <label className="block text-sm font-medium text-neutral-700 mb-1">
+          <label className="block text-sm font-medium text-neutral-300 mb-1">
             Images
           </label>
-          <div className="border-2 border-dashed border-neutral-300 rounded-lg p-4 text-center hover:bg-neutral-50 transition-colors">
+          <div className="border-2 border-dashed border-white/10 rounded-lg p-4 text-center hover:bg-white/5 transition-colors">
             <input
               type="file"
               multiple
@@ -218,12 +218,12 @@ const ProductForm = ({ onSave, onCancel }) => {
               htmlFor="file-upload"
               className="cursor-pointer flex flex-col items-center gap-2"
             >
-              <span className="text-sm text-neutral-600">
+                <span className="text-sm text-neutral-400">
                 Click to upload images(select one or more than one file)
               </span>
             </label>
             {images.length > 0 && (
-              <div className="text-xs text-pink-800 font-medium mt-2">
+                <div className="text-xs text-violet-400 font-medium mt-2">
                 {images.length} file(s) selected
               </div>
             )}
@@ -237,7 +237,7 @@ const ProductForm = ({ onSave, onCancel }) => {
                     <img
                       src={preview}
                       alt={`preview-${idx}`}
-                      className="w-20 h-20 object-cover rounded-lg border border-neutral-300"
+                      className="w-20 h-20 object-cover rounded-lg border border-white/10"
                     />
 
                     <button
@@ -258,7 +258,7 @@ const ProductForm = ({ onSave, onCancel }) => {
         </div>
 
         <div className="col-span-2">
-          <label className="block text-sm font-medium text-neutral-700 mb-1">
+          <label className="block text-sm font-medium text-neutral-300 mb-1">
             Description
           </label>
           <textarea
@@ -266,12 +266,12 @@ const ProductForm = ({ onSave, onCancel }) => {
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Product description..."
             rows="3"
-            className="w-full border border-neutral-300 px-3 py-2 rounded-lg text-neutral-900 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition-all resize-none"
+            className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all resize-none"
           />
         </div>
 
         <div className="col-span-2 sm:col-span-1">
-          <label className="block text-sm font-medium text-neutral-700 mb-1">
+          <label className="block text-sm font-medium text-neutral-300 mb-1">
             Stock
           </label>
           <input
@@ -281,12 +281,12 @@ const ProductForm = ({ onSave, onCancel }) => {
             type="number"
             min="0"
             step="1"
-            className="w-full border border-neutral-300 px-3 py-2 rounded-lg text-neutral-900 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition-all"
+            className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
           />
         </div>
 
         <div className="col-span-2 sm:col-span-1">
-          <label className="block text-sm font-medium text-neutral-700 mb-1">
+          <label className="block text-sm font-medium text-neutral-300 mb-1">
             Rating (0-5)
           </label>
           <input
@@ -297,7 +297,7 @@ const ProductForm = ({ onSave, onCancel }) => {
             min="0"
             max="5"
             step="0.1"
-            className="w-full border border-neutral-300 px-3 py-2 rounded-lg text-neutral-900 focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all"
+            className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
           />
         </div>
       </div>
@@ -308,27 +308,27 @@ const ProductForm = ({ onSave, onCancel }) => {
           id="available"
           checked={available}
           onChange={(e) => setAvailable(e.target.checked)}
-          className="w-4 h-4 text-pink-800 border-neutral-300 rounded focus:ring-pink-500"
+          className="w-4 h-4 text-violet-600 border-white/10 rounded focus:ring-violet-500"
         />
         <label
           htmlFor="available"
-          className="text-sm font-medium text-neutral-700 cursor-pointer"
+          className="text-sm font-medium text-neutral-300 cursor-pointer"
         >
           Available for rent
         </label>
       </div>
 
-      <div className="flex gap-3 pt-4 border-t border-neutral-100">
+      <div className="flex gap-3 pt-4 border-t border-white/10">
         <button
           type="button"
           onClick={onCancel}
-          className="flex-1 px-4 py-2 border border-neutral-300 text-neutral-700 rounded-lg hover:bg-neutral-50 transition-colors font-medium"
+          className="flex-1 px-4 py-2 border border-white/10 text-neutral-300 rounded-lg hover:bg-white/5 transition-colors font-medium"
         >
           Cancel
         </button>
         <button
           disabled={loading}
-          className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-60 font-medium shadow-sm"
+          className="flex-1 bg-violet-600 text-white px-4 py-2 rounded-lg hover:bg-violet-700 transition-colors disabled:opacity-60 font-medium"
           type="submit"
         >
           {loading ? "Saving..." : "Save Product"}

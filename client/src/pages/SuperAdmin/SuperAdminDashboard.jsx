@@ -100,11 +100,11 @@ export default function SuperAdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f7f7f7]">
+    <div className="min-h-screen bg-[#0e0e0e]">
       {/* Top bar */}
-      <header className="bg-white border-b px-6 py-4 flex items-center justify-between">
-        <h1 className="text-xl font-bold tracking-tight">Super Admin</h1>
-        <button onClick={handleLogout} className="text-sm text-red-500 hover:underline">
+      <header className="glass border-b border-white/10 px-6 py-4 flex items-center justify-between">
+        <h1 className="text-xl font-bold tracking-tight text-white">Super Admin</h1>
+        <button onClick={handleLogout} className="text-sm text-red-400 hover:underline">
           Sign out
         </button>
       </header>
@@ -118,8 +118,8 @@ export default function SuperAdminDashboard() {
               onClick={() => setTab(t)}
               className={`px-4 py-2 rounded text-sm font-medium border transition-colors ${
                 tab === t
-                  ? 'bg-black text-white border-black'
-                  : 'bg-white text-black border-gray-300 hover:bg-gray-50'
+                  ? 'bg-violet-600 text-white border-violet-600'
+                  : 'bg-white/5 text-neutral-300 border-white/10 hover:bg-white/10'
               }`}
             >
               {t}
@@ -130,34 +130,34 @@ export default function SuperAdminDashboard() {
         {/* ──────────── View Stores ──────────── */}
         {tab === 'View Stores' && (
           <section>
-            <h2 className="text-lg font-semibold mb-4">Stores</h2>
+            <h2 className="text-lg font-semibold mb-4 text-white">Stores</h2>
             {stores.length === 0 ? (
-              <p className="text-gray-500 text-sm">No stores found.</p>
+              <p className="text-neutral-500 text-sm">No stores found.</p>
             ) : (
-              <table className="w-full bg-white border rounded text-sm">
-                <thead className="bg-gray-50">
+              <table className="w-full glass rounded-xl text-sm">
+                <thead className="bg-white/5">
                   <tr>
                     {['Name', 'Email', 'Store slug', 'Actions'].map((h) => (
-                      <th key={h} className="text-left px-4 py-2 font-medium">{h}</th>
+                      <th key={h} className="text-left px-4 py-2 font-medium text-neutral-400">{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {stores.map((s) => (
-                    <tr key={s._id} className="border-t">
-                      <td className="px-4 py-2">{s.name}</td>
-                      <td className="px-4 py-2">{s.owner?.email || '—'}</td>
-                      <td className="px-4 py-2">{s.slug}</td>
+                    <tr key={s._id} className="border-t border-white/5">
+                      <td className="px-4 py-2 text-white">{s.name}</td>
+                      <td className="px-4 py-2 text-neutral-400">{s.owner?.email || '—'}</td>
+                      <td className="px-4 py-2 text-neutral-400">{s.slug}</td>
                       <td className="px-4 py-2 flex gap-2">
                         <button
                           onClick={() => navigate(`/admin/${s.slug}`)}
-                          className="text-indigo-600 hover:underline text-xs"
+                          className="text-violet-400 hover:underline text-xs"
                         >
                           View store
                         </button>
                         <button
                           onClick={() => handleDelete(s.owner?.uid)}
-                          className="text-red-500 hover:underline text-xs"
+                          className="text-red-400 hover:underline text-xs"
                         >
                           Delete
                         </button>
@@ -173,8 +173,8 @@ export default function SuperAdminDashboard() {
         {/* ──────────── Add Store ──────────── */}
         {tab === 'Add Store' && (
           <section className="max-w-md">
-            <h2 className="text-lg font-semibold mb-4">Add new store</h2>
-            <form onSubmit={handleCreateStore} className="space-y-4 bg-white border rounded p-5">
+            <h2 className="text-lg font-semibold mb-4 text-white">Add new store</h2>
+            <form onSubmit={handleCreateStore} className="space-y-4 glass rounded-xl p-5">
               {[
                 { label: 'Owner name',  name: 'name',      type: 'text',     ph: 'John Doe' },
                 { label: 'Email',       name: 'email',     type: 'email',    ph: 'owner@store.com' },
@@ -182,20 +182,20 @@ export default function SuperAdminDashboard() {
                 { label: 'Store slug',  name: 'storeName', type: 'text',     ph: 'my-store' },
               ].map(({ label, name, type, ph }) => (
                 <div key={name}>
-                  <label className="block text-sm text-gray-600 mb-1">{label}</label>
+                  <label className="block text-sm text-neutral-400 mb-1">{label}</label>
                   <input
                     type={type}
                     value={form[name]}
                     onChange={(e) => setForm((p) => ({ ...p, [name]: e.target.value }))}
                     placeholder={ph}
-                    className="w-full border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                    className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded text-white focus:outline-none focus:ring-2 focus:ring-violet-500"
                   />
                 </div>
               ))}
               <button
                 type="submit"
                 disabled={busy}
-                className="w-full bg-black text-white py-2 rounded disabled:opacity-60"
+                className="w-full bg-violet-600 hover:bg-violet-700 text-white py-2 rounded disabled:opacity-60"
               >
                 {busy ? 'Creating…' : 'Create store owner'}
               </button>
@@ -206,33 +206,33 @@ export default function SuperAdminDashboard() {
         {/* ──────────── All Users ──────────── */}
         {tab === 'All Users' && (
           <section>
-            <h2 className="text-lg font-semibold mb-4">All users</h2>
+            <h2 className="text-lg font-semibold mb-4 text-white">All users</h2>
             {users.length === 0 ? (
-              <p className="text-gray-500 text-sm">No users found.</p>
+              <p className="text-neutral-500 text-sm">No users found.</p>
             ) : (
-              <table className="w-full bg-white border rounded text-sm">
-                <thead className="bg-gray-50">
+              <table className="w-full glass rounded-xl text-sm">
+                <thead className="bg-white/5">
                   <tr>
                     {['Name', 'Email', 'Role', 'Store'].map((h) => (
-                      <th key={h} className="text-left px-4 py-2 font-medium">{h}</th>
+                      <th key={h} className="text-left px-4 py-2 font-medium text-neutral-400">{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {users.map((u) => (
-                    <tr key={u._id} className="border-t">
-                      <td className="px-4 py-2">{u.name || '—'}</td>
-                      <td className="px-4 py-2">{u.email}</td>
+                    <tr key={u._id} className="border-t border-white/5">
+                      <td className="px-4 py-2 text-white">{u.name || '—'}</td>
+                      <td className="px-4 py-2 text-neutral-400">{u.email}</td>
                       <td className="px-4 py-2">
                         <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                          u.role === 'super_admin'  ? 'bg-violet-100 text-violet-700' :
-                          u.role === 'store_owner'  ? 'bg-blue-100 text-blue-700'    :
-                                                      'bg-green-100 text-green-700'
+                          u.role === 'super_admin'  ? 'bg-violet-500/10 text-violet-400' :
+                          u.role === 'store_owner'  ? 'bg-blue-500/10 text-blue-400'    :
+                                                      'bg-green-500/10 text-green-400'
                         }`}>
                           {u.role}
                         </span>
                       </td>
-                      <td className="px-4 py-2">{u.storeName || '—'}</td>
+                      <td className="px-4 py-2 text-neutral-400">{u.storeName || '—'}</td>
                     </tr>
                   ))}
                 </tbody>

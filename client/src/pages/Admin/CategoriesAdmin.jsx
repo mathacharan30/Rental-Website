@@ -101,14 +101,14 @@ const CategoriesAdmin = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900">Categories</h1>
+          <h1 className="text-2xl font-bold text-white">Categories</h1>
           <p className="text-neutral-500 mt-1">Manage product categories</p>
         </div>
 
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-pink-800 hover:bg-pink-700 text-white px-4 py-2 rounded-lg 
-          flex items-center gap-2 transition-colors shadow-sm"
+          className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg 
+          flex items-center gap-2 transition-colors"
         >
           <Plus size={18} />
           Add Category
@@ -116,7 +116,7 @@ const CategoriesAdmin = () => {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="glass rounded-xl overflow-hidden">
         {dataLoading ? (
           <div className="p-12 flex justify-center">
             <Loader />
@@ -129,21 +129,21 @@ const CategoriesAdmin = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-neutral-50 border-b border-neutral-200 text-xs uppercase text-neutral-500 font-semibold tracking-wider">
+                <tr className="bg-white/5 border-b border-white/10 text-xs uppercase text-neutral-500 font-semibold tracking-wider">
                   <th className="px-6 py-4">Category</th>
                   <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-neutral-100">
+              <tbody className="divide-y divide-white/5">
                 {categories.map((c) => (
                   <tr
                     key={c._id}
-                    className="hover:bg-neutral-50 transition-colors group"
+                    className="hover:bg-white/5 transition-colors group"
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-4">
-                        <div className="w-16 h-12 rounded-lg overflow-hidden bg-neutral-100 border border-neutral-200 shrink-0">
+                        <div className="w-16 h-12 rounded-lg overflow-hidden bg-white/5 border border-white/10 shrink-0">
                           {c.image?.url || c.image ? (
                             <img
                               src={c.image?.url || c.image}
@@ -157,7 +157,7 @@ const CategoriesAdmin = () => {
                           )}
                         </div>
 
-                        <div className="font-medium text-neutral-900">
+                        <div className="font-medium text-white">
                           {c.name}
                         </div>
                       </div>
@@ -166,7 +166,7 @@ const CategoriesAdmin = () => {
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => handleDelete(c._id)}
-                        className="p-2 text-neutral-500 hover:text-red-600 hover:bg-red-50 
+                        className="p-2 text-neutral-500 hover:text-red-400 hover:bg-red-500/10 
                         rounded-lg transition-colors opacity-0 group-hover:opacity-100"
                         title="Delete"
                       >
@@ -190,26 +190,26 @@ const CategoriesAdmin = () => {
         <form onSubmit={handleAdd} className="space-y-4">
           {/* Name */}
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
+            <label className="block text-sm font-medium text-neutral-300 mb-1">
               Category Name
             </label>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Bridal Wear"
-              className="w-full border border-neutral-300 px-3 py-2 rounded-lg 
-              text-neutral-900 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 
+              className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg 
+              text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 
               outline-none transition-all"
             />
           </div>
 
           {/* Image Upload */}
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
+            <label className="block text-sm font-medium text-neutral-300 mb-1">
               Cover Image
             </label>
 
-            <div className="border-2 border-dashed border-neutral-300 rounded-lg p-4 text-center hover:bg-neutral-50 transition-colors">
+            <div className="border-2 border-dashed border-white/10 rounded-lg p-4 text-center hover:bg-white/5 transition-colors">
               <input
                 key={fileKey}
                 type="file"
@@ -237,7 +237,7 @@ const CategoriesAdmin = () => {
                 className="cursor-pointer flex flex-col items-center gap-2"
               >
                 <UploadCloud size={24} className="text-neutral-400" />
-                <span className="text-sm text-neutral-600">
+                <span className="text-sm text-neutral-400">
                   {imageFile ? imageFile.name : "Click to upload image"}
                 </span>
               </label>
@@ -245,20 +245,20 @@ const CategoriesAdmin = () => {
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-3 pt-4 border-t border-neutral-100">
+          <div className="flex gap-3 pt-4 border-t border-white/10">
             <button
               type="button"
               onClick={() => setIsModalOpen(false)}
-              className="flex-1 px-4 py-2 border border-neutral-300 
-              text-neutral-700 rounded-lg hover:bg-neutral-50 transition-colors font-medium"
+              className="flex-1 px-4 py-2 border border-white/10 
+              text-neutral-300 rounded-lg hover:bg-white/5 transition-colors font-medium"
             >
               Cancel
             </button>
 
             <button
               disabled={loading}
-              className="flex-1 bg-pink-600 text-white px-4 py-2 rounded-lg 
-              hover:bg-pink-700 transition-colors disabled:opacity-60 font-medium shadow-sm"
+              className="flex-1 bg-violet-600 text-white px-4 py-2 rounded-lg 
+              hover:bg-violet-700 transition-colors disabled:opacity-60 font-medium"
               type="submit"
             >
               {loading ? "Adding..." : "Add Category"}

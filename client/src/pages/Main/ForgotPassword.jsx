@@ -68,7 +68,7 @@ const ForgotPassword = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full btn-funky !rounded-xl !py-3 disabled:opacity-60"
+              className="w-full btn-funky rounded-xl! py-3! disabled:opacity-60"
             >
               <span>{loading ? "Sending…" : "Send reset link →"}</span>
             </button>

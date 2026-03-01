@@ -101,19 +101,19 @@ const TestimonialsAdmin = () => {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900">Testimonials</h1>
+          <h1 className="text-2xl font-bold text-white">Testimonials</h1>
           <p className="text-neutral-500 mt-1">Manage customer reviews</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors shadow-sm"
+          className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
         >
           <Plus size={20} />
           Add Testimonial
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden">
+      <div className="glass rounded-xl overflow-hidden">
         {loading ? (
           <div className="p-12 flex justify-center">
             <Loader />
@@ -126,7 +126,7 @@ const TestimonialsAdmin = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-neutral-50 border-b border-neutral-200 text-xs uppercase text-neutral-500 font-semibold tracking-wider">
+                <tr className="bg-white/5 border-b border-white/10 text-xs uppercase text-neutral-500 font-semibold tracking-wider">
                   <th className="px-6 py-4">Customer</th>
                   <th className="px-6 py-4">Rating</th>
                   <th className="px-6 py-4">Comment</th>
@@ -134,33 +134,33 @@ const TestimonialsAdmin = () => {
                   <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-neutral-100">
+              <tbody className="divide-y divide-white/5">
                 {testimonials.map((t) => (
                   <tr
                     key={t._id}
-                    className="hover:bg-neutral-50 transition-colors group"
+                    className="hover:bg-white/5 transition-colors group"
                   >
-                    <td className="px-6 py-4 font-medium text-neutral-900">
+                    <td className="px-6 py-4 font-medium text-white">
                       {t.userName}
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-1 text-yellow-500">
-                        <span className="font-medium text-neutral-900">
+                        <span className="font-medium text-white">
                           {t.rating}
                         </span>
                         <Star size={14} fill="currentColor" stroke="none" />
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-neutral-600 max-w-xs truncate">
+                    <td className="px-6 py-4 text-sm text-neutral-400 max-w-xs truncate">
                       {t.comment}
                     </td>
-                    <td className="px-6 py-4 text-sm text-neutral-600">
+                    <td className="px-6 py-4 text-sm text-neutral-400">
                       {t.product ? t.product.name || t.product : "-"}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <button
                         onClick={() => handleDelete(t._id)}
-                        className="p-2 text-neutral-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                        className="p-2 text-neutral-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
                         title="Delete"
                       >
                         <Trash2 size={18} />
@@ -181,26 +181,26 @@ const TestimonialsAdmin = () => {
       >
         <form onSubmit={handleAdd} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
+            <label className="block text-sm font-medium text-neutral-300 mb-1">
               Customer Name
             </label>
             <input
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
               placeholder="e.g. John Doe"
-              className="w-full border border-neutral-300 px-3 py-2 rounded-lg text-neutral-900 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition-all"
+              className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
+            <label className="block text-sm font-medium text-neutral-300 mb-1">
               Handle (optional)
             </label>
             <input
               value={handle}
               onChange={(e) => setHandle(e.target.value)}
               placeholder="e.g. @johndoe"
-              className="w-full border border-neutral-300 px-3 py-2 rounded-lg text-neutral-900 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition-all"
+              className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
             />
           </div>
 
@@ -210,21 +210,21 @@ const TestimonialsAdmin = () => {
               type="checkbox"
               checked={isTop}
               onChange={(e) => setIsTop(e.target.checked)}
-              className="h-4 w-4 text-pink-600 border-neutral-300 rounded focus:ring-pink-500"
+              className="h-4 w-4 text-violet-600 border-white/10 rounded focus:ring-violet-500"
             />
-            <label htmlFor="isTop" className="text-sm text-neutral-700">
+            <label htmlFor="isTop" className="text-sm text-neutral-300">
               Mark as Top Testimonial
             </label>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
+            <label className="block text-sm font-medium text-neutral-300 mb-1">
               Product
             </label>
             <select
               value={productId}
               onChange={(e) => setProductId(e.target.value)}
-              className="w-full border border-neutral-300 px-3 py-2 rounded-lg text-neutral-900 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition-all"
+              className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
             >
               {products.map((p) => (
                 <option key={p.id} value={p.id}>
@@ -235,7 +235,7 @@ const TestimonialsAdmin = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
+            <label className="block text-sm font-medium text-neutral-300 mb-1">
               Rating (0-5)
             </label>
             <input
@@ -244,12 +244,12 @@ const TestimonialsAdmin = () => {
               max="5"
               value={rating}
               onChange={(e) => setRating(Number(e.target.value))}
-              className="w-full border border-neutral-300 px-3 py-2 rounded-lg text-neutral-900 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition-all"
+              className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
+            <label className="block text-sm font-medium text-neutral-300 mb-1">
               Comment
             </label>
             <textarea
@@ -257,21 +257,21 @@ const TestimonialsAdmin = () => {
               onChange={(e) => setComment(e.target.value)}
               placeholder="Customer feedback..."
               rows="4"
-              className="w-full border border-neutral-300 px-3 py-2 rounded-lg text-neutral-900 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition-all resize-none"
+              className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all resize-none"
             />
           </div>
 
-          <div className="flex gap-3 pt-4 border-t border-neutral-100">
+          <div className="flex gap-3 pt-4 border-t border-white/10">
             <button
               type="button"
               onClick={() => setIsModalOpen(false)}
-              className="flex-1 px-4 py-2 border border-neutral-300 text-neutral-700 rounded-lg hover:bg-neutral-50 transition-colors font-medium"
+              className="flex-1 px-4 py-2 border border-white/10 text-neutral-300 rounded-lg hover:bg-white/5 transition-colors font-medium"
             >
               Cancel
             </button>
             <button
               onClick={handleAdd}
-              className="flex-1 bg-pink-600 text-white px-4 py-2 rounded-lg hover:bg-pink-700 transition-colors font-medium shadow-sm"
+              className="flex-1 bg-violet-600 text-white px-4 py-2 rounded-lg hover:bg-violet-700 transition-colors font-medium"
             >
               Add Testimonial
             </button>

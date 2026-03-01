@@ -57,7 +57,7 @@ const AdminLogin = () => {
         </div>
         <button
           disabled={loading}
-          className="w-full btn-funky !rounded-xl disabled:opacity-60"
+          className="w-full btn-funky rounded-xl! disabled:opacity-60"
         >
           <span>{loading ? "Logging in..." : "Login →"}</span>
         </button>

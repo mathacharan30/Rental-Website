@@ -21,6 +21,7 @@ import TermsAndConditions from "./pages/Main/TermsAndConditions";
 import PrivacyPolicy from "./pages/Main/DataPolicyPage";
 import RefundPolicy from "./pages/Main/RefundPolicy";
 import FAQ from "./pages/Main/FAQ";
+import PaymentStatus from "./pages/Main/PaymentStatus";
 
 // Customer pages
 import CustomerProfile from "./pages/Main/CustomerProfile";
@@ -60,6 +61,7 @@ const App = () => {
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/refund" element={<RefundPolicy />} />
               <Route path="/faq" element={<FAQ />} />
+              <Route path="/payment/status/:merchantOrderId" element={<PaymentStatus />} />
 
               {/* ── Customer ───────────────────────────── */}
               <Route
