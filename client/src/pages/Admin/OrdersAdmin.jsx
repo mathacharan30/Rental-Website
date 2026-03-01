@@ -65,9 +65,12 @@ const OrdersAdmin = () => {
                 <tr className="bg-white/5 border-b border-white/10 text-xs uppercase text-neutral-500 font-semibold tracking-wider">
                   <th className="px-5 py-4">Product</th>
                   <th className="px-5 py-4">Customer</th>
+                  <th className="px-5 py-4">Type</th>
                   <th className="px-5 py-4">Size</th>
-                  <th className="px-5 py-4">Rent</th>
+                  <th className="px-5 py-4">Price</th>
+                  <th className="px-5 py-4">Commission</th>
                   <th className="px-5 py-4">Advance</th>
+                  <th className="px-5 py-4">Total</th>
                   <th className="px-5 py-4">Status</th>
                   <th className="px-5 py-4">Date</th>
                   <th className="px-5 py-4">Update</th>
@@ -91,12 +94,28 @@ const OrdersAdmin = () => {
                       <div className="text-xs text-neutral-500">{o.customer?.email}</div>
                       {o.customer?.phone && <div className="text-xs text-neutral-500">{o.customer.phone}</div>}
                     </td>
+                    {/* Type badge */}
+                    <td className="px-5 py-4">
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                        o.listingType === 'sale'
+                          ? 'bg-amber-500/10 text-amber-400'
+                          : 'bg-violet-500/10 text-violet-400'
+                      }`}>
+                        {o.listingType === 'sale' ? 'Sale' : 'Rent'}
+                      </span>
+                    </td>
                     {/* Size */}
-                    <td className="px-5 py-4 text-neutral-300">{o.size || "—"}</td>
-                    {/* Rent */}
-                    <td className="px-5 py-4 font-medium text-white">₹{o.rentPrice}</td>
+                    <td className="px-5 py-4 text-neutral-300">{o.listingType === 'sale' ? '—' : (o.size || '—')}</td>
+                    {/* Price */}
+                    <td className="px-5 py-4 font-medium text-white">
+                      {o.listingType === 'sale' ? `₹${o.salePrice}` : `₹${o.rentPrice}`}
+                    </td>
+                    {/* Commission */}
+                    <td className="px-5 py-4 text-violet-400">₹{o.commissionPrice}</td>
                     {/* Advance */}
-                    <td className="px-5 py-4 text-neutral-300">₹{o.advanceAmount}</td>
+                    <td className="px-5 py-4 text-neutral-300">{o.listingType === 'sale' ? '—' : `₹${o.advanceAmount}`}</td>
+                    {/* Total */}
+                    <td className="px-5 py-4 font-semibold text-green-400">₹{o.totalPrice}</td>
                     {/* Status badge */}
                     <td className="px-5 py-4">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${STATUS_COLORS[o.status]}`}>

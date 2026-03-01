@@ -21,15 +21,17 @@ exports.createOrder = async (req, res) => {
       startDate:       startDate || null,
       endDate:         endDate   || null,
       notes:           notes     || '',
-      // Snapshot pricing at order time
-      rentPrice:       product.rentPrice,
-      commissionPrice: product.commissionPrice,
-      advanceAmount:   product.advanceAmount,
-      totalPrice:      product.rentPrice + product.commissionPrice,
+      // Snapshot pricing + listing type at order time
+      listingType:     product.listingType || 'rent',
+      rentPrice:       product.rentPrice       || 0,
+      commissionPrice: product.commissionPrice || 0,
+      salePrice:       product.salePrice       || 0,
+      advanceAmount:   product.listingType === 'sale' ? 0 : (product.advanceAmount || 0),
+      totalPrice:      product.price || 0,
     });
 
     const populated = await order.populate([
-      { path: 'product', select: 'name images rentPrice commissionPrice advanceAmount' },
+      { path: 'product', select: 'name images rentPrice commissionPrice salePrice advanceAmount listingType' },
       { path: 'store',   select: 'name slug' },
     ]);
 
@@ -44,7 +46,7 @@ exports.createOrder = async (req, res) => {
 exports.getMyOrders = async (req, res) => {
   try {
     const orders = await Order.find({ customer: req.user.dbId })
-      .populate({ path: 'product', select: 'name images rentPrice commissionPrice advanceAmount category', populate: { path: 'category', select: 'name' } })
+      .populate({ path: 'product', select: 'name images rentPrice commissionPrice salePrice advanceAmount listingType category', populate: { path: 'category', select: 'name' } })
       .populate('store', 'name slug')
       .sort({ createdAt: -1 });
     return res.json(orders);
@@ -77,7 +79,7 @@ exports.getStoreOrders = async (req, res) => {
     const orders = await Order.find({ store: storeId })
       .populate({
         path: 'product',
-        select: 'name images rentPrice commissionPrice advanceAmount category',
+        select: 'name images rentPrice commissionPrice salePrice advanceAmount listingType category',
         populate: { path: 'category', select: 'name' },
       })
       .populate('customer', 'name email phone address')
@@ -96,7 +98,7 @@ exports.getAllOrders = async (req, res) => {
     const orders = await Order.find()
       .populate({
         path: 'product',
-        select: 'name images rentPrice commissionPrice advanceAmount category',
+        select: 'name images rentPrice commissionPrice salePrice advanceAmount listingType category',
         populate: { path: 'category', select: 'name' },
       })
       .populate('customer', 'name email phone address')

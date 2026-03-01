@@ -71,11 +71,13 @@ const ProductDetail = () => {
   }
 
   const rating = product.rating || 4.3;
+  const isJewels = product.category?.toLowerCase() === "jewels";
+  const isSale = product.listingType === "sale";
   const sizes = product.sizes || ["XS", "S", "M", "L", "XL"];
 
   const handleRent = async () => {
     if (!firebaseUser) {
-      toast.error("Please login to rent");
+      toast.error("Please login to continue");
       navigate("/login");
       return;
     }
@@ -83,14 +85,14 @@ const ProductDetail = () => {
       toast.error("Only customers can place orders");
       return;
     }
-    if (!selectedSize) {
+    if (!isJewels && !selectedSize) {
       toast.error("Please select a size");
       return;
     }
     setOrdering(true);
     const tid = toast.loading("Initiating payment…");
     try {
-      const res = await createPayment({ productId: product.id, size: selectedSize });
+      const res = await createPayment({ productId: product.id, size: isSale ? "N/A" : selectedSize });
       toast.dismiss(tid);
       if (res.checkoutUrl) {
         // Redirect to PhonePe checkout page
@@ -227,8 +229,8 @@ const ProductDetail = () => {
           <div className="flex items-center gap-2 text-sm text-neutral-400 glass px-4 py-2 rounded-xl">
             <span className="w-2 h-2 rounded-full bg-violet-400" />
             <span>
-              <strong className="text-neutral-300">Availability:</strong> Ready
-              to rent
+              <strong className="text-neutral-300">Availability:</strong>{" "}
+              {isSale ? "Available for sale" : "Ready to rent"}
             </span>
           </div>
         </div>
@@ -236,7 +238,8 @@ const ProductDetail = () => {
         {/* Divider */}
         <div className="h-px bg-white/6 my-8 max-w-md mx-auto" />
 
-        {/* Size selector */}
+        {/* Size selector — hidden for Jewels */}
+        {!isJewels && (
         <div className="text-center">
           <p className="text-sm font-medium text-neutral-300 mb-3">
             Select Size
@@ -257,6 +260,7 @@ const ProductDetail = () => {
             ))}
           </div>
         </div>
+        )}
 
         {/* Action buttons */}
         <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
@@ -265,7 +269,7 @@ const ProductDetail = () => {
             disabled={ordering}
             className="btn-funky rounded-xl! px-10 disabled:opacity-60"
           >
-            <span>{ordering ? "Redirecting to payment…" : "Rent Now →"}</span>
+            <span>{ordering ? "Redirecting to payment…" : isSale ? "Buy Now →" : "Rent Now →"}</span>
           </button>
           <button
             onClick={handleEnquire}

@@ -16,10 +16,15 @@ export async function createProduct(formData) {
   return data;
 }
 
+export async function updateProduct(id, formData) {
+  const { data } = await api.put(`/api/products/${id}`, formData);
+  return data;
+}
+
 export async function deleteProduct(id) {
   const { data } = await api.delete(`/api/products/${id}`);
   return data;
 }
 
-export default { listProducts, createProduct, deleteProduct };
+export default { listProducts, createProduct, updateProduct, deleteProduct };
 

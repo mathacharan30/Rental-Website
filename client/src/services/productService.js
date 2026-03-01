@@ -35,7 +35,9 @@ export function mapProduct(p = {}) {
   const rentPrice = formatPrice(typeof p.rentPrice === "number" ? p.rentPrice : 0);
   const commissionPrice = formatPrice(typeof p.commissionPrice === "number" ? p.commissionPrice : 0);
   const advanceAmount = Math.round(typeof p.advanceAmount === "number" ? p.advanceAmount : 0);
-  const totalPrice = formatPrice(typeof p.price === "number" ? p.price : rentPrice + commissionPrice);
+  const salePrice = formatPrice(typeof p.salePrice === "number" ? p.salePrice : 0);
+  const listingType = p.listingType === "sale" ? "sale" : "rent";
+  const totalPrice = formatPrice(typeof p.price === "number" ? p.price : (listingType === "sale" ? salePrice + commissionPrice : rentPrice + commissionPrice));
   const priceDisplay = `₹${totalPrice}`;
 
   return {
@@ -45,8 +47,10 @@ export function mapProduct(p = {}) {
     images: images,
     category: categoryName || "",
     price: priceDisplay || "",
+    listingType,
     rentPrice,
     commissionPrice,
+    salePrice,
     advanceAmount,
     description: p.description || "",
     rating: typeof p.rating === "number" ? p.rating : 0,

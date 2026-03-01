@@ -7,17 +7,19 @@ const orderSchema = new mongoose.Schema(
     product:  { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
     store:    { type: mongoose.Schema.Types.ObjectId, ref: 'Store', required: true },
 
-    // ── Rental details ────────────────────────────────────────────────────────
+    // ── Pricing snapshot (frozen at order time so edits to the product don't
+    //    affect existing orders) ──────────────────────────────────────────────
+    listingType:     { type: String, enum: ['rent', 'sale'], default: 'rent' },
     size:      { type: String, trim: true, default: '' },
     startDate: { type: Date, default: null },
     endDate:   { type: Date, default: null },
 
-    // ── Pricing snapshot (frozen at order time so edits to the product don't
-    //    affect existing orders) ──────────────────────────────────────────────
-    rentPrice:       { type: Number, required: true },
+    // ── Pricing snapshot ──────────────────────────────────────────────────────
+    rentPrice:       { type: Number, default: 0 },
     commissionPrice: { type: Number, required: true },
+    salePrice:       { type: Number, default: 0 },
     advanceAmount:   { type: Number, default: 0 },
-    totalPrice:      { type: Number, required: true }, // rentPrice + commissionPrice
+    totalPrice:      { type: Number, required: true }, // rentPrice + commissionPrice  OR  salePrice + commissionPrice
 
     // ── Order status ──────────────────────────────────────────────────────────
     status: {

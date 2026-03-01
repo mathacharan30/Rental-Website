@@ -13,7 +13,9 @@ const ProductsAdmin = () => {
   const { storename } = useParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [editProduct, setEditProduct] = useState(null); // product being edited
+  const [activeCategory, setActiveCategory] = useState("All");
 
   const load = async () => {
     setLoading(true);
@@ -22,7 +24,6 @@ const ProductsAdmin = () => {
       setProducts(list);
     } catch (e) {
       console.error("Failed to load products", e);
-      // Don't show an error toast for an empty store – just show the empty state
       if (e?.response?.status !== 404) {
         toast.error("Failed to load products");
       }
@@ -36,16 +37,39 @@ const ProductsAdmin = () => {
     load();
   }, []);
 
+  // Derive unique categories for tabs
+  const categoryTabs = ["All", ...Array.from(new Set(products.map((p) => p.category).filter(Boolean)))];
+
+  const filteredProducts =
+    activeCategory === "All"
+      ? products
+      : products.filter((p) => p.category === activeCategory);
+
   const handleAdd = async (formData) => {
     const loadingToast = toast.loading("Creating product...");
     try {
       await adminProductService.createProduct(formData);
       toast.success("Product created successfully", { id: loadingToast });
-      setIsModalOpen(false);
+      setIsAddModalOpen(false);
       await load();
     } catch (e) {
       console.error("Create product failed", e);
       toast.error(e?.response?.data?.message || "Failed to create product", {
+        id: loadingToast,
+      });
+    }
+  };
+
+  const handleEdit = async (formData) => {
+    const loadingToast = toast.loading("Updating product...");
+    try {
+      await adminProductService.updateProduct(editProduct.id, formData);
+      toast.success("Product updated successfully", { id: loadingToast });
+      setEditProduct(null);
+      await load();
+    } catch (e) {
+      console.error("Update product failed", e);
+      toast.error(e?.response?.data?.message || "Failed to update product", {
         id: loadingToast,
       });
     }
@@ -76,7 +100,7 @@ const ProductsAdmin = () => {
           <p className="text-neutral-500 mt-1">Manage your product inventory</p>
         </div>
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => setIsAddModalOpen(true)}
           className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
         >
           <Plus size={20} />
@@ -88,25 +112,70 @@ const ProductsAdmin = () => {
         <Stats products={products} />
       </div>
 
+      {/* Category tabs */}
+      {!loading && categoryTabs.length > 1 && (
+        <div className="flex gap-2 flex-wrap mb-4">
+          {categoryTabs.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                activeCategory === cat
+                  ? "bg-violet-600 text-white"
+                  : "bg-white/5 text-neutral-400 hover:bg-white/10 hover:text-white"
+              }`}
+            >
+              {cat}
+              {cat !== "All" && (
+                <span className="ml-1.5 text-xs opacity-60">
+                  ({products.filter((p) => p.category === cat).length})
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className="glass rounded-xl overflow-hidden">
         {loading ? (
           <div className="p-12 flex justify-center">
             <Loader />
           </div>
         ) : (
-          <ProductList products={products} onDelete={handleDelete} />
+          <ProductList
+            products={filteredProducts}
+            onDelete={handleDelete}
+            onEdit={(p) => setEditProduct(p)}
+          />
         )}
       </div>
 
+      {/* Add product modal */}
       <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
         title="Add New Product"
       >
         <ProductForm
-          onCancel={() => setIsModalOpen(false)}
+          onCancel={() => setIsAddModalOpen(false)}
           onSave={handleAdd}
         />
+      </Modal>
+
+      {/* Edit product modal */}
+      <Modal
+        isOpen={!!editProduct}
+        onClose={() => setEditProduct(null)}
+        title="Edit Product"
+      >
+        {editProduct && (
+          <ProductForm
+            key={editProduct.id}
+            initialData={editProduct}
+            onCancel={() => setEditProduct(null)}
+            onSave={handleEdit}
+          />
+        )}
       </Modal>
     </div>
   );

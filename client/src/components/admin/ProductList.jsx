@@ -21,14 +21,15 @@ const ProductList = ({ products = [], onEdit, onDelete }) => {
             <th className="px-6 py-4">Category</th>
             <th className="px-6 py-4">Price</th>
             <th className="px-6 py-4">Stock</th>
-            <th className="px-6 py-4 text-right">Actions</th>
+            <th className="px-6 py-4 text-center">Edit</th>
+            <th className="px-6 py-4 text-center">Delete</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-white/5">
           {products.map((p) => (
             <tr
               key={p.id}
-              className="hover:bg-white/5 transition-colors group"
+              className="hover:bg-white/5 transition-colors"
             >
               <td className="px-6 py-4">
                 <div className="flex items-center gap-4">
@@ -58,25 +59,25 @@ const ProductList = ({ products = [], onEdit, onDelete }) => {
                 {p.price}
               </td>
               <td className="px-6 py-4 text-sm text-neutral-400">{p.stock}</td>
-              <td className="px-6 py-4 text-right">
-                <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  {canEdit && (
-                    <button
-                      onClick={() => onEdit(p)}
-                      className="p-2 text-neutral-500 hover:text-violet-400 hover:bg-violet-500/10 rounded-lg transition-colors"
-                      title="Edit"
-                    >
-                      <Edit size={18} />
-                    </button>
-                  )}
+              <td className="px-6 py-4 text-center">
+                {canEdit && (
                   <button
-                    onClick={() => onDelete(p.id)}
-                    className="p-2 text-neutral-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors"
-                    title="Delete"
+                    onClick={() => onEdit(p)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-violet-400 bg-violet-500/10 hover:bg-violet-500/20 rounded-lg transition-colors"
                   >
-                    <Trash2 size={18} />
+                    <Edit size={14} />
+                    Edit
                   </button>
-                </div>
+                )}
+              </td>
+              <td className="px-6 py-4 text-center">
+                <button
+                  onClick={() => onDelete(p.id)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-red-400 bg-red-500/10 hover:bg-red-500/20 rounded-lg transition-colors"
+                >
+                  <Trash2 size={14} />
+                  Delete
+                </button>
               </td>
             </tr>
           ))}

@@ -49,8 +49,10 @@ exports.createProduct = async (req, res) => {
     const {
       name,
       category,
+      listingType: listingTypeRaw,
       rentPrice: rentPriceRaw,
       commissionPrice: commissionPriceRaw,
+      salePrice: salePriceRaw,
       advanceAmount: advanceAmountRaw,
       description,
       available,
@@ -64,16 +66,30 @@ exports.createProduct = async (req, res) => {
     if (!category) {
       return res.status(400).json({ message: 'Category is required' });
     }
-    if (rentPriceRaw === undefined || rentPriceRaw === '') {
-      return res.status(400).json({ message: 'Rent price is required' });
-    }
-    if (commissionPriceRaw === undefined || commissionPriceRaw === '') {
-      return res.status(400).json({ message: 'Commission price is required' });
+
+    const listingType = listingTypeRaw === 'sale' ? 'sale' : 'rent';
+
+    // For sale listing: require salePrice + commissionPrice; for rent listing: require rentPrice + commissionPrice
+    if (listingType === 'sale') {
+      if (salePriceRaw === undefined || salePriceRaw === '') {
+        return res.status(400).json({ message: 'Sale price is required for sale listings' });
+      }
+      if (commissionPriceRaw === undefined || commissionPriceRaw === '') {
+        return res.status(400).json({ message: 'Commission price is required' });
+      }
+    } else {
+      if (rentPriceRaw === undefined || rentPriceRaw === '') {
+        return res.status(400).json({ message: 'Rent price is required' });
+      }
+      if (commissionPriceRaw === undefined || commissionPriceRaw === '') {
+        return res.status(400).json({ message: 'Commission price is required' });
+      }
     }
 
     // Normalize fields
-    const rentPrice = Number(rentPriceRaw);
-    const commissionPrice = Number(commissionPriceRaw);
+    const rentPrice = rentPriceRaw !== undefined && rentPriceRaw !== '' ? Number(rentPriceRaw) : 0;
+    const commissionPrice = commissionPriceRaw !== undefined && commissionPriceRaw !== '' ? Number(commissionPriceRaw) : 0;
+    const salePrice = salePriceRaw !== undefined && salePriceRaw !== '' ? Number(salePriceRaw) : 0;
     const advanceAmount = advanceAmountRaw !== undefined && advanceAmountRaw !== '' ? Math.round(Number(advanceAmountRaw)) : 0;
 
     if (!Number.isFinite(rentPrice) || rentPrice < 0) {
@@ -81,6 +97,9 @@ exports.createProduct = async (req, res) => {
     }
     if (!Number.isFinite(commissionPrice) || commissionPrice < 0) {
       return res.status(400).json({ message: 'Invalid commission price' });
+    }
+    if (!Number.isFinite(salePrice) || salePrice < 0) {
+      return res.status(400).json({ message: 'Invalid sale price' });
     }
 
     const availableBool = typeof available === 'string' ? available === 'true' : !!available;
@@ -105,8 +124,10 @@ exports.createProduct = async (req, res) => {
     const payload = {
       name,
       category,
+      listingType,
       rentPrice,
       commissionPrice,
+      salePrice,
       advanceAmount,
       // price is auto-computed by pre-save hook
       description,
@@ -125,6 +146,56 @@ exports.createProduct = async (req, res) => {
   } catch (error) {
     console.error('[Products] Create error:', error.message);
     res.status(500).json({ message: 'Server error creating product' });
+  }
+};
+
+// PUT /api/products/:id
+exports.updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+    if (!product) return res.status(404).json({ message: 'Product not found' });
+
+    if (req.user.role === 'store_owner' && String(product.store) !== String(req.user.storeId)) {
+      return res.status(403).json({ message: 'Not authorised to update this product' });
+    }
+
+    const {
+      name, category, listingType: listingTypeRaw,
+      rentPrice: rentPriceRaw, commissionPrice: commissionPriceRaw,
+      salePrice: salePriceRaw, advanceAmount: advanceAmountRaw,
+      description, available, stock: stockRaw, rating: ratingRaw,
+    } = req.body;
+
+    const listingType = listingTypeRaw === 'sale' ? 'sale' : 'rent';
+
+    if (name !== undefined) product.name = name;
+    if (category !== undefined) product.category = category;
+    product.listingType = listingType;
+    if (rentPriceRaw !== undefined && rentPriceRaw !== '') product.rentPrice = Number(rentPriceRaw);
+    if (commissionPriceRaw !== undefined && commissionPriceRaw !== '') product.commissionPrice = Number(commissionPriceRaw);
+    if (salePriceRaw !== undefined && salePriceRaw !== '') product.salePrice = Number(salePriceRaw);
+    if (advanceAmountRaw !== undefined && advanceAmountRaw !== '') product.advanceAmount = Math.round(Number(advanceAmountRaw));
+    if (description !== undefined) product.description = description;
+    if (available !== undefined) product.available = typeof available === 'string' ? available === 'true' : !!available;
+    if (stockRaw !== undefined && stockRaw !== '') product.stock = Number(stockRaw);
+    if (ratingRaw !== undefined && ratingRaw !== '') product.rating = Math.min(5, Math.max(0, Number(ratingRaw)));
+
+    // If new images uploaded, replace all
+    if (req.files && req.files.length) {
+      // Delete old images from Cloudinary
+      for (const img of product.images) {
+        try { await cloudinary.uploader.destroy(img.publicId); } catch (_) {}
+      }
+      product.images = req.files.map((f) => ({ url: f.path, publicId: f.filename }));
+    }
+
+    await product.save();
+    const populated = await product.populate('category');
+    res.json(populated);
+  } catch (error) {
+    console.error('[Products] Update error:', error.message);
+    res.status(500).json({ message: 'Server error updating product' });
   }
 };
 

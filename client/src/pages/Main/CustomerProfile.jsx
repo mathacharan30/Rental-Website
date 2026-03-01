@@ -124,19 +124,10 @@ const CustomerProfile = () => {
                         </span>
                       </div>
                       <p className="text-sm text-neutral-500 mt-0.5">
-                        {o.store?.name} &bull; Size: {o.size || "—"}
+                        {o.store?.name}{o.listingType !== 'sale' && <> &bull; Size: {o.size || '—'}</>}
                       </p>
-                      <div className="mt-2 flex gap-4 text-sm text-neutral-400">
-                        <span>
-                          Rent:{" "}
-                          <strong className="text-white">₹{o.rentPrice}</strong>
-                        </span>
-                        <span>
-                          Advance:{" "}
-                          <strong className="text-violet-400">
-                            ₹{o.advanceAmount}
-                          </strong>
-                        </span>
+                      <div className="mt-2 text-sm text-neutral-400">
+                        Amount Paid: <strong className="text-green-400">₹{o.totalPrice}</strong>
                       </div>
                       <p className="text-xs text-neutral-600 mt-1">
                         {new Date(o.createdAt).toLocaleDateString()}

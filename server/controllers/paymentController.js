@@ -88,11 +88,17 @@ exports.createPayment = async (req, res) => {
     if (!product) return res.status(404).json({ message: 'Product not found' });
     if (!product.store) return res.status(400).json({ message: 'Product has no associated store' });
 
-    const rentPrice       = product.rentPrice;
-    const commissionPrice = product.commissionPrice;
-    const advanceAmount   = product.advanceAmount || 0;
-    const totalPrice      = rentPrice + commissionPrice;
-    const payableAmount   = rentPrice + advanceAmount + commissionPrice; // amount user actually pays
+    const isSale          = product.listingType === 'sale';
+    const rentPrice       = product.rentPrice       || 0;
+    const commissionPrice = product.commissionPrice || 0;
+    const salePrice       = product.salePrice       || 0;
+    const advanceAmount   = isSale ? 0 : (product.advanceAmount || 0);
+    const totalPrice      = isSale
+      ? salePrice + commissionPrice
+      : rentPrice + commissionPrice;
+    const payableAmount   = isSale
+      ? salePrice + commissionPrice               // sale: customer pays full sale + commission
+      : advanceAmount + commissionPrice;           // rent: customer pays only advance + commission
 
     // ── Create Order (pending) ────────────────────────────────────────────
     const order = await Order.create({
@@ -103,8 +109,10 @@ exports.createPayment = async (req, res) => {
       startDate:       startDate || null,
       endDate:         endDate   || null,
       notes:           notes     || '',
+      listingType:     product.listingType || 'rent',
       rentPrice,
       commissionPrice,
+      salePrice,
       advanceAmount,
       totalPrice,
       status:          'pending',

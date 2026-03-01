@@ -61,8 +61,9 @@ export default function SuperAdminOrders() {
                   <th className="px-4 py-3">Product</th>
                   <th className="px-4 py-3">Store</th>
                   <th className="px-4 py-3">Customer</th>
+                  <th className="px-4 py-3">Type</th>
                   <th className="px-4 py-3">Size</th>
-                  <th className="px-4 py-3">Rent</th>
+                  <th className="px-4 py-3">Price</th>
                   <th className="px-4 py-3">Commission</th>
                   <th className="px-4 py-3">Advance</th>
                   <th className="px-4 py-3">Total</th>
@@ -95,13 +96,23 @@ export default function SuperAdminOrders() {
                       <div className="text-xs text-neutral-500">{o.customer?.email}</div>
                       {o.customer?.phone && <div className="text-xs text-neutral-500">{o.customer.phone}</div>}
                     </td>
+                    {/* Type badge */}
+                    <td className="px-4 py-3">
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                        o.listingType === 'sale' ? 'bg-amber-500/10 text-amber-400' : 'bg-violet-500/10 text-violet-400'
+                      }`}>
+                        {o.listingType === 'sale' ? 'Sale' : 'Rent'}
+                      </span>
+                    </td>
                     {/* Size */}
-                    <td className="px-4 py-3 text-neutral-300">{o.size || '—'}</td>
-                    {/* Prices */}
-                    <td className="px-4 py-3 text-white">₹{o.rentPrice}</td>
+                    <td className="px-4 py-3 text-neutral-300">{o.listingType === 'sale' ? '—' : (o.size || '—')}</td>
+                    {/* Price + commission */}
+                    <td className="px-4 py-3 text-white">
+                      {o.listingType === 'sale' ? `₹${o.salePrice}` : `₹${o.rentPrice}`}
+                    </td>
                     <td className="px-4 py-3 text-violet-400 font-medium">₹{o.commissionPrice}</td>
-                    <td className="px-4 py-3 text-neutral-300">₹{o.advanceAmount}</td>
-                    <td className="px-4 py-3 font-semibold text-white">₹{o.totalPrice}</td>
+                    <td className="px-4 py-3 text-neutral-300">{o.listingType === 'sale' ? '—' : `₹${o.advanceAmount}`}</td>
+                    <td className="px-4 py-3 font-semibold text-green-400">₹{o.totalPrice}</td>
                     {/* Status */}
                     <td className="px-4 py-3">
                       <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[o.status]}`}>

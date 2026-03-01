@@ -11,6 +11,7 @@ const {
   getAllProducts,
   getMyProducts,
   createProduct,
+  updateProduct,
   deleteProduct,
   getProductById,
   getProductsByCategory,
@@ -22,6 +23,7 @@ router.get('/top-picks', getTopPicks);
 router.get('/mine',      ...storeGuard, getMyProducts);  // store-scoped list
 router.get('/:id',       getProductById);
 router.post('/createProduct', ...storeGuard, productUpload.array('images', 4), createProduct);
+router.put('/:id',            ...storeGuard, productUpload.array('images', 4), updateProduct);
 router.delete('/:id',         ...storeGuard, deleteProduct);
 
 module.exports = router;
