@@ -109,7 +109,7 @@ const CustomerProfile = () => {
                       <img
                         src={o.product.images[0].url}
                         alt=""
-                        className="w-16 h-16 object-cover rounded-xl border border-white/10 flex-shrink-0"
+                        className="w-16 h-16 object-cover rounded-xl border border-white/10 shrink-0"
                       />
                     )}
                     <div className="flex-1 min-w-0">
@@ -118,7 +118,7 @@ const CustomerProfile = () => {
                           {o.product?.name || "—"}
                         </p>
                         <span
-                          className={`text-xs px-2.5 py-0.5 rounded-full font-medium flex-shrink-0 ${STATUS_COLORS[o.status]}`}
+                          className={`text-xs px-2.5 py-0.5 rounded-full font-medium shrink-0 ${STATUS_COLORS[o.status]}`}
                         >
                           {o.status}
                         </span>
