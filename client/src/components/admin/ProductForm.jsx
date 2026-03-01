@@ -54,16 +54,82 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
   const selectedCategory = categories.find((c) => c._id === categoryId);
   const isJewels = selectedCategory && selectedCategory.name.toLowerCase() === "jewels";
 
-  const handleFiles = (e) => {
-    const files = Array.from(e.target.files || []);
-    const validFiles = [];
+  // Compress an image to fit within TARGET_MB, starting at highest quality and stepping down
+  const compressImage = (file) =>
+    new Promise((resolve) => {
+      const MAX_WIDTH = 2400;          // keep high resolution
+      const TARGET_BYTES = 3.5 * 1024 * 1024; // 3.5 MB per image
+      const QUALITY_STEPS = [0.95, 0.88, 0.80, 0.70, 0.60];
 
-    files.forEach((file) => {
-      validFiles.push(file);
+      // If already small enough, skip canvas entirely
+      if (file.size <= TARGET_BYTES) {
+        console.log(`[Upload] ${file.name}: ${(file.size / 1024).toFixed(0)} KB – no compression needed`);
+        resolve(file);
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.src = ev.target.result;
+        img.onload = () => {
+          const scale = img.width > MAX_WIDTH ? MAX_WIDTH / img.width : 1;
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+          canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          let stepIndex = 0;
+          const tryNext = () => {
+            const quality = QUALITY_STEPS[stepIndex];
+            canvas.toBlob(
+              (blob) => {
+                const fits = blob.size <= TARGET_BYTES;
+                const isLast = stepIndex === QUALITY_STEPS.length - 1;
+                if (fits || isLast) {
+                  const compressed = new File(
+                    [blob],
+                    file.name.replace(/\.[^.]+$/, ".jpg"),
+                    { type: "image/jpeg", lastModified: Date.now() }
+                  );
+                  console.log(
+                    `[Upload] ${file.name}: ${(file.size / 1024).toFixed(0)} KB → ${(compressed.size / 1024).toFixed(0)} KB (quality ${quality})`
+                  );
+                  resolve(compressed);
+                } else {
+                  stepIndex++;
+                  tryNext();
+                }
+              },
+              "image/jpeg",
+              quality
+            );
+          };
+          tryNext();
+        };
+      };
     });
 
-    if (validFiles.length > 0) {
-      setImages(validFiles);
+  const handleFiles = async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+
+    toast.loading("Compressing images…", { id: "compress" });
+    try {
+      const compressed = await Promise.all(files.map(compressImage));
+      setImages(compressed);
+      toast.success(
+        `${compressed.length} image${compressed.length > 1 ? "s" : ""} ready (${compressed
+          .reduce((s, f) => s + f.size, 0)
+          .toFixed(0) / 1024 < 1
+          ? compressed.reduce((s, f) => s + f.size, 0) + " B"
+          : (compressed.reduce((s, f) => s + f.size, 0) / 1024).toFixed(0) + " KB"})`,
+        { id: "compress" }
+      );
+    } catch (err) {
+      console.error("[Upload] Compression error:", err);
+      toast.error("Failed to process images", { id: "compress" });
     }
   };
 

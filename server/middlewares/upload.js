@@ -50,11 +50,12 @@ const categoryUpload = multer({
 const productUpload = multer({
   storage: productStorage,
   fileFilter: imageFileFilter,
+  limits: { fileSize: 4 * 1024 * 1024 }, // 4 MB – stay under Vercel's 4.5 MB limit
 });
 const bannerUpload = multer({
   storage: bannerStorage,
   fileFilter: imageFileFilter,
-  limits: { fileSize: 20 * 1024 * 1024 }, // 2MB limit
+  limits: { fileSize: 4 * 1024 * 1024 }, // 2MB limit
 });
 
 module.exports = { productUpload, bannerUpload, categoryUpload };
