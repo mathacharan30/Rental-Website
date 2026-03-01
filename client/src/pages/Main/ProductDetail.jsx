@@ -1,15 +1,21 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { BiLeftArrow } from "react-icons/bi";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
-import { IoClose, IoExpand } from "react-icons/io5";
+import { IoClose } from "react-icons/io5";
 import Footer from "../../components/Footer";
 import { getProductById } from "../../services/productService";
 import { createPayment } from "../../services/paymentService";
 import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
 import Loader from "../../components/Loader";
+
+const fade = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  transition: { duration: 0.6 },
+};
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -22,61 +28,59 @@ const ProductDetail = () => {
   const [selectedSize, setSelectedSize] = useState("");
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
-  const scrollRef = useRef(null);
+  const carouselRef = useRef(null);
 
-  // All images for the carousel
-  const allImages =
-    product?.images?.length > 0
-      ? product.images
-      : product?.image
-        ? [product.image]
-        : [];
+  const scrollToImage = (index) => {
+    const container = carouselRef.current;
+    if (!container) return;
+    const card = container.children[index];
+    if (card)
+      card.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
+  };
 
-  // Close lightbox on Escape
+  const allImages = product?.images?.length
+    ? product.images
+    : product?.image
+      ? [product.image]
+      : [];
+
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === "Escape") setLightboxOpen(false);
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    const onKey = (e) => e.key === "Escape" && setLightboxOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, []);
 
   useEffect(() => {
     setLoading(true);
-    (async () => {
-      try {
-        const data = await getProductById(id);
-        setProduct(data);
-      } catch (e) {
-        console.error("[ProductDetail] Failed to load product", e);
+    getProductById(id)
+      .then(setProduct)
+      .catch((e) => {
+        console.error("[ProductDetail]", e);
         toast.error("Failed to load product details");
         setProduct(null);
-      } finally {
-        setLoading(false);
-      }
-    })();
+      })
+      .finally(() => setLoading(false));
   }, [id]);
 
-  if (loading) {
+  if (loading)
     return (
       <motion.div
         className="min-h-[60vh] flex items-center justify-center bg-[#0e0e0e]"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
+        {...fade}
       >
         <Loader />
       </motion.div>
     );
-  }
 
   if (!product) {
     return (
       <motion.div
         className="min-h-[60vh] flex items-center justify-center bg-[#0e0e0e]"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
+        {...fade}
       >
         <div className="text-center p-8 glass rounded-2xl max-w-sm">
           <h2 className="text-xl font-bold text-white">Product not found</h2>
@@ -110,6 +114,7 @@ const ProductDetail = () => {
       toast.error("Please select a size");
       return;
     }
+
     setOrdering(true);
     const tid = toast.loading("Initiating payment…");
     try {
@@ -118,10 +123,8 @@ const ProductDetail = () => {
         size: isSale ? "N/A" : selectedSize,
       });
       toast.dismiss(tid);
-      if (res.checkoutUrl) {
-        // Redirect to PhonePe checkout page
-        window.location.href = res.checkoutUrl;
-      } else {
+      if (res.checkoutUrl) window.location.href = res.checkoutUrl;
+      else {
         toast.error("Could not get payment URL. Please try again.");
         setOrdering(false);
       }
@@ -134,33 +137,29 @@ const ProductDetail = () => {
   };
 
   const handleEnquire = () => {
-    const number = "919187668280";
-    const parts = [
-      `Product: ${product?.title ?? "N/A"}`,
-      product?.category ? `Category: ${product.category}` : null,
-      product?.price ? `Price: ₹${product.price}` : null,
-      selectedSize ? `Size: ${selectedSize}` : null,
-      product?.id ? `Product ID: ${product.id}` : null,
-      `Link: ${window.location.href}`,
-      "",
-      "Please tell me more about this product...",
-    ].filter(Boolean);
-    const text = encodeURIComponent(parts.join("\n"));
+    const text = encodeURIComponent(
+      [
+        `Product: ${product.title}`,
+        product.category && `Category: ${product.category}`,
+        product.price && `Price: ${product.price}`,
+        selectedSize && `Size: ${selectedSize}`,
+        product.id && `Product ID: ${product.id}`,
+        `Link: ${window.location.href}`,
+        "",
+        "Please tell me more about this product...",
+      ]
+        .filter(Boolean)
+        .join("\n"),
+    );
     window.open(
-      `https://wa.me/${number}?text=${text}`,
+      `https://wa.me/919187668280?text=${text}`,
       "_blank",
       "noopener,noreferrer",
     );
   };
 
   return (
-    <motion.div
-      className="bg-[#0e0e0e] min-h-screen"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.6 }}
-    >
-      {/* ── Top bar: back link ── */}
+    <motion.div className="bg-[#0e0e0e] min-h-screen" {...fade}>
       <div className="max-w-6xl mx-auto px-4 pt-6">
         <Link
           to={`/products/${encodeURIComponent(product.category)}`}
@@ -183,7 +182,7 @@ const ProductDetail = () => {
           {product.title}
         </h1>
         <div className="flex items-center justify-center gap-1 mt-3">
-          {Array.from({ length: 5 }).map((_, i) =>
+          {[...Array(5)].map((_, i) =>
             i < Math.floor(rating) ? (
               <AiFillStar key={i} className="text-violet-400" />
             ) : (
@@ -196,65 +195,71 @@ const ProductDetail = () => {
         </div>
       </motion.div>
 
-      {/* ── Image Carousel — horizontal scroll ── */}
       <motion.div
-        className="relative max-w-3xl mx-auto mt-8 px-4"
+        className="relative max-w-2xl mx-auto mt-4 px-4"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6, delay: 0.2 }}
       >
         <div
-          ref={scrollRef}
-          className="flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-3"
+          ref={carouselRef}
+          className="flex gap-2 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4"
           style={{
             scrollbarWidth: "thin",
             scrollbarColor: "#7c3aed33 transparent",
           }}
         >
-          {allImages.map((imgUrl, index) => (
+          {allImages.map((imgUrl, i) => (
             <div
-              key={index}
-              className="relative flex-shrink-0 w-full snap-center rounded-3xl overflow-hidden glass border border-white/6 group"
+              key={i}
+              className="relative flex-shrink-0 w-full snap-center rounded-3xl overflow-hidden border border-white/6"
             >
-              {/* Soft glow */}
-              <div className="absolute inset-0 bg-gradient-to-b from-violet-600/4 via-transparent to-violet-600/4 pointer-events-none" />
-
               <img
                 src={imgUrl}
-                alt={`${product.title} — view ${index + 1}`}
-                className="w-full h-[400px] md:h-[520px] object-contain p-6 relative z-[1]"
+                alt={`${product.title} — view ${i + 1}`}
+                className="w-full h-[360px] rounded-xl md:h-[450px] object-contain cursor-pointer"
                 draggable={false}
-              />
-
-              {/* View Full Screen button */}
-              <button
                 onClick={() => {
-                  setLightboxIndex(index);
+                  setLightboxIndex(i);
                   setLightboxOpen(true);
                 }}
-                className="absolute bottom-4 right-4 z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-xl glass text-white/70 hover:text-white hover:bg-white/10 backdrop-blur-md transition-all duration-200 text-xs font-medium"
-              >
-                <IoExpand size={14} />
-                View Full Screen
-              </button>
-
-              {/* Image counter */}
+              />
               {allImages.length > 1 && (
                 <div className="absolute bottom-4 left-4 z-10 px-3 py-1 rounded-full glass text-xs text-white/60 font-medium backdrop-blur-md">
-                  {index + 1} / {allImages.length}
+                  {i + 1} / {allImages.length}
                 </div>
               )}
             </div>
           ))}
         </div>
-
         {allImages.length > 1 && (
-          <p className="text-center text-xs text-neutral-500 mt-2">
-            Swipe or scroll to see more photos
-          </p>
+          <>
+            <div
+              className="flex justify-center gap-2 mt-3 overflow-x-auto pb-1"
+              style={{
+                scrollbarWidth: "thin",
+                scrollbarColor: "#7c3aed33 transparent",
+              }}
+            >
+              {allImages.map((imgUrl, i) => (
+                <img
+                  key={i}
+                  src={imgUrl}
+                  alt={`${product.title} thumb ${i + 1}`}
+                  className="w-14 h-14 object-cover rounded-xl cursor-pointer border border-white/10 hover:border-violet-500/40 transition-all duration-200 hover:scale-105 flex-shrink-0"
+                  onClick={() => scrollToImage(i)}
+                  draggable={false}
+                />
+              ))}
+            </div>
+            <p className="text-center text-xs text-neutral-500 mt-2">
+              Swipe or scroll to see more photos
+            </p>
+          </>
         )}
       </motion.div>
 
+      {/* Lightbox */}
       <AnimatePresence>
         {lightboxOpen && (
           <motion.div
@@ -268,15 +273,13 @@ const ProductDetail = () => {
             <button
               onClick={() => setLightboxOpen(false)}
               className="absolute top-4 right-4 z-10 p-3 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-all duration-200"
-              aria-label="Close fullscreen"
+              aria-label="Close"
             >
               <IoClose size={28} />
             </button>
-
-            {/* Fullscreen image */}
             <motion.img
               src={allImages[lightboxIndex] || product.image}
-              alt={`${product.title} — fullscreen view`}
+              alt={`${product.title} — fullscreen`}
               className="max-w-[92vw] max-h-[88vh] object-contain select-none"
               initial={{ opacity: 0, scale: 0.92 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -289,14 +292,13 @@ const ProductDetail = () => {
         )}
       </AnimatePresence>
 
-      {/* ── Details + Actions — BOTTOM ── */}
+      {/* Details */}
       <motion.div
         className="max-w-3xl mx-auto mt-10 px-4 pb-16"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.35 }}
       >
-        {/* Price row */}
         <div className="flex items-end justify-center gap-4 flex-wrap">
           <span className="text-4xl font-bold gradient-text">
             {product.price}
@@ -311,33 +313,34 @@ const ProductDetail = () => {
           )}
         </div>
 
-        {/* Description */}
         <p className="mt-5 text-sm text-neutral-400 leading-relaxed text-center max-w-xl mx-auto">
           {product.description ||
             "Elegant rental piece — perfect for special occasions. Contact us for custom durations and styling options."}
         </p>
 
-        {/* Info chips */}
         <div className="flex justify-center gap-4 mt-6 flex-wrap">
-          <div className="flex items-center gap-2 text-sm text-neutral-400 glass px-4 py-2 rounded-xl">
-            <span className="w-2 h-2 rounded-full bg-green-400" />
-            <span>
-              <strong className="text-neutral-300">Condition:</strong> Excellent
-            </span>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-neutral-400 glass px-4 py-2 rounded-xl">
-            <span className="w-2 h-2 rounded-full bg-violet-400" />
-            <span>
-              <strong className="text-neutral-300">Availability:</strong>{" "}
-              {isSale ? "Available for sale" : "Ready to rent"}
-            </span>
-          </div>
+          {[
+            { color: "bg-green-400", label: "Condition", value: "Excellent" },
+            {
+              color: "bg-violet-400",
+              label: "Availability",
+              value: isSale ? "Available for sale" : "Ready to rent",
+            },
+          ].map(({ color, label, value }) => (
+            <div
+              key={label}
+              className="flex items-center gap-2 text-sm text-neutral-400 glass px-4 py-2 rounded-xl"
+            >
+              <span className={`w-2 h-2 rounded-full ${color}`} />
+              <span>
+                <strong className="text-neutral-300">{label}:</strong> {value}
+              </span>
+            </div>
+          ))}
         </div>
 
-        {/* Divider */}
         <div className="h-px bg-white/6 my-8 max-w-md mx-auto" />
 
-        {/* Size selector — hidden for Jewels */}
         {!isJewels && (
           <div className="text-center">
             <p className="text-sm font-medium text-neutral-300 mb-3">
