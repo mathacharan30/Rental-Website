@@ -32,19 +32,45 @@ export function mapProduct(p = {}) {
       ? p.category.name
       : p.category;
 
-  const rentPrice = formatPrice(typeof p.rentPrice === "number" ? p.rentPrice : 0);
-  const commissionPrice = formatPrice(typeof p.commissionPrice === "number" ? p.commissionPrice : 0);
-  const advanceAmount = Math.round(typeof p.advanceAmount === "number" ? p.advanceAmount : 0);
-  const salePrice = formatPrice(typeof p.salePrice === "number" ? p.salePrice : 0);
+  const rentPrice = formatPrice(
+    typeof p.rentPrice === "number" ? p.rentPrice : 0,
+  );
+  const commissionPrice = formatPrice(
+    typeof p.commissionPrice === "number" ? p.commissionPrice : 0,
+  );
+  const advanceAmount = Math.round(
+    typeof p.advanceAmount === "number" ? p.advanceAmount : 0,
+  );
+  const salePrice = formatPrice(
+    typeof p.salePrice === "number" ? p.salePrice : 0,
+  );
   const listingType = p.listingType === "sale" ? "sale" : "rent";
-  const totalPrice = formatPrice(typeof p.price === "number" ? p.price : (listingType === "sale" ? salePrice + commissionPrice : rentPrice + commissionPrice));
+  const totalPrice = formatPrice(
+    typeof p.price === "number"
+      ? p.price
+      : listingType === "sale"
+        ? salePrice + commissionPrice
+        : rentPrice + commissionPrice,
+  );
   const priceDisplay = `₹${totalPrice}`;
+
+  // Preserve raw image objects (with publicId) for admin editing
+  let rawImages = [];
+  if (Array.isArray(p.images)) {
+    rawImages = p.images
+      .map((img) => {
+        if (typeof img === "string") return { url: img, publicId: "" };
+        return img?.url ? { url: img.url, publicId: img.publicId || "" } : null;
+      })
+      .filter(Boolean);
+  }
 
   return {
     id: p._id || p.id,
     title: p.name || p.title,
     image: mainImage,
     images: images,
+    rawImages: rawImages,
     category: categoryName || "",
     price: priceDisplay || "",
     listingType,

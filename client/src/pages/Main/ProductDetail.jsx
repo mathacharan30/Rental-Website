@@ -1,8 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { BiLeftArrow } from "react-icons/bi";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
+import {
+  IoChevronBack,
+  IoChevronForward,
+  IoClose,
+  IoExpand,
+} from "react-icons/io5";
 import Footer from "../../components/Footer";
 import { getProductById } from "../../services/productService";
 import { createPayment } from "../../services/paymentService";
@@ -19,6 +25,63 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [ordering, setOrdering] = useState(false);
   const [selectedSize, setSelectedSize] = useState("");
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const touchStartX = useRef(null);
+  const touchEndX = useRef(null);
+
+  // All images for the carousel
+  const allImages =
+    product?.images?.length > 0
+      ? product.images
+      : product?.image
+        ? [product.image]
+        : [];
+
+  const goToImage = useCallback(
+    (index) => {
+      if (allImages.length === 0) return;
+      setCurrentImageIndex((index + allImages.length) % allImages.length);
+    },
+    [allImages.length],
+  );
+
+  const prevImage = useCallback(
+    () => goToImage(currentImageIndex - 1),
+    [currentImageIndex, goToImage],
+  );
+  const nextImage = useCallback(
+    () => goToImage(currentImageIndex + 1),
+    [currentImageIndex, goToImage],
+  );
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "ArrowLeft") prevImage();
+      else if (e.key === "ArrowRight") nextImage();
+      else if (e.key === "Escape") setLightboxOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [prevImage, nextImage]);
+
+  // Touch/swipe handlers
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+  const handleTouchMove = (e) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+  const handleTouchEnd = () => {
+    if (touchStartX.current === null || touchEndX.current === null) return;
+    const diff = touchStartX.current - touchEndX.current;
+    const threshold = 50;
+    if (diff > threshold) nextImage();
+    else if (diff < -threshold) prevImage();
+    touchStartX.current = null;
+    touchEndX.current = null;
+  };
 
   useEffect(() => {
     setLoading(true);
@@ -92,7 +155,10 @@ const ProductDetail = () => {
     setOrdering(true);
     const tid = toast.loading("Initiating payment…");
     try {
-      const res = await createPayment({ productId: product.id, size: isSale ? "N/A" : selectedSize });
+      const res = await createPayment({
+        productId: product.id,
+        size: isSale ? "N/A" : selectedSize,
+      });
       toast.dismiss(tid);
       if (res.checkoutUrl) {
         // Redirect to PhonePe checkout page
@@ -142,7 +208,6 @@ const ProductDetail = () => {
         </Link>
       </div>
 
-      {/* ── Product name + rating — TOP ── */}
       <motion.div
         className="text-center mt-6 px-4"
         initial={{ opacity: 0, y: -20 }}
@@ -169,38 +234,209 @@ const ProductDetail = () => {
         </div>
       </motion.div>
 
-      {/* ── Hero image — CENTER ── */}
+      {/* ── Image Carousel — CENTER ── */}
       <motion.div
         className="relative max-w-2xl mx-auto mt-8 px-4"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6, delay: 0.2 }}
       >
-        <div className="relative rounded-3xl overflow-hidden glass border border-white/6">
+        <div
+          className="relative rounded-3xl overflow-hidden glass border border-white/6 group"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
           {/* Soft glow behind image */}
           <div className="absolute inset-0 bg-linear-to-b from-violet-600/4 via-transparent to-violet-600/4 pointer-events-none" />
-          <img
-            src={product.image}
-            alt={product.title}
-            className="w-full h-[400px] md:h-[520px] object-contain p-6 relative z-1"
-          />
+
+          {/* Main image */}
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={currentImageIndex}
+              src={allImages[currentImageIndex] || product.image}
+              alt={`${product.title} — view ${currentImageIndex + 1}`}
+              className="w-full h-[400px] md:h-[520px] object-contain p-6 relative z-[1] cursor-zoom-in"
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -30 }}
+              transition={{ duration: 0.25 }}
+              onClick={() => setLightboxOpen(true)}
+              draggable={false}
+            />
+          </AnimatePresence>
+
+          {/* Fullscreen hint badge */}
+          <button
+            onClick={() => setLightboxOpen(true)}
+            className="absolute top-4 right-4 z-10 p-2 rounded-xl glass text-white/50 hover:text-white hover:bg-white/10 transition-all duration-200 opacity-0 group-hover:opacity-100"
+            title="View fullscreen"
+          >
+            <IoExpand size={18} />
+          </button>
+
+          {/* Left / Right arrows (hidden when only 1 image) */}
+          {allImages.length > 1 && (
+            <>
+              <button
+                onClick={prevImage}
+                className="absolute left-3 top-1/2 -translate-y-1/2 z-10 p-2.5 rounded-full glass text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 opacity-0 group-hover:opacity-100 backdrop-blur-md"
+                aria-label="Previous image"
+              >
+                <IoChevronBack size={20} />
+              </button>
+              <button
+                onClick={nextImage}
+                className="absolute right-3 top-1/2 -translate-y-1/2 z-10 p-2.5 rounded-full glass text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 opacity-0 group-hover:opacity-100 backdrop-blur-md"
+                aria-label="Next image"
+              >
+                <IoChevronForward size={20} />
+              </button>
+            </>
+          )}
+
+          {/* Image counter badge */}
+          {allImages.length > 1 && (
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 px-3 py-1 rounded-full glass text-xs text-white/60 font-medium backdrop-blur-md">
+              {currentImageIndex + 1} / {allImages.length}
+            </div>
+          )}
         </div>
 
+        {/* Dot indicators */}
+        {allImages.length > 1 && (
+          <div className="flex justify-center gap-2 mt-4">
+            {allImages.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToImage(index)}
+                className={`rounded-full transition-all duration-300 ${
+                  index === currentImageIndex
+                    ? "w-6 h-2.5 bg-violet-500"
+                    : "w-2.5 h-2.5 bg-white/20 hover:bg-white/40"
+                }`}
+                aria-label={`Go to image ${index + 1}`}
+              />
+            ))}
+          </div>
+        )}
+
         {/* Thumbnail strip */}
-        {product.images && product.images.length > 0 && (
-          <div className="flex justify-center gap-2.5 mt-4 overflow-x-auto pb-1">
-            {product.images.map((imgUrl, index) => (
+        {allImages.length > 1 && (
+          <div className="flex justify-center gap-2.5 mt-3 overflow-x-auto pb-1 scrollbar-thin scrollbar-thumb-violet-600/30">
+            {allImages.map((imgUrl, index) => (
               <img
                 key={index}
                 src={imgUrl}
                 alt={`${product.title} ${index + 1}`}
-                className="w-14 h-14 object-cover rounded-xl cursor-pointer border border-white/10 hover:border-violet-500/40 transition-all duration-200 hover:scale-105"
-                onClick={() => setProduct({ ...product, image: imgUrl })}
+                className={`w-14 h-14 object-cover rounded-xl cursor-pointer border transition-all duration-200 hover:scale-105 flex-shrink-0 ${
+                  index === currentImageIndex
+                    ? "border-violet-500 ring-2 ring-violet-500/30 scale-105"
+                    : "border-white/10 hover:border-violet-500/40"
+                }`}
+                onClick={() => goToImage(index)}
+                draggable={false}
               />
             ))}
           </div>
         )}
       </motion.div>
+
+      {/* ── Fullscreen Lightbox ── */}
+      <AnimatePresence>
+        {lightboxOpen && (
+          <motion.div
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setLightboxOpen(false)}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setLightboxOpen(false)}
+              className="absolute top-4 right-4 z-10 p-3 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-all duration-200"
+              aria-label="Close fullscreen"
+            >
+              <IoClose size={28} />
+            </button>
+
+            {/* Counter */}
+            {allImages.length > 1 && (
+              <div className="absolute top-5 left-1/2 -translate-x-1/2 z-10 text-sm text-white/50 font-medium">
+                {currentImageIndex + 1} / {allImages.length}
+              </div>
+            )}
+
+            {/* Left / Right arrows */}
+            {allImages.length > 1 && (
+              <>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    prevImage();
+                  }}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-all duration-200"
+                  aria-label="Previous image"
+                >
+                  <IoChevronBack size={28} />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    nextImage();
+                  }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-all duration-200"
+                  aria-label="Next image"
+                >
+                  <IoChevronForward size={28} />
+                </button>
+              </>
+            )}
+
+            {/* Fullscreen image */}
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={`lightbox-${currentImageIndex}`}
+                src={allImages[currentImageIndex] || product.image}
+                alt={`${product.title} — fullscreen view ${currentImageIndex + 1}`}
+                className="max-w-[92vw] max-h-[88vh] object-contain select-none"
+                initial={{ opacity: 0, scale: 0.92 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.92 }}
+                transition={{ duration: 0.2 }}
+                onClick={(e) => e.stopPropagation()}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                draggable={false}
+              />
+            </AnimatePresence>
+
+            {/* Lightbox dot indicators */}
+            {allImages.length > 1 && (
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-10">
+                {allImages.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      goToImage(index);
+                    }}
+                    className={`rounded-full transition-all duration-300 ${
+                      index === currentImageIndex
+                        ? "w-6 h-2.5 bg-violet-500"
+                        : "w-2.5 h-2.5 bg-white/25 hover:bg-white/50"
+                    }`}
+                    aria-label={`Go to image ${index + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── Details + Actions — BOTTOM ── */}
       <motion.div
@@ -252,26 +488,26 @@ const ProductDetail = () => {
 
         {/* Size selector — hidden for Jewels */}
         {!isJewels && (
-        <div className="text-center">
-          <p className="text-sm font-medium text-neutral-300 mb-3">
-            Select Size
-          </p>
-          <div className="flex justify-center flex-wrap gap-2">
-            {sizes.map((size) => (
-              <button
-                key={size}
-                onClick={() => setSelectedSize(size)}
-                className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
-                  selectedSize === size
-                    ? "bg-violet-600 text-white shadow-lg shadow-violet-600/20"
-                    : "glass text-neutral-400 hover:text-white hover:border-violet-500/30"
-                }`}
-              >
-                {size}
-              </button>
-            ))}
+          <div className="text-center">
+            <p className="text-sm font-medium text-neutral-300 mb-3">
+              Select Size
+            </p>
+            <div className="flex justify-center flex-wrap gap-2">
+              {sizes.map((size) => (
+                <button
+                  key={size}
+                  onClick={() => setSelectedSize(size)}
+                  className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
+                    selectedSize === size
+                      ? "bg-violet-600 text-white shadow-lg shadow-violet-600/20"
+                      : "glass text-neutral-400 hover:text-white hover:border-violet-500/30"
+                  }`}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
         )}
 
         {/* Action buttons */}
@@ -281,7 +517,13 @@ const ProductDetail = () => {
             disabled={ordering}
             className="btn-funky rounded-xl! px-10 disabled:opacity-60"
           >
-            <span>{ordering ? "Redirecting to payment…" : isSale ? "Buy Now →" : "Rent Now →"}</span>
+            <span>
+              {ordering
+                ? "Redirecting to payment…"
+                : isSale
+                  ? "Buy Now →"
+                  : "Rent Now →"}
+            </span>
           </button>
           <button
             onClick={handleEnquire}

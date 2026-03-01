@@ -61,7 +61,10 @@ const App = () => {
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/refund" element={<RefundPolicy />} />
               <Route path="/faq" element={<FAQ />} />
-              <Route path="/payment/status/:merchantOrderId" element={<PaymentStatus />} />
+              <Route
+                path="/payment/status/:merchantOrderId"
+                element={<PaymentStatus />}
+              />
 
               {/* ── Customer ───────────────────────────── */}
               <Route

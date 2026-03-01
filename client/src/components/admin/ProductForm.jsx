@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getCategories } from "../../services/categoryService";
 import toast from "react-hot-toast";
-import { X } from "lucide-react";
+import { X, Star } from "lucide-react";
 const ProductForm = ({ onSave, onCancel, initialData = null }) => {
   const isEditMode = !!initialData;
   const [title, setTitle] = useState("");
@@ -15,7 +15,9 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
   const [rating, setRating] = useState(0);
   const [description, setDescription] = useState("");
   const [available, setAvailable] = useState(true);
-  const [images, setImages] = useState([]); // FileList
+  const [images, setImages] = useState([]); // new File objects to upload
+  const [existingImages, setExistingImages] = useState([]); // {url, publicId} from server
+  const [deletedImageIds, setDeletedImageIds] = useState([]); // publicIds to delete
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -27,7 +29,9 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
         if (initialData) {
           // Pre-populate for edit – find category _id by name
           const matchedCat = cats.find(
-            (c) => c.name.toLowerCase() === (initialData.category || "").toLowerCase()
+            (c) =>
+              c.name.toLowerCase() ===
+              (initialData.category || "").toLowerCase(),
           );
           setCategoryId(matchedCat?._id || cats[0]?._id || "");
           setListingType(initialData.listingType || "rent");
@@ -40,6 +44,14 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
           setRating(initialData.rating ?? 0);
           setDescription(initialData.description || "");
           setAvailable(initialData.available !== false);
+          // Load existing images with publicId for deletion support
+          if (initialData.rawImages?.length) {
+            setExistingImages(initialData.rawImages);
+          } else if (initialData.images?.length) {
+            setExistingImages(
+              initialData.images.map((url) => ({ url, publicId: "" })),
+            );
+          }
         } else {
           if (cats?.length) setCategoryId(cats[0]._id);
         }
@@ -52,18 +64,21 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
 
   // Derived: is the currently selected category "Jewels"?
   const selectedCategory = categories.find((c) => c._id === categoryId);
-  const isJewels = selectedCategory && selectedCategory.name.toLowerCase() === "jewels";
+  const isJewels =
+    selectedCategory && selectedCategory.name.toLowerCase() === "jewels";
 
   // Compress an image to fit within TARGET_MB, starting at highest quality and stepping down
   const compressImage = (file) =>
     new Promise((resolve) => {
-      const MAX_WIDTH = 2400;          // keep high resolution
+      const MAX_WIDTH = 2400; // keep high resolution
       const TARGET_BYTES = 3.5 * 1024 * 1024; // 3.5 MB per image
-      const QUALITY_STEPS = [0.95, 0.88, 0.80, 0.70, 0.60];
+      const QUALITY_STEPS = [0.95, 0.88, 0.8, 0.7, 0.6];
 
       // If already small enough, skip canvas entirely
       if (file.size <= TARGET_BYTES) {
-        console.log(`[Upload] ${file.name}: ${(file.size / 1024).toFixed(0)} KB – no compression needed`);
+        console.log(
+          `[Upload] ${file.name}: ${(file.size / 1024).toFixed(0)} KB – no compression needed`,
+        );
         resolve(file);
         return;
       }
@@ -78,7 +93,9 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
           const canvas = document.createElement("canvas");
           canvas.width = Math.round(img.width * scale);
           canvas.height = Math.round(img.height * scale);
-          canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+          canvas
+            .getContext("2d")
+            .drawImage(img, 0, 0, canvas.width, canvas.height);
 
           let stepIndex = 0;
           const tryNext = () => {
@@ -91,10 +108,10 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
                   const compressed = new File(
                     [blob],
                     file.name.replace(/\.[^.]+$/, ".jpg"),
-                    { type: "image/jpeg", lastModified: Date.now() }
+                    { type: "image/jpeg", lastModified: Date.now() },
                   );
                   console.log(
-                    `[Upload] ${file.name}: ${(file.size / 1024).toFixed(0)} KB → ${(compressed.size / 1024).toFixed(0)} KB (quality ${quality})`
+                    `[Upload] ${file.name}: ${(file.size / 1024).toFixed(0)} KB → ${(compressed.size / 1024).toFixed(0)} KB (quality ${quality})`,
                   );
                   resolve(compressed);
                 } else {
@@ -103,7 +120,7 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
                 }
               },
               "image/jpeg",
-              quality
+              quality,
             );
           };
           tryNext();
@@ -120,12 +137,13 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
       const compressed = await Promise.all(files.map(compressImage));
       setImages(compressed);
       toast.success(
-        `${compressed.length} image${compressed.length > 1 ? "s" : ""} ready (${compressed
-          .reduce((s, f) => s + f.size, 0)
-          .toFixed(0) / 1024 < 1
-          ? compressed.reduce((s, f) => s + f.size, 0) + " B"
-          : (compressed.reduce((s, f) => s + f.size, 0) / 1024).toFixed(0) + " KB"})`,
-        { id: "compress" }
+        `${compressed.length} image${compressed.length > 1 ? "s" : ""} ready (${
+          compressed.reduce((s, f) => s + f.size, 0).toFixed(0) / 1024 < 1
+            ? compressed.reduce((s, f) => s + f.size, 0) + " B"
+            : (compressed.reduce((s, f) => s + f.size, 0) / 1024).toFixed(0) +
+              " KB"
+        })`,
+        { id: "compress" },
       );
     } catch (err) {
       console.error("[Upload] Compression error:", err);
@@ -173,24 +191,42 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
     fd.append("listingType", actualListingType);
 
     if (actualListingType === "sale") {
-      const salePriceNum = parseFloat(String(salePrice).replace(/[^0-9.]/g, ""));
+      const salePriceNum = parseFloat(
+        String(salePrice).replace(/[^0-9.]/g, ""),
+      );
       fd.append("salePrice", isNaN(salePriceNum) ? "0" : String(salePriceNum));
-      const saleCommissionNum = parseFloat(String(commissionPrice).replace(/[^0-9.]/g, ""));
-      fd.append("commissionPrice", isNaN(saleCommissionNum) ? "0" : String(saleCommissionNum));
+      const saleCommissionNum = parseFloat(
+        String(commissionPrice).replace(/[^0-9.]/g, ""),
+      );
+      fd.append(
+        "commissionPrice",
+        isNaN(saleCommissionNum) ? "0" : String(saleCommissionNum),
+      );
       fd.append("rentPrice", "0");
     } else {
-      const rentPriceNum = parseFloat(String(rentPrice).replace(/[^0-9.]/g, ""));
+      const rentPriceNum = parseFloat(
+        String(rentPrice).replace(/[^0-9.]/g, ""),
+      );
       fd.append("rentPrice", isNaN(rentPriceNum) ? "0" : String(rentPriceNum));
 
-      const commissionPriceNum = parseFloat(String(commissionPrice).replace(/[^0-9.]/g, ""));
-      fd.append("commissionPrice", isNaN(commissionPriceNum) ? "0" : String(commissionPriceNum));
+      const commissionPriceNum = parseFloat(
+        String(commissionPrice).replace(/[^0-9.]/g, ""),
+      );
+      fd.append(
+        "commissionPrice",
+        isNaN(commissionPriceNum) ? "0" : String(commissionPriceNum),
+      );
       fd.append("salePrice", "0");
     }
 
-    const advanceAmountNum = (isJewels && listingType === "sale")
-      ? 0
-      : parseFloat(String(advanceAmount).replace(/[^0-9.]/g, ""));
-    fd.append("advanceAmount", isNaN(advanceAmountNum) ? "0" : String(advanceAmountNum));
+    const advanceAmountNum =
+      isJewels && listingType === "sale"
+        ? 0
+        : parseFloat(String(advanceAmount).replace(/[^0-9.]/g, ""));
+    fd.append(
+      "advanceAmount",
+      isNaN(advanceAmountNum) ? "0" : String(advanceAmountNum),
+    );
 
     const stockNum = parseInt(String(stock).replace(/[^0-9-]/g, ""), 10);
     if (!Number.isNaN(stockNum))
@@ -204,6 +240,12 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
 
     if (description) fd.append("description", description);
     fd.append("available", available ? "true" : "false");
+
+    // Send list of images to delete (by publicId)
+    if (deletedImageIds.length > 0) {
+      fd.append("deleteImages", JSON.stringify(deletedImageIds));
+    }
+
     images.forEach((file) => fd.append("images", file));
 
     onSave(fd);
@@ -221,6 +263,8 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
     setDescription("");
     setAvailable(true);
     setImages([]);
+    setExistingImages([]);
+    setDeletedImageIds([]);
   };
 
   return (
@@ -244,11 +288,18 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
           </label>
           <select
             value={categoryId}
-            onChange={(e) => { setCategoryId(e.target.value); setListingType("rent"); }}
+            onChange={(e) => {
+              setCategoryId(e.target.value);
+              setListingType("rent");
+            }}
             className="w-full border border-white/10 bg-neutral-900 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
           >
             {categories.map((c) => (
-              <option key={c._id} value={c._id} className="bg-neutral-900 text-white">
+              <option
+                key={c._id}
+                value={c._id}
+                className="bg-neutral-900 text-white"
+              >
                 {c.name}
               </option>
             ))}
@@ -329,7 +380,8 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
                 readOnly
                 value={
                   salePrice !== "" && commissionPrice !== ""
-                    ? (parseFloat(salePrice) || 0) + (parseFloat(commissionPrice) || 0)
+                    ? (parseFloat(salePrice) || 0) +
+                      (parseFloat(commissionPrice) || 0)
                     : ""
                 }
                 placeholder="Sale + Commission"
@@ -378,7 +430,8 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
                 readOnly
                 value={
                   rentPrice !== "" && commissionPrice !== ""
-                    ? (parseFloat(rentPrice) || 0) + (parseFloat(commissionPrice) || 0)
+                    ? (parseFloat(rentPrice) || 0) +
+                      (parseFloat(commissionPrice) || 0)
                     : ""
                 }
                 placeholder="Rent + Commission"
@@ -410,6 +463,70 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
           <label className="block text-sm font-medium text-neutral-300 mb-1">
             Images
           </label>
+          <p className="text-xs text-neutral-500 mb-2">
+            <Star size={10} className="inline text-amber-400 mr-1" />
+            The first image will be the hero photo shown on the product card
+          </p>
+
+          {/* Existing images (edit mode) */}
+          {isEditMode && existingImages.length > 0 && (
+            <div className="mb-3">
+              <p className="text-xs text-neutral-400 mb-2 font-medium">
+                Current images:
+              </p>
+              <div className="flex gap-3 flex-wrap">
+                {existingImages.map((img, idx) => {
+                  // Compute global position (existing images come first)
+                  const isHero = idx === 0 && images.length === 0;
+                  return (
+                    <div key={img.publicId || idx} className="relative group">
+                      <img
+                        src={img.url}
+                        alt={`existing-${idx}`}
+                        className={`w-20 h-20 object-cover rounded-lg border transition-all ${
+                          isHero
+                            ? "border-amber-400 ring-2 ring-amber-400/30"
+                            : "border-white/10"
+                        }`}
+                      />
+                      {/* Hero badge */}
+                      {isHero && (
+                        <span className="absolute -top-2 -left-2 bg-amber-500 text-black text-[9px] font-bold px-1.5 py-0.5 rounded-md shadow">
+                          HERO
+                        </span>
+                      )}
+                      {/* Delete button */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (img.publicId) {
+                            setDeletedImageIds((prev) => [
+                              ...prev,
+                              img.publicId,
+                            ]);
+                          }
+                          setExistingImages((prev) =>
+                            prev.filter((_, i) => i !== idx),
+                          );
+                        }}
+                        className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-all"
+                        title="Remove this image"
+                      >
+                        <X size={12} />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+              {deletedImageIds.length > 0 && (
+                <p className="text-xs text-red-400 mt-1">
+                  {deletedImageIds.length} image(s) will be removed on save
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Upload area */}
           <div className="border-2 border-dashed border-white/10 rounded-lg p-4 text-center hover:bg-white/5 transition-colors">
             <input
               type="file"
@@ -423,56 +540,59 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
               htmlFor="file-upload"
               className="cursor-pointer flex flex-col items-center gap-2"
             >
-                <span className="text-sm text-neutral-400">
-                Click to upload images(select one or more than one file)
+              <span className="text-sm text-neutral-400">
+                Click to upload images (select one or more files)
               </span>
             </label>
             {images.length > 0 && (
-                <div className="text-xs text-violet-400 font-medium mt-2">
-                {images.length} file(s) selected
+              <div className="text-xs text-violet-400 font-medium mt-2">
+                {images.length} new file(s) selected
               </div>
             )}
           </div>
-          {images.length > 0 && (
-            <div className="mt-3 flex gap-3 flex-wrap">
-              {images.map((file, idx) => {
-                const preview = URL.createObjectURL(file);
-                return (
-                  <div key={idx} className="relative group">
-                    <img
-                      src={preview}
-                      alt={`preview-${idx}`}
-                      className="w-20 h-20 object-cover rounded-lg border border-white/10"
-                    />
 
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setImages((prev) => prev.filter((_, i) => i !== idx))
-                      }
-                      className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 
-            opacity-0 group-hover:opacity-100 transition-all"
-                    >
-                      <X size={12} />
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-          {/* In edit mode show current images when no new files selected */}
-          {isEditMode && images.length === 0 && initialData?.images?.length > 0 && (
+          {/* New image previews */}
+          {images.length > 0 && (
             <div className="mt-3">
-              <p className="text-xs text-neutral-500 mb-2">Current images (upload new to replace):</p>
+              <p className="text-xs text-neutral-400 mb-2 font-medium">
+                New images to upload:
+              </p>
               <div className="flex gap-3 flex-wrap">
-                {initialData.images.map((url, idx) => (
-                  <img
-                    key={idx}
-                    src={url}
-                    alt={`current-${idx}`}
-                    className="w-20 h-20 object-cover rounded-lg border border-white/10 opacity-60"
-                  />
-                ))}
+                {images.map((file, idx) => {
+                  const preview = URL.createObjectURL(file);
+                  // New images come after existing images; hero only if it's the very first overall
+                  const isHero = existingImages.length === 0 && idx === 0;
+                  return (
+                    <div key={idx} className="relative group">
+                      <img
+                        src={preview}
+                        alt={`preview-${idx}`}
+                        className={`w-20 h-20 object-cover rounded-lg border transition-all ${
+                          isHero
+                            ? "border-amber-400 ring-2 ring-amber-400/30"
+                            : "border-white/10"
+                        }`}
+                      />
+                      {/* Hero badge */}
+                      {isHero && (
+                        <span className="absolute -top-2 -left-2 bg-amber-500 text-black text-[9px] font-bold px-1.5 py-0.5 rounded-md shadow">
+                          HERO
+                        </span>
+                      )}
+                      {/* Delete button */}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setImages((prev) => prev.filter((_, i) => i !== idx))
+                        }
+                        className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-all"
+                        title="Remove this image"
+                      >
+                        <X size={12} />
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -535,7 +655,9 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
           htmlFor="available"
           className="text-sm font-medium text-neutral-300 cursor-pointer"
         >
-          {isJewels && listingType === "sale" ? "Available for sale" : "Available for rent"}
+          {isJewels && listingType === "sale"
+            ? "Available for sale"
+            : "Available for rent"}
         </label>
       </div>
 

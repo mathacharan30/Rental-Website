@@ -1,11 +1,15 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
-    category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+      required: true,
+    },
     // listingType: 'rent' for all regular products; 'sale' for jewels sold outright
-    listingType: { type: String, enum: ['rent', 'sale'], default: 'rent' },
+    listingType: { type: String, enum: ["rent", "sale"], default: "rent" },
     rentPrice: { type: Number, default: 0, min: 0 },
     commissionPrice: { type: Number, default: 0, min: 0 },
     salePrice: { type: Number, default: 0, min: 0 }, // only used when listingType === 'sale'
@@ -21,14 +25,18 @@ const productSchema = new mongoose.Schema(
       },
     ],
     available: { type: Boolean, default: true },
-    store: { type: mongoose.Schema.Types.ObjectId, ref: 'Store', default: null }, // owning store
+    store: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Store",
+      default: null,
+    }, // owning store
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Auto-compute price before save
-productSchema.pre('save', function (next) {
-  if (this.listingType === 'sale') {
+productSchema.pre("save", function (next) {
+  if (this.listingType === "sale") {
     // total = sale price + commission
     this.price = (this.salePrice || 0) + (this.commissionPrice || 0);
   } else {
@@ -37,4 +45,4 @@ productSchema.pre('save', function (next) {
   next();
 });
 
-module.exports = mongoose.model('Product', productSchema);
+module.exports = mongoose.model("Product", productSchema);
