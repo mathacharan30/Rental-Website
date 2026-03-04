@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getCategories } from "../../services/categoryService";
 import toast from "react-hot-toast";
-import { X, Star } from "lucide-react";
+import { X, Star, ImagePlus } from "lucide-react";
 const ProductForm = ({ onSave, onCancel, initialData = null }) => {
   const isEditMode = !!initialData;
   const [title, setTitle] = useState("");
@@ -16,6 +16,7 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
   const [description, setDescription] = useState("");
   const [available, setAvailable] = useState(true);
   const [images, setImages] = useState([]); // new File objects to upload
+  const [imageSlots, setImageSlots] = useState([null, null, null, null]); // 4 positional slots
   const [existingImages, setExistingImages] = useState([]); // {url, publicId} from server
   const [deletedImageIds, setDeletedImageIds] = useState([]); // publicIds to delete
   const [categories, setCategories] = useState([]);
@@ -61,6 +62,11 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
       }
     })();
   }, []);
+
+  // Sync the flat images array from positional slots (keeps submit handler unchanged)
+  useEffect(() => {
+    setImages(imageSlots.filter(Boolean));
+  }, [imageSlots]);
 
   // Derived: is the currently selected category "Jewels"?
   const selectedCategory = categories.find((c) => c._id === categoryId);
@@ -128,27 +134,35 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
       };
     });
 
-  const handleFiles = async (e) => {
-    const files = Array.from(e.target.files || []);
-    if (!files.length) return;
+  const handleSlotFile = async (slotIndex, e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-    toast.loading("Compressing images…", { id: "compress" });
+    toast.loading("Compressing image…", { id: `compress-${slotIndex}` });
     try {
-      const compressed = await Promise.all(files.map(compressImage));
-      setImages(compressed);
+      const compressed = await compressImage(file);
+      setImageSlots((prev) => {
+        const updated = [...prev];
+        updated[slotIndex] = compressed;
+        return updated;
+      });
       toast.success(
-        `${compressed.length} image${compressed.length > 1 ? "s" : ""} ready (${
-          compressed.reduce((s, f) => s + f.size, 0).toFixed(0) / 1024 < 1
-            ? compressed.reduce((s, f) => s + f.size, 0) + " B"
-            : (compressed.reduce((s, f) => s + f.size, 0) / 1024).toFixed(0) +
-              " KB"
-        })`,
-        { id: "compress" },
+        `Image ${slotIndex + 1} ready (${(compressed.size / 1024).toFixed(0)} KB)`,
+        { id: `compress-${slotIndex}` },
       );
     } catch (err) {
       console.error("[Upload] Compression error:", err);
-      toast.error("Failed to process images", { id: "compress" });
+      toast.error("Failed to process image", { id: `compress-${slotIndex}` });
     }
+    e.target.value = "";
+  };
+
+  const removeSlotImage = (slotIndex) => {
+    setImageSlots((prev) => {
+      const updated = [...prev];
+      updated[slotIndex] = null;
+      return updated;
+    });
   };
 
   const handleSubmit = (e) => {
@@ -263,6 +277,7 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
     setDescription("");
     setAvailable(true);
     setImages([]);
+    setImageSlots([null, null, null, null]);
     setExistingImages([]);
     setDeletedImageIds([]);
   };
@@ -526,76 +541,76 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
             </div>
           )}
 
-          {/* Upload area */}
-          <div className="border-2 border-dashed border-white/10 rounded-lg p-4 text-center hover:bg-white/5 transition-colors">
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleFiles}
-              className="hidden"
-              id="file-upload"
-            />
-            <label
-              htmlFor="file-upload"
-              className="cursor-pointer flex flex-col items-center gap-2"
-            >
-              <span className="text-sm text-neutral-400">
-                Click to upload images (select one or more files)
-              </span>
-            </label>
-            {images.length > 0 && (
-              <div className="text-xs text-violet-400 font-medium mt-2">
-                {images.length} new file(s) selected
-              </div>
-            )}
-          </div>
-
-          {/* New image previews */}
-          {images.length > 0 && (
-            <div className="mt-3">
-              <p className="text-xs text-neutral-400 mb-2 font-medium">
-                New images to upload:
-              </p>
-              <div className="flex gap-3 flex-wrap">
-                {images.map((file, idx) => {
-                  const preview = URL.createObjectURL(file);
-                  // New images come after existing images; hero only if it's the very first overall
-                  const isHero = existingImages.length === 0 && idx === 0;
-                  return (
-                    <div key={idx} className="relative group">
+          {/* Upload slots – 4 positional image pickers */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {imageSlots.map((slotFile, slotIdx) => {
+              const slotLabels = ["Image 1 (Hero)", "Image 2", "Image 3", "Image 4"];
+              const inputId = `slot-upload-${slotIdx}`;
+              const isHeroSlot = slotIdx === 0 && existingImages.length === 0;
+              return (
+                <div key={slotIdx} className="flex flex-col items-center gap-1">
+                  {slotFile ? (
+                    <div className="relative group w-full aspect-square">
                       <img
-                        src={preview}
-                        alt={`preview-${idx}`}
-                        className={`w-20 h-20 object-cover rounded-lg border transition-all ${
-                          isHero
+                        src={URL.createObjectURL(slotFile)}
+                        alt={`slot-${slotIdx}`}
+                        className={`w-full h-full object-cover rounded-lg border transition-all ${
+                          isHeroSlot
                             ? "border-amber-400 ring-2 ring-amber-400/30"
                             : "border-white/10"
                         }`}
                       />
-                      {/* Hero badge */}
-                      {isHero && (
-                        <span className="absolute -top-2 -left-2 bg-amber-500 text-black text-[9px] font-bold px-1.5 py-0.5 rounded-md shadow">
+                      {isHeroSlot && (
+                        <span className="absolute -top-2 -left-2 bg-amber-500 text-black text-[9px] font-bold px-1.5 py-0.5 rounded-md shadow z-10">
                           HERO
                         </span>
                       )}
-                      {/* Delete button */}
+                      {/* Replace button */}
+                      <label
+                        htmlFor={inputId}
+                        className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-all rounded-lg cursor-pointer"
+                        title="Replace image"
+                      >
+                        <ImagePlus size={20} className="text-white" />
+                      </label>
+                      {/* Remove button */}
                       <button
                         type="button"
-                        onClick={() =>
-                          setImages((prev) => prev.filter((_, i) => i !== idx))
-                        }
-                        className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-all"
-                        title="Remove this image"
+                        onClick={() => removeSlotImage(slotIdx)}
+                        className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-all z-10"
+                        title="Remove image"
                       >
                         <X size={12} />
                       </button>
                     </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+                  ) : (
+                    <label
+                      htmlFor={inputId}
+                      className={`w-full aspect-square border-2 border-dashed rounded-lg flex flex-col items-center justify-center gap-1 cursor-pointer transition-all hover:bg-white/5 ${
+                        isHeroSlot
+                          ? "border-amber-400/40 hover:border-amber-400"
+                          : "border-white/10 hover:border-violet-500/40"
+                      }`}
+                    >
+                      <ImagePlus size={22} className="text-neutral-500" />
+                    </label>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleSlotFile(slotIdx, e)}
+                    className="hidden"
+                    id={inputId}
+                  />
+                  <span className={`text-[10px] font-medium ${
+                    isHeroSlot ? "text-amber-400" : "text-neutral-500"
+                  }`}>
+                    {slotLabels[slotIdx]}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         <div className="col-span-2">
