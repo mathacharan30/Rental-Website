@@ -16,12 +16,14 @@ const {
   getProductById,
   getProductsByCategory,
   getTopPicks,
+  signUpload,
 } = require('../controllers/productController');
 
-router.get('/',          getAllProducts);
-router.get('/top-picks', getTopPicks);
-router.get('/mine',      ...storeGuard, getMyProducts);  // store-scoped list
-router.get('/:id',       getProductById);
+router.get('/',           getAllProducts);
+router.get('/top-picks',  getTopPicks);
+router.get('/sign-upload', ...storeGuard, signUpload); // ← Cloudinary direct-upload signature
+router.get('/mine',       ...storeGuard, getMyProducts);  // store-scoped list
+router.get('/:id',        getProductById);
 // Wrap multer so file-size errors return a clean JSON 413 instead of crashing
 const uploadImages = (req, res, next) => {
   productUpload.array('images', 4)(req, res, (err) => {

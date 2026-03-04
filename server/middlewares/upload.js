@@ -44,18 +44,18 @@ const categoryStorage = new CloudinaryStorage({
 const categoryUpload = multer({
   storage: categoryStorage,
   fileFilter: imageFileFilter,
-  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB limit
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
 });
 
 const productUpload = multer({
   storage: productStorage,
   fileFilter: imageFileFilter,
-  limits: { fileSize: 4 * 1024 * 1024 }, // 4 MB – stay under Vercel's 4.5 MB limit
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB per file
 });
 const bannerUpload = multer({
   storage: bannerStorage,
   fileFilter: imageFileFilter,
-  limits: { fileSize: 4 * 1024 * 1024 }, // 2MB limit
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB per file
 });
 
 module.exports = { productUpload, bannerUpload, categoryUpload };

@@ -147,8 +147,9 @@ exports.createProduct = async (req, res) => {
 
     const images = [];
     if (req.files && req.files.length) {
+      // Legacy multer path (images sent as multipart bytes)
       console.log(
-        `[Products] Create – ${req.files.length} file(s) received for upload`,
+        `[Products] Create – ${req.files.length} file(s) received via multer`,
       );
       for (let i = 0; i < req.files.length; i++) {
         const file = req.files[i];
@@ -162,6 +163,24 @@ exports.createProduct = async (req, res) => {
             `[Products] Image ${i + 1} upload failed – missing url or publicId (originalname: ${file.originalname}, mimetype: ${file.mimetype})`,
           );
         }
+      }
+    } else if (req.body.images) {
+      // Direct-to-Cloudinary path: browser uploaded images directly;
+      // body contains a JSON array of { url, publicId } already on Cloudinary.
+      try {
+        const parsed =
+          typeof req.body.images === "string"
+            ? JSON.parse(req.body.images)
+            : req.body.images;
+        if (Array.isArray(parsed)) {
+          parsed.forEach((img) => {
+            if (img.url && img.publicId)
+              images.push({ url: img.url, publicId: img.publicId });
+          });
+          console.log(`[Products] Create – ${images.length} image(s) received via direct-Cloudinary path`);
+        }
+      } catch (parseErr) {
+        console.error("[Products] Failed to parse images JSON:", parseErr.message);
       }
     } else {
       console.log("[Products] Create – no image files received");
@@ -273,13 +292,29 @@ exports.updateProduct = async (req, res) => {
       }
     }
 
-    // If new images uploaded, append them (not replace)
+    // If new images provided, append them (not replace)
     if (req.files && req.files.length) {
+      // Legacy multer path
       const newImages = req.files.map((f) => ({
         url: f.path,
         publicId: f.filename,
       }));
       product.images = [...product.images, ...newImages];
+    } else if (req.body.images) {
+      // Direct-to-Cloudinary path
+      try {
+        const parsed =
+          typeof req.body.images === "string"
+            ? JSON.parse(req.body.images)
+            : req.body.images;
+        if (Array.isArray(parsed) && parsed.length) {
+          const newImages = parsed.filter((img) => img.url && img.publicId);
+          product.images = [...product.images, ...newImages];
+          console.log(`[Products] Update – ${newImages.length} image(s) added via direct-Cloudinary path`);
+        }
+      } catch (parseErr) {
+        console.error("[Products] Failed to parse images JSON:", parseErr.message);
+      }
     }
 
     await product.save();
@@ -327,6 +362,31 @@ exports.deleteProduct = async (req, res) => {
   } catch (error) {
     console.error("[Products] Delete error:", error.message);
     res.status(500).json({ message: "Server error deleting product" });
+  }
+};
+
+// GET /api/products/sign-upload  (protected – store_owner / super_admin)
+// Returns a short-lived Cloudinary signature so the browser can upload directly
+// to Cloudinary.  No image bytes ever pass through this server.
+exports.signUpload = async (req, res) => {
+  try {
+    const timestamp = Math.round(Date.now() / 1000);
+    const folder = "products";
+    const paramsToSign = { folder, timestamp };
+    const signature = cloudinary.utils.api_sign_request(
+      paramsToSign,
+      process.env.CLOUDINARY_API_SECRET,
+    );
+    res.json({
+      signature,
+      timestamp,
+      folder,
+      cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+      apiKey: process.env.CLOUDINARY_API_KEY,
+    });
+  } catch (error) {
+    console.error("[Products] signUpload error:", error.message);
+    res.status(500).json({ message: "Failed to generate upload signature" });
   }
 };
 
