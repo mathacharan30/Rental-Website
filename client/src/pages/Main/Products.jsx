@@ -53,22 +53,24 @@ const Products = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
-      <div className="max-w-7xl mx-auto px-4">
-        <Link
-          to="/"
-          className="text-sm flex items-center gap-1.5 text-neutral-500 hover:text-violet-400 transition-colors"
-        >
-          <BiLeftArrow />
-          Back to Home
-        </Link>
+      <div className="max-w-7xl mx-auto ">
+        <div className="flex justify-center">
+          <Link
+            to="/"
+            className="text-sm flex items-center gap-1.5 text-neutral-500 hover:text-violet-400 transition-colors"
+          >
+            <BiLeftArrow />
+            Back to Home
+          </Link>
+        </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mt-4 mb-6 gap-3">
-          <div>
-            <h1 className="text-3xl font-bold display-font tracking-tight">
+        <div className="flex flex-col justify-center items-center text-center">
+          <div className="flex flex-col my-4 items-center">
+            <h1 className="text-4xl font-bold display-font tracking-tight">
               <span className="text-white">{title}</span>
             </h1>
             {decodedCategory && (
-              <p className="text-sm text-neutral-500 mt-1">
+              <p className="text-sm text-neutral-500">
                 Curated rentals for {decodedCategory}
               </p>
             )}
@@ -80,7 +82,7 @@ const Products = () => {
             <Loader />
           </div>
         ) : items.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 mt-4">
+          <div className=" justify-center  items-center flex gap-4  flex-wrap mt-4">
             {items.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

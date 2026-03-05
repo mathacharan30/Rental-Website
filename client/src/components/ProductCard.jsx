@@ -5,9 +5,9 @@ const ProductCard = ({ product }) => {
   return (
     <Link
       to={`/product/${product.id}`}
-      className="relative group w-[170px] md:w-56 overflow-hidden block transition-all duration-300"
+      className="relative group w-[150px] mb-4 md:w-53 overflow-hidden block transition-all duration-300"
     >
-      <div className="relative h-64 md:h-80 overflow-hidden rounded-xl">
+      <div className="relative h-60 md:h-80 overflow-hidden rounded-xl">
         <img
           src={product.image}
           alt={product.title}
@@ -15,7 +15,6 @@ const ProductCard = ({ product }) => {
         />
         <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-        {/* Hover overlay */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
           <span className="px-4 py-1.5 rounded-lg bg-white/10 backdrop-blur-sm text-xs text-white font-medium">
             View
