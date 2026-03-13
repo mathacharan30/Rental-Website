@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getCategories } from "../../services/categoryService";
-import { getUploadSignature, uploadImageToCloudinary } from "../../services/adminProductService";
+import { uploadImageToS3 } from "../../services/adminProductService";
 import toast from "react-hot-toast";
 import { X, Star, ImagePlus } from "lucide-react";
 const ProductForm = ({ onSave, onCancel, initialData = null }) => {
@@ -261,24 +261,23 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
       fd.append("deleteImages", JSON.stringify(deletedImageIds));
     }
 
-    // ── Direct-to-Cloudinary upload ──────────────────────────────────────────
-    // Images are uploaded from the browser straight to Cloudinary so that zero
+    // ── Direct-to-S3 upload ──────────────────────────────────────────────────
+    // Images are uploaded from the browser straight to S3 so that zero
     // image bytes pass through the Vercel serverless function (4.5 MB hard cap).
     // We then send only the resulting { url, publicId } pairs to our API.
     if (images.length > 0) {
       setLoading(true);
       toast.loading("Uploading images…", { id: "img-upload" });
       try {
-        const sigData = await getUploadSignature();
         const uploaded = [];
         for (const file of images) {
-          const result = await uploadImageToCloudinary(file, sigData);
-          uploaded.push({ url: result.secure_url, publicId: result.public_id });
+          const result = await uploadImageToS3(file);
+          uploaded.push({ url: result.url, publicId: result.publicId });
         }
         fd.append("images", JSON.stringify(uploaded));
         toast.success(`${uploaded.length} image(s) ready`, { id: "img-upload" });
       } catch (uploadErr) {
-        console.error("[ProductForm] Cloudinary upload error:", uploadErr);
+        console.error("[ProductForm] S3 upload error:", uploadErr);
         toast.error("Image upload failed: " + uploadErr.message, { id: "img-upload" });
         setLoading(false);
         return;

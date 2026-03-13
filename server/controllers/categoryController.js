@@ -1,6 +1,6 @@
 const Category = require('../models/Category');
 const Product = require('../models/Product');
-const cloudinary = require('../config/cloudinary');
+const { deleteFromS3 } = require('../config/s3');
 
 // GET /api/categories
 exports.getCategories = async (req, res) => {
@@ -30,7 +30,7 @@ exports.createCategory = async (req, res) => {
       return res.status(409).json({ message: 'Category already exists' });
     }
 
-    const image = { url: req.file.path, publicId: req.file.filename };
+    const image = { url: req.file.location, publicId: req.file.key };
     const category = await Category.create({ name: name.trim(), description, image });
     res.status(201).json(category);
   } catch (error) {
@@ -61,15 +61,15 @@ exports.deleteCategory = async (req, res) => {
       return res.status(404).json({ message: 'Category not found' });
     }
 
-    // Fetch products to delete and remove their images from Cloudinary
+    // Fetch products to delete and remove their images from S3
     const products = await Product.find({ category: id });
     for (const product of products) {
       if (product.images && product.images.length) {
         for (const img of product.images) {
           try {
-            await cloudinary.uploader.destroy(img.publicId);
+            await deleteFromS3(img.publicId);
           } catch (err) {
-            console.error(`[Cloudinary] Error deleting product image ${img.publicId}:`, err.message);
+            console.error(`[S3] Error deleting product image ${img.publicId}:`, err.message);
           }
         }
       }
@@ -80,12 +80,12 @@ exports.deleteCategory = async (req, res) => {
       }
     }
 
-    // Delete category image from Cloudinary if present
+    // Delete category image from S3 if present
     if (category.image && category.image.publicId) {
       try {
-        await cloudinary.uploader.destroy(category.image.publicId);
+        await deleteFromS3(category.image.publicId);
       } catch (err) {
-        console.error(`[Cloudinary] Error deleting category image ${category.image.publicId}:`, err.message);
+        console.error(`[S3] Error deleting category image ${category.image.publicId}:`, err.message);
       }
     }
 

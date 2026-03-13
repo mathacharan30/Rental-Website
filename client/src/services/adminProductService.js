@@ -3,45 +3,40 @@
 import api from "./api";
 import { mapProduct } from "./productService";
 
-// ─── Direct-to-Cloudinary helpers ───────────────────────────────────────────
-// These let the browser upload image bytes straight to Cloudinary, so no image
-// data ever passes through the Vercel serverless function (which has a 4.5 MB
-// hard limit).  The server just signs the request; it never sees the pixels.
+// ─── Direct-to-S3 helpers ───────────────────────────────────────────────────
+// These let the browser upload image bytes straight to S3 via presigned PUT
+// URLs, so no image data ever passes through the Vercel serverless function
+// (which has a 4.5 MB hard limit).  The server just signs the request.
 
 /**
- * Fetches a short-lived Cloudinary signed-upload token from our backend.
- * One token can be reused for all images in a single submit batch.
+ * Fetches a presigned S3 PUT URL from our backend for a given file.
+ * Each file needs its own presigned URL (different key).
  */
-export async function getUploadSignature() {
-  const { data } = await api.get("/api/products/sign-upload");
-  return data; // { signature, timestamp, folder, cloudName, apiKey }
+export async function getPresignedUrl(file) {
+  const { data } = await api.get("/api/products/sign-upload", {
+    params: { filename: file.name, contentType: file.type },
+  });
+  return data; // { presignedUrl, publicUrl, key }
 }
 
 /**
- * Uploads a single File directly to Cloudinary using the pre-signed token.
- * Returns the full Cloudinary response which includes secure_url and public_id.
+ * Uploads a single File directly to S3 using the presigned PUT URL.
+ * Returns { url, publicId } ready to send to our API.
  */
-export async function uploadImageToCloudinary(file, sigData) {
-  const { signature, timestamp, folder, cloudName, apiKey } = sigData;
+export async function uploadImageToS3(file) {
+  const { presignedUrl, publicUrl, key } = await getPresignedUrl(file);
 
-  const body = new FormData();
-  body.append("file", file);
-  body.append("api_key", apiKey);
-  body.append("timestamp", String(timestamp));
-  body.append("signature", signature);
-  body.append("folder", folder);
-
-  const res = await fetch(
-    `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-    { method: "POST", body },
-  );
+  const res = await fetch(presignedUrl, {
+    method: "PUT",
+    headers: { "Content-Type": file.type },
+    body: file,
+  });
 
   if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err?.error?.message || `Cloudinary upload failed (${res.status})`);
+    throw new Error(`S3 upload failed (${res.status})`);
   }
 
-  return res.json(); // { secure_url, public_id, … }
+  return { url: publicUrl, publicId: key };
 }
 
 // ─── CRUD ────────────────────────────────────────────────────────────────────

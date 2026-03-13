@@ -1,7 +1,7 @@
 /**
  * scripts/deleteAllProducts.js
  * ─────────────────────────────────────────────────────────────────────────────
- * Deletes every product from MongoDB and purges their images from Cloudinary.
+ * Deletes every product from MongoDB and purges their images from AWS S3.
  * Run once from /server:
  *
  *   node scripts/deleteAllProducts.js
@@ -10,15 +10,15 @@
  *
  *   node scripts/deleteAllProducts.js --store=my-store-slug
  *
- * Requires a valid .env with MONGODB_URI, CLOUDINARY_CLOUD_NAME,
- * CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET.
+ * Requires a valid .env with MONGODB_URI, AWS_ACCESS_KEY_ID,
+ * AWS_SECRET_ACCESS_KEY, AWS_REGION, S3_BUCKET_NAME.
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
 require('dotenv').config();
-const connectDB  = require('../config/db');
-const cloudinary = require('../config/cloudinary');
-const Product    = require('../models/Product');
+const connectDB      = require('../config/db');
+const { deleteFromS3 } = require('../config/s3');
+const Product        = require('../models/Product');
 
 // Optional --store=<slug> argument
 const storeArg = process.argv.find((a) => a.startsWith('--store='));
@@ -54,15 +54,15 @@ const filterStore = storeArg ? storeArg.split('=')[1] : null;
   let failedImages    = 0;
 
   for (const product of products) {
-    // 1. Delete images from Cloudinary
+    // 1. Delete images from S3
     if (product.images && product.images.length > 0) {
       for (const img of product.images) {
         try {
-          await cloudinary.uploader.destroy(img.publicId);
-          console.log(`  [cloudinary] ✓ Deleted image ${img.publicId}`);
+          await deleteFromS3(img.publicId);
+          console.log(`  [s3] ✓ Deleted image ${img.publicId}`);
           deletedImages++;
         } catch (err) {
-          console.warn(`  [cloudinary] ✗ Failed to delete ${img.publicId}: ${err.message}`);
+          console.warn(`  [s3] ✗ Failed to delete ${img.publicId}: ${err.message}`);
           failedImages++;
         }
       }
@@ -79,7 +79,7 @@ const filterStore = storeArg ? storeArg.split('=')[1] : null;
   console.log(`   Products deleted : ${deletedProducts}`);
   console.log(`   Images deleted   : ${deletedImages}`);
   if (failedImages > 0) {
-    console.log(`   Image failures  : ${failedImages} (manual cleanup may be needed in Cloudinary)`);
+    console.log(`   Image failures  : ${failedImages} (manual cleanup may be needed in S3)`);
   }
   console.log('─────────────────────────────────\n');
 

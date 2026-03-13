@@ -1,5 +1,7 @@
 const Product = require("../models/Product");
-const cloudinary = require("../config/cloudinary");
+const { s3, S3_BUCKET, deleteFromS3 } = require("../config/s3");
+const { PutObjectCommand } = require("@aws-sdk/client-s3");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const Category = require("../models/Category");
 const Store = require("../models/Store");
 const mongoose = require("mongoose");
@@ -147,26 +149,26 @@ exports.createProduct = async (req, res) => {
 
     const images = [];
     if (req.files && req.files.length) {
-      // Legacy multer path (images sent as multipart bytes)
+      // multer-s3 path: images uploaded to S3, file.location is URL, file.key is S3 key
       console.log(
-        `[Products] Create – ${req.files.length} file(s) received via multer`,
+        `[Products] Create – ${req.files.length} file(s) received via multer-s3`,
       );
       for (let i = 0; i < req.files.length; i++) {
         const file = req.files[i];
-        if (file.path && file.filename) {
+        if (file.location && file.key) {
           console.log(
-            `[Products] Image ${i + 1} uploaded successfully → url: ${file.path} | publicId: ${file.filename}`,
+            `[Products] Image ${i + 1} uploaded successfully → url: ${file.location} | publicId: ${file.key}`,
           );
-          images.push({ url: file.path, publicId: file.filename });
+          images.push({ url: file.location, publicId: file.key });
         } else {
           console.error(
-            `[Products] Image ${i + 1} upload failed – missing url or publicId (originalname: ${file.originalname}, mimetype: ${file.mimetype})`,
+            `[Products] Image ${i + 1} upload failed – missing location or key (originalname: ${file.originalname}, mimetype: ${file.mimetype})`,
           );
         }
       }
     } else if (req.body.images) {
-      // Direct-to-Cloudinary path: browser uploaded images directly;
-      // body contains a JSON array of { url, publicId } already on Cloudinary.
+      // Direct-to-S3 path: browser uploaded images directly via presigned URL;
+      // body contains a JSON array of { url, publicId } already on S3.
       try {
         const parsed =
           typeof req.body.images === "string"
@@ -177,7 +179,7 @@ exports.createProduct = async (req, res) => {
             if (img.url && img.publicId)
               images.push({ url: img.url, publicId: img.publicId });
           });
-          console.log(`[Products] Create – ${images.length} image(s) received via direct-Cloudinary path`);
+          console.log(`[Products] Create – ${images.length} image(s) received via direct-S3 path`);
         }
       } catch (parseErr) {
         console.error("[Products] Failed to parse images JSON:", parseErr.message);
@@ -266,17 +268,17 @@ exports.updateProduct = async (req, res) => {
     if (ratingRaw !== undefined && ratingRaw !== "")
       product.rating = Math.min(5, Math.max(0, Number(ratingRaw)));
 
-    // Handle selective image deletion (deleteImages = JSON array of publicIds)
+    // Handle selective image deletion (deleteImages = JSON array of S3 keys)
     if (req.body.deleteImages) {
       try {
         const deleteIds = JSON.parse(req.body.deleteImages);
         if (Array.isArray(deleteIds) && deleteIds.length) {
           for (const publicId of deleteIds) {
             try {
-              await cloudinary.uploader.destroy(publicId);
-              console.log(`[Cloudinary] Deleted image ${publicId}`);
-            } catch (cloudErr) {
-              console.error("[Cloudinary] Deletion error:", cloudErr.message);
+              await deleteFromS3(publicId);
+              console.log(`[S3] Deleted image ${publicId}`);
+            } catch (s3Err) {
+              console.error("[S3] Deletion error:", s3Err.message);
             }
           }
           // Remove deleted images from product
@@ -294,14 +296,14 @@ exports.updateProduct = async (req, res) => {
 
     // If new images provided, append them (not replace)
     if (req.files && req.files.length) {
-      // Legacy multer path
+      // multer-s3 path
       const newImages = req.files.map((f) => ({
-        url: f.path,
-        publicId: f.filename,
+        url: f.location,
+        publicId: f.key,
       }));
       product.images = [...product.images, ...newImages];
     } else if (req.body.images) {
-      // Direct-to-Cloudinary path
+      // Direct-to-S3 path
       try {
         const parsed =
           typeof req.body.images === "string"
@@ -310,7 +312,7 @@ exports.updateProduct = async (req, res) => {
         if (Array.isArray(parsed) && parsed.length) {
           const newImages = parsed.filter((img) => img.url && img.publicId);
           product.images = [...product.images, ...newImages];
-          console.log(`[Products] Update – ${newImages.length} image(s) added via direct-Cloudinary path`);
+          console.log(`[Products] Update – ${newImages.length} image(s) added via direct-S3 path`);
         }
       } catch (parseErr) {
         console.error("[Products] Failed to parse images JSON:", parseErr.message);
@@ -345,14 +347,14 @@ exports.deleteProduct = async (req, res) => {
         .json({ message: "Not authorised to delete this product" });
     }
 
-    // Delete all images from Cloudinary
+    // Delete all images from S3
     if (product.images && product.images.length) {
       for (const img of product.images) {
         try {
-          await cloudinary.uploader.destroy(img.publicId);
-          console.log(`[Cloudinary] Deleted image ${img.publicId}`);
-        } catch (cloudErr) {
-          console.error("[Cloudinary] Deletion error:", cloudErr.message);
+          await deleteFromS3(img.publicId);
+          console.log(`[S3] Deleted image ${img.publicId}`);
+        } catch (s3Err) {
+          console.error("[S3] Deletion error:", s3Err.message);
         }
       }
     }
@@ -366,27 +368,36 @@ exports.deleteProduct = async (req, res) => {
 };
 
 // GET /api/products/sign-upload  (protected – store_owner / super_admin)
-// Returns a short-lived Cloudinary signature so the browser can upload directly
-// to Cloudinary.  No image bytes ever pass through this server.
+// Returns a short-lived presigned S3 PUT URL so the browser can upload directly
+// to S3.  No image bytes ever pass through this server.
 exports.signUpload = async (req, res) => {
   try {
-    const timestamp = Math.round(Date.now() / 1000);
-    const folder = "products";
-    const paramsToSign = { folder, timestamp };
-    const signature = cloudinary.utils.api_sign_request(
-      paramsToSign,
-      process.env.CLOUDINARY_API_SECRET,
-    );
+    const { filename, contentType } = req.query;
+    if (!filename) {
+      return res.status(400).json({ message: "filename query param is required" });
+    }
+
+    const ext = filename.includes(".") ? filename.substring(filename.lastIndexOf(".")) : "";
+    const baseName = filename.replace(/\.[^.]+$/, "").replace(/\s+/g, "-");
+    const key = `products/${Date.now()}-${baseName}${ext}`;
+
+    const command = new PutObjectCommand({
+      Bucket: S3_BUCKET,
+      Key: key,
+      ContentType: contentType || "image/jpeg",
+    });
+
+    const presignedUrl = await getSignedUrl(s3, command, { expiresIn: 300 });
+    const publicUrl = `https://${S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+
     res.json({
-      signature,
-      timestamp,
-      folder,
-      cloudName: process.env.CLOUDINARY_CLOUD_NAME,
-      apiKey: process.env.CLOUDINARY_API_KEY,
+      presignedUrl,
+      publicUrl,
+      key,
     });
   } catch (error) {
     console.error("[Products] signUpload error:", error.message);
-    res.status(500).json({ message: "Failed to generate upload signature" });
+    res.status(500).json({ message: "Failed to generate presigned upload URL" });
   }
 };
 

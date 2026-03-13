@@ -1,5 +1,5 @@
 const Banner = require('../models/Banner');
-const cloudinary = require('../config/cloudinary');
+const { deleteFromS3 } = require('../config/s3');
 
 // POST /api/banners
 exports.uploadBanner = async (req, res) => {
@@ -9,9 +9,9 @@ exports.uploadBanner = async (req, res) => {
     }
     const { title, category } = req.body;
 
-    // multer-storage-cloudinary already uploaded image, file.path is URL, file.filename is public_id (with folder)
-    const imageUrl = req.file.path;
-    const imagePublicId = req.file.filename; // includes folder e.g. banners/diwali/<id>
+    // multer-s3 already uploaded image, file.location is URL, file.key is S3 key
+    const imageUrl = req.file.location;
+    const imagePublicId = req.file.key; // S3 key e.g. banners/1700000000-image.jpg
 
     const banner = await Banner.create({
       title,
@@ -59,10 +59,10 @@ exports.deleteBanner = async (req, res) => {
     }
 
     try {
-      await cloudinary.uploader.destroy(banner.imagePublicId);
-      console.log('[Banner] Delete Success:', banner.imagePublicId);
-    } catch (cloudErr) {
-      console.error('[Banner] Cloudinary Delete Error:', cloudErr.message);
+      await deleteFromS3(banner.imagePublicId);
+      console.log('[Banner] S3 Delete Success:', banner.imagePublicId);
+    } catch (s3Err) {
+      console.error('[Banner] S3 Delete Error:', s3Err.message);
     }
 
     await banner.deleteOne();

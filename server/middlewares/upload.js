@@ -1,6 +1,7 @@
 const multer = require("multer");
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const cloudinary = require("../config/cloudinary");
+const multerS3 = require("multer-s3");
+const path = require("path");
+const { s3, S3_BUCKET } = require("../config/s3");
 
 // Shared image file filter
 const imageFileFilter = (req, file, cb) => {
@@ -8,52 +9,38 @@ const imageFileFilter = (req, file, cb) => {
   else cb(new Error("Only image files are allowed"), false);
 };
 
-// Product storage configuration
-const productStorage = new CloudinaryStorage({
-  cloudinary,
-  params: async (req, file) => ({
-    folder: "products",
-    resource_type: "image",
-    format: undefined, // allow auto format
-    public_id: `${Date.now()}-${file.originalname.split(".")[0]}`,
-  }),
-});
-
-// Banner storage configuration (single folder)
-const bannerStorage = new CloudinaryStorage({
-  cloudinary,
-  params: async (req, file) => ({
-    folder: "banners",
-    resource_type: "image",
-    format: undefined,
-    public_id: `${Date.now()}-${file.originalname.split(".")[0]}`,
-  }),
-});
-
-// Category storage configuration
-const categoryStorage = new CloudinaryStorage({
-  cloudinary,
-  params: async (req, file) => ({
-    folder: "categories",
-    resource_type: "image",
-    format: undefined,
-    public_id: `${Date.now()}-${file.originalname.split(".")[0]}`,
-  }),
-});
+/**
+ * Build a multer-s3 storage engine for a given S3 folder prefix.
+ * Uploaded files are publicly readable; the URL is available at req.file.location
+ * and the S3 key at req.file.key.
+ */
+const makeS3Storage = (folder) =>
+  multerS3({
+    s3,
+    bucket: S3_BUCKET,
+    contentType: multerS3.AUTO_CONTENT_TYPE,
+    key: (req, file, cb) => {
+      const ext = path.extname(file.originalname) || "";
+      const baseName = path.basename(file.originalname, ext).replace(/\s+/g, "-");
+      const key = `${folder}/${Date.now()}-${baseName}${ext}`;
+      cb(null, key);
+    },
+  });
 
 const categoryUpload = multer({
-  storage: categoryStorage,
+  storage: makeS3Storage("categories"),
   fileFilter: imageFileFilter,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
 });
 
 const productUpload = multer({
-  storage: productStorage,
+  storage: makeS3Storage("products"),
   fileFilter: imageFileFilter,
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB per file
 });
+
 const bannerUpload = multer({
-  storage: bannerStorage,
+  storage: makeS3Storage("banners"),
   fileFilter: imageFileFilter,
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB per file
 });
