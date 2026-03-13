@@ -134,6 +134,12 @@ const Navbar = () => {
                 ) : role === "customer" ? (
                   <>
                     <Link
+                      to="/favorites"
+                      className="text-sm text-neutral-400 hover:text-white transition-colors px-3 py-1.5 rounded-full hover:bg-white/5"
+                    >
+                      Favorites
+                    </Link>
+                    <Link
                       to={`/${uid}/profile`}
                       className="text-sm text-neutral-400 hover:text-white transition-colors px-3 py-1.5 rounded-full hover:bg-white/5"
                     >
@@ -244,6 +250,13 @@ const Navbar = () => {
               </>
             ) : role === "customer" ? (
               <>
+                <Link
+                  to="/favorites"
+                  onClick={handleMobileLink}
+                  className="block px-4 py-3 rounded-xl text-neutral-300 hover:text-white hover:bg-white/5"
+                >
+                  Favorites
+                </Link>
                 <Link
                   to={`/${uid}/profile`}
                   onClick={handleMobileLink}

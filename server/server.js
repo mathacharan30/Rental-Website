@@ -13,6 +13,7 @@ const testimonialRoutes = require("./routes/testimonialRoutes");
 const superAdminRoutes = require("./routes/superAdminRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
+const favoriteRoutes = require("./routes/favoriteRoutes");
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.use("/api/testimonials", testimonialRoutes);
 app.use("/api/superadmin", superAdminRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/payment", paymentRoutes);
+app.use("/api/favorites", favoriteRoutes);
 
 // Start server after DB connection
 const PORT = process.env.PORT || 5000;

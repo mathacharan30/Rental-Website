@@ -25,6 +25,7 @@ import PaymentStatus from "./pages/Main/PaymentStatus";
 
 // Customer pages
 import CustomerProfile from "./pages/Main/CustomerProfile";
+import Favorites from "./pages/Main/Favorites";
 
 // Store-owner (admin) pages
 import AdminDashboard from "./pages/Admin/Dashboard";
@@ -72,6 +73,14 @@ const App = () => {
                 element={
                   <ProtectedRoute allowedRoles={["customer"]}>
                     <CustomerProfile />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/favorites"
+                element={
+                  <ProtectedRoute allowedRoles={["customer"]}>
+                    <Favorites />
                   </ProtectedRoute>
                 }
               />

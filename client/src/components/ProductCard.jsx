@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import FavoriteButton from "./FavoriteButton";
 
 const ProductCard = ({ product }) => {
   return (
@@ -14,6 +15,11 @@ const ProductCard = ({ product }) => {
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+        {/* Favorite Button */}
+        <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <FavoriteButton productId={product.id} size={18} />
+        </div>
 
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
           <span className="px-4 py-1.5 rounded-lg bg-white/10 backdrop-blur-sm text-xs text-white font-medium">

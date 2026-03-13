@@ -101,9 +101,25 @@ export async function getProductById(id) {
   return mapProduct(data || {});
 }
 
-export async function getProductsByCategorySlug(slug) {
+export async function getProductsByCategorySlug(slug, page = 1, limit = 10) {
   const catId = await findCategoryIdBySlug(slug);
-  if (!catId) return [];
-  const { data } = await api.get(`/api/categories/${catId}/products`);
-  return Array.isArray(data) ? data.map(mapProduct) : [];
+  if (!catId) return { products: [], pagination: null };
+
+  const { data } = await api.get(`/api/categories/${catId}/products`, {
+    params: { page, limit }
+  });
+
+  // Handle both paginated and non-paginated responses
+  if (data.products && data.pagination) {
+    return {
+      products: Array.isArray(data.products) ? data.products.map(mapProduct) : [],
+      pagination: data.pagination
+    };
+  }
+
+  // Fallback for non-paginated response (backward compatibility)
+  return {
+    products: Array.isArray(data) ? data.map(mapProduct) : [],
+    pagination: null
+  };
 }

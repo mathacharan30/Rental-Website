@@ -359,6 +359,13 @@ exports.deleteProduct = async (req, res) => {
       }
     }
 
+    // Remove product from all users' favorites
+    const Favorite = require("../models/Favorite");
+    const deletedFavorites = await Favorite.deleteMany({ product: id });
+    if (deletedFavorites.deletedCount > 0) {
+      console.log(`[Favorites] Removed product from ${deletedFavorites.deletedCount} users' favorites`);
+    }
+
     await product.deleteOne();
     res.json({ message: "Product deleted successfully" });
   } catch (error) {

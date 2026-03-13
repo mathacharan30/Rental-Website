@@ -5,6 +5,7 @@ import { BiLeftArrow } from "react-icons/bi";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { IoClose } from "react-icons/io5";
 import Footer from "../../components/Footer";
+import FavoriteButton from "../../components/FavoriteButton";
 import { getProductById } from "../../services/productService";
 import { createPayment } from "../../services/paymentService";
 import { useAuth } from "../../context/AuthContext";
@@ -178,9 +179,12 @@ const ProductDetail = () => {
         <p className="text-xs uppercase tracking-[0.25em] text-violet-400 font-medium mb-2">
           {product.category}
         </p>
-        <h1 className="text-3xl md:text-5xl font-bold display-font text-white tracking-tight">
-          {product.title}
-        </h1>
+        <div className="flex items-center justify-center gap-3">
+          <h1 className="text-3xl md:text-5xl font-bold display-font text-white tracking-tight">
+            {product.title}
+          </h1>
+          <FavoriteButton productId={product.id} size={28} />
+        </div>
         <div className="flex items-center justify-center gap-1 mt-3">
           {[...Array(5)].map((_, i) =>
             i < Math.floor(rating) ? (
