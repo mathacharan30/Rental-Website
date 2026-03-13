@@ -51,6 +51,54 @@ exports.getProductsByCategory = async (req, res) => {
   }
 };
 
+// PUT /api/categories/:id (admin only) — update category name and/or image
+exports.updateCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, description } = req.body;
+
+    const category = await Category.findById(id);
+    if (!category) {
+      return res.status(404).json({ message: 'Category not found' });
+    }
+
+    // Check if name is being changed and if it conflicts with another category
+    if (name && name.trim() !== category.name) {
+      const exists = await Category.findOne({ name: name.trim(), _id: { $ne: id } });
+      if (exists) {
+        return res.status(409).json({ message: 'Category name already exists' });
+      }
+      category.name = name.trim();
+    }
+
+    // Update description if provided
+    if (description !== undefined) {
+      category.description = description;
+    }
+
+    // If a new image file is uploaded, delete the old one and update
+    if (req.file) {
+      // Delete old image from S3 if it exists
+      if (category.image && category.image.publicId) {
+        try {
+          await deleteFromS3(category.image.publicId);
+          console.log('[Category] Old image deleted from S3:', category.image.publicId);
+        } catch (err) {
+          console.error('[Category] Error deleting old image from S3:', err.message);
+        }
+      }
+      // Set new image
+      category.image = { url: req.file.location, publicId: req.file.key };
+    }
+
+    await category.save();
+    res.json(category);
+  } catch (error) {
+    console.error('[Category] Update error:', error.message);
+    res.status(500).json({ message: 'Server error updating category' });
+  }
+};
+
 // DELETE /api/categories/:id (admin only) — deletes category and all its products (and their images)
 exports.deleteCategory = async (req, res) => {
   try {

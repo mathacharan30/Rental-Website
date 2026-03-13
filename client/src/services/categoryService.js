@@ -28,6 +28,20 @@ export async function createCategory(payload) {
   return data;
 }
 
+export async function updateCategory(id, payload) {
+  // Accepts FormData (preferred for file upload) or plain object
+  if (typeof FormData !== 'undefined' && payload instanceof FormData) {
+    const { data } = await api.put(`/api/categories/${id}`, payload);
+    return data;
+  }
+  const body = {};
+  if (payload?.name) body.name = payload.name;
+  if (payload?.image) body.image = payload.image;
+  if (payload?.description !== undefined) body.description = payload.description;
+  const { data } = await api.put(`/api/categories/${id}`, body);
+  return data;
+}
+
 export async function deleteCategory(id) {
   const { data } = await api.delete(`/api/categories/${id}`);
   return data;

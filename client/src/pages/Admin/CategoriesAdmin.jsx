@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   getCategories,
   createCategory,
+  updateCategory,
   deleteCategory,
 } from "../../services/categoryService";
 
@@ -9,7 +10,7 @@ import toast from "react-hot-toast";
 import Loader from "../../components/Loader";
 import Modal from "../../components/admin/Modal";
 
-import { Plus, Image as ImageIcon, Trash2, UploadCloud } from "lucide-react";
+import { Plus, Image as ImageIcon, Trash2, UploadCloud, Edit2 } from "lucide-react";
 
 const CategoriesAdmin = () => {
   const [categories, setCategories] = useState([]);
@@ -19,6 +20,8 @@ const CategoriesAdmin = () => {
   const [loading, setLoading] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editingCategory, setEditingCategory] = useState(null);
 
   const load = async () => {
     setDataLoading(true);
@@ -37,7 +40,7 @@ const CategoriesAdmin = () => {
     load();
   }, []);
 
-  const handleAdd = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name) {
       toast.error("Please enter a category name");
@@ -45,30 +48,67 @@ const CategoriesAdmin = () => {
     }
 
     setLoading(true);
-    const loadingToast = toast.loading("Creating category...");
+    const loadingToast = toast.loading(
+      isEditMode ? "Updating category..." : "Creating category..."
+    );
 
     try {
       const fd = new FormData();
       fd.append("name", name);
       if (imageFile) fd.append("image", imageFile);
 
-      await createCategory(fd);
+      if (isEditMode && editingCategory) {
+        await updateCategory(editingCategory._id, fd);
+        toast.success("Category updated successfully", { id: loadingToast });
+      } else {
+        await createCategory(fd);
+        toast.success("Category created successfully", { id: loadingToast });
+      }
 
       setName("");
       setImageFile(null);
       setFileKey(Date.now());
-
-      toast.success("Category created successfully", { id: loadingToast });
       setIsModalOpen(false);
+      setIsEditMode(false);
+      setEditingCategory(null);
       await load();
     } catch (e) {
-      console.error("Create category failed", e);
-      toast.error(e?.response?.data?.message || "Failed to create category", {
-        id: loadingToast,
-      });
+      console.error(isEditMode ? "Update category failed" : "Create category failed", e);
+      toast.error(
+        e?.response?.data?.message ||
+          (isEditMode ? "Failed to update category" : "Failed to create category"),
+        { id: loadingToast }
+      );
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleEdit = (category) => {
+    setEditingCategory(category);
+    setName(category.name);
+    setImageFile(null);
+    setFileKey(Date.now());
+    setIsEditMode(true);
+    setIsModalOpen(true);
+  };
+
+  const handleAddNew = () => {
+    setEditingCategory(null);
+    setName("");
+    setImageFile(null);
+    setFileKey(Date.now());
+    setIsEditMode(false);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setIsEditMode(false);
+    setEditingCategory(null);
+    setName("");
+    setImageFile(null);
+    setFileKey(Date.now());
   };
 
   const handleDelete = async (id) => {
@@ -106,8 +146,8 @@ const CategoriesAdmin = () => {
         </div>
 
         <button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg 
+          onClick={handleAddNew}
+          className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg
           flex items-center gap-2 transition-colors"
         >
           <Plus size={18} />
@@ -164,14 +204,24 @@ const CategoriesAdmin = () => {
                     </td>
 
                     <td className="px-6 py-4 text-right">
-                      <button
-                        onClick={() => handleDelete(c._id)}
-                        className="p-2 text-neutral-500 hover:text-red-400 hover:bg-red-500/10 
-                        rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                        title="Delete"
-                      >
-                        <Trash2 size={18} />
-                      </button>
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => handleEdit(c)}
+                          className="p-2 text-neutral-500 hover:text-violet-400 hover:bg-violet-500/10
+                          rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                          title="Edit"
+                        >
+                          <Edit2 size={18} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(c._id)}
+                          className="p-2 text-neutral-500 hover:text-red-400 hover:bg-red-500/10
+                          rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                          title="Delete"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -184,10 +234,10 @@ const CategoriesAdmin = () => {
       {/* Modal */}
       <Modal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Add New Category"
+        onClose={handleCloseModal}
+        title={isEditMode ? "Edit Category" : "Add New Category"}
       >
-        <form onSubmit={handleAdd} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {/* Name */}
           <div>
             <label className="block text-sm font-medium text-neutral-300 mb-1">
@@ -206,8 +256,25 @@ const CategoriesAdmin = () => {
           {/* Image Upload */}
           <div>
             <label className="block text-sm font-medium text-neutral-300 mb-1">
-              Cover Image
+              Cover Image {isEditMode && "(Upload new to replace)"}
             </label>
+
+            {/* Show current image when editing */}
+            {isEditMode && editingCategory && !imageFile && (
+              <div className="mb-3 rounded-lg overflow-hidden bg-white/5 border border-white/10">
+                {editingCategory.image?.url || editingCategory.image ? (
+                  <img
+                    src={editingCategory.image?.url || editingCategory.image}
+                    alt={editingCategory.name}
+                    className="w-full h-32 object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-32 flex items-center justify-center text-neutral-400">
+                    <ImageIcon size={32} />
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="border-2 border-dashed border-white/10 rounded-lg p-4 text-center hover:bg-white/5 transition-colors">
               <input
@@ -238,7 +305,11 @@ const CategoriesAdmin = () => {
               >
                 <UploadCloud size={24} className="text-neutral-400" />
                 <span className="text-sm text-neutral-400">
-                  {imageFile ? imageFile.name : "Click to upload image"}
+                  {imageFile
+                    ? imageFile.name
+                    : isEditMode
+                    ? "Click to upload new image"
+                    : "Click to upload image"}
                 </span>
               </label>
             </div>
@@ -248,8 +319,8 @@ const CategoriesAdmin = () => {
           <div className="flex gap-3 pt-4 border-t border-white/10">
             <button
               type="button"
-              onClick={() => setIsModalOpen(false)}
-              className="flex-1 px-4 py-2 border border-white/10 
+              onClick={handleCloseModal}
+              className="flex-1 px-4 py-2 border border-white/10
               text-neutral-300 rounded-lg hover:bg-white/5 transition-colors font-medium"
             >
               Cancel
@@ -257,11 +328,17 @@ const CategoriesAdmin = () => {
 
             <button
               disabled={loading}
-              className="flex-1 bg-violet-600 text-white px-4 py-2 rounded-lg 
+              className="flex-1 bg-violet-600 text-white px-4 py-2 rounded-lg
               hover:bg-violet-700 transition-colors disabled:opacity-60 font-medium"
               type="submit"
             >
-              {loading ? "Adding..." : "Add Category"}
+              {loading
+                ? isEditMode
+                  ? "Updating..."
+                  : "Adding..."
+                : isEditMode
+                ? "Update Category"
+                : "Add Category"}
             </button>
           </div>
         </form>
