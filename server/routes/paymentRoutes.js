@@ -22,32 +22,15 @@ const captureRawBody = express.json({
 
 const customerGuard = [verifyFirebaseToken, attachUserRole, allowRoles(['customer'])];
 
-// ── Webhook Basic-Auth guard ─────────────────────────────────────────────────
-// PhonePe sends the credentials you configure as  Authorization: Basic base64(user:pass)
-const verifyWebhookBasicAuth = (req, res, next) => {
-  const expectedUser = process.env.PHONEPE_WEBHOOK_USERNAME;
-  const expectedPass = process.env.PHONEPE_WEBHOOK_PASSWORD;
-
-  if (!expectedUser || !expectedPass) {
-    console.error('[Webhook] PHONEPE_WEBHOOK_USERNAME / PHONEPE_WEBHOOK_PASSWORD not set');
-    return res.status(500).json({ success: false, message: 'Webhook credentials not configured' });
-  }
-
+// ── Webhook SHA-256 guard ─────────────────────────────────────────────────────
+// PhonePe sends:  Authorization: SHA256(webhookUsername + ":" + webhookPassword)
+// The pg-sdk-node validateCallback uses the same hash, so we let the SDK handle
+// the real signature check.  We just ensure the header is present here.
+const verifyWebhookAuth = (req, res, next) => {
   const authHeader = req.headers.authorization || '';
-  if (!authHeader.startsWith('Basic ')) {
-    return res.status(401).json({ success: false, message: 'Missing Basic auth' });
+  if (!authHeader) {
+    return res.status(401).json({ success: false, message: 'Missing Authorization header' });
   }
-
-  const base64    = authHeader.slice(6); // strip "Basic "
-  const decoded   = Buffer.from(base64, 'base64').toString('utf-8');
-  const [user, ...rest] = decoded.split(':');
-  const pass      = rest.join(':'); // password may contain colons
-
-  if (user !== expectedUser || pass !== expectedPass) {
-    console.warn('[Webhook] Invalid Basic-auth credentials');
-    return res.status(401).json({ success: false, message: 'Invalid credentials' });
-  }
-
   next();
 };
 
@@ -56,8 +39,8 @@ const verifyWebhookBasicAuth = (req, res, next) => {
 // Initiate a payment (authenticated customer only)
 router.post('/create', ...customerGuard, createPayment);
 
-// PhonePe server-to-server callback (Basic-auth protected)
-router.post('/webhook', captureRawBody, verifyWebhookBasicAuth, webhook);
+// PhonePe server-to-server callback (SHA-256 signature validated inside webhook handler)
+router.post('/webhook', captureRawBody, verifyWebhookAuth, webhook);
 
 // Check payment status by merchantOrderId (public — called right after redirect)
 router.get('/status/:merchantOrderId', getOrderStatus);

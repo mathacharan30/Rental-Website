@@ -164,9 +164,12 @@ exports.webhook = async (req, res) => {
     const rawBody       = req.rawBody || JSON.stringify(req.body);
     const authorization = req.headers.authorization || '';
 
+    // PhonePe hashes the webhook username + password that were configured on
+    // the PhonePe dashboard.  The SDK verifies:
+    //   SHA256(PHONEPE_WEBHOOK_USERNAME + ":" + PHONEPE_WEBHOOK_PASSWORD) === authorization
     const callbackResponse = phonepeClient.validateCallback(
-      process.env.PHONEPE_CLIENT_ID,
-      process.env.PHONEPE_CLIENT_SECRET,
+      process.env.PHONEPE_WEBHOOK_USERNAME,
+      process.env.PHONEPE_WEBHOOK_PASSWORD,
       authorization,
       rawBody,
     );
