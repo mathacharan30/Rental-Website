@@ -26,7 +26,9 @@ app.use('/api/payment/webhook', cors({ origin: '*' }));
 // Middleware
 app.use(
   cors({
-    origin: process.env.CLIENT_ORIGIN,
+    // Allow the configured client origin; fall back to the production domain
+    // so the app keeps working even if CLIENT_ORIGIN is not set in Vercel.
+    origin: process.env.CLIENT_ORIGIN || 'https://rental-website-6a9i.vercel.app',
     credentials: true,
   }),
 );
@@ -50,11 +52,29 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/favorites", favoriteRoutes);
 
-// Start server after DB connection
-const PORT = process.env.PORT || 5000;
+// Connect to DB immediately when this module loads.
+// Mongoose caches the connection so warm Vercel serverless instances reuse it.
+// If running locally (require.main === module) we exit on failure so the
+// developer knows immediately; in serverless we just log and let Vercel retry.
+if (require.main === module) {
+  // ── Local development ────────────────────────────────────────────────────
+  const PORT = process.env.PORT || 5000;
+  connectDB()
+    .then(() => {
+      app.listen(PORT, () => {
+        console.log(`[Server] Running on port ${PORT}`);
+      });
+    })
+    .catch((err) => {
+      console.error('[DB] Startup failed:', err.message);
+      process.exit(1);
+    });
+} else {
+  // ── Vercel serverless ────────────────────────────────────────────────────
+  // Kick off the connection; Mongoose queues queries until it resolves.
+  connectDB().catch((err) =>
+    console.error('[DB] Initial connection failed:', err.message)
+  );
+}
 
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`[Server] Running on port ${PORT}`);
-  });
-});
+module.exports = app;
