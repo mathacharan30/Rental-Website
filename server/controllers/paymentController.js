@@ -160,9 +160,20 @@ exports.createPayment = async (req, res) => {
 // ─── 2. Webhook Handler ──────────────────────────────────────────────────────
 
 exports.webhook = async (req, res) => {
+  // ── Log everything so Vercel logs show whether PhonePe is calling us ────────
+  console.log('[Webhook] ===== INCOMING REQUEST =====');
+  console.log('[Webhook] Time         :', new Date().toISOString());
+  console.log('[Webhook] Method       :', req.method);
+  console.log('[Webhook] Headers      :', JSON.stringify(req.headers, null, 2));
+  console.log('[Webhook] Raw body     :', req.rawBody || '(not captured)');
+
   try {
     const rawBody       = req.rawBody || JSON.stringify(req.body);
     const authorization = req.headers.authorization || '';
+
+    console.log('[Webhook] Authorization:', authorization || '(missing)');
+    console.log('[Webhook] WEBHOOK_USER :', process.env.PHONEPE_WEBHOOK_USERNAME || '(not set)');
+    console.log('[Webhook] WEBHOOK_PASS :', process.env.PHONEPE_WEBHOOK_PASSWORD ? '(set)' : '(not set)');
 
     // PhonePe hashes the webhook username + password that were configured on
     // the PhonePe dashboard.  The SDK verifies:
@@ -174,19 +185,25 @@ exports.webhook = async (req, res) => {
       rawBody,
     );
 
+    console.log('[Webhook] SDK validated ✅ — payload:', JSON.stringify(callbackResponse, null, 2));
+
     const { payload } = callbackResponse;
 
     if (payload.merchantOrderId) {
+      console.log('[Webhook] Syncing order:', payload.merchantOrderId, '| state:', payload.state);
       await syncPaymentAndOrder(
         payload.merchantOrderId,
         payload.state,
         payload,
       );
+      console.log('[Webhook] DB sync complete ✅');
+    } else {
+      console.warn('[Webhook] No merchantOrderId in payload — skipping DB sync');
     }
 
     return res.status(200).json({ success: true });
   } catch (err) {
-    console.error('[Payment] webhook validation error:', err.message);
+    console.error('[Webhook] ❌ Error:', err.message);
     return res.status(200).json({ success: false, message: err.message });
   }
 };
