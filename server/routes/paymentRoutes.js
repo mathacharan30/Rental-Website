@@ -20,8 +20,13 @@ const customerGuard = [verifyFirebaseToken, attachUserRole, allowRoles(['custome
 // Initiate a payment (authenticated customer only)
 router.post('/create', ...customerGuard, createPayment);
 
-// PhonePe server-to-server callback — no auth middleware, SDK validates inside the handler
+// PhonePe server-to-server callback — manual SHA256 validation inside the handler
 router.post('/webhook', webhook);
+
+// Health check — visit in browser to verify the webhook URL is correct
+router.get('/webhook', (req, res) => {
+  res.json({ status: 'ok', message: 'Webhook endpoint is alive', time: new Date().toISOString() });
+});
 
 // Check payment status by merchantOrderId (public — called right after redirect)
 router.get('/status/:merchantOrderId', getOrderStatus);

@@ -11,7 +11,8 @@
  *   5. POST /api/payment/refund + GET refund-status
  */
 
-const { v4: uuidv4 } = require('uuid');
+const crypto            = require('crypto');
+const { v4: uuidv4 }   = require('uuid');
 const {
   StandardCheckoutPayRequest,
   RefundRequest,
@@ -165,45 +166,58 @@ exports.webhook = async (req, res) => {
   console.log('[Webhook] Time         :', new Date().toISOString());
   console.log('[Webhook] Method       :', req.method);
   console.log('[Webhook] Headers      :', JSON.stringify(req.headers, null, 2));
-  console.log('[Webhook] Raw body     :', req.rawBody || '(not captured)');
+  console.log('[Webhook] Body         :', JSON.stringify(req.body));
 
   try {
-    const rawBody       = req.rawBody || JSON.stringify(req.body);
-    const authorization = req.headers.authorization || '';
+    const authorization = (req.headers.authorization || '').trim();
+    const webhookUser   = process.env.PHONEPE_WEBHOOK_USERNAME || '';
+    const webhookPass   = process.env.PHONEPE_WEBHOOK_PASSWORD || '';
 
-    console.log('[Webhook] Authorization:', authorization || '(missing)');
-    console.log('[Webhook] WEBHOOK_USER :', process.env.PHONEPE_WEBHOOK_USERNAME || '(not set)');
-    console.log('[Webhook] WEBHOOK_PASS :', process.env.PHONEPE_WEBHOOK_PASSWORD ? '(set)' : '(not set)');
+    console.log('[Webhook] Authorization header :', authorization || '(missing)');
+    console.log('[Webhook] WEBHOOK_USER env      :', webhookUser || '(not set)');
+    console.log('[Webhook] WEBHOOK_PASS env      :', webhookPass ? '(set)' : '(not set)');
 
-    // PhonePe hashes the webhook username + password that were configured on
-    // the PhonePe dashboard.  The SDK verifies:
-    //   SHA256(PHONEPE_WEBHOOK_USERNAME + ":" + PHONEPE_WEBHOOK_PASSWORD) === authorization
-    const callbackResponse = phonepeClient.validateCallback(
-      process.env.PHONEPE_WEBHOOK_USERNAME,
-      process.env.PHONEPE_WEBHOOK_PASSWORD,
-      authorization,
-      rawBody,
-    );
+    // ── Manual SHA-256 verification (replaces SDK validateCallback) ──────
+    // PhonePe sends:  Authorization: SHA256(webhookUsername + ":" + webhookPassword)
+    const expectedHash = crypto
+      .createHash('sha256')
+      .update(webhookUser + ':' + webhookPass)
+      .digest('hex');
 
-    console.log('[Webhook] SDK validated ✅ — payload:', JSON.stringify(callbackResponse, null, 2));
+    console.log('[Webhook] Expected hash         :', expectedHash);
+    console.log('[Webhook] Received hash         :', authorization);
+    console.log('[Webhook] Hash match?           :', authorization === expectedHash);
 
-    const { payload } = callbackResponse;
+    if (authorization !== expectedHash) {
+      console.error('[Webhook] ❌ Authorization hash mismatch — rejecting');
+      return res.status(200).json({ success: false, message: 'Authorization mismatch' });
+    }
 
-    if (payload.merchantOrderId) {
-      console.log('[Webhook] Syncing order:', payload.merchantOrderId, '| state:', payload.state);
-      await syncPaymentAndOrder(
-        payload.merchantOrderId,
-        payload.state,
-        payload,
-      );
+    console.log('[Webhook] ✅ Authorization verified');
+
+    // ── Parse the payload ────────────────────────────────────────────────
+    const body = req.body || {};
+    // PhonePe sends: { type: "PG_ORDER_COMPLETED", payload: { merchantOrderId, state, ... } }
+    const eventType = body.type || 'UNKNOWN';
+    const payload   = body.payload || body;
+
+    console.log('[Webhook] Event type :', eventType);
+    console.log('[Webhook] Payload    :', JSON.stringify(payload));
+
+    const merchantOrderId = payload.merchantOrderId;
+    const state           = payload.state;
+
+    if (merchantOrderId && state) {
+      console.log('[Webhook] Syncing order:', merchantOrderId, '| state:', state);
+      await syncPaymentAndOrder(merchantOrderId, state, payload);
       console.log('[Webhook] DB sync complete ✅');
     } else {
-      console.warn('[Webhook] No merchantOrderId in payload — skipping DB sync');
+      console.warn('[Webhook] No merchantOrderId/state in payload — skipping DB sync');
     }
 
     return res.status(200).json({ success: true });
   } catch (err) {
-    console.error('[Webhook] ❌ Error:', err.message);
+    console.error('[Webhook] ❌ Error:', err.message, err.stack);
     return res.status(200).json({ success: false, message: err.message });
   }
 };
