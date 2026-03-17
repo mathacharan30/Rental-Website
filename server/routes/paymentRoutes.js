@@ -9,6 +9,7 @@ const {
   createPayment,
   webhook,
   getOrderStatus,
+  syncPending,
   createRefund,
   getRefundStatus,
 } = require('../controllers/paymentController');
@@ -30,6 +31,10 @@ router.get('/webhook', (req, res) => {
 
 // Check payment status by merchantOrderId (public — called right after redirect)
 router.get('/status/:merchantOrderId', getOrderStatus);
+
+// Webhook fallback — sync all stale PENDING payments by calling PhonePe API
+// Call via cron (e.g. cron-job.org) every 2–5 min, or manually
+router.get('/sync-pending', syncPending);
 
 // Initiate a refund
 router.post('/refund', createRefund);

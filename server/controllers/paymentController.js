@@ -233,6 +233,11 @@ exports.getOrderStatus = async (req, res) => {
     // Sync both Payment and Order
     await syncPaymentAndOrder(merchantOrderId, statusResponse.state, statusResponse);
 
+    // Fire-and-forget: also sync any other stale pending payments in the background
+    syncAllPendingPayments().catch((e) =>
+      console.error('[SyncPending] background error:', e.message)
+    );
+
     return res.json({
       success: true,
       orderState: statusResponse.state,
@@ -241,6 +246,56 @@ exports.getOrderStatus = async (req, res) => {
     });
   } catch (err) {
     return handlePhonePeError(res, err, 'getOrderStatus');
+  }
+};
+
+// ─── 3b. Sync All Pending Payments (webhook fallback) ───────────────────────
+
+/**
+ * Finds all PENDING payments older than 2 minutes, checks their status with
+ * PhonePe, and updates the DB.  Acts as a safety net when webhooks don't fire.
+ */
+async function syncAllPendingPayments() {
+  const twoMinAgo = new Date(Date.now() - 2 * 60 * 1000);
+
+  const stalePayments = await Payment.find({
+    status: 'PENDING',
+    createdAt: { $lt: twoMinAgo },
+  }).limit(20);
+
+  if (!stalePayments.length) return { synced: 0 };
+
+  console.log(`[SyncPending] Found ${stalePayments.length} stale PENDING payment(s)`);
+
+  let synced = 0;
+  for (const pmt of stalePayments) {
+    try {
+      const statusResponse = await phonepeClient.getOrderStatus(
+        pmt.merchantOrderId,
+        true,
+      );
+      await syncPaymentAndOrder(pmt.merchantOrderId, statusResponse.state, statusResponse);
+      synced++;
+      console.log(`[SyncPending] ✅ ${pmt.merchantOrderId} → ${statusResponse.state}`);
+    } catch (err) {
+      console.error(`[SyncPending] ❌ ${pmt.merchantOrderId}:`, err.message);
+    }
+  }
+
+  return { synced, total: stalePayments.length };
+}
+
+/**
+ * Public endpoint: GET /api/payment/sync-pending
+ * Can be called by a cron service (e.g. cron-job.org) every 2–5 minutes.
+ */
+exports.syncPending = async (req, res) => {
+  try {
+    const result = await syncAllPendingPayments();
+    return res.json({ success: true, ...result });
+  } catch (err) {
+    console.error('[SyncPending] ❌', err.message);
+    return res.status(500).json({ success: false, message: err.message });
   }
 };
 
