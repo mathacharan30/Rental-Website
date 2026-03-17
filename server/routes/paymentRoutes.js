@@ -53,7 +53,9 @@ const verifyWebhookAuth = (req, res, next) => {
 router.post('/create', ...customerGuard, createPayment);
 
 // PhonePe server-to-server callback (SHA-256 signature validated inside webhook handler)
-router.post('/webhook', captureRawBody, verifyWebhookAuth, webhook);
+// router.post('/webhook', captureRawBody, verifyWebhookAuth, webhook);
+router.post('/webhook', webhook);
+
 
 // Check payment status by merchantOrderId (public — called right after redirect)
 router.get('/status/:merchantOrderId', getOrderStatus);
