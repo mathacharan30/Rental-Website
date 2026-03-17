@@ -13,10 +13,22 @@ const {
   getRefundStatus,
 } = require('../controllers/paymentController');
 
-// ── Middleware to preserve the raw body for webhook signature validation ──────
 const captureRawBody = express.json({
-  verify: (req, _res, buf) => {
-    req.rawBody = buf.toString('utf-8');
+  verify: (req, res, buf) => {
+    const raw = buf.toString('utf-8');
+    req.rawBody = raw;
+
+    // 🔍 Debug logs
+    console.log("📦 Raw body middleware triggered");
+    console.log("➡️ Method:", req.method);
+    console.log("➡️ URL:", req.originalUrl);
+
+    if (raw) {
+      console.log("➡️ Raw body length:", raw.length);
+      console.log("➡️ Raw body preview:", raw.substring(0, 200)); // first 200 chars only
+    } else {
+      console.log("⚠️ Empty raw body");
+    }
   },
 });
 
@@ -27,6 +39,7 @@ const customerGuard = [verifyFirebaseToken, attachUserRole, allowRoles(['custome
 // The pg-sdk-node validateCallback uses the same hash, so we let the SDK handle
 // the real signature check.  We just ensure the header is present here.
 const verifyWebhookAuth = (req, res, next) => {
+  console.log("next middleware hit");
   const authHeader = req.headers.authorization || '';
   if (!authHeader) {
     return res.status(401).json({ success: false, message: 'Missing Authorization header' });
