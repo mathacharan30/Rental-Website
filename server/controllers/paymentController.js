@@ -278,7 +278,20 @@ async function syncAllPendingPayments() {
       synced++;
       console.log(`[SyncPending] ✅ ${pmt.merchantOrderId} → ${statusResponse.state}`);
     } catch (err) {
-      console.error(`[SyncPending] ❌ ${pmt.merchantOrderId}:`, err.message);
+      // If PhonePe has no record of this order, mark it FAILED so it is never retried
+      if (err.message && err.message.includes('No entry found')) {
+        await Payment.findOneAndUpdate(
+          { merchantOrderId: pmt.merchantOrderId },
+          { status: 'FAILED' },
+        );
+        await Order.findByIdAndUpdate(pmt.orderId, {
+          paymentStatus: 'pending',
+          status: 'cancelled',
+        });
+        console.log(`[SyncPending] 🗑️  ${pmt.merchantOrderId} → not found on PhonePe, marked FAILED`);
+      } else {
+        console.error(`[SyncPending] ❌ ${pmt.merchantOrderId}:`, err.message);
+      }
     }
   }
 

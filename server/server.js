@@ -17,11 +17,10 @@ const favoriteRoutes = require("./routes/favoriteRoutes");
 
 const app = express();
 
-// ── Webhook route MUST be registered before the global CORS + body-parser
-// middlewares.  PhonePe calls it server-to-server (not from a browser), so
-// it must accept requests from any origin.  The paymentRoutes file applies
-// its own express.json({ verify }) middleware to capture the raw body.
+// These routes are called server-to-server (PhonePe webhook, cron jobs) so
+// they must accept requests from any origin — registered before global CORS.
 app.use('/api/payment/webhook', cors({ origin: '*' }));
+app.use('/api/payment/sync-pending', cors({ origin: '*' }));
 
 // Middleware
 app.use(
