@@ -1,12 +1,12 @@
 {
   "rewrites": [
     {
-      "source": "/:path(.*)",
+      "source": "/:path((?!api|_next|favicon.svg|robots.txt|sitemap.xml|assets).*)?",
       "has": [
         {
           "type": "header",
           "key": "user-agent",
-          "value": "(?i).*(googlebot|bingbot|yandex|baiduspider|twitterbot|facebookexternalhit|rogerbot|linkedinbot|embedly|showyoubot|outbrain|pinterestbot|slackbot|vkshare|w3c_validator|whatsapp|duckduckbot|applebot|semrushbot|ahrefsbot).*"
+          "value": ".*(googlebot|Googlebot|bingbot|Bingbot|yandex|Yandex|baiduspider|twitterbot|facebookexternalhit|rogerbot|linkedinbot|embedly|showyoubot|outbrain|pinterestbot|slackbot|vkshare|w3c_validator|whatsapp|duckduckbot|DuckDuckBot|applebot|Applebot|semrushbot|ahrefsbot).*"
         }
       ],
       "destination": "/api/prerender?path=:path"
