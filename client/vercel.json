@@ -1,15 +1,15 @@
 {
   "rewrites": [
     {
-      "source": "/:path*",
+      "source": "/:path(.*)",
       "has": [
         {
           "type": "header",
           "key": "user-agent",
-          "value": "(googlebot|bingbot|yandex|baiduspider|twitterbot|facebookexternalhit|rogerbot|linkedinbot|embedly|showyoubot|outbrain|pinterestbot|slackbot|vkshare|w3c_validator|whatsapp|duckduckbot|applebot|semrushbot|ahrefsbot)"
+          "value": "(?i).*(googlebot|bingbot|yandex|baiduspider|twitterbot|facebookexternalhit|rogerbot|linkedinbot|embedly|showyoubot|outbrain|pinterestbot|slackbot|vkshare|w3c_validator|whatsapp|duckduckbot|applebot|semrushbot|ahrefsbot).*"
         }
       ],
-      "destination": "/api/prerender?path=:path*"
+      "destination": "/api/prerender?path=:path"
     },
     {
       "source": "/(.*)",
