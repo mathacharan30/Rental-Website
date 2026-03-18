@@ -70,7 +70,7 @@ const Navbar = () => {
               to="/"
               className="text-xl font-semibold tracking-tight text-white hover:opacity-80 transition-opacity"
             >
-              people & style
+              People & Style
             </Link>
 
             {/* Desktop nav — public / customer only */}
@@ -216,7 +216,6 @@ const Navbar = () => {
               </>
             )}
 
-            {/* Admin / super admin dashboard link */}
             {(isAdmin || isSuperAdmin) && (
               <Link
                 to={dashboardLink}
