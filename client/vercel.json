@@ -1,18 +1,29 @@
 {
   "rewrites": [
     {
-      "source": "/:path((?!api|_next|favicon.svg|robots.txt|sitemap.xml|assets).*)?",
+      "source": "/",
       "has": [
         {
           "type": "header",
           "key": "user-agent",
-          "value": ".*(googlebot|Googlebot|bingbot|Bingbot|yandex|Yandex|baiduspider|twitterbot|facebookexternalhit|rogerbot|linkedinbot|embedly|showyoubot|outbrain|pinterestbot|slackbot|vkshare|w3c_validator|whatsapp|duckduckbot|DuckDuckBot|applebot|Applebot|semrushbot|ahrefsbot).*"
+          "value": ".*(googlebot|Googlebot|bingbot|Bingbot).*"
         }
       ],
-      "destination": "/api/prerender?path=:path"
+      "destination": "/api/prerender?path="
     },
     {
-      "source": "/(.*)",
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(googlebot|Googlebot|bingbot|Bingbot).*"
+        }
+      ],
+      "destination": "/api/prerender?path=:path*"
+    },
+    {
+      "source": "/:path*",
       "destination": "/index.html"
     }
   ]
