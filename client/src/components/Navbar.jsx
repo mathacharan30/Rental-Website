@@ -216,7 +216,6 @@ const Navbar = () => {
               </>
             )}
 
-            {/* Admin / super admin dashboard link */}
             {(isAdmin || isSuperAdmin) && (
               <Link
                 to={dashboardLink}
