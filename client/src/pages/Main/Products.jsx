@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { useParams, Link } from "react-router-dom";
 import ProductCard from "../../components/ProductCard";
 import { motion } from "framer-motion";
-import { BiLeftArrow } from "react-icons/bi";
+import { ArrowLeft } from "lucide-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Footer from "../../components/Footer";
 import {
@@ -83,13 +84,18 @@ const Products = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
+      <Helmet>
+        <title>{title} — Rent Designer Outfits | People &amp; Style</title>
+        <meta name="description" content={`Browse and rent ${decodedCategory || "designer"} outfits in Bangalore, Mysuru and across Karnataka. Premium ethnic wear rentals for every occasion.`} />
+        <link rel="canonical" href={`https://peopleandstyle.in/products${decodedCategory ? `/${encodeURIComponent(decodedCategory)}` : ""}`} />
+      </Helmet>
       <div className="max-w-7xl mx-auto ">
         <div className="flex justify-center">
           <Link
             to="/"
             className="text-sm flex items-center gap-1.5 text-neutral-500 hover:text-violet-400 transition-colors"
           >
-            <BiLeftArrow />
+            <ArrowLeft size={14} />
             Back to Home
           </Link>
         </div>

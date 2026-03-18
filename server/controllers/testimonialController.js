@@ -38,6 +38,7 @@ exports.getAllTestimonials = async (req, res) => {
     if (!Number.isNaN(lim) && lim > 0) query = query.limit(lim);
 
     const testimonials = await query.exec();
+    res.set("Cache-Control", "public, s-maxage=120, stale-while-revalidate=300");
     return res.status(200).json(testimonials);
   } catch (error) {
     console.error('[Testimonials] Fetch all error:', error.message);
@@ -65,6 +66,7 @@ exports.getTopTestimonialsAcrossProducts = async (req, res) => {
     const results = await Testimonial.aggregate(pipeline);
     await Testimonial.populate(results, { path: 'product', select: 'name' });
 
+    res.set("Cache-Control", "public, s-maxage=120, stale-while-revalidate=300");
     return res.status(200).json(results);
   } catch (error) {
     console.error('[Testimonials] Top by product error:', error.message);

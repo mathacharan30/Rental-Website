@@ -6,6 +6,7 @@ const { deleteFromS3 } = require('../config/s3');
 exports.getCategories = async (req, res) => {
   try {
     const categories = await Category.find().sort({ name: 1 });
+    res.set("Cache-Control", "public, s-maxage=120, stale-while-revalidate=300");
     res.json(categories);
   } catch (error) {
     console.error('[Category] Fetch error:', error.message);
@@ -61,6 +62,7 @@ exports.getProductsByCategory = async (req, res) => {
       .skip(skip)
       .limit(limitNum);
 
+    res.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
     res.json({
       products,
       pagination: {

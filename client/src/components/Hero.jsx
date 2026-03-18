@@ -23,8 +23,10 @@ const Hero = () => {
       {/* Background image */}
       <img
         src={heroSrc}
-        alt="Designer outfit banner"
-        loading="lazy"
+        alt="Rent designer outfits in Bangalore and Karnataka — People &amp; Style"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
         className="absolute inset-0 w-full h-full object-cover"
       />
 

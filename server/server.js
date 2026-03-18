@@ -2,6 +2,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const compression = require("compression");
 const connectDB = require("./config/db");
 
 const productRoutes = require("./routes/productRoutes");
@@ -23,6 +24,7 @@ app.use('/api/payment/webhook', cors({ origin: '*' }));
 app.use('/api/payment/sync-pending', cors({ origin: '*' }));
 
 // Middleware
+app.use(compression());
 app.use(
   cors({
     origin: process.env.CLIENT_ORIGIN,

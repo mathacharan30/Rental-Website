@@ -42,6 +42,7 @@ exports.uploadBanner = async (req, res) => {
 exports.getBanners = async (req, res) => {
   try {
     const banners = await Banner.find().sort({ createdAt: -1 });
+    res.set("Cache-Control", "public, s-maxage=120, stale-while-revalidate=300");
     return res.json(banners);
   } catch (error) {
     console.error('[Banner] Fetch Error:', error.message);

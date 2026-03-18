@@ -1,5 +1,6 @@
 // src/pages/Main/AboutUs.jsx
 import React from "react";
+import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
@@ -44,6 +45,11 @@ const AboutUs = () => (
     animate="visible"
     variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
   >
+    <Helmet>
+      <title>About Us — People &amp; Style | Clothing Rental in Karnataka</title>
+      <meta name="description" content="People & Style is Karnataka's premier clothing rental service — making designer fashion accessible, affordable, and sustainable for weddings and events in Bangalore, Mysuru and beyond." />
+      <link rel="canonical" href="https://peopleandstyle.in/about" />
+    </Helmet>
     {/* Hero */}
     <section className="relative py-24 px-4 text-center overflow-hidden">
       <div className="relative z-10">

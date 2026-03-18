@@ -1,9 +1,8 @@
 import { useEffect, useState, useRef } from "react";
+import { Helmet } from "react-helmet-async";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { BiLeftArrow } from "react-icons/bi";
-import { AiFillStar, AiOutlineStar } from "react-icons/ai";
-import { IoClose } from "react-icons/io5";
+import { ArrowLeft, Star, X } from "lucide-react";
 import Footer from "../../components/Footer";
 import FavoriteButton from "../../components/FavoriteButton";
 import { getProductById } from "../../services/productService";
@@ -161,12 +160,44 @@ const ProductDetail = () => {
 
   return (
     <motion.div className="bg-[#0e0e0e] min-h-screen" {...fade}>
+      <Helmet>
+        <title>{product.title} — Rent in Bangalore &amp; Karnataka | People &amp; Style</title>
+        <meta name="description" content={`Rent ${product.title} (${product.category}) at ${product.price}. Premium designer outfit rental in Bangalore, Mysuru and across Karnataka.`} />
+        <link rel="canonical" href={`https://peopleandstyle.in/product/${product.id}`} />
+        <meta property="og:title" content={`${product.title} — Rent at People & Style`} />
+        <meta property="og:description" content={product.description || `Rent ${product.title} for your next event. Premium clothing rental in Karnataka.`} />
+        <meta property="og:image" content={product.image} />
+        <meta property="og:url" content={`https://peopleandstyle.in/product/${product.id}`} />
+        <meta property="og:type" content="product" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "name": product.title,
+          "image": allImages.length ? allImages : [product.image],
+          "description": product.description || `Premium ${product.category} available for rent at People & Style`,
+          "brand": { "@type": "Brand", "name": "People & Style" },
+          "offers": {
+            "@type": "Offer",
+            "url": `https://peopleandstyle.in/product/${product.id}`,
+            "priceCurrency": "INR",
+            "price": String(product.advanceAmount || "").replace(/[^0-9.]/g, "") || "0",
+            "availability": "https://schema.org/InStock",
+            "itemCondition": "https://schema.org/UsedCondition"
+          },
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": String(rating),
+            "bestRating": "5",
+            "ratingCount": "1"
+          }
+        })}</script>
+      </Helmet>
       <div className="max-w-6xl mx-auto px-4 pt-2">
         <Link
           to={`/products/${encodeURIComponent(product.category)}`}
           className="inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-violet-400 transition-colors"
         >
-          <BiLeftArrow /> Back to Products
+          <ArrowLeft size={14} /> Back to Products
         </Link>
       </div>
 
@@ -188,9 +219,9 @@ const ProductDetail = () => {
         <div className="flex items-center justify-center gap-1 mt-3">
           {[...Array(5)].map((_, i) =>
             i < Math.floor(rating) ? (
-              <AiFillStar key={i} className="text-violet-400" />
+              <Star key={i} size={16} className="text-violet-400 fill-violet-400" />
             ) : (
-              <AiOutlineStar key={i} className="text-violet-400/30" />
+              <Star key={i} size={16} className="text-violet-400/30" />
             ),
           )}
           <span className="text-sm text-neutral-500 ml-1.5">
@@ -279,7 +310,7 @@ const ProductDetail = () => {
               className="absolute top-4 right-4 z-10 p-3 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-all duration-200"
               aria-label="Close"
             >
-              <IoClose size={28} />
+              <X size={28} />
             </button>
             <motion.img
               src={allImages[lightboxIndex] || product.image}

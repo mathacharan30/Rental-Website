@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { RxHamburgerMenu } from "react-icons/rx";
-import { IoClose } from "react-icons/io5";
+import { Menu, X } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
@@ -179,9 +178,9 @@ const Navbar = () => {
               aria-label={open ? "Close menu" : "Open menu"}
             >
               {open ? (
-                <IoClose className="text-white text-xl" />
+                <X className="text-white" size={20} />
               ) : (
-                <RxHamburgerMenu className="text-white text-lg" />
+                <Menu className="text-white" size={18} />
               )}
             </button>
           </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Providers
@@ -8,36 +8,37 @@ import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import ScrollToTop from "./utils/ScrollToTop";
 
-// Public pages
-import Home from "./pages/Main/Home";
-import Login from "./pages/Main/Login";
-import Signup from "./pages/Main/Signup";
-import ForgotPassword from "./pages/Main/ForgotPassword";
-import Products from "./pages/Main/Products";
-import ProductDetail from "./pages/Main/ProductDetail";
-import AboutUs from "./pages/Main/AboutUs";
-import ContactUs from "./pages/Main/ContactUs";
-import TermsAndConditions from "./pages/Main/TermsAndConditions";
-import PrivacyPolicy from "./pages/Main/DataPolicyPage";
-import RefundPolicy from "./pages/Main/RefundPolicy";
-import FAQ from "./pages/Main/FAQ";
-import PaymentStatus from "./pages/Main/PaymentStatus";
-
-// Customer pages
-import CustomerProfile from "./pages/Main/CustomerProfile";
-import Favorites from "./pages/Main/Favorites";
-
-// Store-owner (admin) pages
-import AdminDashboard from "./pages/Admin/Dashboard";
-import ProductsAdmin from "./pages/Admin/ProductsAdmin";
-import OrdersAdmin from "./pages/Admin/OrdersAdmin";
-
-// Super admin pages
-import SuperAdminDashboard from "./pages/SuperAdmin/SuperAdminDashboard";
-
-// Layout
+// Layout (keep eagerly loaded — always visible)
 import Navbar from "./components/Navbar";
+import Loader from "./components/Loader";
 import { Toaster } from "react-hot-toast";
+
+// ── Lazy-loaded pages ───────────────────────────────────
+const Home = lazy(() => import("./pages/Main/Home"));
+const Login = lazy(() => import("./pages/Main/Login"));
+const Signup = lazy(() => import("./pages/Main/Signup"));
+const ForgotPassword = lazy(() => import("./pages/Main/ForgotPassword"));
+const Products = lazy(() => import("./pages/Main/Products"));
+const ProductDetail = lazy(() => import("./pages/Main/ProductDetail"));
+const AboutUs = lazy(() => import("./pages/Main/AboutUs"));
+const ContactUs = lazy(() => import("./pages/Main/ContactUs"));
+const TermsAndConditions = lazy(() => import("./pages/Main/TermsAndConditions"));
+const PrivacyPolicy = lazy(() => import("./pages/Main/DataPolicyPage"));
+const RefundPolicy = lazy(() => import("./pages/Main/RefundPolicy"));
+const FAQ = lazy(() => import("./pages/Main/FAQ"));
+const PaymentStatus = lazy(() => import("./pages/Main/PaymentStatus"));
+const CustomerProfile = lazy(() => import("./pages/Main/CustomerProfile"));
+const Favorites = lazy(() => import("./pages/Main/Favorites"));
+const AdminDashboard = lazy(() => import("./pages/Admin/Dashboard"));
+const ProductsAdmin = lazy(() => import("./pages/Admin/ProductsAdmin"));
+const OrdersAdmin = lazy(() => import("./pages/Admin/OrdersAdmin"));
+const SuperAdminDashboard = lazy(() => import("./pages/SuperAdmin/SuperAdminDashboard"));
+
+const PageLoader = () => (
+  <div className="min-h-[60vh] flex items-center justify-center">
+    <Loader />
+  </div>
+);
 
 const App = () => {
   return (
@@ -47,6 +48,7 @@ const App = () => {
           <ScrollToTop />
           <Navbar />
           <main>
+            <Suspense fallback={<PageLoader />}>
             <Routes>
               {/* ── Public ─────────────────────────────── */}
               <Route path="/" element={<Home />} />
@@ -108,6 +110,7 @@ const App = () => {
                 }
               />
             </Routes>
+            </Suspense>
           </main>
         </div>
         <Toaster

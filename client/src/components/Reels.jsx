@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import instaService from "../services/instaService";
 import toast from "react-hot-toast";
-import { FaPlay } from "react-icons/fa";
 import Loader from "./Loader";
 
 const Reels = () => {

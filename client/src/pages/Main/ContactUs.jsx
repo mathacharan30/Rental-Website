@@ -1,5 +1,6 @@
 // src/pages/Main/ContactUs.jsx
 import React, { useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 
@@ -117,6 +118,11 @@ const ContactUs = () => {
       animate="visible"
       variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
     >
+      <Helmet>
+        <title>Contact Us — People &amp; Style | Clothing Rental Karnataka</title>
+        <meta name="description" content="Get in touch with People & Style for designer outfit rentals in Bangalore, Mysuru and Karnataka. Call +91 91876 68280 or visit us in Mysuru." />
+        <link rel="canonical" href="https://peopleandstyle.in/contact" />
+      </Helmet>
       {/* Header */}
       <div className="relative py-16 px-4 text-center overflow-hidden">
         <div className="relative z-10">
