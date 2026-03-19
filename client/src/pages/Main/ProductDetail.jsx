@@ -7,6 +7,7 @@ import Footer from "../../components/Footer";
 import FavoriteButton from "../../components/FavoriteButton";
 import { getProductById } from "../../services/productService";
 import { createPayment } from "../../services/paymentService";
+import { getProductTestimonials } from "../../services/productTestimonialService";
 import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
 import Loader from "../../components/Loader";
@@ -28,6 +29,8 @@ const ProductDetail = () => {
   const [selectedSize, setSelectedSize] = useState("");
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [testimonials, setTestimonials] = useState([]);
+  const [reviewLightboxImage, setReviewLightboxImage] = useState(null);
   const carouselRef = useRef(null);
 
   const scrollToImage = (index) => {
@@ -49,15 +52,26 @@ const ProductDetail = () => {
       : [];
 
   useEffect(() => {
-    const onKey = (e) => e.key === "Escape" && setLightboxOpen(false);
+    const onKey = (e) => {
+      if (e.key === "Escape") {
+        setLightboxOpen(false);
+        setReviewLightboxImage(null);
+      }
+    };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
   useEffect(() => {
     setLoading(true);
-    getProductById(id)
-      .then(setProduct)
+    Promise.all([
+      getProductById(id),
+      getProductTestimonials(id).catch(() => [])
+    ])
+      .then(([prodData, testData]) => {
+        setProduct(prodData);
+        setTestimonials(testData);
+      })
       .catch((e) => {
         console.error("[ProductDetail]", e);
         toast.error("Failed to load product details");
@@ -421,6 +435,90 @@ const ProductDetail = () => {
           </button>
         </div>
       </motion.div>
+
+      {/* Testimonials */}
+      {testimonials.length > 0 && (
+        <motion.div
+          className="max-w-4xl mx-auto px-4 pb-16"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <div className="h-px bg-white/6 my-10" />
+          <h3 className="text-2xl font-bold text-white mb-6 text-center display-font">
+            Customer Reviews
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {testimonials.map((t, i) => (
+              <div key={i} className="glass p-5 rounded-2xl flex flex-col gap-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    {t.user?.profilePicture ? (
+                      <img src={t.user.profilePicture} alt="" className="w-10 h-10 rounded-full object-cover border border-white/10" />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-violet-600/20 text-violet-400 flex items-center justify-center font-bold border border-violet-500/30">
+                        {t.user?.name?.charAt(0) || "U"}
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-sm font-medium text-white">{t.user?.name || "Customer"}</p>
+                      <p className="text-xs text-neutral-500">{new Date(t.createdAt).toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-0.5">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        size={14}
+                        className={star <= t.rating ? "text-yellow-400 fill-yellow-400" : "text-neutral-700"}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <p className="text-sm text-neutral-300 leading-relaxed bg-black/30 p-3 rounded-xl border border-white/5">
+                  "{t.comment}"
+                </p>
+                {t.image && (
+                  <img src={t.image} alt="Review attachment" className="w-full h-40 md:h-48 object-cover rounded-xl mt-1 border border-white/5 cursor-pointer hover:border-violet-500/30 transition-colors" onClick={() => setReviewLightboxImage(t.image)} />
+                )}
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
+      {/* Review Image Lightbox */}
+      <AnimatePresence>
+        {reviewLightboxImage && (
+          <motion.div
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setReviewLightboxImage(null)}
+          >
+            <button
+              onClick={() => setReviewLightboxImage(null)}
+              className="absolute top-4 right-4 z-10 p-3 rounded-full text-white/60 hover:text-white hover:bg-white/10 transition-all duration-200"
+              aria-label="Close"
+            >
+              <X size={28} />
+            </button>
+            <motion.img
+              src={reviewLightboxImage}
+              alt="Review Fullscreen"
+              className="max-w-[92vw] max-h-[88vh] object-contain select-none"
+              initial={{ opacity: 0, scale: 0.92 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.92 }}
+              transition={{ duration: 0.2 }}
+              onClick={(e) => e.stopPropagation()}
+              draggable={false}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <Footer />
     </motion.div>

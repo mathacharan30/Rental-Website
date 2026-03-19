@@ -4,6 +4,8 @@ import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { getMyOrders } from "../../services/orderService";
 import toast from "react-hot-toast";
+import { addProductTestimonial } from "../../services/productTestimonialService";
+import { Star, Upload, Camera, X } from "lucide-react";
 
 const STATUS_COLORS = {
   pending: "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30",
@@ -28,6 +30,13 @@ const CustomerProfile = () => {
   const [ordersLoading, setOrdersLoading] = useState(true);
   const [tab, setTab] = useState("profile");
 
+  const [reviewOrder, setReviewOrder] = useState(null);
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState("");
+  const [reviewImage, setReviewImage] = useState(null);
+  const [reviewImagePreview, setReviewImagePreview] = useState(null);
+  const [submittingReview, setSubmittingReview] = useState(false);
+
   useEffect(() => {
     if (tab !== "orders") return;
     setOrdersLoading(true);
@@ -41,6 +50,48 @@ const CustomerProfile = () => {
     await logout();
     toast.success("Signed out");
     navigate("/login");
+  };
+
+  const handleReviewImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setReviewImage(file);
+      setReviewImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const submitReview = async (e) => {
+    e.preventDefault();
+    if (!comment.trim()) {
+      return toast.error("Please write a comment.");
+    }
+    
+    setSubmittingReview(true);
+    const fd = new FormData();
+    fd.append("productId", reviewOrder.product._id || reviewOrder.product.id);
+    fd.append("rating", rating);
+    fd.append("comment", comment);
+    if (reviewImage) {
+      fd.append("image", reviewImage);
+    }
+    
+    try {
+      await addProductTestimonial(fd);
+      toast.success("Testimonial submitted!");
+      closeReviewModal();
+    } catch (err) {
+      toast.error(err.message || "Failed to submit testimonial.");
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
+
+  const closeReviewModal = () => {
+    setReviewOrder(null);
+    setRating(5);
+    setComment("");
+    setReviewImage(null);
+    setReviewImagePreview(null);
   };
 
   if (!userProfile) return null;
@@ -153,11 +204,128 @@ const CustomerProfile = () => {
                         </p>
                       </div>
                     </div>
+                    {o.status === "completed" && (
+                      <div className="mt-4 pt-4 border-t border-white/5 flex justify-end">
+                        <button
+                          onClick={() => setReviewOrder(o)}
+                          className="text-xs px-4 py-1.5 rounded-lg bg-violet-500/20 text-violet-400 hover:bg-violet-500/30 transition-colors border border-violet-500/30"
+                        >
+                          Write Testimonial
+                        </button>
+                      </div>
+                    )}
                   </div>
                 );
               })}
             </div>
           )}
+        </div>
+      )}
+
+      {/* Review Modal */}
+      {reviewOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+          <div className="bg-[#111] border border-white/10 rounded-2xl w-full max-w-md p-6 relative">
+            <button
+              onClick={closeReviewModal}
+              className="absolute top-4 right-4 text-neutral-400 hover:text-white"
+            >
+              <X size={20} />
+            </button>
+            <h3 className="text-xl font-bold text-white mb-4">Write Testimonial</h3>
+            <div className="mb-4 flex items-center gap-2">
+              <img
+                src={reviewOrder.product?.images?.[0]?.url || reviewOrder.product?.image}
+                alt=""
+                className="w-10 h-10 object-cover rounded-md"
+              />
+              <span className="text-sm font-medium text-white line-clamp-1">
+                {reviewOrder.product?.name || reviewOrder.product?.title || "Product"}
+              </span>
+            </div>
+            
+            <form onSubmit={submitReview} className="space-y-4">
+              <div>
+                <label className="block text-sm text-neutral-400 mb-2">Rating</label>
+                <div className="flex gap-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      type="button"
+                      key={star}
+                      onClick={() => setRating(star)}
+                    >
+                      <Star
+                        size={24}
+                        className={`${
+                          star <= rating
+                            ? "text-yellow-400 fill-yellow-400"
+                            : "text-neutral-600"
+                        } transition-colors`}
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm text-neutral-400 mb-2">Comment</label>
+                <textarea
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  className="w-full bg-black/50 border border-white/10 rounded-xl p-3 text-white text-sm outline-none focus:border-violet-500 transition-colors"
+                  rows={4}
+                  placeholder="Share your experience..."
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm text-neutral-400 mb-2">Add Photo (Optional)</label>
+                <div className="flex items-center gap-3 flex-wrap">
+                  <label className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 bg-black/50 text-sm hover:bg-white/5 cursor-pointer transition-colors text-white">
+                    <Camera size={16} />
+                    <span>Take Photo</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      capture="environment"
+                      onChange={handleReviewImageChange}
+                      className="hidden"
+                    />
+                  </label>
+                  
+                  <label className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 bg-black/50 text-sm hover:bg-white/5 cursor-pointer transition-colors text-white">
+                    <Upload size={16} />
+                    <span>Upload Image</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleReviewImageChange}
+                      className="hidden"
+                    />
+                  </label>
+                  
+                  {reviewImagePreview && (
+                    <img
+                      src={reviewImagePreview}
+                      alt="Preview"
+                      className="w-12 h-12 object-cover rounded-lg border border-white/10 ml-auto"
+                    />
+                  )}
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={submittingReview}
+                  className="w-full bg-violet-600 text-white rounded-xl py-2.5 font-medium hover:bg-violet-700 transition-colors disabled:opacity-50"
+                >
+                  {submittingReview ? "Submitting..." : "Submit Testimonial"}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
     </div>

@@ -45,4 +45,10 @@ const bannerUpload = multer({
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB per file
 });
 
-module.exports = { productUpload, bannerUpload, categoryUpload };
+const productTestimonialUpload = multer({
+  storage: makeS3Storage("product-testimonials"),
+  fileFilter: imageFileFilter,
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB per file
+});
+
+module.exports = { productUpload, bannerUpload, categoryUpload, productTestimonialUpload };
