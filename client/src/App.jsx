@@ -7,6 +7,7 @@ import { AuthProvider } from "./context/AuthContext";
 // Utils
 import ProtectedRoute from "./utils/ProtectedRoute";
 import ScrollToTop from "./utils/ScrollToTop";
+import ComingSoonGate from "./utils/ComingSoonGate";
 
 // Layout (keep eagerly loaded — always visible)
 import Navbar from "./components/Navbar";
@@ -45,103 +46,107 @@ const App = () => {
   return (
     <AuthProvider>
       <BrowserRouter>
-      {/* 
-        <div className="min-h-screen dm-sans tracking-tight bg-[#0e0e0e] text-white">
-          <ScrollToTop />
-          <Navbar />
-          <main>
-            <Suspense fallback={<PageLoader />}>
-            <Routes>
-              
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/products" element={<Products />} />
-              <Route path="/products/:category" element={<Products />} />
-              <Route path="/product/:id" element={<ProductDetail />} />
-              <Route path="/about" element={<AboutUs />} />
-              <Route path="/contact" element={<ContactUs />} />
-              <Route path="/terms" element={<TermsAndConditions />} />
-              <Route path="/privacy" element={<PrivacyPolicy />} />
-              <Route path="/refund" element={<RefundPolicy />} />
-              <Route path="/faq" element={<FAQ />} />
-              <Route
-                path="/payment/status/:merchantOrderId"
-                element={<PaymentStatus />}
-              />
+        {/* ComingSoonGate: shows coming-soon page to all visitors when
+            VITE_COMING_SOON=true, but lets super_admin / store_owner
+            through to the full app. */}
+        <ComingSoonGate>
+          <div className="min-h-screen dm-sans tracking-tight bg-[#0e0e0e] text-white">
+            <ScrollToTop />
+            <Navbar />
+            <main>
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
 
-              
-              <Route
-                path="/:uid/profile"
-                element={
-                  <ProtectedRoute allowedRoles={["customer"]}>
-                    <CustomerProfile />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/favorites"
-                element={
-                  <ProtectedRoute allowedRoles={["customer"]}>
-                    <Favorites />
-                  </ProtectedRoute>
-                }
-              />
+                  {/* ── Public routes ── */}
+                  <Route path="/" element={<Home />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
+                  <Route path="/products" element={<Products />} />
+                  <Route path="/products/:category" element={<Products />} />
+                  <Route path="/product/:id" element={<ProductDetail />} />
+                  <Route path="/about" element={<AboutUs />} />
+                  <Route path="/contact" element={<ContactUs />} />
+                  <Route path="/terms" element={<TermsAndConditions />} />
+                  <Route path="/privacy" element={<PrivacyPolicy />} />
+                  <Route path="/refund" element={<RefundPolicy />} />
+                  <Route path="/faq" element={<FAQ />} />
+                  <Route
+                    path="/payment/status/:merchantOrderId"
+                    element={<PaymentStatus />}
+                  />
 
-              
-              <Route
-                path="/admin/:storename/*"
-                element={
-                  <ProtectedRoute allowedRoles={["store_owner", "super_admin"]}>
-                    <AdminDashboard />
-                  </ProtectedRoute>
-                }
-              >
-                <Route path="products" element={<ProductsAdmin />} />
-                <Route path="orders" element={<OrdersAdmin />} />
-              </Route>
+                  {/* ── Customer routes ── */}
+                  <Route
+                    path="/:uid/profile"
+                    element={
+                      <ProtectedRoute allowedRoles={["customer"]}>
+                        <CustomerProfile />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/favorites"
+                    element={
+                      <ProtectedRoute allowedRoles={["customer"]}>
+                        <Favorites />
+                      </ProtectedRoute>
+                    }
+                  />
 
-              
-              <Route
-                path="/superadmin/*"
-                element={
-                  <ProtectedRoute allowedRoles={["super_admin"]}>
-                    <SuperAdminDashboard />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-            </Suspense>
-          </main>
-        </div>
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 3000,
-            style: {
-              fontSize: "14px",
-              padding: "10px 24px",
-              borderRadius: 16,
-              background: "rgba(20, 20, 20, 0.9)",
-              color: "#ffffff",
-              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
-              backdropFilter: "blur(16px)",
-              border: "1px solid rgba(255, 255, 255, 0.1)",
-              fontFamily: "'DM Sans', sans-serif",
-            },
-            success: {
-              iconTheme: { primary: "#a855f7", secondary: "#ffffff" },
-              style: { borderLeft: "3px solid #a855f7" },
-            },
-            error: {
-              iconTheme: { primary: "#ef4444", secondary: "#ffffff" },
-              style: { borderLeft: "3px solid #ef4444" },
-            },
-          }}
-        />
-            */}
-            <ComingSoon />
+                  {/* ── Admin routes ── */}
+                  <Route
+                    path="/admin/:storename/*"
+                    element={
+                      <ProtectedRoute allowedRoles={["store_owner", "super_admin"]}>
+                        <AdminDashboard />
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route path="products" element={<ProductsAdmin />} />
+                    <Route path="orders" element={<OrdersAdmin />} />
+                  </Route>
+
+                  {/* ── Super admin routes ── */}
+                  <Route
+                    path="/superadmin/*"
+                    element={
+                      <ProtectedRoute allowedRoles={["super_admin"]}>
+                        <SuperAdminDashboard />
+                      </ProtectedRoute>
+                    }
+                  />
+
+                </Routes>
+              </Suspense>
+            </main>
+          </div>
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 3000,
+              style: {
+                fontSize: "14px",
+                padding: "10px 24px",
+                borderRadius: 16,
+                background: "rgba(20, 20, 20, 0.9)",
+                color: "#ffffff",
+                boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
+                backdropFilter: "blur(16px)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                fontFamily: "'DM Sans', sans-serif",
+              },
+              success: {
+                iconTheme: { primary: "#a855f7", secondary: "#ffffff" },
+                style: { borderLeft: "3px solid #a855f7" },
+              },
+              error: {
+                iconTheme: { primary: "#ef4444", secondary: "#ffffff" },
+                style: { borderLeft: "3px solid #ef4444" },
+              },
+            }}
+          />
+        </ComingSoonGate>
       </BrowserRouter>
     </AuthProvider>
   );
