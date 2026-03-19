@@ -9,7 +9,25 @@ const mongoose = require("mongoose");
 // GET /api/products  (public – all products for the storefront)
 exports.getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find()
+    const { search } = req.query;
+    let query = {};
+
+    if (search) {
+      const searchRegex = new RegExp(search, "i");
+      
+      // Find categories matching the search term
+      const matchingCategories = await Category.find({ name: searchRegex }).select("_id");
+      const categoryIds = matchingCategories.map((c) => c._id);
+
+      query = {
+        $or: [
+          { name: searchRegex },
+          { category: { $in: categoryIds } },
+        ],
+      };
+    }
+
+    const products = await Product.find(query)
       .populate("category")
       .sort({ createdAt: -1 });
     res.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");

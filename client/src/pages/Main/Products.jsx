@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router-dom";
 import ProductCard from "../../components/ProductCard";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
@@ -20,6 +20,10 @@ const Products = () => {
     ? decodeURIComponent(category).toLowerCase()
     : null;
 
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const searchQuery = searchParams.get("search") || "";
+
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState(null);
@@ -34,12 +38,13 @@ const Products = () => {
           const result = await getProductsByCategorySlug(
             decodedCategory,
             currentPage,
-            ITEMS_PER_PAGE
+            ITEMS_PER_PAGE,
+            searchQuery
           );
           setItems(result.products || []);
           setPagination(result.pagination);
         } else {
-          const data = await getAllProducts();
+          const data = await getAllProducts(searchQuery);
           setItems(data);
           setPagination(null); // No pagination for "All Products"
         }
@@ -52,12 +57,12 @@ const Products = () => {
         setLoading(false);
       }
     })();
-  }, [decodedCategory, currentPage]);
+  }, [decodedCategory, currentPage, searchQuery]);
 
-  // Reset to page 1 when category changes
+  // Reset to page 1 when category or search changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [decodedCategory]);
+  }, [decodedCategory, searchQuery]);
 
   const handleNextPage = () => {
     if (pagination && pagination.hasNextPage) {
@@ -75,7 +80,11 @@ const Products = () => {
 
   const title = decodedCategory
     ? decodedCategory.charAt(0).toUpperCase() + decodedCategory.slice(1)
-    : "All Products";
+    : "All Rentals";
+
+  const displayTitle = searchQuery
+    ? `Search results for "${searchQuery}"`
+    : title;
 
   return (
     <motion.section
@@ -85,7 +94,7 @@ const Products = () => {
       transition={{ duration: 0.6 }}
     >
       <Helmet>
-        <title>{title} — Rent Designer Outfits | People &amp; Style</title>
+        <title>{displayTitle} — Rent Designer Outfits | People &amp; Style</title>
         <meta name="description" content={`Browse and rent ${decodedCategory || "designer"} outfits in Bangalore, Mysuru and across Karnataka. Premium ethnic wear rentals for every occasion.`} />
         <link rel="canonical" href={`https://peopleandstyle.in/products${decodedCategory ? `/${encodeURIComponent(decodedCategory)}` : ""}`} />
       </Helmet>
@@ -103,11 +112,16 @@ const Products = () => {
         <div className="flex flex-col justify-center items-center text-center">
           <div className="flex flex-col my-4 items-center">
             <h1 className="text-4xl font-bold display-font tracking-tight">
-              <span className="text-white">{title}</span>
+              <span className="text-white">{displayTitle}</span>
             </h1>
-            {decodedCategory && (
+            {decodedCategory && !searchQuery && (
               <p className="text-sm text-neutral-500">
                 Curated rentals for {decodedCategory}
+              </p>
+            )}
+            {searchQuery && (
+              <p className="text-sm text-neutral-500 mt-2">
+                Showing results matching your search terms
               </p>
             )}
           </div>

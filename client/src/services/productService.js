@@ -90,8 +90,10 @@ export async function getTopPicks() {
   return Array.isArray(data) ? data.map(mapProduct) : [];
 }
 
-export async function getAllProducts() {
-  const { data } = await api.get("/api/products");
+export async function getAllProducts(search = "") {
+  const { data } = await api.get("/api/products", {
+    params: search ? { search } : {}
+  });
   return Array.isArray(data) ? data.map(mapProduct) : [];
 }
 
@@ -101,12 +103,12 @@ export async function getProductById(id) {
   return mapProduct(data || {});
 }
 
-export async function getProductsByCategorySlug(slug, page = 1, limit = 10) {
+export async function getProductsByCategorySlug(slug, page = 1, limit = 10, search = "") {
   const catId = await findCategoryIdBySlug(slug);
   if (!catId) return { products: [], pagination: null };
 
   const { data } = await api.get(`/api/categories/${catId}/products`, {
-    params: { page, limit }
+    params: { page, limit, ...(search && { search }) }
   });
 
   // Handle both paginated and non-paginated responses

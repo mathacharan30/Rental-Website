@@ -44,19 +44,26 @@ exports.createCategory = async (req, res) => {
 exports.getProductsByCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    const { page = 1, limit = 10 } = req.query;
+    const { page = 1, limit = 10, search } = req.query;
 
     // Convert to numbers and validate
     const pageNum = Math.max(1, parseInt(page, 10));
     const limitNum = Math.max(1, Math.min(100, parseInt(limit, 10))); // Max 100 items per page
     const skip = (pageNum - 1) * limitNum;
 
+    // Build the query object
+    let query = { category: id };
+    if (search) {
+      const searchRegex = new RegExp(search, "i");
+      query.name = searchRegex;
+    }
+
     // Get total count for pagination metadata
-    const totalProducts = await Product.countDocuments({ category: id });
+    const totalProducts = await Product.countDocuments(query);
     const totalPages = Math.ceil(totalProducts / limitNum);
 
     // Fetch paginated products
-    const products = await Product.find({ category: id })
+    const products = await Product.find(query)
       .populate('category')
       .sort({ createdAt: -1 })
       .skip(skip)
