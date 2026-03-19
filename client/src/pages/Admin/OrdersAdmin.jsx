@@ -7,12 +7,20 @@ import Loader from "../../components/Loader";
 const STATUS_COLORS = {
   pending:   "bg-yellow-500/10 text-yellow-400",
   confirmed: "bg-blue-500/10 text-blue-400",
+  cancelled: "bg-red-500/10 text-red-400",
   active:    "bg-green-500/10 text-green-400",
   completed: "bg-neutral-500/10 text-neutral-400",
-  cancelled: "bg-red-500/10 text-red-400",
 };
 
-const STATUSES = ["pending", "confirmed", "active", "completed", "cancelled"];
+const STATUS_LABELS = {
+  pending: "payment pending",
+  confirmed: "payment confirm",
+  cancelled: "payment cancelled",
+  active: "order active",
+  completed: "order completed",
+};
+
+const STATUSES = ["pending", "confirmed", "cancelled", "active", "completed"];
 
 const OrdersAdmin = () => {
   const { storename } = useParams();
@@ -65,12 +73,8 @@ const OrdersAdmin = () => {
                 <tr className="bg-white/5 border-b border-white/10 text-xs uppercase text-neutral-500 font-semibold tracking-wider">
                   <th className="px-5 py-4">Product</th>
                   <th className="px-5 py-4">Customer</th>
-                  <th className="px-5 py-4">Type</th>
-                  <th className="px-5 py-4">Size</th>
                   <th className="px-5 py-4">Price</th>
-                  <th className="px-5 py-4">Commission</th>
                   <th className="px-5 py-4">Advance</th>
-                  <th className="px-5 py-4">Total</th>
                   <th className="px-5 py-4">Status</th>
                   <th className="px-5 py-4">Date</th>
                   <th className="px-5 py-4">Update</th>
@@ -93,33 +97,18 @@ const OrdersAdmin = () => {
                       <div className="font-medium text-white">{o.customer?.name || "—"}</div>
                       <div className="text-xs text-neutral-500">{o.customer?.email}</div>
                       {o.customer?.phone && <div className="text-xs text-neutral-500">{o.customer.phone}</div>}
+                      {o.customer?.address && <div className="text-xs text-neutral-500 mt-1 whitespace-normal max-w-[200px]">{o.customer.address}</div>}
                     </td>
-                    {/* Type badge */}
-                    <td className="px-5 py-4">
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                        o.listingType === 'sale'
-                          ? 'bg-amber-500/10 text-amber-400'
-                          : 'bg-violet-500/10 text-violet-400'
-                      }`}>
-                        {o.listingType === 'sale' ? 'Sale' : 'Rent'}
-                      </span>
-                    </td>
-                    {/* Size */}
-                    <td className="px-5 py-4 text-neutral-300">{o.listingType === 'sale' ? '—' : (o.size || '—')}</td>
                     {/* Price */}
                     <td className="px-5 py-4 font-medium text-white">
                       {o.listingType === 'sale' ? `₹${o.salePrice}` : `₹${o.rentPrice}`}
                     </td>
-                    {/* Commission */}
-                    <td className="px-5 py-4 text-violet-400">₹{o.commissionPrice}</td>
                     {/* Advance */}
                     <td className="px-5 py-4 text-neutral-300">{o.listingType === 'sale' ? '—' : `₹${o.advanceAmount}`}</td>
-                    {/* Total */}
-                    <td className="px-5 py-4 font-semibold text-green-400">₹{o.totalPrice}</td>
                     {/* Status badge */}
                     <td className="px-5 py-4">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${STATUS_COLORS[o.status]}`}>
-                        {o.status}
+                        {STATUS_LABELS[o.status] || o.status}
                       </span>
                     </td>
                     {/* Date */}
@@ -132,7 +121,7 @@ const OrdersAdmin = () => {
                         className="text-xs bg-[#1a1a1a] border border-white/10 text-neutral-300 rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500"
                       >
                         {STATUSES.map((s) => (
-                          <option key={s} value={s} className="bg-[#1a1a1a] text-neutral-300">{s}</option>
+                          <option key={s} value={s} className="bg-[#1a1a1a] text-neutral-300">{STATUS_LABELS[s] || s}</option>
                         ))}
                       </select>
                     </td>
