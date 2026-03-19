@@ -33,6 +33,7 @@ const AdminDashboard = lazy(() => import("./pages/Admin/Dashboard"));
 const ProductsAdmin = lazy(() => import("./pages/Admin/ProductsAdmin"));
 const OrdersAdmin = lazy(() => import("./pages/Admin/OrdersAdmin"));
 const SuperAdminDashboard = lazy(() => import("./pages/SuperAdmin/SuperAdminDashboard"));
+const ComingSoon = lazy(() => import("./pages/Main/ComingSoon"));
 
 const PageLoader = () => (
   <div className="min-h-[60vh] flex items-center justify-center">
@@ -44,13 +45,14 @@ const App = () => {
   return (
     <AuthProvider>
       <BrowserRouter>
+      {/* 
         <div className="min-h-screen dm-sans tracking-tight bg-[#0e0e0e] text-white">
           <ScrollToTop />
           <Navbar />
           <main>
             <Suspense fallback={<PageLoader />}>
             <Routes>
-              {/* ── Public ─────────────────────────────── */}
+              
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
@@ -69,7 +71,7 @@ const App = () => {
                 element={<PaymentStatus />}
               />
 
-              {/* ── Customer ───────────────────────────── */}
+              
               <Route
                 path="/:uid/profile"
                 element={
@@ -87,7 +89,7 @@ const App = () => {
                 }
               />
 
-              {/* ── Store owner admin (/admin/:storename) ─ */}
+              
               <Route
                 path="/admin/:storename/*"
                 element={
@@ -100,7 +102,7 @@ const App = () => {
                 <Route path="orders" element={<OrdersAdmin />} />
               </Route>
 
-              {/* ── Super admin ─────────────────────────── */}
+              
               <Route
                 path="/superadmin/*"
                 element={
@@ -138,6 +140,8 @@ const App = () => {
             },
           }}
         />
+            */}
+            <ComingSoon />
       </BrowserRouter>
     </AuthProvider>
   );
