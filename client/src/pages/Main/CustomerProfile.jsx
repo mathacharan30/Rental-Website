@@ -13,6 +13,14 @@ const STATUS_COLORS = {
   cancelled: "bg-red-500/20 text-red-400 border border-red-500/30",
 };
 
+const STATUS_LABELS = {
+  pending: "payment pending",
+  confirmed: "payment confirm",
+  cancelled: "payment cancelled",
+  active: "order active",
+  completed: "order completed"
+};
+
 const CustomerProfile = () => {
   const { userProfile, logout } = useAuth();
   const navigate = useNavigate();
@@ -102,40 +110,52 @@ const CustomerProfile = () => {
             </div>
           ) : (
             <div className="space-y-4">
-              {orders.map((o) => (
-                <div key={o._id} className="glass rounded-2xl p-4">
-                  <div className="flex items-start gap-4">
-                    {o.product?.images?.[0]?.url && (
-                      <img
-                        src={o.product.images[0].url}
-                        alt=""
-                        className="w-16 h-16 object-cover rounded-xl border border-white/10 shrink-0"
-                      />
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2">
-                        <p className="font-semibold text-white truncate">
-                          {o.product?.name || "—"}
+              {orders.map((o) => {
+                const amountPaid = o.listingType === 'sale' 
+                  ? ((o.salePrice || 0) + (o.commissionPrice || 0))
+                  : ((o.advanceAmount || 0) + (o.commissionPrice || 0));
+                const refunded = amountPaid - (o.totalPrice || 0);
+
+                return (
+                  <div key={o._id} className="glass rounded-2xl p-4">
+                    <div className="flex items-start gap-4">
+                      {o.product?.images?.[0]?.url && (
+                        <img
+                          src={o.product.images[0].url}
+                          alt=""
+                          className="w-16 h-16 object-cover rounded-xl border border-white/10 shrink-0"
+                        />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="font-semibold text-white truncate">
+                            {o.product?.name || "—"}
+                          </p>
+                          <span
+                            className={`text-xs px-2.5 py-0.5 rounded-full font-medium shrink-0 ${STATUS_COLORS[o.status]}`}
+                          >
+                            {STATUS_LABELS[o.status] || o.status}
+                          </span>
+                        </div>
+                        {o.listingType !== 'sale' && (
+                          <p className="text-sm text-neutral-500 mt-0.5">
+                            Size: {o.size || '—'}
+                          </p>
+                        )}
+                        <div className="mt-2 text-sm text-neutral-400 flex flex-col gap-1">
+                          <div>Amount Paid: <strong className="text-green-400">₹{amountPaid}</strong></div>
+                          {o.listingType !== 'sale' && (
+                            <div>Refundable Amount: <strong className="text-blue-400">₹{refunded > 0 ? refunded : 0}</strong></div>
+                          )}
+                        </div>
+                        <p className="text-xs text-neutral-600 mt-1">
+                          {new Date(o.createdAt).toLocaleDateString()}
                         </p>
-                        <span
-                          className={`text-xs px-2.5 py-0.5 rounded-full font-medium shrink-0 ${STATUS_COLORS[o.status]}`}
-                        >
-                          {o.status}
-                        </span>
                       </div>
-                      <p className="text-sm text-neutral-500 mt-0.5">
-                        {o.store?.name}{o.listingType !== 'sale' && <> &bull; Size: {o.size || '—'}</>}
-                      </p>
-                      <div className="mt-2 text-sm text-neutral-400">
-                        Amount Paid: <strong className="text-green-400">₹{o.totalPrice}</strong>
-                      </div>
-                      <p className="text-xs text-neutral-600 mt-1">
-                        {new Date(o.createdAt).toLocaleDateString()}
-                      </p>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
