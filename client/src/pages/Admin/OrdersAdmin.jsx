@@ -5,10 +5,10 @@ import toast from "react-hot-toast";
 import Loader from "../../components/Loader";
 
 const STATUS_COLORS = {
-  pending:   "bg-yellow-500/10 text-yellow-400",
+  pending: "bg-yellow-500/10 text-yellow-400",
   confirmed: "bg-blue-500/10 text-blue-400",
   cancelled: "bg-red-500/10 text-red-400",
-  active:    "bg-green-500/10 text-green-400",
+  active: "bg-green-500/10 text-green-400",
   completed: "bg-neutral-500/10 text-neutral-400",
 };
 
@@ -21,12 +21,17 @@ const STATUS_LABELS = {
 };
 
 // All possible statuses – used only for badge display
-const ALL_STATUSES = ["pending", "confirmed", "cancelled", "active", "completed"];
+const ALL_STATUSES = [
+  "pending",
+  "confirmed",
+  "cancelled",
+  "active",
+  "completed",
+];
 
 // Statuses the store admin is allowed to set manually.
 // Payment statuses (pending / confirmed / cancelled) are managed by PhonePe automatically.
 const ADMIN_SETTABLE_STATUSES = ["active", "completed"];
-
 
 const OrdersAdmin = () => {
   const { storename } = useParams();
@@ -40,12 +45,15 @@ const OrdersAdmin = () => {
       setOrders(data);
     } catch (e) {
       toast.error("Failed to load orders");
+      console.error("Load orders error", e);
     } finally {
       setLoading(false);
     }
   }, [storename]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    load();
+  }, [load]);
 
   const handleStatus = async (orderId, status) => {
     const tid = toast.loading("Updating…");
@@ -69,7 +77,9 @@ const OrdersAdmin = () => {
 
       <div className="glass rounded-xl overflow-hidden">
         {loading ? (
-          <div className="p-12 flex justify-center"><Loader /></div>
+          <div className="p-12 flex justify-center">
+            <Loader />
+          </div>
         ) : orders.length === 0 ? (
           <div className="p-8 text-center text-neutral-500">No orders yet.</div>
         ) : (
@@ -93,55 +103,85 @@ const OrdersAdmin = () => {
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
                         {o.product?.images?.[0]?.url && (
-                          <img src={o.product.images[0].url} alt="" className="w-10 h-10 rounded object-cover border border-white/10" />
+                          <img
+                            src={o.product.images[0].url}
+                            alt=""
+                            className="w-10 h-10 rounded object-cover border border-white/10"
+                          />
                         )}
-                        <span className="font-medium text-white">{o.product?.name || "—"}</span>
+                        <span className="font-medium text-white">
+                          {o.product?.name || "—"}
+                        </span>
                       </div>
                     </td>
                     {/* Customer */}
                     <td className="px-5 py-4">
-                      <div className="font-medium text-white">{o.customer?.name || "—"}</div>
-                      <div className="text-xs text-neutral-500">{o.customer?.email}</div>
-                      {o.customer?.phone && <div className="text-xs text-neutral-500">{o.customer.phone}</div>}
-                      {o.customer?.address && <div className="text-xs text-neutral-500 mt-1 whitespace-normal max-w-[200px]">{o.customer.address}</div>}
+                      <div className="font-medium text-white">
+                        {o.customer?.name || "—"}
+                      </div>
+                      <div className="text-xs text-neutral-500">
+                        {o.customer?.email}
+                      </div>
+                      {o.customer?.phone && (
+                        <div className="text-xs text-neutral-500">
+                          {o.customer.phone}
+                        </div>
+                      )}
+                      {o.customer?.address && (
+                        <div className="text-xs text-neutral-500 mt-1 whitespace-normal max-w-[200px]">
+                          {o.customer.address}
+                        </div>
+                      )}
                     </td>
                     {/* Price */}
                     <td className="px-5 py-4 font-medium text-white">
-                      {o.listingType === 'sale' ? `₹${o.salePrice}` : `₹${o.rentPrice}`}
+                      {o.listingType === "sale"
+                        ? `₹${o.salePrice}`
+                        : `₹${o.rentPrice}`}
                     </td>
                     {/* Advance */}
-                    <td className="px-5 py-4 text-neutral-300">{o.listingType === 'sale' ? '—' : `₹${o.advanceAmount}`}</td>
+                    <td className="px-5 py-4 text-neutral-300">
+                      {o.listingType === "sale" ? "—" : `₹${o.advanceAmount}`}
+                    </td>
                     {/* Status badge */}
                     <td className="px-5 py-4">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${STATUS_COLORS[o.status]}`}>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${STATUS_COLORS[o.status]}`}
+                      >
                         {STATUS_LABELS[o.status] || o.status}
                       </span>
                     </td>
                     {/* Date */}
-                    <td className="px-5 py-4 text-neutral-500">{new Date(o.createdAt).toLocaleDateString()}</td>
+                    <td className="px-5 py-4 text-neutral-500">
+                      {new Date(o.createdAt).toLocaleDateString()}
+                    </td>
                     {/* Update status – linear progression only */}
                     <td className="px-5 py-4">
-                      {o.status === 'confirmed' && (
+                      {o.status === "confirmed" && (
                         <button
-                          onClick={() => handleStatus(o._id, 'active')}
+                          onClick={() => handleStatus(o._id, "active")}
                           className="text-xs px-3 py-1.5 rounded-lg bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-colors font-medium"
                         >
                           Mark Active
                         </button>
                       )}
-                      {o.status === 'active' && (
+                      {o.status === "active" && (
                         <button
-                          onClick={() => handleStatus(o._id, 'completed')}
+                          onClick={() => handleStatus(o._id, "completed")}
                           className="text-xs px-3 py-1.5 rounded-lg bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 transition-colors font-medium"
                         >
                           Mark Completed
                         </button>
                       )}
-                      {['pending', 'cancelled'].includes(o.status) && (
-                        <span className="text-xs text-neutral-500 italic">Auto-managed</span>
+                      {["pending", "cancelled"].includes(o.status) && (
+                        <span className="text-xs text-neutral-500 italic">
+                          Auto-managed
+                        </span>
                       )}
-                      {o.status === 'completed' && (
-                        <span className="text-xs text-neutral-600 italic">—</span>
+                      {o.status === "completed" && (
+                        <span className="text-xs text-neutral-600 italic">
+                          —
+                        </span>
                       )}
                     </td>
                   </tr>
@@ -156,4 +196,3 @@ const OrdersAdmin = () => {
 };
 
 export default OrdersAdmin;
-

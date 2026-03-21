@@ -9,7 +9,7 @@ import {
 } from "react-icons/fa6";
 
 const SOCIAL_LINKS = {
-  instagram: "https://instagram.com",
+  instagram: "https://www.instagram.com/peopleandstyle.in",
   whatsapp: "https://wa.me/918431094754",
   youtube: "https://www.youtube.com/",
   facebook: "https://www.facebook.com/",
