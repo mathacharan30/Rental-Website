@@ -4,6 +4,9 @@ const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const Counter = require('../models/Counter');
 const Invoice = require('../models/Invoice');
 const Order = require('../models/Order');
+const User = require('../models/User');
+const Product = require('../models/Product');
+const Store = require('../models/Store');
 
 const s3Client = new S3Client({
   region: process.env.AWS_REGION,
@@ -100,9 +103,6 @@ async function createInvoicePDF(invoiceObj, title = 'TAX INVOICE') {
       // Product Details
       doc.fontSize(12).text('Order Details:');
       doc.fontSize(10).text(`Product: ${invoiceObj.productName}`);
-      if (invoiceObj.rentalStartDate && invoiceObj.rentalEndDate) {
-        doc.text(`Rental Period: ${new Date(invoiceObj.rentalStartDate).toLocaleDateString()} to ${new Date(invoiceObj.rentalEndDate).toLocaleDateString()}`);
-      }
       doc.moveDown();
 
       // Pricing Table
@@ -264,7 +264,7 @@ async function processOrderConfirmation(orderId) {
     // 5. Send Email
     try {
       const emailSubject = `Order Confirmed: ${newInvoice.productName} - ${newInvoice.invoiceNumber}`;
-      const emailBody = `Hi ${newInvoice.customerName},\n\nYour order has been confirmed!\nOrder Reference: ${order.orderReference}\nProduct: ${newInvoice.productName}\nRental Dates: ${new Date(newInvoice.rentalStartDate).toLocaleDateString()} to ${new Date(newInvoice.rentalEndDate).toLocaleDateString()}\nTotal Paid: Rs. ${newInvoice.grandTotal.toFixed(2)}\n\nPlease find your tax invoice attached. Note that your refundable deposit of Rs. ${newInvoice.depositAmount.toFixed(2)} will be returned directly upon product return.\n\nThank you for choosing People&Style!`;
+      const emailBody = `Hi ${newInvoice.customerName},\n\nYour order has been confirmed!\nOrder Reference: ${order.orderReference}\nProduct: ${newInvoice.productName}\nTotal Paid: Rs. ${newInvoice.grandTotal.toFixed(2)}\n\nPlease find your tax invoice attached. Note that your refundable deposit of Rs. ${newInvoice.depositAmount.toFixed(2)} will be returned directly upon product return.\n\nThank you for choosing People&Style!`;
 
       await withRetry(() => sendEmailWithAttachment(newInvoice.customerEmail, emailSubject, emailBody, pdfBuffer, fileName));
       newInvoice.emailedTo = newInvoice.customerEmail;
