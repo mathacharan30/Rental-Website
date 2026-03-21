@@ -22,6 +22,7 @@ const phonepeClient = require('../config/phonepeClient');
 const Payment       = require('../models/Payment');
 const Order         = require('../models/Order');
 const Product       = require('../models/Product');
+const { processOrderConfirmation, generateCreditNote } = require('../utils/invoiceService');
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -64,6 +65,12 @@ async function syncPaymentAndOrder(merchantOrderId, phonePeState, details) {
 
     if (Object.keys(orderUpdates).length) {
       await Order.findByIdAndUpdate(payment.orderId, orderUpdates);
+      
+      if (orderUpdates.status === 'confirmed') {
+        processOrderConfirmation(payment.orderId).catch(err => console.error('[PaymentController] Invoice error:', err));
+      } else if (orderUpdates.status === 'cancelled') {
+        generateCreditNote(payment.orderId).catch(err => console.error('[PaymentController] CN error:', err));
+      }
     }
   }
 

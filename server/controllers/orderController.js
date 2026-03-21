@@ -1,6 +1,7 @@
 const Order   = require('../models/Order');
 const Product = require('../models/Product');
 const Store   = require('../models/Store');
+const { generateOrderReference, processOrderConfirmation, generateCreditNote } = require('../utils/invoiceService');
 
 // ─── POST /api/orders  (customer) ────────────────────────────────────────────
 exports.createOrder = async (req, res) => {
@@ -12,6 +13,8 @@ exports.createOrder = async (req, res) => {
     const product = await Product.findById(productId);
     if (!product) return res.status(404).json({ message: 'Product not found' });
     if (!product.store) return res.status(400).json({ message: 'Product has no associated store' });
+
+    const orderReference = await generateOrderReference();
 
     const order = await Order.create({
       customer:        req.user.dbId,
@@ -28,6 +31,7 @@ exports.createOrder = async (req, res) => {
       salePrice:       product.salePrice       || 0,
       advanceAmount:   product.listingType === 'sale' ? 0 : (product.advanceAmount || 0),
       totalPrice:      product.price || 0,
+      orderReference,
     });
 
     const populated = await order.populate([
@@ -131,6 +135,14 @@ exports.updateOrderStatus = async (req, res) => {
 
     order.status = status;
     await order.save();
+    
+    // Trigger async invoice or credit note processing without awaiting/blocking request
+    if (status === 'confirmed') {
+      processOrderConfirmation(order._id).catch(err => console.error('[OrderController] Invoice trigger error:', err));
+    } else if (status === 'cancelled') {
+      generateCreditNote(order._id).catch(err => console.error('[OrderController] Credit Note trigger error:', err));
+    }
+
     return res.json(order);
   } catch (err) {
     console.error('[Orders] updateOrderStatus:', err.message);

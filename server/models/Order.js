@@ -7,6 +7,9 @@ const orderSchema = new mongoose.Schema(
     product:  { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
     store:    { type: mongoose.Schema.Types.ObjectId, ref: 'Store', required: true },
 
+    orderReference: { type: String, default: null }, // ORD-YYYY-XXXXX
+    invoiceId: { type: mongoose.Schema.Types.ObjectId, ref: 'Invoice', default: null },
+
     // ── Pricing snapshot (frozen at order time so edits to the product don't
     //    affect existing orders) ──────────────────────────────────────────────
     listingType:     { type: String, enum: ['rent', 'sale'], default: 'rent' },
