@@ -64,12 +64,18 @@ async function syncPaymentAndOrder(merchantOrderId, phonePeState, details) {
     }
 
     if (Object.keys(orderUpdates).length) {
-      await Order.findByIdAndUpdate(payment.orderId, orderUpdates);
-      
+      const updatedOrder = await Order.findByIdAndUpdate(payment.orderId, orderUpdates, { new: true });
+
       if (orderUpdates.status === 'confirmed') {
         await processOrderConfirmation(payment.orderId);
       } else if (orderUpdates.status === 'cancelled') {
         await generateCreditNote(payment.orderId);
+        // Restore product availability so the next customer can book it.
+        // This covers: payment failed, user closed the payment page, or any PhonePe cancellation.
+        if (updatedOrder?.product) {
+          await Product.findByIdAndUpdate(updatedOrder.product, { available: true });
+          console.log(`[Payment] Product ${updatedOrder.product} restored to available after payment cancellation`);
+        }
       }
     }
   }
@@ -91,9 +97,28 @@ exports.createPayment = async (req, res) => {
       return res.status(400).json({ message: 'productId is required' });
     }
 
-    // ── Fetch product for pricing ─────────────────────────────────────────
-    const product = await Product.findById(productId);
-    if (!product) return res.status(404).json({ message: 'Product not found' });
+    // ── Atomically fetch product AND claim it in one DB operation ─────────
+    // Using findOneAndUpdate with { available: true } as a condition means:
+    //   - Only ONE concurrent request can match and set available=false
+    //   - If two users click simultaneously, only the first wins; the second gets null
+    //   - This is a true atomic check-and-set — no race condition possible
+    const product = await Product.findOneAndUpdate(
+      { _id: productId, available: true },   // condition: must be available
+      { $set: { available: false } },          // atomically mark unavailable
+      { new: true },                           // return the updated doc
+    );
+
+    if (!product) {
+      // Either product doesn't exist, or it was just claimed by someone else
+      const exists = await Product.findById(productId).select('_id available store');
+      if (!exists)       return res.status(404).json({ message: 'Product not found' });
+      if (!exists.store) return res.status(400).json({ message: 'Product has no associated store' });
+      // Product exists but available===false → already booked
+      return res.status(409).json({
+        message: 'This product is currently not available. Someone else may have booked it first.',
+      });
+    }
+
     if (!product.store) return res.status(400).json({ message: 'Product has no associated store' });
 
     const isSale          = product.listingType === 'sale';

@@ -1,8 +1,9 @@
 import { Edit, Trash2 } from "lucide-react";
 import React from "react";
 
-const ProductList = ({ products = [], onEdit, onDelete }) => {
+const ProductList = ({ products = [], onEdit, onDelete, onToggleAvailability }) => {
   const canEdit = typeof onEdit === "function";
+  const canToggle = typeof onToggleAvailability === "function";
 
   if (products.length === 0) {
     return (
@@ -21,6 +22,7 @@ const ProductList = ({ products = [], onEdit, onDelete }) => {
             <th className="px-6 py-4">Category</th>
             <th className="px-6 py-4">Price</th>
             <th className="px-6 py-4">Stock</th>
+            <th className="px-6 py-4 text-center">Availability</th>
             <th className="px-6 py-4 text-center">Edit</th>
             <th className="px-6 py-4 text-center">Delete</th>
           </tr>
@@ -59,6 +61,49 @@ const ProductList = ({ products = [], onEdit, onDelete }) => {
                 {p.price}
               </td>
               <td className="px-6 py-4 text-sm text-neutral-400">{p.stock}</td>
+
+              {/* ── Availability toggle ── */}
+              <td className="px-6 py-4 text-center">
+                <div className="flex flex-col items-center gap-1">
+                  <button
+                    title={p.available ? "Click to mark Unavailable" : "Click to mark Available"}
+                    onClick={() => canToggle && onToggleAvailability(p.id)}
+                    style={{
+                      position: "relative",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      width: "44px",
+                      height: "24px",
+                      borderRadius: "9999px",
+                      border: "none",
+                      cursor: canToggle ? "pointer" : "default",
+                      backgroundColor: p.available ? "#16a34a" : "#dc2626",
+                      transition: "background-color 0.25s",
+                      padding: 0,
+                    }}
+                  >
+                    <span
+                      style={{
+                        position: "absolute",
+                        left: p.available ? "calc(100% - 22px)" : "2px",
+                        width: "20px",
+                        height: "20px",
+                        borderRadius: "50%",
+                        backgroundColor: "#fff",
+                        transition: "left 0.25s",
+                        boxShadow: "0 1px 3px rgba(0,0,0,0.4)",
+                      }}
+                    />
+                  </button>
+                  <span
+                    className="text-xs font-medium"
+                    style={{ color: p.available ? "#4ade80" : "#f87171" }}
+                  >
+                    {p.available ? "Available" : "Not Available"}
+                  </span>
+                </div>
+              </td>
+
               <td className="px-6 py-4 text-center">
                 {canEdit && (
                   <button

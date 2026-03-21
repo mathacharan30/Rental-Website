@@ -5,6 +5,7 @@ import ProductForm from "../../components/admin/ProductForm";
 import Stats from "../../components/admin/Stats";
 import Modal from "../../components/admin/Modal";
 import adminProductService from "../../services/adminProductService";
+import { toggleAvailability } from "../../services/adminProductService";
 import toast from "react-hot-toast";
 import Loader from "../../components/Loader";
 import { Plus } from "lucide-react";
@@ -92,6 +93,20 @@ const ProductsAdmin = () => {
     }
   };
 
+  const handleToggleAvailability = async (id) => {
+    try {
+      const { available } = await toggleAvailability(id);
+      // Optimistically update local state without a full reload
+      setProducts((prev) =>
+        prev.map((p) => (p._id === id || p.id === id ? { ...p, available } : p))
+      );
+      toast.success(available ? "Product marked as Available" : "Product marked as Not Available");
+    } catch (e) {
+      console.error("Toggle availability failed", e);
+      toast.error(e?.response?.data?.message || "Failed to update availability");
+    }
+  };
+
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
@@ -146,6 +161,7 @@ const ProductsAdmin = () => {
             products={filteredProducts}
             onDelete={handleDelete}
             onEdit={(p) => setEditProduct(p)}
+            onToggleAvailability={handleToggleAvailability}
           />
         )}
       </div>

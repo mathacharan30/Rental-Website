@@ -14,6 +14,15 @@ exports.createOrder = async (req, res) => {
     if (!product) return res.status(404).json({ message: 'Product not found' });
     if (!product.store) return res.status(400).json({ message: 'Product has no associated store' });
 
+    // ── Availability check (server-side gate) ────────────────────────────────
+    // Even if the customer has a cached/stale page, we reject the order here.
+    // This is the single source of truth — the DB value wins.
+    if (product.available === false) {
+      return res.status(409).json({
+        message: 'This product is currently not available. Someone else may have booked it first.',
+      });
+    }
+
     const orderReference = await generateOrderReference();
 
     const order = await Order.create({
@@ -38,6 +47,10 @@ exports.createOrder = async (req, res) => {
       { path: 'product', select: 'name images rentPrice commissionPrice salePrice advanceAmount listingType' },
       { path: 'store',   select: 'name slug' },
     ]);
+
+    // Mark the product as unavailable – first come, first served.
+    // It becomes available again only when the order is completed / cancelled.
+    await Product.findByIdAndUpdate(product._id, { available: false });
 
     return res.status(201).json(populated);
   } catch (err) {
@@ -120,9 +133,19 @@ exports.getAllOrders = async (req, res) => {
 exports.updateOrderStatus = async (req, res) => {
   try {
     const { status } = req.body;
-    const allowed = ['pending', 'confirmed', 'active', 'completed', 'cancelled'];
+
+    // super_admin can set any status; store_owner only order-operational ones
+    const allStatuses          = ['pending', 'confirmed', 'active', 'completed', 'cancelled'];
+    const storeOwnerStatuses   = ['active', 'completed'];
+
+    const allowed = req.user.role === 'super_admin' ? allStatuses : storeOwnerStatuses;
+
     if (!allowed.includes(status)) {
-      return res.status(400).json({ message: `status must be one of: ${allowed.join(', ')}` });
+      return res.status(403).json({
+        message: req.user.role === 'store_owner'
+          ? `Store admin can only set status to: ${storeOwnerStatuses.join(', ')}`
+          : `status must be one of: ${allStatuses.join(', ')}`,
+      });
     }
 
     const order = await Order.findById(req.params.id);
@@ -135,6 +158,11 @@ exports.updateOrderStatus = async (req, res) => {
 
     order.status = status;
     await order.save();
+
+    // Restore product availability when the rental cycle ends
+    if (status === 'completed' || status === 'cancelled') {
+      await Product.findByIdAndUpdate(order.product, { available: true });
+    }
 
     // Await invoice/credit-note so serverless functions don't terminate early
     if (status === 'confirmed') {

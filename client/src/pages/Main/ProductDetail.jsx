@@ -124,6 +124,10 @@ const ProductDetail = () => {
       toast.error("Only customers can place orders");
       return;
     }
+    if (product.available === false) {
+      toast.error("This product is currently not available for rent");
+      return;
+    }
     if (!isJewels && !selectedSize) {
       toast.error("Please select a size");
       return;
@@ -368,24 +372,30 @@ const ProductDetail = () => {
         </p>
 
         <div className="flex justify-center gap-4 mt-6 flex-wrap">
-          {[
-            { color: "bg-green-400", label: "Condition", value: "Excellent" },
-            {
-              color: "bg-violet-400",
-              label: "Availability",
-              value: isSale ? "Available for sale" : "Ready to rent",
-            },
-          ].map(({ color, label, value }) => (
-            <div
-              key={label}
-              className="flex items-center gap-2 text-sm text-neutral-400 glass px-4 py-2 rounded-xl"
-            >
-              <span className={`w-2 h-2 rounded-full ${color}`} />
-              <span>
-                <strong className="text-neutral-300">{label}:</strong> {value}
-              </span>
-            </div>
-          ))}
+          {
+            [
+              { color: "bg-green-400", label: "Condition", value: "Excellent" },
+              {
+                color: product.available === false ? "bg-red-400" : "bg-violet-400",
+                label: "Availability",
+                value: product.available === false
+                  ? "Not Available"
+                  : isSale
+                    ? "Available for sale"
+                    : "Ready to rent",
+              },
+            ].map(({ color, label, value }) => (
+              <div
+                key={label}
+                className="flex items-center gap-2 text-sm text-neutral-400 glass px-4 py-2 rounded-xl"
+              >
+                <span className={`w-2 h-2 rounded-full ${color}`} />
+                <span>
+                  <strong className="text-neutral-300">{label}:</strong> {value}
+                </span>
+              </div>
+            ))
+          }
         </div>
 
         <div className="h-px bg-white/6 my-8 max-w-md mx-auto" />
@@ -416,15 +426,17 @@ const ProductDetail = () => {
         <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
           <button
             onClick={handleRent}
-            disabled={ordering}
+            disabled={ordering || product.available === false}
             className="btn-funky rounded-xl! px-10 disabled:opacity-60"
           >
             <span>
               {ordering
                 ? "Redirecting to payment…"
-                : isSale
-                  ? "Buy Now →"
-                  : "Rent Now →"}
+                : product.available === false
+                  ? "Currently Unavailable"
+                  : isSale
+                    ? "Buy Now →"
+                    : "Rent Now →"}
             </span>
           </button>
           <button

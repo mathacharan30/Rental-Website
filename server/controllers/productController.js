@@ -457,3 +457,41 @@ exports.getTopPicks = async (req, res) => {
     return res.status(500).json({ message: "Server error fetching top picks" });
   }
 };
+
+// PATCH /api/products/:id/availability  (store_owner / super_admin)
+// Toggles or explicitly sets the product's 'available' field.
+exports.toggleAvailability = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findById(id);
+    if (!product) return res.status(404).json({ message: "Product not found" });
+
+    if (
+      req.user.role === "store_owner" &&
+      String(product.store) !== String(req.user.storeId)
+    ) {
+      return res
+        .status(403)
+        .json({ message: "Not authorised to update this product" });
+    }
+
+    // If an explicit value is provided in body, use it; otherwise just toggle
+    const body = req.body || {};
+    if (body.available !== undefined) {
+      product.available =
+        typeof body.available === "string"
+          ? body.available === "true"
+          : !!body.available;
+    } else {
+      product.available = !product.available;
+    }
+
+    await product.save();
+    return res.json({ id: product._id, available: product.available });
+  } catch (error) {
+    console.error("[Products] toggleAvailability error:", error.message);
+    return res
+      .status(500)
+      .json({ message: "Server error updating availability" });
+  }
+};

@@ -17,6 +17,7 @@ const {
   getProductsByCategory,
   getTopPicks,
   signUpload,
+  toggleAvailability,
 } = require('../controllers/productController');
 
 router.get('/',           getAllProducts);
@@ -38,8 +39,9 @@ const uploadImages = (req, res, next) => {
   });
 };
 
-router.post('/createProduct', ...storeGuard, uploadImages, createProduct);
-router.put('/:id',            ...storeGuard, uploadImages, updateProduct);
-router.delete('/:id',         ...storeGuard, deleteProduct);
+router.post('/createProduct',          ...storeGuard, uploadImages, createProduct);
+router.put('/:id',                     ...storeGuard, uploadImages, updateProduct);
+router.patch('/:id/availability',      ...storeGuard, toggleAvailability);
+router.delete('/:id',                  ...storeGuard, deleteProduct);
 
 module.exports = router;

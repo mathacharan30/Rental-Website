@@ -20,7 +20,13 @@ const STATUS_LABELS = {
   completed: "order completed",
 };
 
-const STATUSES = ["pending", "confirmed", "cancelled", "active", "completed"];
+// All possible statuses – used only for badge display
+const ALL_STATUSES = ["pending", "confirmed", "cancelled", "active", "completed"];
+
+// Statuses the store admin is allowed to set manually.
+// Payment statuses (pending / confirmed / cancelled) are managed by PhonePe automatically.
+const ADMIN_SETTABLE_STATUSES = ["active", "completed"];
+
 
 const OrdersAdmin = () => {
   const { storename } = useParams();
@@ -113,17 +119,30 @@ const OrdersAdmin = () => {
                     </td>
                     {/* Date */}
                     <td className="px-5 py-4 text-neutral-500">{new Date(o.createdAt).toLocaleDateString()}</td>
-                    {/* Update status */}
+                    {/* Update status – linear progression only */}
                     <td className="px-5 py-4">
-                      <select
-                        value={o.status}
-                        onChange={(e) => handleStatus(o._id, e.target.value)}
-                        className="text-xs bg-[#1a1a1a] border border-white/10 text-neutral-300 rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500"
-                      >
-                        {STATUSES.map((s) => (
-                          <option key={s} value={s} className="bg-[#1a1a1a] text-neutral-300">{STATUS_LABELS[s] || s}</option>
-                        ))}
-                      </select>
+                      {o.status === 'confirmed' && (
+                        <button
+                          onClick={() => handleStatus(o._id, 'active')}
+                          className="text-xs px-3 py-1.5 rounded-lg bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-colors font-medium"
+                        >
+                          Mark Active
+                        </button>
+                      )}
+                      {o.status === 'active' && (
+                        <button
+                          onClick={() => handleStatus(o._id, 'completed')}
+                          className="text-xs px-3 py-1.5 rounded-lg bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 transition-colors font-medium"
+                        >
+                          Mark Completed
+                        </button>
+                      )}
+                      {['pending', 'cancelled'].includes(o.status) && (
+                        <span className="text-xs text-neutral-500 italic">Auto-managed</span>
+                      )}
+                      {o.status === 'completed' && (
+                        <span className="text-xs text-neutral-600 italic">—</span>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -137,3 +156,4 @@ const OrdersAdmin = () => {
 };
 
 export default OrdersAdmin;
+

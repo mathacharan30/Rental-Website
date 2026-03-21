@@ -64,5 +64,12 @@ export async function deleteProduct(id) {
   return data;
 }
 
-export default { listProducts, createProduct, updateProduct, deleteProduct };
+export async function toggleAvailability(id) {
+  // Send an explicit empty body so Axios sets Content-Type: application/json
+  // and Express always populates req.body (avoids undefined body edge case)
+  const { data } = await api.patch(`/api/products/${id}/availability`, {});
+  return data; // { id, available }
+}
+
+export default { listProducts, createProduct, updateProduct, deleteProduct, toggleAvailability };
 

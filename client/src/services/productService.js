@@ -82,6 +82,7 @@ export function mapProduct(p = {}) {
     rating: typeof p.rating === "number" ? p.rating : 0,
     sizes: p.sizes || ["XS", "S", "M", "L", "XL"],
     stock: p.stock !== undefined ? p.stock : 0,
+    available: p.available !== undefined ? p.available : true,
   };
 }
 
