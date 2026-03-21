@@ -66,7 +66,7 @@ const ProductDetail = () => {
     setLoading(true);
     Promise.all([
       getProductById(id),
-      getProductTestimonials(id).catch(() => [])
+      getProductTestimonials(id).catch(() => []),
     ])
       .then(([prodData, testData]) => {
         setProduct(prodData);
@@ -179,36 +179,63 @@ const ProductDetail = () => {
   return (
     <motion.div className="bg-[#0e0e0e] min-h-screen" {...fade}>
       <Helmet>
-        <title>{product.title} — Rent in Bangalore &amp; Karnataka | People &amp; Style</title>
-        <meta name="description" content={`Rent ${product.title} (${product.category}) at ${product.price}. Premium designer outfit rental in Bangalore, Mysuru and across Karnataka.`} />
-        <link rel="canonical" href={`https://peopleandstyle.in/product/${product.id}`} />
-        <meta property="og:title" content={`${product.title} — Rent at People & Style`} />
-        <meta property="og:description" content={product.description || `Rent ${product.title} for your next event. Premium clothing rental in Karnataka.`} />
-        <meta property="og:image" content={product.image} />
-        <meta property="og:url" content={`https://peopleandstyle.in/product/${product.id}`} />
-        <meta property="og:type" content="product" />
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Product",
-          "name": product.title,
-          "image": allImages.length ? allImages : [product.image],
-          "description": product.description || `Premium ${product.category} available for rent at People & Style`,
-          "brand": { "@type": "Brand", "name": "People & Style" },
-          "offers": {
-            "@type": "Offer",
-            "url": `https://peopleandstyle.in/product/${product.id}`,
-            "priceCurrency": "INR",
-            "price": String(product.advanceAmount || "").replace(/[^0-9.]/g, "") || "0",
-            "availability": "https://schema.org/InStock",
-            "itemCondition": "https://schema.org/UsedCondition"
-          },
-          "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": String(rating),
-            "bestRating": "5",
-            "ratingCount": "1"
+        <title>
+          {product.title} — Rent in Bangalore &amp; Karnataka | People &amp;
+          Style
+        </title>
+        <meta
+          name="description"
+          content={`Rent ${product.title} (${product.category}) at ${product.price}. Premium designer outfit rental in Bangalore, Mysuru and across Karnataka.`}
+        />
+        <link
+          rel="canonical"
+          href={`https://peopleandstyle.in/product/${product.id}`}
+        />
+        <meta
+          property="og:title"
+          content={`${product.title} — Rent at People & Style`}
+        />
+        <meta
+          property="og:description"
+          content={
+            product.description ||
+            `Rent ${product.title} for your next event. Premium clothing rental in Karnataka.`
           }
-        })}</script>
+        />
+        <meta property="og:image" content={product.image} />
+        <meta
+          property="og:url"
+          content={`https://peopleandstyle.in/product/${product.id}`}
+        />
+        <meta property="og:type" content="product" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name: product.title,
+            image: allImages.length ? allImages : [product.image],
+            description:
+              product.description ||
+              `Premium ${product.category} available for rent at People & Style`,
+            brand: { "@type": "Brand", name: "People & Style" },
+            offers: {
+              "@type": "Offer",
+              url: `https://peopleandstyle.in/product/${product.id}`,
+              priceCurrency: "INR",
+              price:
+                String(product.advanceAmount || "").replace(/[^0-9.]/g, "") ||
+                "0",
+              availability: "https://schema.org/InStock",
+              itemCondition: "https://schema.org/UsedCondition",
+            },
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: String(rating),
+              bestRating: "5",
+              ratingCount: "1",
+            },
+          })}
+        </script>
       </Helmet>
       <div className="max-w-6xl mx-auto px-4 pt-2">
         <Link
@@ -232,12 +259,16 @@ const ProductDetail = () => {
           <h1 className="text-3xl md:text-5xl font-bold display-font text-white tracking-tight">
             {product.title}
           </h1>
-          <FavoriteButton productId={product.id} size={28} />
+          <FavoriteButton productId={product.id} size={16} />
         </div>
         <div className="flex items-center justify-center gap-1 mt-3">
           {[...Array(5)].map((_, i) =>
             i < Math.floor(rating) ? (
-              <Star key={i} size={16} className="text-violet-400 fill-violet-400" />
+              <Star
+                key={i}
+                size={16}
+                className="text-violet-400 fill-violet-400"
+              />
             ) : (
               <Star key={i} size={16} className="text-violet-400/30" />
             ),
@@ -372,30 +403,30 @@ const ProductDetail = () => {
         </p>
 
         <div className="flex justify-center gap-4 mt-6 flex-wrap">
-          {
-            [
-              { color: "bg-green-400", label: "Condition", value: "Excellent" },
-              {
-                color: product.available === false ? "bg-red-400" : "bg-violet-400",
-                label: "Availability",
-                value: product.available === false
+          {[
+            { color: "bg-green-400", label: "Condition", value: "Excellent" },
+            {
+              color:
+                product.available === false ? "bg-red-400" : "bg-violet-400",
+              label: "Availability",
+              value:
+                product.available === false
                   ? "Not Available"
                   : isSale
                     ? "Available for sale"
                     : "Ready to rent",
-              },
-            ].map(({ color, label, value }) => (
-              <div
-                key={label}
-                className="flex items-center gap-2 text-sm text-neutral-400 glass px-4 py-2 rounded-xl"
-              >
-                <span className={`w-2 h-2 rounded-full ${color}`} />
-                <span>
-                  <strong className="text-neutral-300">{label}:</strong> {value}
-                </span>
-              </div>
-            ))
-          }
+            },
+          ].map(({ color, label, value }) => (
+            <div
+              key={label}
+              className="flex items-center gap-2 text-sm text-neutral-400 glass px-4 py-2 rounded-xl"
+            >
+              <span className={`w-2 h-2 rounded-full ${color}`} />
+              <span>
+                <strong className="text-neutral-300">{label}:</strong> {value}
+              </span>
+            </div>
+          ))}
         </div>
 
         <div className="h-px bg-white/6 my-8 max-w-md mx-auto" />
@@ -462,19 +493,30 @@ const ProductDetail = () => {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {testimonials.map((t, i) => (
-              <div key={i} className="glass p-5 rounded-2xl flex flex-col gap-3">
+              <div
+                key={i}
+                className="glass p-5 rounded-2xl flex flex-col gap-3"
+              >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     {t.user?.profilePicture ? (
-                      <img src={t.user.profilePicture} alt="" className="w-10 h-10 rounded-full object-cover border border-white/10" />
+                      <img
+                        src={t.user.profilePicture}
+                        alt=""
+                        className="w-10 h-10 rounded-full object-cover border border-white/10"
+                      />
                     ) : (
                       <div className="w-10 h-10 rounded-full bg-violet-600/20 text-violet-400 flex items-center justify-center font-bold border border-violet-500/30">
                         {t.user?.name?.charAt(0) || "U"}
                       </div>
                     )}
                     <div>
-                      <p className="text-sm font-medium text-white">{t.user?.name || "Customer"}</p>
-                      <p className="text-xs text-neutral-500">{new Date(t.createdAt).toLocaleDateString()}</p>
+                      <p className="text-sm font-medium text-white">
+                        {t.user?.name || "Customer"}
+                      </p>
+                      <p className="text-xs text-neutral-500">
+                        {new Date(t.createdAt).toLocaleDateString()}
+                      </p>
                     </div>
                   </div>
                   <div className="flex gap-0.5">
@@ -482,7 +524,11 @@ const ProductDetail = () => {
                       <Star
                         key={star}
                         size={14}
-                        className={star <= t.rating ? "text-yellow-400 fill-yellow-400" : "text-neutral-700"}
+                        className={
+                          star <= t.rating
+                            ? "text-yellow-400 fill-yellow-400"
+                            : "text-neutral-700"
+                        }
                       />
                     ))}
                   </div>
@@ -491,7 +537,12 @@ const ProductDetail = () => {
                   "{t.comment}"
                 </p>
                 {t.image && (
-                  <img src={t.image} alt="Review attachment" className="w-full h-40 md:h-48 object-cover rounded-xl mt-1 border border-white/5 cursor-pointer hover:border-violet-500/30 transition-colors" onClick={() => setReviewLightboxImage(t.image)} />
+                  <img
+                    src={t.image}
+                    alt="Review attachment"
+                    className="w-full h-40 md:h-48 object-cover rounded-xl mt-1 border border-white/5 cursor-pointer hover:border-violet-500/30 transition-colors"
+                    onClick={() => setReviewLightboxImage(t.image)}
+                  />
                 )}
               </div>
             ))}

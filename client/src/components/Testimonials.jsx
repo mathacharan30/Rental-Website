@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Marquee from "react-fast-marquee";
 import testimonialService from "../services/testimonialService";
 
+const INFO_VIDEO_LINK = "https://www.youtube.com/";
+
 const Testimonials = () => {
   const [quotes, setQuotes] = useState([]);
 
@@ -69,6 +71,17 @@ const Testimonials = () => {
               </div>
             ))}
           </Marquee>
+        </div>
+
+        <div className="mt-8 text-center">
+          <a
+            href={INFO_VIDEO_LINK}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center justify-center px-5 py-2.5 rounded-full border border-violet-400/40 bg-violet-500/10 text-violet-300 hover:text-violet-200 hover:border-violet-300/60 transition-colors text-sm"
+          >
+            Watch Info Video
+          </a>
         </div>
       </div>
     </section>

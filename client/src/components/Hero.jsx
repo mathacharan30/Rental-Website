@@ -1,64 +1,100 @@
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import adminService from "../services/adminService";
-import toast from "react-hot-toast";
+
+const DESKTOP_HERO_IMAGES = ["/b1.jpg", "/b2.jpg"];
+const MOBILE_HERO_IMAGES = ["/b3.jpg", "/b4.jpg"];
 
 const Hero = () => {
-  const [images, setImages] = useState([]);
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia("(max-width: 767px)").matches
+      : false,
+  );
+  const [activeSlide, setActiveSlide] = useState(0);
+  const images = isMobile ? MOBILE_HERO_IMAGES : DESKTOP_HERO_IMAGES;
 
   useEffect(() => {
-    try {
-      const list = adminService.loadHeroImages();
-      setImages(Array.isArray(list) ? list : []);
-    } catch (e) {
-      toast.error("Failed to load hero images" + e.message);
-      setImages(["/pic1.jpg"]);
-    }
+    const media = window.matchMedia("(max-width: 767px)");
+    const onChange = (event) => setIsMobile(event.matches);
+
+    setIsMobile(media.matches);
+    media.addEventListener("change", onChange);
+
+    return () => media.removeEventListener("change", onChange);
   }, []);
 
-  const heroSrc = images[0] || "/pic1.jpg";
+  useEffect(() => {
+    if (images.length < 2) return;
+
+    const interval = window.setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % images.length);
+    }, 4500);
+
+    return () => window.clearInterval(interval);
+  }, [images]);
+
+  useEffect(() => {
+    setActiveSlide(0);
+  }, [isMobile]);
+
+  useEffect(() => {
+    if (activeSlide >= images.length) {
+      setActiveSlide(0);
+    }
+  }, [activeSlide, images.length]);
+
+  const goToPrevSlide = () => {
+    setActiveSlide((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  const goToNextSlide = () => {
+    setActiveSlide((prev) => (prev + 1) % images.length);
+  };
 
   return (
     <section className="relative w-full h-[90vh] overflow-hidden">
-      {/* Background image */}
-      <img
-        src={heroSrc}
-        alt="Rent designer outfits in Bangalore and Karnataka — People &amp; Style"
-        loading="eager"
-        fetchpriority="high"
-        decoding="async"
-        className="absolute inset-0 w-full h-full object-cover"
-      />
+      {images.map((src, index) => (
+        <img
+          key={`${src}-${index}`}
+          src={src}
+          alt="Rent designer outfits in Bangalore and Karnataka — People &amp; Style"
+          loading={index === 0 ? "eager" : "lazy"}
+          fetchpriority={index === activeSlide ? "high" : "auto"}
+          decoding="async"
+          className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ${index === activeSlide ? "opacity-100 scale-105" : "opacity-0 scale-100"}`}
+        />
+      ))}
 
-      {/* Simple dark overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-[#0e0e0e]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/10 to-[#0e0e0e]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_98%)]" />
 
-      <div className="relative z-10 max-w-7xl mx-auto h-full flex flex-col justify-center pb-16 pt-20 md:pb-20 px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
+      {images.length > 1 && (
+        <>
+          <button
+            type="button"
+            onClick={goToPrevSlide}
+            className="absolute z-20 left-4 md:left-6 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/35 hover:bg-black/55 border border-white/20 text-white"
+            aria-label="Previous hero image"
+          >
+            &#10094;
+          </button>
+          <button
+            type="button"
+            onClick={goToNextSlide}
+            className="absolute z-20 right-4 md:right-6 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/35 hover:bg-black/55 border border-white/20 text-white"
+            aria-label="Next hero image"
+          >
+            &#10095;
+          </button>
+        </>
+      )}
+
+      <div className="relative z-10 max-w-7xl mx-auto h-full flex items-end pb-10 justify-center px-4">
+        <a
+          href="#categories"
+          className="btn-funky inline-flex items-center justify-center text-center min-w-[220px]"
         >
-          <h1 className="text-4xl md:text-5xl font-semibold display-font tracking-tight max-w-3xl leading-tight">
-            Rent Designer Outfits
-            <br />
-            <span className="text-neutral-300">for Every Occasion</span>
-          </h1>
-
-          <p className="mt-4 text-neutral-100 text-sm md:text-base max-w-lg leading-relaxed">
-            Premium clothing rentals for weddings, events, and special moments.
-            Affordable luxury, delivered to your door.
-          </p>
-
-          <div className="mt-8 flex flex-col sm:flex-row gap-3">
-            <a href="#collection" className="btn-funky text-center">
-              <span>Browse Collection</span>
-            </a>
-            <a href="#categories" className="btn-outline-funky text-center">
-              View Categories
-            </a>
-          </div>
-        </motion.div>
+          View Categories
+        </a>
       </div>
     </section>
   );

@@ -4,7 +4,6 @@ import Hero from "../../components/Hero";
 import Categories from "../../components/Categories";
 import ProductsGrid from "../../components/ProductsGrid";
 import Gallery from "../../components/Gallery";
-import Reels from "../../components/Reels";
 import Testimonials from "../../components/Testimonials";
 import Footer from "../../components/Footer";
 import { motion } from "framer-motion";
@@ -44,24 +43,36 @@ const Home = () => {
       transition={{ duration: 0.6 }}
     >
       <Helmet>
-        <title>People &amp; Style — Rent Designer Outfits in Bangalore &amp; Karnataka</title>
-        <meta name="description" content="Rent premium designer lehengas, sarees, sherwanis and ethnic wear for weddings and events in Bangalore, Mysuru and across Karnataka. Affordable luxury clothing rental — delivered to your door." />
-        <meta name="keywords" content="clothing rental Bangalore, lehenga on rent Mysuru, designer saree rental Karnataka, ethnic wear rental, wedding outfit rental Bangalore" />
+        <title>
+          People &amp; Style — Rent Designer Outfits in Bangalore &amp;
+          Karnataka
+        </title>
+        <meta
+          name="description"
+          content="Rent premium designer lehengas, sarees, sherwanis and ethnic wear for weddings and events in Bangalore, Mysuru and across Karnataka. Affordable luxury clothing rental — delivered to your door."
+        />
+        <meta
+          name="keywords"
+          content="clothing rental Bangalore, lehenga on rent Mysuru, designer saree rental Karnataka, ethnic wear rental, wedding outfit rental Bangalore"
+        />
         <link rel="canonical" href="https://peopleandstyle.in/" />
-        <meta property="og:title" content="People & Style — Rent Designer Outfits in Bangalore & Karnataka" />
-        <meta property="og:description" content="Premium clothing rentals for weddings, events, and special moments. Affordable luxury, delivered to your door in Karnataka." />
+        <meta
+          property="og:title"
+          content="People & Style — Rent Designer Outfits in Bangalore & Karnataka"
+        />
+        <meta
+          property="og:description"
+          content="Premium clothing rentals for weddings, events, and special moments. Affordable luxury, delivered to your door in Karnataka."
+        />
         <meta property="og:url" content="https://peopleandstyle.in/" />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="People & Style" />
       </Helmet>
       <Hero />
-      <main>
-        <Categories />
-        <ProductsGrid products={productList} loading={loading} />
-        <Gallery images={galleryImages} />
-        <Testimonials />
-        {/* <Reels /> */}
-      </main>
+      <Categories />
+      <ProductsGrid products={productList} loading={loading} />
+      <Gallery images={galleryImages} />
+      <Testimonials />
       <Footer />
     </motion.div>
   );

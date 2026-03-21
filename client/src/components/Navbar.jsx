@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, Search } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { getAllProducts } from "../services/productService";
@@ -12,6 +12,7 @@ const Navbar = () => {
   const desktopSearchRef = useRef(null);
   const mobileSearchRef = useRef(null);
   const { firebaseUser, role, storeName, uid, logout, loading } = useAuth();
+  const location = useLocation();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -19,8 +20,10 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleClickOutside = (e) => {
-      const clickedDesktop = desktopSearchRef.current && desktopSearchRef.current.contains(e.target);
-      const clickedMobile = mobileSearchRef.current && mobileSearchRef.current.contains(e.target);
+      const clickedDesktop =
+        desktopSearchRef.current && desktopSearchRef.current.contains(e.target);
+      const clickedMobile =
+        mobileSearchRef.current && mobileSearchRef.current.contains(e.target);
       if (!clickedDesktop && !clickedMobile) {
         setShowSuggestions(false);
       }
@@ -39,31 +42,32 @@ const Navbar = () => {
       try {
         const [productData, categoryData] = await Promise.all([
           getAllProducts(q),
-          getCategories()
+          getCategories(),
         ]);
-        
+
         const lowerQ = q.toLowerCase();
         const cats = categoryData
-          .filter(c => c.name?.toLowerCase().includes(lowerQ))
-          .map(c => {
-             const imgObj = c.image || {};
-             const imgUrl = typeof imgObj === "string" ? imgObj : imgObj.url || "";
-             return {
-                id: c._id || c.id || Math.random().toString(),
-                type: "category",
-                title: c.name,
-                image: imgUrl,
-                url: `/products/${encodeURIComponent(c.name.toLowerCase())}`
-             };
+          .filter((c) => c.name?.toLowerCase().includes(lowerQ))
+          .map((c) => {
+            const imgObj = c.image || {};
+            const imgUrl =
+              typeof imgObj === "string" ? imgObj : imgObj.url || "";
+            return {
+              id: c._id || c.id || Math.random().toString(),
+              type: "category",
+              title: c.name,
+              image: imgUrl,
+              url: `/products/${encodeURIComponent(c.name.toLowerCase())}`,
+            };
           });
 
-        const prods = productData.slice(0, 5).map(p => ({
-           id: p.id,
-           type: "product",
-           title: p.title,
-           category: p.category,
-           image: p.image,
-           url: `/product/${p.id}`
+        const prods = productData.slice(0, 5).map((p) => ({
+          id: p.id,
+          type: "product",
+          title: p.title,
+          category: p.category,
+          image: p.image,
+          url: `/product/${p.id}`,
         }));
 
         setSuggestions([...cats, ...prods].slice(0, 6));
@@ -116,6 +120,7 @@ const Navbar = () => {
   const isAdmin = role === "store_owner";
   const isSuperAdmin = role === "super_admin";
   const isPublicOrCustomer = !firebaseUser || role === "customer";
+  const isHomePage = location.pathname === "/";
 
   const dashboardLink = isSuperAdmin
     ? "/superadmin"
@@ -149,7 +154,7 @@ const Navbar = () => {
             </Link>
 
             {/* Desktop nav — public / customer only */}
-            {isPublicOrCustomer && (
+            {isPublicOrCustomer && isHomePage && (
               <nav
                 className="hidden md:flex items-center gap-1 text-sm"
                 aria-label="Primary Navigation"
@@ -188,11 +193,17 @@ const Navbar = () => {
 
           {/* Desktop search and auth actions */}
           <div className="flex items-center gap-3">
-            <div className="hidden md:flex relative mr-2" ref={desktopSearchRef}>
-              <form onSubmit={handleSearchSubmit} className="flex items-center relative w-full">
-                <input 
-                  type="text" 
-                  placeholder="Search rentals..." 
+            <div
+              className="hidden md:flex relative mr-2"
+              ref={desktopSearchRef}
+            >
+              <form
+                onSubmit={handleSearchSubmit}
+                className="flex items-center relative w-full"
+              >
+                <input
+                  type="text"
+                  placeholder="Search rentals..."
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value);
@@ -201,39 +212,51 @@ const Navbar = () => {
                   onFocus={() => setShowSuggestions(true)}
                   className="bg-white/10 text-white placeholder-neutral-400 border border-white/20 rounded-full py-1.5 px-4 pr-9 text-sm focus:outline-none focus:border-violet-500 transition-all w-48 focus:w-64"
                 />
-                <button type="submit" className="absolute right-3 text-neutral-400 hover:text-white transition-colors">
+                <button
+                  type="submit"
+                  className="absolute right-3 text-neutral-400 hover:text-white transition-colors"
+                >
                   <Search size={16} />
                 </button>
               </form>
-              
+
               {showSuggestions && suggestions.length > 0 && (
                 <div className="absolute top-full right-0 mt-2 w-72 bg-neutral-900 border border-white/10 rounded-xl overflow-hidden shadow-2xl z-50">
                   {suggestions.map((p) => (
-                    <Link 
-                      key={`${p.type}-${p.id}`} 
-                      to={p.url} 
-                      onClick={() => { setShowSuggestions(false); setSearchQuery(''); }}
+                    <Link
+                      key={`${p.type}-${p.id}`}
+                      to={p.url}
+                      onClick={() => {
+                        setShowSuggestions(false);
+                        setSearchQuery("");
+                      }}
                       className="flex items-center gap-3 p-3 hover:bg-white/5 transition-colors border-b border-white/5 last:border-b-0"
                     >
-                       {p.image ? (
-                         <img src={p.image} alt={p.title} className="w-10 h-10 object-cover rounded-md" />
-                       ) : (
-                         <div className="w-10 h-10 bg-white/5 rounded-md flex items-center justify-center">
-                           <Search size={16} className="text-neutral-500" />
-                         </div>
-                       )}
-                       <div className="flex flex-col text-left">
-                         <span className="text-white text-sm font-medium line-clamp-1">{p.title}</span>
-                         <span className="text-neutral-400 text-xs text-left">
-                           {p.type === 'category' ? 'Category' : p.category}
-                         </span>
-                       </div>
+                      {p.image ? (
+                        <img
+                          src={p.image}
+                          alt={p.title}
+                          className="w-10 h-10 object-cover rounded-md"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 bg-white/5 rounded-md flex items-center justify-center">
+                          <Search size={16} className="text-neutral-500" />
+                        </div>
+                      )}
+                      <div className="flex flex-col text-left">
+                        <span className="text-white text-sm font-medium line-clamp-1">
+                          {p.title}
+                        </span>
+                        <span className="text-neutral-400 text-xs text-left">
+                          {p.type === "category" ? "Category" : p.category}
+                        </span>
+                      </div>
                     </Link>
                   ))}
                 </div>
               )}
             </div>
-            
+
             {!loading && (
               <div className="hidden md:flex items-center gap-3">
                 {!firebaseUser ? (
@@ -306,13 +329,16 @@ const Navbar = () => {
             </button>
           </div>
         </div>
-        
+
         {/* ALWAYS VISIBLE MOBILE SEARCH */}
-        <div className="md:hidden px-4 pb-3 relative z-40" ref={mobileSearchRef}>
+        <div
+          className="md:hidden px-4 pb-3 relative z-40"
+          ref={mobileSearchRef}
+        >
           <form onSubmit={handleSearchSubmit} className="relative w-full">
-            <input 
-              type="text" 
-              placeholder="Search rentals..." 
+            <input
+              type="text"
+              placeholder="Search rentals..."
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
@@ -321,33 +347,46 @@ const Navbar = () => {
               onFocus={() => setShowSuggestions(true)}
               className="w-full bg-white/10 text-white placeholder-neutral-400 border border-white/20 rounded-xl py-2.5 px-4 pr-10 text-sm focus:outline-none focus:border-white/40 transition-all"
             />
-            <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white">
+            <button
+              type="submit"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white"
+            >
               <Search size={18} />
             </button>
           </form>
-          
+
           {showSuggestions && suggestions.length > 0 && (
             <div className="absolute left-4 right-4 top-full mt-2 bg-neutral-900 border border-white/10 rounded-xl overflow-hidden shadow-2xl z-50">
               {suggestions.map((p) => (
-                <Link 
-                  key={`${p.type}-${p.id}`} 
-                  to={p.url} 
-                  onClick={() => { setShowSuggestions(false); setOpen(false); setSearchQuery(''); }}
+                <Link
+                  key={`${p.type}-${p.id}`}
+                  to={p.url}
+                  onClick={() => {
+                    setShowSuggestions(false);
+                    setOpen(false);
+                    setSearchQuery("");
+                  }}
                   className="flex items-center gap-3 p-3 hover:bg-white/5 transition-colors border-b border-white/5 last:border-b-0"
                 >
-                   {p.image ? (
-                     <img src={p.image} alt={p.title} className="w-10 h-10 object-cover rounded-md" />
-                   ) : (
-                     <div className="w-10 h-10 bg-white/5 rounded-md flex items-center justify-center">
-                       <Search size={16} className="text-neutral-500" />
-                     </div>
-                   )}
-                   <div className="flex flex-col text-left">
-                     <span className="text-white text-sm font-medium line-clamp-1">{p.title}</span>
-                     <span className="text-neutral-400 text-xs text-left">
-                       {p.type === 'category' ? 'Category' : p.category}
-                     </span>
-                   </div>
+                  {p.image ? (
+                    <img
+                      src={p.image}
+                      alt={p.title}
+                      className="w-10 h-10 object-cover rounded-md"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 bg-white/5 rounded-md flex items-center justify-center">
+                      <Search size={16} className="text-neutral-500" />
+                    </div>
+                  )}
+                  <div className="flex flex-col text-left">
+                    <span className="text-white text-sm font-medium line-clamp-1">
+                      {p.title}
+                    </span>
+                    <span className="text-neutral-400 text-xs text-left">
+                      {p.type === "category" ? "Category" : p.category}
+                    </span>
+                  </div>
                 </Link>
               ))}
             </div>
@@ -365,7 +404,7 @@ const Navbar = () => {
         >
           <div className="flex flex-col gap-1 pb-4 pt-1 text-sm">
             {/* Public / customer links */}
-            {isPublicOrCustomer && (
+            {isPublicOrCustomer && isHomePage && (
               <>
                 {[
                   { href: "#categories", label: "Categories" },

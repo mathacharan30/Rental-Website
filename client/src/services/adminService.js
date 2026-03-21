@@ -33,7 +33,7 @@ const addProduct = (product) => {
 
 const updateProduct = (id, updates) => {
   const list = loadProducts().map((p) =>
-    p.id === id ? { ...p, ...updates } : p
+    p.id === id ? { ...p, ...updates } : p,
   );
   saveProducts(list);
   return list;
@@ -76,7 +76,7 @@ const addTestimonial = (t) => {
 
 const updateTestimonial = (id, updates) => {
   const list = loadTestimonials().map((t) =>
-    t.id === id ? { ...t, ...updates } : t
+    t.id === id ? { ...t, ...updates } : t,
   );
   saveTestimonials(list);
   return list;
@@ -132,7 +132,7 @@ const addCategory = (c) => {
 
 const updateCategory = (id, updates) => {
   const list = loadCategories().map((c) =>
-    c.id === id ? { ...c, ...updates } : c
+    c.id === id ? { ...c, ...updates } : c,
   );
   saveCategories(list);
   return list;
@@ -171,7 +171,14 @@ export default {
         console.error("Failed to parse hero images", e);
       }
     }
-    const seed = ["/pic1.jpg"]; // default hero
+    const seed = [
+      "/pic1.jpg",
+      "/saree.jpg",
+      "https://images.pexels.com/photos/6311390/pexels-photo-6311390.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "https://images.pexels.com/photos/16357670/pexels-photo-16357670.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "https://images.pexels.com/photos/1488463/pexels-photo-1488463.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    ]; // default hero carousel
     localStorage.setItem(HERO_IMAGES_KEY, JSON.stringify(seed));
     return seed;
   },

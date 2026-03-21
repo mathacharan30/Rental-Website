@@ -11,10 +11,12 @@ import Footer from "../../components/Footer";
 const Favorites = () => {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { firebaseUser, role } = useAuth();
+  const { firebaseUser, role, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (authLoading) return;
+
     if (!firebaseUser) {
       toast.error("Please login to view favorites");
       navigate("/login");
@@ -27,7 +29,7 @@ const Favorites = () => {
     }
 
     loadFavorites();
-  }, [firebaseUser, role, navigate]);
+  }, [authLoading, firebaseUser, role, navigate]);
 
   const loadFavorites = async () => {
     setLoading(true);
@@ -46,7 +48,9 @@ const Favorites = () => {
     const tid = toast.loading("Removing from favorites...");
     try {
       await removeFavorite(productId);
-      setFavorites((prev) => prev.filter((fav) => fav.product._id !== productId));
+      setFavorites((prev) =>
+        prev.filter((fav) => fav.product._id !== productId),
+      );
       toast.success(`Removed "${productTitle}" from favorites`, { id: tid });
     } catch (error) {
       console.error("[Favorites] Remove error:", error);
@@ -93,7 +97,9 @@ const Favorites = () => {
           >
             <div className="glass rounded-3xl p-12 max-w-md mx-auto">
               <Heart className="mx-auto text-neutral-600 mb-4" size={64} />
-              <h2 className="text-2xl font-bold text-white mb-2">No Favorites Yet</h2>
+              <h2 className="text-2xl font-bold text-white mb-2">
+                No Favorites Yet
+              </h2>
               <p className="text-neutral-500 text-sm mb-6">
                 Start adding products to your favorites to see them here
               </p>
@@ -116,7 +122,11 @@ const Favorites = () => {
               const product = fav.product;
               if (!product) return null;
 
-              const mainImage = product.images?.[0]?.url || product.images?.[0] || "";
+              const mainImage =
+                product.images?.[0]?.url ||
+                product.images?.[0] ||
+                product.image ||
+                "";
               const price = product.price || "N/A";
               const category = product.category?.name || "Uncategorized";
 
@@ -150,7 +160,9 @@ const Favorites = () => {
                       {product.description || "No description available"}
                     </p>
                     <div className="flex items-center justify-between">
-                      <span className="text-lg font-bold text-violet-400">{price}</span>
+                      <span className="text-lg font-bold text-violet-400">
+                        {price}
+                      </span>
                       <button
                         onClick={() => handleRemove(product._id, product.name)}
                         className="p-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-all duration-200"
@@ -172,4 +184,3 @@ const Favorites = () => {
 };
 
 export default Favorites;
-

@@ -23,7 +23,9 @@ const Products = lazy(() => import("./pages/Main/Products"));
 const ProductDetail = lazy(() => import("./pages/Main/ProductDetail"));
 const AboutUs = lazy(() => import("./pages/Main/AboutUs"));
 const ContactUs = lazy(() => import("./pages/Main/ContactUs"));
-const TermsAndConditions = lazy(() => import("./pages/Main/TermsAndConditions"));
+const TermsAndConditions = lazy(
+  () => import("./pages/Main/TermsAndConditions"),
+);
 const PrivacyPolicy = lazy(() => import("./pages/Main/DataPolicyPage"));
 const RefundPolicy = lazy(() => import("./pages/Main/RefundPolicy"));
 const FAQ = lazy(() => import("./pages/Main/FAQ"));
@@ -33,7 +35,9 @@ const Favorites = lazy(() => import("./pages/Main/Favorites"));
 const AdminDashboard = lazy(() => import("./pages/Admin/Dashboard"));
 const ProductsAdmin = lazy(() => import("./pages/Admin/ProductsAdmin"));
 const OrdersAdmin = lazy(() => import("./pages/Admin/OrdersAdmin"));
-const SuperAdminDashboard = lazy(() => import("./pages/SuperAdmin/SuperAdminDashboard"));
+const SuperAdminDashboard = lazy(
+  () => import("./pages/SuperAdmin/SuperAdminDashboard"),
+);
 const ComingSoon = lazy(() => import("./pages/Main/ComingSoon"));
 
 const PageLoader = () => (
@@ -56,8 +60,6 @@ const App = () => {
             <main>
               <Suspense fallback={<PageLoader />}>
                 <Routes>
-
-                  {/* ── Public routes ── */}
                   <Route path="/" element={<Home />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/signup" element={<Signup />} />
@@ -98,7 +100,9 @@ const App = () => {
                   <Route
                     path="/admin/:storename/*"
                     element={
-                      <ProtectedRoute allowedRoles={["store_owner", "super_admin"]}>
+                      <ProtectedRoute
+                        allowedRoles={["store_owner", "super_admin"]}
+                      >
                         <AdminDashboard />
                       </ProtectedRoute>
                     }
@@ -116,7 +120,6 @@ const App = () => {
                       </ProtectedRoute>
                     }
                   />
-
                 </Routes>
               </Suspense>
             </main>

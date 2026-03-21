@@ -1,11 +1,11 @@
-const firebaseAdmin = require('../config/firebase');
-const User          = require('../models/User');
-const nodemailer    = require('nodemailer');
+const firebaseAdmin = require("../config/firebase");
+const User = require("../models/User");
+const nodemailer = require("nodemailer");
 
 // ─── Nodemailer transporter (SMTP from .env) ─────────────────────────────────
 const transporter = nodemailer.createTransport({
-  host:   process.env.MAIL_HOST,
-  port:   Number(process.env.MAIL_PORT),
+  host: process.env.MAIL_HOST,
+  port: Number(process.env.MAIL_PORT),
   secure: Number(process.env.MAIL_PORT) === 465, // true for 465, false for others
   auth: {
     user: process.env.MAIL_USER,
@@ -15,7 +15,7 @@ const transporter = nodemailer.createTransport({
 
 // ─── Email helper ─────────────────────────────────────────────────────────────
 async function sendVerificationEmail(toEmail, verifyLink) {
-  const appName = process.env.APP_NAME || 'Cloth Rental';
+  const appName = process.env.APP_NAME || "Cloth Rental";
   const html = `
     <!DOCTYPE html>
     <html lang="en">
@@ -73,13 +73,18 @@ async function sendVerificationEmail(toEmail, verifyLink) {
   `;
 
   const info = await transporter.sendMail({
-    from:    `"${appName}" <${process.env.MAIL_USER}>`,
-    to:      toEmail,
+    from: `"${appName}" <${process.env.MAIL_USER}>`,
+    to: toEmail,
     subject: `Verify your email – ${appName}`,
     html,
   });
 
-  console.log('[Auth] Verification email sent to:', toEmail, '| messageId:', info.messageId);
+  console.log(
+    "[Auth] Verification email sent to:",
+    toEmail,
+    "| messageId:",
+    info.messageId,
+  );
   return info;
 }
 
@@ -89,7 +94,9 @@ async function sendVerificationEmail(toEmail, verifyLink) {
 exports.signup = async (req, res) => {
   const { name, email, password, phone, address } = req.body;
   if (!name || !email || !password) {
-    return res.status(400).json({ message: 'Name, email and password are required' });
+    return res
+      .status(400)
+      .json({ message: "Name, email and password are required" });
   }
   try {
     // 1. Create Firebase Auth user
@@ -98,35 +105,43 @@ exports.signup = async (req, res) => {
       password,
       displayName: name,
     });
-    console.log('[Auth] Firebase user created:', firebaseUser.uid);
+    console.log("[Auth] Firebase user created:", firebaseUser.uid);
 
     // 2. Persist MongoDB profile
     const user = await User.create({
-      uid:     firebaseUser.uid,
+      uid: firebaseUser.uid,
       email,
-      role:    'customer',
+      role: "customer",
       name,
-      phone:   phone   || null,
+      phone: phone || null,
       address: address || null,
     });
 
     // 3. Generate email-verification link via Admin SDK
-    const verifyLink = await firebaseAdmin.auth().generateEmailVerificationLink(email);
-    console.log('[Auth] Verification link generated for:', email);
+    const verifyLink = await firebaseAdmin
+      .auth()
+      .generateEmailVerificationLink(email);
+    console.log("[Auth] Verification link generated for:", email);
 
     // 4. Send verification email via Nodemailer
     await sendVerificationEmail(email, verifyLink);
 
     return res.status(201).json({
-      message: 'Account created! Please check your email to verify your address before logging in.',
-      user: { uid: user.uid, email: user.email, role: user.role, name: user.name },
+      message:
+        "Account created! Please check your email to verify your address before logging in.",
+      user: {
+        uid: user.uid,
+        email: user.email,
+        role: user.role,
+        name: user.name,
+      },
     });
   } catch (err) {
-    console.error('[Auth] signup error:', err.message);
-    if (err.code === 'auth/email-already-exists') {
-      return res.status(409).json({ message: 'Email already in use' });
+    console.error("[Auth] signup error:", err.message);
+    if (err.code === "auth/email-already-exists") {
+      return res.status(409).json({ message: "Email already in use" });
     }
-    return res.status(500).json({ message: 'Server error during signup' });
+    return res.status(500).json({ message: "Server error during signup" });
   }
 };
 
@@ -136,11 +151,13 @@ exports.signup = async (req, res) => {
 exports.sendPasswordReset = async (req, res) => {
   const { email } = req.body;
   if (!email) {
-    return res.status(400).json({ message: 'Email is required' });
+    return res.status(400).json({ message: "Email is required" });
   }
   try {
-    const resetLink = await firebaseAdmin.auth().generatePasswordResetLink(email);
-    const appName   = process.env.APP_NAME || 'Cloth Rental';
+    const resetLink = await firebaseAdmin
+      .auth()
+      .generatePasswordResetLink(email);
+    const appName = process.env.APP_NAME || "Cloth Rental";
     const html = `
       <!DOCTYPE html>
       <html lang="en">
@@ -195,21 +212,27 @@ exports.sendPasswordReset = async (req, res) => {
     `;
 
     await transporter.sendMail({
-      from:    `"${appName}" <${process.env.MAIL_USER}>`,
-      to:      email,
+      from: `"${appName}" <${process.env.MAIL_USER}>`,
+      to: email,
       subject: `Reset your password – ${appName}`,
       html,
     });
 
-    console.log('[Auth] Password-reset email sent to:', email);
-    return res.json({ message: 'Password reset email sent. Please check your inbox.' });
+    console.log("[Auth] Password-reset email sent to:", email);
+    return res.json({
+      message: "Password reset email sent. Please check your inbox.",
+    });
   } catch (err) {
-    console.error('[Auth] sendPasswordReset error:', err.message);
+    console.error("[Auth] sendPasswordReset error:", err.message);
     // Return generic message to avoid leaking whether the email exists
-    if (err.code === 'auth/user-not-found') {
-      return res.json({ message: 'Password reset email sent. Please check your inbox.' });
+    if (err.code === "auth/user-not-found") {
+      return res.json({
+        message: "Password reset email sent. Please check your inbox.",
+      });
     }
-    return res.status(500).json({ message: 'Failed to send reset email. Please try again.' });
+    return res
+      .status(500)
+      .json({ message: "Failed to send reset email. Please try again." });
   }
 };
 
@@ -219,11 +242,11 @@ exports.sendPasswordReset = async (req, res) => {
 exports.me = async (req, res) => {
   try {
     const user = await User.findOne({ uid: req.user.uid }).lean();
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user) return res.status(404).json({ message: "User not found" });
     return res.json({ user });
   } catch (err) {
-    console.error('[Auth] me error:', err.message);
-    return res.status(500).json({ message: 'Server error' });
+    console.error("[Auth] me error:", err.message);
+    return res.status(500).json({ message: "Server error" });
   }
 };
 

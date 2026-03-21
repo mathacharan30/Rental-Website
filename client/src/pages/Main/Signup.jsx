@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../services/api";
+import { Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
 
 const Signup = () => {
@@ -13,6 +14,7 @@ const Signup = () => {
     phone: "",
     address: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) =>
@@ -23,6 +25,10 @@ const Signup = () => {
     const { name, email, password } = form;
     if (!name || !email || !password) {
       toast.error("Name, email and password are required");
+      return;
+    }
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters");
       return;
     }
     setLoading(true);
@@ -82,7 +88,33 @@ const Signup = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {field("Full name", "name", "text", "Your name")}
           {field("Email", "email", "email", "you@example.com")}
-          {field("Password", "password", "password", "Choose a password")}
+          <div>
+            <label className="block text-sm text-neutral-400 mb-1.5">
+              Password
+            </label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={form.password}
+                onChange={handleChange}
+                minLength={6}
+                className="w-full bg-white/5 border border-white/10 px-4 py-2.5 pr-12 rounded-xl text-white placeholder-neutral-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all"
+                placeholder="Choose a password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white transition-colors"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+            <p className="mt-1 text-xs text-neutral-500">
+              Password must be at least 6 characters.
+            </p>
+          </div>
           {field("Phone number", "phone", "tel", "+91 98765 43210")}
           {field("Address", "address", "text", "Your address")}
 
