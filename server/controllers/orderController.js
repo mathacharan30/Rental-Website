@@ -135,12 +135,12 @@ exports.updateOrderStatus = async (req, res) => {
 
     order.status = status;
     await order.save();
-    
-    // Trigger async invoice or credit note processing without awaiting/blocking request
+
+    // Await invoice/credit-note so serverless functions don't terminate early
     if (status === 'confirmed') {
-      processOrderConfirmation(order._id).catch(err => console.error('[OrderController] Invoice trigger error:', err));
+      await processOrderConfirmation(order._id);
     } else if (status === 'cancelled') {
-      generateCreditNote(order._id).catch(err => console.error('[OrderController] Credit Note trigger error:', err));
+      await generateCreditNote(order._id);
     }
 
     return res.json(order);

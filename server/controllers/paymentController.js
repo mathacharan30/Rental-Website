@@ -67,9 +67,9 @@ async function syncPaymentAndOrder(merchantOrderId, phonePeState, details) {
       await Order.findByIdAndUpdate(payment.orderId, orderUpdates);
       
       if (orderUpdates.status === 'confirmed') {
-        processOrderConfirmation(payment.orderId).catch(err => console.error('[PaymentController] Invoice error:', err));
+        await processOrderConfirmation(payment.orderId);
       } else if (orderUpdates.status === 'cancelled') {
-        generateCreditNote(payment.orderId).catch(err => console.error('[PaymentController] CN error:', err));
+        await generateCreditNote(payment.orderId);
       }
     }
   }

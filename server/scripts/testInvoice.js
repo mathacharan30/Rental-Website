@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ path: '../.env' });
 const mongoose = require('mongoose');
 const { processOrderConfirmation } = require('../utils/invoiceService');
 const Invoice = require('../models/Invoice');
@@ -8,7 +8,7 @@ mongoose.connect(process.env.MONGODB_URI)
   .then(async () => {
     console.log("Connected to DB");
 
-    const orderId = "69b90c38a83fefce7718a560"; // From the user's screenshot
+    const orderId = "69b90bff4ca0b37e48f7bc36"; // Order ID for INV-2026-00003
 
     // Clear the invoiceId so it generates again
     await Order.findByIdAndUpdate(orderId, { invoiceId: null });
