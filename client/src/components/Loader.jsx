@@ -2,9 +2,26 @@ import React from "react";
 
 const Loader = () => {
   return (
-    <div className="flex flex-col items-center gap-3">
-      <div className="w-8 h-8 border-2 border-violet-500/30 border-t-violet-500 rounded-full animate-spin" />
-      <span className="text-xs text-neutral-500">Loading...</span>
+    <div
+      className="flex flex-col items-center gap-4"
+      role="status"
+      aria-live="polite"
+      aria-label="Loading content"
+    >
+      <div class="dot-spinner">
+        <div class="dot-spinner__dot"></div>
+        <div class="dot-spinner__dot"></div>
+        <div class="dot-spinner__dot"></div>
+        <div class="dot-spinner__dot"></div>
+        <div class="dot-spinner__dot"></div>
+        <div class="dot-spinner__dot"></div>
+        <div class="dot-spinner__dot"></div>
+        <div class="dot-spinner__dot"></div>
+      </div>
+
+      <span className="text-xs uppercase tracking-[0.24em] text-neutral-400">
+        Loading
+      </span>
     </div>
   );
 };
