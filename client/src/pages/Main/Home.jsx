@@ -6,7 +6,6 @@ import ProductsGrid from "../../components/ProductsGrid";
 import Gallery from "../../components/Gallery";
 import Testimonials from "../../components/Testimonials";
 import Footer from "../../components/Footer";
-import { motion } from "framer-motion";
 import { getTopPicks } from "../../services/productService";
 import toast from "react-hot-toast";
 
@@ -36,12 +35,7 @@ const Home = () => {
   }, []);
 
   return (
-    <motion.div
-      className="bg-[#0e0e0e]"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.6 }}
-    >
+    <div className="bg-[#0e0e0e]">
       <Helmet>
         <title>
           People &amp; Style — Rent Designer Outfits in Bangalore &amp;
@@ -74,7 +68,7 @@ const Home = () => {
       <Gallery images={galleryImages} />
       <Testimonials />
       <Footer />
-    </motion.div>
+    </div>
   );
 };
 

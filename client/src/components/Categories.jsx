@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import { getCategories } from "../services/categoryService";
 import toast from "react-hot-toast";
 
 function mapCategory(c = {}) {
+  const imageSource = c.image || "/saree.jpg";
+  const imageUrl =
+    typeof imageSource === "string"
+      ? imageSource
+      : imageSource.url || "/saree.jpg";
+
   return {
     id: c._id || c.id,
     name: c.name || "",
-    image: c.image || "/saree.jpg",
+    imageUrl,
   };
 }
 
@@ -32,13 +37,7 @@ const Categories = () => {
   return (
     <section id="categories" className="py-20">
       <div className="max-w-7xl mx-auto px-4">
-        <motion.div
-          className="text-center mb-10"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
+        <div className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl font-semibold display-font tracking-tight text-white">
             Browse <span className="text-violet-400">Categories</span>
           </h2>
@@ -46,40 +45,34 @@ const Categories = () => {
             Explore our curated collection for every occasion — from grand
             weddings to special celebrations.
           </p>
-        </motion.div>
+        </div>
 
         <div className="flex flex-wrap gap-3 justify-center">
-          {categories.map((c, i) => (
-            <motion.div
-              key={c.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
-            >
+          {categories.map((c) => (
+            <div key={c.id}>
               <Link
                 to={`/products/${encodeURIComponent(
                   (c.name || "").toLowerCase(),
                 )}`}
-                className="relative group overflow-hidden rounded-xl h-48 w-40 md:w-52 md:h-64 flex items-end transition-all duration-300 hover:shadow-lg hover:shadow-black/30"
+                className="relative group overflow-hidden rounded-xl h-48 w-40 md:w-52 md:h-64 flex items-end"
                 aria-label={`View ${c.name}`}
               >
                 <img
-                  src={c.image.url}
+                  src={c.imageUrl}
                   alt={c.name}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                 <div className="relative w-full p-3 flex items-center justify-between">
                   <span className="text-white font-semibold text-sm tracking-tight">
                     {c.name}
                   </span>
-                  <span className="text-white/60 group-hover:text-white group-hover:translate-x-1 transition-all duration-300 text-lg">
+                  <span className="text-white/70 group-hover:text-white text-lg transition-colors duration-150">
                     →
                   </span>
                 </div>
               </Link>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

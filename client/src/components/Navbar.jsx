@@ -8,7 +8,6 @@ import { getCategories } from "../services/categoryService";
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const menuRef = useRef(null);
   const desktopSearchRef = useRef(null);
   const mobileSearchRef = useRef(null);
   const { firebaseUser, role, storeName, uid, logout, loading } = useAuth();
@@ -136,7 +135,7 @@ const Navbar = () => {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${
+      className={`sticky top-0 z-50 transition-colors duration-150 ${
         scrolled
           ? "bg-[#0e0e0e]/90 backdrop-blur-md border-b border-white/5"
           : "bg-transparent"
@@ -167,7 +166,7 @@ const Navbar = () => {
                   <a
                     key={item.href}
                     href={item.href}
-                    className="px-3 py-1.5 rounded-full text-neutral-400 hover:text-white  transition-all duration-300"
+                    className="px-3 py-1.5 rounded-full text-neutral-400 hover:text-white transition-colors duration-150"
                   >
                     {item.label}
                   </a>
@@ -210,7 +209,7 @@ const Navbar = () => {
                     setShowSuggestions(true);
                   }}
                   onFocus={() => setShowSuggestions(true)}
-                  className="bg-white/10 text-white placeholder-neutral-400 border border-white/20 rounded-full py-1.5 px-4 pr-9 text-sm focus:outline-none focus:border-violet-500 transition-all w-48 focus:w-64"
+                  className="bg-white/10 text-white placeholder-neutral-400 border border-white/20 rounded-full py-1.5 px-4 pr-9 text-sm focus:outline-none focus:border-violet-500 transition-colors w-56"
                 />
                 <button
                   type="submit"
@@ -396,10 +395,7 @@ const Navbar = () => {
         {/* Mobile menu */}
         <nav
           id="mobile-menu"
-          ref={menuRef}
-          className={`${
-            open ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
-          } md:hidden overflow-hidden transition-all duration-500 ease-in-out`}
+          className={`${open ? "block" : "hidden"} md:hidden`}
           aria-hidden={!open}
         >
           <div className="flex flex-col gap-1 pb-4 pt-1 text-sm">
@@ -415,7 +411,7 @@ const Navbar = () => {
                     key={item.href}
                     href={item.href}
                     onClick={handleMobileLink}
-                    className="block px-4 py-3 rounded-xl text-neutral-300 hover:text-white hover:bg-white/5 transition-all"
+                    className="block px-4 py-3 rounded-xl text-neutral-300 hover:text-white hover:bg-white/5"
                   >
                     {item.label}
                   </a>

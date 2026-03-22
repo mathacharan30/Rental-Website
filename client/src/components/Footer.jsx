@@ -40,7 +40,7 @@ const Footer = () => {
                   href={SOCIAL_LINKS.instagram}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-9 h-9 rounded-lg glass flex items-center justify-center text-neutral-400 hover:text-violet-400 transition-all"
+                  className="w-9 h-9 rounded-lg glass flex items-center justify-center text-neutral-400 hover:text-violet-400 transition-colors duration-150"
                   aria-label="Instagram"
                 >
                   <FaInstagram size={16} />
@@ -49,7 +49,7 @@ const Footer = () => {
                   href={SOCIAL_LINKS.whatsapp}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-9 h-9 rounded-lg glass flex items-center justify-center text-neutral-400 hover:text-green-400 transition-all"
+                  className="w-9 h-9 rounded-lg glass flex items-center justify-center text-neutral-400 hover:text-green-400 transition-colors duration-150"
                   aria-label="WhatsApp"
                 >
                   <FaWhatsapp size={16} />
@@ -58,7 +58,7 @@ const Footer = () => {
                   href={SOCIAL_LINKS.youtube}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-9 h-9 rounded-lg glass flex items-center justify-center text-neutral-400 hover:text-red-400 transition-all"
+                  className="w-9 h-9 rounded-lg glass flex items-center justify-center text-neutral-400 hover:text-red-400 transition-colors duration-150"
                   aria-label="YouTube"
                 >
                   <FaYoutube size={16} />
@@ -67,7 +67,7 @@ const Footer = () => {
                   href={SOCIAL_LINKS.facebook}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-9 h-9 rounded-lg glass flex items-center justify-center text-neutral-400 hover:text-blue-400 transition-all"
+                  className="w-9 h-9 rounded-lg glass flex items-center justify-center text-neutral-400 hover:text-blue-400 transition-colors duration-150"
                   aria-label="Facebook"
                 >
                   <FaFacebookF size={16} />
@@ -76,7 +76,7 @@ const Footer = () => {
                   href={SOCIAL_LINKS.threads}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-9 h-9 rounded-lg glass flex items-center justify-center text-neutral-400 hover:text-white transition-all"
+                  className="w-9 h-9 rounded-lg glass flex items-center justify-center text-neutral-400 hover:text-white transition-colors duration-150"
                   aria-label="Threads"
                 >
                   <FaThreads size={16} />

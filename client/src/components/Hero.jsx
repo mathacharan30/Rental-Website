@@ -27,7 +27,7 @@ const Hero = () => {
 
     const interval = window.setInterval(() => {
       setActiveSlide((prev) => (prev + 1) % images.length);
-    }, 4500);
+    }, 5500);
 
     return () => window.clearInterval(interval);
   }, [images]);
@@ -60,7 +60,7 @@ const Hero = () => {
           loading={index === 0 ? "eager" : "lazy"}
           fetchpriority={index === activeSlide ? "high" : "auto"}
           decoding="async"
-          className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ${index === activeSlide ? "opacity-100 scale-105" : "opacity-0 scale-100"}`}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${index === activeSlide ? "opacity-100" : "opacity-0"}`}
         />
       ))}
 

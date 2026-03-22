@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Marquee from "react-fast-marquee";
 import testimonialService from "../services/testimonialService";
 
 const INFO_VIDEO_LINK = "https://www.youtube.com/";
@@ -38,20 +37,14 @@ const Testimonials = () => {
         </div>
 
         <div className="relative">
-          {/* Fade edges */}
           <div className="absolute left-0 z-10 h-full w-24 bg-gradient-to-r from-[#0e0e0e] to-transparent" />
           <div className="absolute right-0 z-10 h-full w-24 bg-gradient-to-l from-[#0e0e0e] to-transparent" />
 
-          <Marquee
-            pauseOnHover={true}
-            gradient={false}
-            speed={40}
-            className="py-4"
-          >
-            {quotes.concat(quotes).map((q, index) => (
-              <div
-                key={`${q.id}-${index}`}
-                className="relative md:w-[320px] w-64 mx-2 glass rounded-xl p-6 flex flex-col justify-between md:h-72 h-60 hover:border-white/15 transition-colors duration-300 group"
+          <div className="py-4 flex gap-4 overflow-x-auto scrollbar-hide">
+            {quotes.map((q) => (
+              <article
+                key={q.id}
+                className="relative md:w-[320px] w-64 shrink-0 glass rounded-xl p-6 flex flex-col justify-between md:h-72 h-60"
               >
                 <div>
                   <div className="text-3xl text-violet-400 font-bold mb-3">
@@ -68,9 +61,9 @@ const Testimonials = () => {
                   </p>
                   <p className="text-xs text-violet-400">{q.handle}</p>
                 </div>
-              </div>
+              </article>
             ))}
-          </Marquee>
+          </div>
         </div>
 
         <div className="mt-8 text-center">
