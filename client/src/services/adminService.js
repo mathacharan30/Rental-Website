@@ -3,8 +3,6 @@ import productsSeed from "../data/products";
 const PRODUCTS_KEY = "admin_products";
 const TESTIMONIALS_KEY = "admin_testimonials";
 const CATEGORIES_KEY = "admin_categories";
-const HERO_IMAGES_KEY = "admin_hero_images";
-const GALLERY_IMAGES_KEY = "admin_gallery_images";
 
 const loadProducts = () => {
   const raw = localStorage.getItem(PRODUCTS_KEY);
@@ -161,78 +159,4 @@ export default {
   addCategory: (c) => addCategory(c),
   updateCategory: (id, updates) => updateCategory(id, updates),
   deleteCategory: (id) => deleteCategory(id),
-  // hero images
-  loadHeroImages: () => {
-    const raw = localStorage.getItem(HERO_IMAGES_KEY);
-    if (raw) {
-      try {
-        return JSON.parse(raw);
-      } catch (e) {
-        console.error("Failed to parse hero images", e);
-      }
-    }
-    const seed = [
-      "/pic1.jpg",
-      "/saree.jpg",
-      "https://images.pexels.com/photos/6311390/pexels-photo-6311390.jpeg?auto=compress&cs=tinysrgb&w=1200",
-      "https://images.pexels.com/photos/16357670/pexels-photo-16357670.jpeg?auto=compress&cs=tinysrgb&w=1200",
-      "https://images.pexels.com/photos/1488463/pexels-photo-1488463.jpeg?auto=compress&cs=tinysrgb&w=1200",
-      "https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=1200",
-    ]; // default hero carousel
-    localStorage.setItem(HERO_IMAGES_KEY, JSON.stringify(seed));
-    return seed;
-  },
-  saveHeroImages: (list) =>
-    localStorage.setItem(HERO_IMAGES_KEY, JSON.stringify(list)),
-  addHeroImage: (url) => {
-    const list = JSON.parse(localStorage.getItem(HERO_IMAGES_KEY)) || [];
-    list.unshift(url);
-    localStorage.setItem(HERO_IMAGES_KEY, JSON.stringify(list));
-    return list;
-  },
-  deleteHeroImage: (url) => {
-    const list = (
-      JSON.parse(localStorage.getItem(HERO_IMAGES_KEY)) || []
-    ).filter((u) => u !== url);
-    localStorage.setItem(HERO_IMAGES_KEY, JSON.stringify(list));
-    return list;
-  },
-  // gallery images
-  loadGalleryImages: () => {
-    const raw = localStorage.getItem(GALLERY_IMAGES_KEY);
-    if (raw) {
-      try {
-        return JSON.parse(raw);
-      } catch (e) {
-        console.error("Failed to parse gallery images", e);
-      }
-    }
-    // derive initial gallery from first few product images
-    let seed = [];
-    try {
-      seed = productsSeed
-        .slice(0, 6)
-        .map((p) => p.image)
-        .filter(Boolean);
-    } catch (e) {
-      console.error("Failed to derive seed gallery", e);
-    }
-    localStorage.setItem(GALLERY_IMAGES_KEY, JSON.stringify(seed));
-    return seed;
-  },
-  saveGalleryImages: (list) =>
-    localStorage.setItem(GALLERY_IMAGES_KEY, JSON.stringify(list)),
-  addGalleryImage: (url) => {
-    const list = JSON.parse(localStorage.getItem(GALLERY_IMAGES_KEY)) || [];
-    list.unshift(url);
-    localStorage.setItem(GALLERY_IMAGES_KEY, JSON.stringify(list));
-    return list;
-  },
-  deleteGalleryImage: (url) => {
-    const list = (
-      JSON.parse(localStorage.getItem(GALLERY_IMAGES_KEY)) || []
-    ).filter((u) => u !== url);
-    localStorage.setItem(GALLERY_IMAGES_KEY, JSON.stringify(list));
-    return list;
-  },
 };

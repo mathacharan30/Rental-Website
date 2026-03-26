@@ -6,6 +6,7 @@ const bannerSchema = new mongoose.Schema(
     category: { type: String, trim: true },
     imageUrl: { type: String, required: true },
     imagePublicId: { type: String, required: true },
+    type: { type: String, enum: ['hero', 'gallery'], default: 'gallery' },
   },
   { timestamps: true }
 );

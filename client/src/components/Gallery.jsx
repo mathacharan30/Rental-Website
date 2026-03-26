@@ -1,36 +1,25 @@
 import React, { useEffect, useState } from "react";
-import products from "../data/products";
 import bannerService from "../services/bannerService";
-import toast from "react-hot-toast";
 
-const Gallery = ({ images }) => {
-  const [managed, setManaged] = useState([]);
+const Gallery = () => {
+  const [galleryImages, setGalleryImages] = useState([]);
 
   useEffect(() => {
     (async () => {
       try {
-        const banners = await bannerService.getBanners();
+        const banners = await bannerService.getBanners('gallery');
         const urls = Array.isArray(banners)
           ? banners.map((b) => b.imageUrl).filter(Boolean)
           : [];
-        setManaged(urls);
+        setGalleryImages(urls.slice(0, 6));
       } catch (e) {
         console.error("[Gallery] Failed to load banners", e);
-        toast.error("Failed to load gallery images");
-        setManaged([]);
+        setGalleryImages([]);
       }
     })();
   }, []);
 
-  const galleryImages = (
-    managed.length
-      ? managed
-      : images?.length
-        ? images
-        : products.slice(0, 6).map((p) => p.image)
-  )
-    .filter(Boolean)
-    .slice(0, 6);
+  if (galleryImages.length === 0) return null;
 
   return (
     <section className="py-20" id="gallery">

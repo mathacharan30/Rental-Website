@@ -7,7 +7,7 @@ exports.uploadBanner = async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ message: 'Image file is required' });
     }
-    const { title, category } = req.body;
+    const { title, category, type } = req.body;
 
     // multer-s3 already uploaded image, file.location is URL, file.key is S3 key
     const imageUrl = req.file.location;
@@ -18,6 +18,7 @@ exports.uploadBanner = async (req, res) => {
       category,
       imageUrl,
       imagePublicId,
+      type: type === 'hero' ? 'hero' : 'gallery',
     });
 
     console.log('[Banner] Upload Success:', imagePublicId);
@@ -38,10 +39,14 @@ exports.uploadBanner = async (req, res) => {
   }
 };
 
-// GET /api/banners
+// GET /api/banners?type=hero|gallery
 exports.getBanners = async (req, res) => {
   try {
-    const banners = await Banner.find().sort({ createdAt: -1 });
+    const filter = {};
+    if (req.query.type === 'hero' || req.query.type === 'gallery') {
+      filter.type = req.query.type;
+    }
+    const banners = await Banner.find(filter).sort({ createdAt: -1 });
     res.set("Cache-Control", "public, s-maxage=120, stale-while-revalidate=300");
     return res.json(banners);
   } catch (error) {

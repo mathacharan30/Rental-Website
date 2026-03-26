@@ -9,6 +9,7 @@ import toast from 'react-hot-toast';
 // ─── Global-content panels managed by super-admin ────────────────────────────
 import CategoriesAdmin   from '../Admin/CategoriesAdmin';
 import HeroImagesAdmin   from '../Admin/HeroImagesAdmin';
+import BannerImagesAdmin from '../Admin/BannerImagesAdmin';
 import InstaAdmin        from '../Admin/InstaAdmin';
 import TestimonialsAdmin from '../Admin/TestimonialsAdmin';
 import SuperAdminOrders  from './SuperAdminOrders';
@@ -20,7 +21,7 @@ async function authHeader() {
 }
 
 // ─── Tabs ─────────────────────────────────────────────────────────────────────
-const TABS = ['View Stores', 'Add Store', 'All Users', 'Categories', 'Gallery Images', 'Instagram Posts', 'Testimonials', 'Orders', 'Delivery Cities'];
+const TABS = ['View Stores', 'Add Store', 'All Users', 'Categories', 'Banner Images', 'Gallery Images', 'Instagram Posts', 'Testimonials', 'Orders', 'Delivery Cities'];
 
 export default function SuperAdminDashboard() {
   const { logout } = useAuth();
@@ -326,6 +327,13 @@ export default function SuperAdminDashboard() {
         {tab === 'Categories' && (
           <section>
             <CategoriesAdmin />
+          </section>
+        )}
+
+        {/* ──────────── Banner Images (hero slider) ──────────── */}
+        {tab === 'Banner Images' && (
+          <section>
+            <BannerImagesAdmin />
           </section>
         )}
 

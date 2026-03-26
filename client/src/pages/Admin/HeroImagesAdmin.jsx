@@ -17,7 +17,7 @@ const HeroImagesAdmin = () => {
   const load = async () => {
     setDataLoading(true);
     try {
-      const list = await bannerService.getBanners();
+      const list = await bannerService.getBanners('gallery');
       setBanners(Array.isArray(list) ? list : []);
     } catch (e) {
       console.error("Failed to load banners", e);
@@ -40,7 +40,7 @@ const HeroImagesAdmin = () => {
     setLoading(true);
     const loadingToast = toast.loading("Uploading banner...");
     try {
-      await bannerService.uploadBanner({ file, title, category });
+      await bannerService.uploadBanner({ file, title, category, type: 'gallery' });
       setFile(null);
       setTitle("");
       setCategory("");

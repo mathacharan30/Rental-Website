@@ -1,25 +1,18 @@
 import React, { useEffect, useState } from "react";
-
-const DESKTOP_HERO_IMAGES = ["/b1.jpg", "/b2.jpg"];
-const MOBILE_HERO_IMAGES = ["/b3.jpg", "/b4.jpg"];
+import bannerService from "../services/bannerService";
 
 const Hero = () => {
-  const [isMobile, setIsMobile] = useState(() =>
-    typeof window !== "undefined"
-      ? window.matchMedia("(max-width: 767px)").matches
-      : false,
-  );
   const [activeSlide, setActiveSlide] = useState(0);
-  const images = isMobile ? MOBILE_HERO_IMAGES : DESKTOP_HERO_IMAGES;
+  const [images, setImages] = useState([]);
 
+  // Fetch hero banners from API
   useEffect(() => {
-    const media = window.matchMedia("(max-width: 767px)");
-    const onChange = (event) => setIsMobile(event.matches);
-
-    setIsMobile(media.matches);
-    media.addEventListener("change", onChange);
-
-    return () => media.removeEventListener("change", onChange);
+    bannerService.getBanners('hero').then((list) => {
+      const urls = list.map((b) => b.imageUrl).filter(Boolean);
+      setImages(urls);
+    }).catch(() => {
+      setImages([]);
+    });
   }, []);
 
   useEffect(() => {
@@ -33,11 +26,7 @@ const Hero = () => {
   }, [images]);
 
   useEffect(() => {
-    setActiveSlide(0);
-  }, [isMobile]);
-
-  useEffect(() => {
-    if (activeSlide >= images.length) {
+    if (activeSlide >= images.length && images.length > 0) {
       setActiveSlide(0);
     }
   }, [activeSlide, images.length]);
