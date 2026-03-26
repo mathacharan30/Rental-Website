@@ -9,16 +9,18 @@ import api from './api';
 
 /**
  * Initiate a payment + create order in one call.
- * @param {{ productId: string, size: string, startDate?: string, endDate?: string, notes?: string }} data
+ * @param {{ productId: string, size: string, startDate?: string, endDate?: string, notes?: string, deliveryCharge?: number, deliveryCity?: string }} data
  * @returns {{ success: boolean, checkoutUrl: string, merchantOrderId: string, orderId: string }}
  */
-export const createPayment = async ({ productId, size, startDate, endDate, notes }) => {
+export const createPayment = async ({ productId, size, startDate, endDate, notes, deliveryCharge, deliveryCity }) => {
   const { data } = await api.post('/api/payment/create', {
     productId,
     size,
     startDate,
     endDate,
     notes,
+    deliveryCharge,
+    deliveryCity,
   });
   return data;
 };

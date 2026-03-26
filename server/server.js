@@ -16,6 +16,7 @@ const productTestimonialRoutes = require("./routes/productTestimonialRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const favoriteRoutes = require("./routes/favoriteRoutes");
+const { getCities }  = require("./controllers/superAdminController");
 
 const app = express();
 
@@ -52,6 +53,7 @@ app.use("/api/superadmin", superAdminRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/favorites", favoriteRoutes);
+app.get("/api/cities", getCities);       // public – delivery city dropdown
 
 // Start server after DB connection
 const PORT = process.env.PORT || 5000;

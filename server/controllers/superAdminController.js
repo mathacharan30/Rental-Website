@@ -1,6 +1,7 @@
-const firebaseAdmin = require('../config/firebase');
-const User  = require('../models/User');
-const Store = require('../models/Store');
+const firebaseAdmin  = require('../config/firebase');
+const User           = require('../models/User');
+const Store          = require('../models/Store');
+const DeliveryCity   = require('../models/DeliveryCity');
 
 // ─── GET /api/superadmin/stores ───────────────────────────────────────────────
 // Returns all Store documents with owner info populated.
@@ -92,5 +93,75 @@ exports.getAllUsers = async (req, res) => {
   } catch (err) {
     console.error('[SuperAdmin] getAllUsers:', err.message);
     return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// ─── Delivery Cities ──────────────────────────────────────────────────────────
+
+// GET /api/cities  (public — used by the checkout dropdown)
+exports.getCities = async (req, res) => {
+  try {
+    const cities = await DeliveryCity.find({ active: true }).sort({ name: 1 }).lean();
+    return res.json({ cities });
+  } catch (err) {
+    console.error('[SuperAdmin] getCities:', err.message);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// GET /api/superadmin/cities  (super admin — includes inactive)
+exports.getAllCities = async (req, res) => {
+  try {
+    const cities = await DeliveryCity.find().sort({ name: 1 }).lean();
+    return res.json({ cities });
+  } catch (err) {
+    console.error('[SuperAdmin] getAllCities:', err.message);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// POST /api/superadmin/cities
+exports.createCity = async (req, res) => {
+  const { name, deliveryCharge } = req.body;
+  if (!name || deliveryCharge === undefined || deliveryCharge === '') {
+    return res.status(400).json({ message: 'name and deliveryCharge are required' });
+  }
+  try {
+    const city = await DeliveryCity.create({ name: name.trim(), deliveryCharge: Number(deliveryCharge) });
+    return res.status(201).json({ city });
+  } catch (err) {
+    console.error('[SuperAdmin] createCity:', err.message);
+    return res.status(500).json({ message: 'Server error creating city' });
+  }
+};
+
+// PUT /api/superadmin/cities/:id
+exports.updateCity = async (req, res) => {
+  const { id } = req.params;
+  const { name, deliveryCharge, active } = req.body;
+  try {
+    const updates = {};
+    if (name !== undefined)           updates.name           = name.trim();
+    if (deliveryCharge !== undefined) updates.deliveryCharge = Number(deliveryCharge);
+    if (active !== undefined)         updates.active         = Boolean(active);
+    const city = await DeliveryCity.findByIdAndUpdate(id, updates, { new: true });
+    if (!city) return res.status(404).json({ message: 'City not found' });
+    return res.json({ city });
+  } catch (err) {
+    console.error('[SuperAdmin] updateCity:', err.message);
+    return res.status(500).json({ message: 'Server error updating city' });
+  }
+};
+
+// DELETE /api/superadmin/cities/:id
+exports.deleteCity = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const city = await DeliveryCity.findByIdAndDelete(id);
+    if (!city) return res.status(404).json({ message: 'City not found' });
+    return res.json({ message: 'City deleted' });
+  } catch (err) {
+    console.error('[SuperAdmin] deleteCity:', err.message);
+    return res.status(500).json({ message: 'Server error deleting city' });
   }
 };

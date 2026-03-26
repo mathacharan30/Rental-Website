@@ -28,7 +28,10 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [listingTab, setListingTab] = useState("rent");
   const ITEMS_PER_PAGE = 10;
+
+  const isJewels = decodedCategory === "jewels";
 
   useEffect(() => {
     setLoading(true);
@@ -116,7 +119,9 @@ const Products = () => {
             </h1>
             {decodedCategory && !searchQuery && (
               <p className="text-sm text-neutral-500">
-                Curated rentals for {decodedCategory}
+                {isJewels
+                  ? listingTab === "rent" ? "Jewels available for rent" : "Jewels available for sale"
+                  : `Curated rentals for ${decodedCategory}`}
               </p>
             )}
             {searchQuery && (
@@ -127,14 +132,33 @@ const Products = () => {
           </div>
         </div>
 
+        {/* Rent / Sale tabs — Jewels only */}
+        {isJewels && !loading && (
+          <div className="flex justify-center gap-2 mb-6">
+            {["rent", "sale"].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setListingTab(tab)}
+                className={`px-5 py-2 rounded-full text-sm font-medium transition-all capitalize ${
+                  listingTab === tab
+                    ? "bg-violet-600 text-white"
+                    : "bg-white/5 text-neutral-400 hover:bg-white/10 hover:text-white"
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+        )}
+
         {loading ? (
           <div className="flex justify-center items-center py-20">
             <Loader />
           </div>
-        ) : items.length > 0 ? (
+        ) : (isJewels ? items.filter((p) => p.listingType === listingTab) : items).length > 0 ? (
           <>
             <div className=" justify-center  items-center flex gap-4  flex-wrap mt-4">
-              {items.map((product) => (
+              {(isJewels ? items.filter((p) => p.listingType === listingTab) : items).map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
@@ -187,7 +211,9 @@ const Products = () => {
         ) : (
           <div className="text-center py-20">
             <p className="text-neutral-500 text-lg">
-              No products found{decodedCategory ? " in this category." : "."}
+              {isJewels
+                ? `No jewels available for ${listingTab}.`
+                : `No products found${decodedCategory ? " in this category." : "."}`}
             </p>
           </div>
         )}

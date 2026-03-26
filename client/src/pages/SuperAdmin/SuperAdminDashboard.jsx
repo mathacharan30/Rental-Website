@@ -20,7 +20,7 @@ async function authHeader() {
 }
 
 // ─── Tabs ─────────────────────────────────────────────────────────────────────
-const TABS = ['View Stores', 'Add Store', 'All Users', 'Categories', 'Gallery Images', 'Instagram Posts', 'Testimonials', 'Orders'];
+const TABS = ['View Stores', 'Add Store', 'All Users', 'Categories', 'Gallery Images', 'Instagram Posts', 'Testimonials', 'Orders', 'Delivery Cities'];
 
 export default function SuperAdminDashboard() {
   const { logout } = useAuth();
@@ -30,6 +30,12 @@ export default function SuperAdminDashboard() {
   const [users,  setUsers]  = useState([]);
   const [form,   setForm]   = useState({ name: '', email: '', password: '', storeName: '' });
   const [busy,   setBusy]   = useState(false);
+
+  // ── Delivery Cities state ─────────────────────────────────────────────────
+  const [cities,      setCities]      = useState([]);
+  const [cityBusy,    setCityBusy]    = useState(false);
+  const [cityForm,    setCityForm]    = useState({ name: '', deliveryCharge: '' });
+  const [editingCity, setEditingCity] = useState(null); // { _id, name, deliveryCharge } | null
 
   // ── Fetch stores ─────────────────────────────────────────────────────────
   const loadStores = useCallback(async () => {
@@ -53,10 +59,22 @@ export default function SuperAdminDashboard() {
     }
   }, []);
 
+  // ── Fetch delivery cities ─────────────────────────────────────────────────
+  const loadCities = useCallback(async () => {
+    try {
+      const headers = await authHeader();
+      const { data } = await api.get('/api/superadmin/cities', { headers });
+      setCities(data.cities);
+    } catch {
+      toast.error('Failed to load delivery cities');
+    }
+  }, []);
+
   useEffect(() => {
-    if (tab === 'View Stores') loadStores();
-    if (tab === 'All Users')  loadUsers();
-  }, [tab, loadStores, loadUsers]);
+    if (tab === 'View Stores')      loadStores();
+    if (tab === 'All Users')        loadUsers();
+    if (tab === 'Delivery Cities')  loadCities();
+  }, [tab, loadStores, loadUsers, loadCities]);
 
   // ── Create store ──────────────────────────────────────────────────────────
   const handleCreateStore = async (e) => {
@@ -90,6 +108,69 @@ export default function SuperAdminDashboard() {
       loadStores();
     } catch {
       toast.error('Failed to delete', { id: tid });
+    }
+  };
+
+  // ── Delivery city CRUD ────────────────────────────────────────────────────
+  const handleCitySubmit = async (e) => {
+    e.preventDefault();
+    if (!cityForm.name.trim() || cityForm.deliveryCharge === '') {
+      toast.error('City name and delivery charge are required'); return;
+    }
+    setCityBusy(true);
+    const tid = toast.loading(editingCity ? 'Updating city…' : 'Adding city…');
+    try {
+      const headers = await authHeader();
+      if (editingCity) {
+        await api.put(`/api/superadmin/cities/${editingCity._id}`, {
+          name: cityForm.name.trim(),
+          deliveryCharge: Number(cityForm.deliveryCharge),
+        }, { headers });
+        toast.success('City updated!', { id: tid });
+      } else {
+        await api.post('/api/superadmin/cities', {
+          name: cityForm.name.trim(),
+          deliveryCharge: Number(cityForm.deliveryCharge),
+        }, { headers });
+        toast.success('City added!', { id: tid });
+      }
+      setCityForm({ name: '', deliveryCharge: '' });
+      setEditingCity(null);
+      loadCities();
+    } catch (err) {
+      toast.error(err?.response?.data?.message || 'Failed', { id: tid });
+    } finally {
+      setCityBusy(false);
+    }
+  };
+
+  const handleCityEdit = (city) => {
+    setEditingCity(city);
+    setCityForm({ name: city.name, deliveryCharge: city.deliveryCharge });
+  };
+
+  const handleCityDelete = async (id) => {
+    if (!window.confirm('Delete this delivery city?')) return;
+    const tid = toast.loading('Deleting…');
+    try {
+      const headers = await authHeader();
+      await api.delete(`/api/superadmin/cities/${id}`, { headers });
+      toast.success('City deleted', { id: tid });
+      loadCities();
+    } catch {
+      toast.error('Failed to delete city', { id: tid });
+    }
+  };
+
+  const handleCityToggle = async (city) => {
+    const tid = toast.loading(city.active ? 'Deactivating…' : 'Activating…');
+    try {
+      const headers = await authHeader();
+      await api.put(`/api/superadmin/cities/${city._id}`, { active: !city.active }, { headers });
+      toast.success(city.active ? 'City deactivated' : 'City activated', { id: tid });
+      loadCities();
+    } catch {
+      toast.error('Failed to update city status', { id: tid });
     }
   };
 
@@ -273,6 +354,119 @@ export default function SuperAdminDashboard() {
         {tab === 'Orders' && (
           <section>
             <SuperAdminOrders />
+          </section>
+        )}
+
+        {/* ──────────── Delivery Cities ──────────── */}
+        {tab === 'Delivery Cities' && (
+          <section className="space-y-6">
+            <h2 className="text-lg font-semibold text-white">Delivery Cities</h2>
+
+            {/* Add / Edit form */}
+            <div className="glass rounded-xl p-5 max-w-md">
+              <h3 className="text-sm font-medium text-neutral-300 mb-4">
+                {editingCity ? `Edit: ${editingCity.name}` : 'Add new city'}
+              </h3>
+              <form onSubmit={handleCitySubmit} className="space-y-4">
+                <div>
+                  <label className="block text-sm text-neutral-400 mb-1">City name</label>
+                  <input
+                    type="text"
+                    value={cityForm.name}
+                    onChange={(e) => setCityForm((p) => ({ ...p, name: e.target.value }))}
+                    placeholder="e.g. Mumbai"
+                    className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded text-white focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-neutral-400 mb-1">Delivery charge (₹)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={cityForm.deliveryCharge}
+                    onChange={(e) => setCityForm((p) => ({ ...p, deliveryCharge: e.target.value }))}
+                    placeholder="0 for free delivery"
+                    className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded text-white focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    type="submit"
+                    disabled={cityBusy}
+                    className="flex-1 bg-violet-600 hover:bg-violet-700 text-white py-2 rounded disabled:opacity-60 text-sm font-medium"
+                  >
+                    {cityBusy ? 'Saving…' : editingCity ? 'Update City' : 'Add City'}
+                  </button>
+                  {editingCity && (
+                    <button
+                      type="button"
+                      onClick={() => { setEditingCity(null); setCityForm({ name: '', deliveryCharge: '' }); }}
+                      className="px-4 py-2 rounded border border-white/10 text-neutral-400 hover:text-white hover:bg-white/5 text-sm"
+                    >
+                      Cancel
+                    </button>
+                  )}
+                </div>
+              </form>
+            </div>
+
+            {/* Cities list */}
+            {cities.length === 0 ? (
+              <p className="text-neutral-500 text-sm">No delivery cities added yet.</p>
+            ) : (
+              <table className="w-full glass rounded-xl text-sm">
+                <thead className="bg-white/5">
+                  <tr>
+                    {['City', 'Delivery Charge', 'Status', 'Actions'].map((h) => (
+                      <th key={h} className="text-left px-4 py-2 font-medium text-neutral-400">{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {cities.map((city) => (
+                    <tr key={city._id} className="border-t border-white/5">
+                      <td className="px-4 py-3 text-white font-medium">{city.name}</td>
+                      <td className="px-4 py-3 text-neutral-300">
+                        {city.deliveryCharge === 0 ? (
+                          <span className="text-green-400">Free</span>
+                        ) : (
+                          `₹${city.deliveryCharge.toLocaleString()}`
+                        )}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                          city.active
+                            ? 'bg-green-500/10 text-green-400'
+                            : 'bg-neutral-500/10 text-neutral-500'
+                        }`}>
+                          {city.active ? 'Active' : 'Inactive'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 flex gap-3">
+                        <button
+                          onClick={() => handleCityEdit(city)}
+                          className="text-violet-400 hover:underline text-xs"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleCityToggle(city)}
+                          className="text-yellow-400 hover:underline text-xs"
+                        >
+                          {city.active ? 'Deactivate' : 'Activate'}
+                        </button>
+                        <button
+                          onClick={() => handleCityDelete(city._id)}
+                          className="text-red-400 hover:underline text-xs"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </section>
         )}
       </div>

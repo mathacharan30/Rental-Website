@@ -1,10 +1,9 @@
 import api from "./api";
 import { findCategoryIdBySlug } from "./categoryService";
 
-// Round to 2 decimal places and strip unnecessary trailing zeros
+// Round to nearest whole rupee
 function formatPrice(n) {
-  const rounded = Math.round((n + Number.EPSILON) * 100) / 100;
-  return parseFloat(rounded.toFixed(2));
+  return Math.round(n);
 }
 
 export function mapProduct(p = {}) {

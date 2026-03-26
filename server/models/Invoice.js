@@ -13,10 +13,12 @@ const invoiceSchema = new mongoose.Schema(
     rentalEndDate: { type: Date, default: null },
     
     // Pricing details
-    advanceAmount: { type: Number, required: true },
+    advanceAmount: { type: Number, required: true },   // refundable security deposit
     commissionAmount: { type: Number, required: true },
     rentAmount: { type: Number, required: true },
-    depositAmount: { type: Number, required: true }, // advance - rent
+    depositAmount: { type: Number, required: true },   // = advanceAmount (fully refundable)
+    deliveryCharge: { type: Number, default: 0 },
+    deliveryCity: { type: String, default: '' },
     
     // Taxes
     taxableValue: { type: Number, required: true }, // (rent + commission) / 1.18

@@ -162,10 +162,10 @@ const CustomerProfile = () => {
           ) : (
             <div className="space-y-4">
               {orders.map((o) => {
-                const amountPaid = o.listingType === 'sale' 
-                  ? ((o.salePrice || 0) + (o.commissionPrice || 0))
-                  : ((o.advanceAmount || 0) + (o.commissionPrice || 0));
-                const refunded = amountPaid - (o.totalPrice || 0);
+                const amountPaid = o.listingType === 'sale'
+                  ? ((o.salePrice || 0) + (o.commissionPrice || 0) + (o.deliveryCharge || 0))
+                  : ((o.rentPrice || 0) + (o.commissionPrice || 0) + (o.advanceAmount || 0) + (o.deliveryCharge || 0));
+                const refundable = o.advanceAmount || 0;
 
                 return (
                   <div key={o._id} className="glass rounded-2xl p-4">
@@ -196,7 +196,7 @@ const CustomerProfile = () => {
                         <div className="mt-2 text-sm text-neutral-400 flex flex-col gap-1">
                           <div>Amount Paid: <strong className="text-green-400">₹{amountPaid}</strong></div>
                           {o.listingType !== 'sale' && (
-                            <div>Refundable Amount: <strong className="text-blue-400">₹{refunded > 0 ? refunded : 0}</strong></div>
+                            <div>Refundable Amount: <strong className="text-blue-400">₹{refundable}</strong></div>
                           )}
                         </div>
                         <p className="text-xs text-neutral-600 mt-1">

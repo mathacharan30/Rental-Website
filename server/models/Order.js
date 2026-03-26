@@ -22,7 +22,9 @@ const orderSchema = new mongoose.Schema(
     commissionPrice: { type: Number, required: true },
     salePrice:       { type: Number, default: 0 },
     advanceAmount:   { type: Number, default: 0 },
-    totalPrice:      { type: Number, required: true }, // rentPrice + commissionPrice  OR  salePrice + commissionPrice
+    deliveryCharge:  { type: Number, default: 0 },
+    deliveryCity:    { type: String, default: '' },
+    totalPrice:      { type: Number, required: true }, // rentPrice + commissionPrice + deliveryCharge  OR  salePrice + commissionPrice
 
     // ── Order status ──────────────────────────────────────────────────────────
     status: {

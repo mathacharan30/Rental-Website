@@ -2,11 +2,12 @@ import { useEffect, useState, useRef } from "react";
 import { Helmet } from "react-helmet-async";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Star, X } from "lucide-react";
+import { ArrowLeft, Star, X, MapPin, Truck, ShieldCheck } from "lucide-react";
 import Footer from "../../components/Footer";
 import FavoriteButton from "../../components/FavoriteButton";
 import { getProductById } from "../../services/productService";
 import { createPayment } from "../../services/paymentService";
+import { getDeliveryCities } from "../../services/deliveryCityService";
 import { getProductTestimonials } from "../../services/productTestimonialService";
 import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
@@ -32,6 +33,12 @@ const ProductDetail = () => {
   const [testimonials, setTestimonials] = useState([]);
   const [reviewLightboxImage, setReviewLightboxImage] = useState(null);
   const carouselRef = useRef(null);
+
+  // Checkout sidebar state
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [cities, setCities] = useState([]);
+  const [citiesLoading, setCitiesLoading] = useState(false);
+  const [selectedCity, setSelectedCity] = useState(null); // { _id, name, deliveryCharge }
 
   const scrollToImage = (index) => {
     const container = carouselRef.current;
@@ -114,7 +121,8 @@ const ProductDetail = () => {
   const isSale = product.listingType === "sale";
   const sizes = product.sizes || ["XS", "S", "M", "L", "XL"];
 
-  const handleRent = async () => {
+  // Open checkout sidebar (pre-flight checks only)
+  const handleRent = () => {
     if (!firebaseUser) {
       toast.error("Please login to continue");
       navigate("/login");
@@ -125,20 +133,37 @@ const ProductDetail = () => {
       return;
     }
     if (product.available === false) {
-      toast.error("This product is currently not available for rent");
+      toast.error("This product is currently not available");
       return;
     }
     if (!isJewels && !selectedSize) {
       toast.error("Please select a size");
       return;
     }
+    // Fetch delivery cities and open sidebar
+    setSelectedCity(null);
+    setCitiesLoading(true);
+    setCheckoutOpen(true);
+    getDeliveryCities()
+      .then((list) => setCities(list || []))
+      .catch(() => toast.error("Could not load delivery cities"))
+      .finally(() => setCitiesLoading(false));
+  };
 
+  // Proceed to PhonePe payment from the sidebar
+  const handleProceedToPayment = async () => {
+    if (!selectedCity) {
+      toast.error("Please select a delivery city");
+      return;
+    }
     setOrdering(true);
     const tid = toast.loading("Initiating payment…");
     try {
       const res = await createPayment({
         productId: product.id,
         size: isSale ? "N/A" : selectedSize,
+        deliveryCharge: selectedCity.deliveryCharge,
+        deliveryCity: selectedCity.name,
       });
       toast.dismiss(tid);
       if (res.checkoutUrl) window.location.href = res.checkoutUrl;
@@ -296,7 +321,7 @@ const ProductDetail = () => {
           {allImages.map((imgUrl, i) => (
             <div
               key={i}
-              className="relative flex-shrink-0 w-full snap-center rounded-3xl overflow-hidden border border-white/6"
+              className="relative shrink-0 w-full snap-center rounded-3xl overflow-hidden border border-white/6"
             >
               <img
                 src={imgUrl}
@@ -330,7 +355,7 @@ const ProductDetail = () => {
                   key={i}
                   src={imgUrl}
                   alt={`${product.title} thumb ${i + 1}`}
-                  className="w-14 h-14 object-cover rounded-xl cursor-pointer border border-white/10 hover:border-violet-500/40 transition-all duration-200 hover:scale-105 flex-shrink-0"
+                  className="w-14 h-14 object-cover rounded-xl cursor-pointer border border-white/10 hover:border-violet-500/40 transition-all duration-200 hover:scale-105 shrink-0"
                   onClick={() => scrollToImage(i)}
                   draggable={false}
                 />
@@ -347,7 +372,7 @@ const ProductDetail = () => {
       <AnimatePresence>
         {lightboxOpen && (
           <motion.div
-            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-sm"
+            className="fixed inset-0 z-9999 flex items-center justify-center bg-black/95 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -554,7 +579,7 @@ const ProductDetail = () => {
       <AnimatePresence>
         {reviewLightboxImage && (
           <motion.div
-            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-sm"
+            className="fixed inset-0 z-9999 flex items-center justify-center bg-black/95 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -584,6 +609,178 @@ const ProductDetail = () => {
       </AnimatePresence>
 
       <Footer />
+
+      {/* ── Checkout Sidebar ──────────────────────────────────────────────── */}
+      <AnimatePresence>
+        {checkoutOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              className="fixed inset-0 z-9998 bg-black/70 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => !ordering && setCheckoutOpen(false)}
+            />
+
+            {/* Sidebar panel */}
+            <motion.div
+              className="fixed top-0 right-0 h-full w-full max-w-md z-9999 bg-[#111] border-l border-white/10 flex flex-col shadow-2xl"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 28, stiffness: 280 }}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
+                <h2 className="text-lg font-bold text-white">Order Summary</h2>
+                <button
+                  onClick={() => !ordering && setCheckoutOpen(false)}
+                  className="p-2 rounded-full hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              {/* Body — scrollable */}
+              <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
+                {/* Product thumbnail + name */}
+                <div className="flex gap-4 items-start glass p-4 rounded-2xl">
+                  {(product.images?.[0] || product.image) && (
+                    <img
+                      src={product.images?.[0] || product.image}
+                      alt={product.title}
+                      className="w-20 h-20 rounded-xl object-cover border border-white/10 shrink-0"
+                    />
+                  )}
+                  <div className="min-w-0">
+                    <p className="text-xs uppercase tracking-widest text-violet-400 font-medium">{product.category}</p>
+                    <p className="text-white font-semibold mt-0.5 leading-tight">{product.title}</p>
+                    {selectedSize && (
+                      <p className="text-xs text-neutral-400 mt-1">Size: <span className="text-neutral-200">{selectedSize}</span></p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Price breakdown */}
+                <div className="glass rounded-2xl p-4 space-y-3 text-sm">
+                  <p className="text-xs uppercase tracking-widest text-neutral-500 font-medium mb-1">Price Breakdown</p>
+
+                  {isSale ? (
+                    <div className="flex justify-between text-neutral-300">
+                      <span>Sale Price</span>
+                      <span className="font-medium text-white">
+                        ₹{((product.salePrice || 0) + (product.commissionPrice || 0)).toLocaleString()}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex justify-between text-neutral-300">
+                      <span>Total Rent Price</span>
+                      <span className="font-medium text-white">
+                        ₹{((product.rentPrice || 0) + (product.commissionPrice || 0)).toLocaleString()}
+                      </span>
+                    </div>
+                  )}
+
+                  {!isSale && product.advanceAmount > 0 && (
+                    <div className="flex justify-between items-start text-neutral-300">
+                      <span className="flex items-center gap-1">
+                        <ShieldCheck size={13} className="text-green-400" />
+                        Advance (Refundable)
+                      </span>
+                      <div className="text-right">
+                        <span className="font-medium text-white">₹{product.advanceAmount?.toLocaleString()}</span>
+                        <p className="text-[10px] text-green-400 mt-0.5">Returned after product return</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedCity && (
+                    <div className="flex justify-between text-neutral-300">
+                      <span className="flex items-center gap-1">
+                        <Truck size={13} className="text-violet-400" />
+                        Delivery ({selectedCity.name})
+                      </span>
+                      <span className="font-medium text-white">
+                        {selectedCity.deliveryCharge === 0 ? "Free" : `₹${selectedCity.deliveryCharge.toLocaleString()}`}
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="border-t border-white/10 pt-3 flex justify-between items-center">
+                    <span className="font-semibold text-neutral-200">Total Payable</span>
+                    <span className="text-xl font-bold gradient-text">
+                      ₹{(
+                        (isSale
+                          ? (product.salePrice || 0) + (product.commissionPrice || 0)
+                          : (product.rentPrice || 0) + (product.commissionPrice || 0) + (product.advanceAmount || 0)) +
+                        (selectedCity?.deliveryCharge || 0)
+                      ).toLocaleString()}
+                    </span>
+                  </div>
+                  {!isSale && (
+                    <p className="text-[11px] text-neutral-500 -mt-1">
+                      Total Rent + Refundable Advance + Delivery.
+                    </p>
+                  )}
+                </div>
+
+                {/* Delivery city selector */}
+                <div className="glass rounded-2xl p-4 space-y-3">
+                  <p className="text-xs uppercase tracking-widest text-neutral-500 font-medium flex items-center gap-1.5">
+                    <MapPin size={12} /> Select Delivery City
+                  </p>
+                  {citiesLoading ? (
+                    <p className="text-sm text-neutral-500">Loading cities…</p>
+                  ) : cities.length === 0 ? (
+                    <p className="text-sm text-neutral-500">No delivery cities available. Please contact us.</p>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-2">
+                      {cities.map((city) => (
+                        <button
+                          key={city._id}
+                          onClick={() => setSelectedCity(city)}
+                          className={`px-3 py-2.5 rounded-xl text-sm text-left transition-all duration-200 border ${
+                            selectedCity?._id === city._id
+                              ? "bg-violet-600 border-violet-500 text-white"
+                              : "glass border-white/10 text-neutral-300 hover:border-violet-500/40 hover:text-white"
+                          }`}
+                        >
+                          <p className="font-medium">{city.name}</p>
+                          <p className="text-[11px] mt-0.5 opacity-80">
+                            {city.deliveryCharge === 0 ? "Free delivery" : `₹${city.deliveryCharge}`}
+                          </p>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Footer CTA */}
+              <div className="px-5 py-4 border-t border-white/10">
+                <button
+                  onClick={handleProceedToPayment}
+                  disabled={ordering || !selectedCity}
+                  className="btn-funky w-full rounded-xl! disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span>
+                    {ordering ? "Redirecting to payment…" : selectedCity ? `Pay ₹${(
+                      (isSale
+                        ? (product.salePrice || 0) + (product.commissionPrice || 0)
+                        : (product.rentPrice || 0) + (product.commissionPrice || 0) + (product.advanceAmount || 0)) +
+                      (selectedCity?.deliveryCharge || 0)
+                    ).toLocaleString()} →` : "Select a city to continue"}
+                  </span>
+                </button>
+                <p className="text-center text-[11px] text-neutral-600 mt-2">
+                  Secured by PhonePe · 256-bit encryption
+                </p>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };

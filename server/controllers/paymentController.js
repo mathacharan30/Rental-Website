@@ -87,7 +87,7 @@ async function syncPaymentAndOrder(merchantOrderId, phonePeState, details) {
 
 exports.createPayment = async (req, res) => {
   try {
-    const { productId, size, startDate, endDate, notes } = req.body;
+    const { productId, size, startDate, endDate, notes, deliveryCharge, deliveryCity } = req.body;
 
     // req.user is set by verifyFirebaseToken + attachUserRole
     const userId   = req.user.dbId;    // MongoDB _id of the user
@@ -121,17 +121,19 @@ exports.createPayment = async (req, res) => {
 
     if (!product.store) return res.status(400).json({ message: 'Product has no associated store' });
 
-    const isSale          = product.listingType === 'sale';
-    const rentPrice       = product.rentPrice       || 0;
-    const commissionPrice = product.commissionPrice || 0;
-    const salePrice       = product.salePrice       || 0;
-    const advanceAmount   = isSale ? 0 : (product.advanceAmount || 0);
-    const totalPrice      = isSale
+    const isSale           = product.listingType === 'sale';
+    const rentPrice        = product.rentPrice       || 0;
+    const commissionPrice  = product.commissionPrice || 0;
+    const salePrice        = product.salePrice       || 0;
+    const advanceAmount    = isSale ? 0 : (product.advanceAmount || 0);
+    const deliveryChargeNum = Number(deliveryCharge) || 0;
+    const deliveryCityName  = deliveryCity || '';
+    const totalPrice       = isSale
       ? salePrice + commissionPrice
       : rentPrice + commissionPrice;
-    const payableAmount   = isSale
-      ? salePrice + commissionPrice               // sale: customer pays full sale + commission
-      : advanceAmount + commissionPrice;           // rent: customer pays only advance + commission
+    const payableAmount    = isSale
+      ? salePrice + commissionPrice + deliveryChargeNum                              // sale: full sale + commission + delivery
+      : rentPrice + commissionPrice + advanceAmount + deliveryChargeNum;             // rent: rent + commission + advance + delivery
 
     // ── Create Order (pending) ────────────────────────────────────────────
     const order = await Order.create({
@@ -147,6 +149,8 @@ exports.createPayment = async (req, res) => {
       commissionPrice,
       salePrice,
       advanceAmount,
+      deliveryCharge:  deliveryChargeNum,
+      deliveryCity:    deliveryCityName,
       totalPrice,
       status:          'pending',
       paymentStatus:   'pending',

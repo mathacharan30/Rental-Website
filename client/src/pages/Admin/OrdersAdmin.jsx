@@ -88,7 +88,6 @@ const OrdersAdmin = () => {
               <thead>
                 <tr className="bg-white/5 border-b border-white/10 text-xs uppercase text-neutral-500 font-semibold tracking-wider">
                   <th className="px-5 py-4">Product</th>
-                  <th className="px-5 py-4">Customer</th>
                   <th className="px-5 py-4">Price</th>
                   <th className="px-5 py-4">Advance</th>
                   <th className="px-5 py-4">Status</th>
@@ -113,25 +112,6 @@ const OrdersAdmin = () => {
                           {o.product?.name || "—"}
                         </span>
                       </div>
-                    </td>
-                    {/* Customer */}
-                    <td className="px-5 py-4">
-                      <div className="font-medium text-white">
-                        {o.customer?.name || "—"}
-                      </div>
-                      <div className="text-xs text-neutral-500">
-                        {o.customer?.email}
-                      </div>
-                      {o.customer?.phone && (
-                        <div className="text-xs text-neutral-500">
-                          {o.customer.phone}
-                        </div>
-                      )}
-                      {o.customer?.address && (
-                        <div className="text-xs text-neutral-500 mt-1 whitespace-normal max-w-[200px]">
-                          {o.customer.address}
-                        </div>
-                      )}
                     </td>
                     {/* Price */}
                     <td className="px-5 py-4 font-medium text-white">

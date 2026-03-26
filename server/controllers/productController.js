@@ -6,6 +6,41 @@ const Category = require("../models/Category");
 const Store = require("../models/Store");
 const mongoose = require("mongoose");
 
+/**
+ * Auto-calculates commission for rent listings.
+ * tempCommission  = 10% of rentPrice
+ * gst             = 18% of (rentPrice + tempCommission)
+ * txCharges       = 2%  of (rentPrice + gst + tempCommission + advanceAmount)
+ * commission      = tempCommission + gst + txCharges + ₹100 → ceil to nearest ₹50
+ */
+function calcRentCommission(rentPrice, advanceAmount) {
+  const r = rentPrice || 0;
+  const a = advanceAmount || 0;
+  if (r <= 0) return 0;
+  const tempCommission = r * 0.10;
+  const gst = (r + tempCommission) * 0.18;
+  const txCharges = (r + gst + tempCommission + a) * 0.02;
+  const raw = tempCommission + gst + txCharges + 100;
+  return Math.ceil(raw / 50) * 50;
+}
+
+/**
+ * Auto-calculates commission for sale listings (no advance amount in txn charges).
+ * tempCommission  = 10% of salePrice
+ * gst             = 18% of (salePrice + tempCommission)
+ * txCharges       = 2%  of (salePrice + gst + tempCommission)   ← no advance amount
+ * commission      = tempCommission + gst + txCharges + ₹100 → ceil to nearest ₹50
+ */
+function calcSaleCommission(salePrice) {
+  const s = salePrice || 0;
+  if (s <= 0) return 0;
+  const tempCommission = s * 0.10;
+  const gst = (s + tempCommission) * 0.18;
+  const txCharges = (s + gst + tempCommission) * 0.02;
+  const raw = tempCommission + gst + txCharges + 100;
+  return Math.ceil(raw / 50) * 50;
+}
+
 // GET /api/products  (public – all products for the storefront)
 exports.getAllProducts = async (req, res) => {
   try {
@@ -76,7 +111,6 @@ exports.createProduct = async (req, res) => {
       category,
       listingType: listingTypeRaw,
       rentPrice: rentPriceRaw,
-      commissionPrice: commissionPriceRaw,
       salePrice: salePriceRaw,
       advanceAmount: advanceAmountRaw,
       description,
@@ -94,26 +128,16 @@ exports.createProduct = async (req, res) => {
 
     const listingType = listingTypeRaw === "sale" ? "sale" : "rent";
 
-    // For sale listing: require salePrice + commissionPrice; for rent listing: require rentPrice + commissionPrice
+    // Commission is auto-calculated for both listing types — only the base price is required from client
     if (listingType === "sale") {
       if (salePriceRaw === undefined || salePriceRaw === "") {
         return res
           .status(400)
           .json({ message: "Sale price is required for sale listings" });
       }
-      if (commissionPriceRaw === undefined || commissionPriceRaw === "") {
-        return res
-          .status(400)
-          .json({ message: "Commission price is required" });
-      }
     } else {
       if (rentPriceRaw === undefined || rentPriceRaw === "") {
         return res.status(400).json({ message: "Rent price is required" });
-      }
-      if (commissionPriceRaw === undefined || commissionPriceRaw === "") {
-        return res
-          .status(400)
-          .json({ message: "Commission price is required" });
       }
     }
 
@@ -121,10 +145,6 @@ exports.createProduct = async (req, res) => {
     const rentPrice =
       rentPriceRaw !== undefined && rentPriceRaw !== ""
         ? Number(rentPriceRaw)
-        : 0;
-    const commissionPrice =
-      commissionPriceRaw !== undefined && commissionPriceRaw !== ""
-        ? Number(commissionPriceRaw)
         : 0;
     const salePrice =
       salePriceRaw !== undefined && salePriceRaw !== ""
@@ -134,6 +154,12 @@ exports.createProduct = async (req, res) => {
       advanceAmountRaw !== undefined && advanceAmountRaw !== ""
         ? Math.round(Number(advanceAmountRaw))
         : 0;
+
+    // Commission: always auto-calculated
+    const commissionPrice =
+      listingType === "sale"
+        ? calcSaleCommission(salePrice)
+        : calcRentCommission(rentPrice, advanceAmount);
 
     if (!Number.isFinite(rentPrice) || rentPrice < 0) {
       return res.status(400).json({ message: "Invalid rent price" });
@@ -256,7 +282,6 @@ exports.updateProduct = async (req, res) => {
       category,
       listingType: listingTypeRaw,
       rentPrice: rentPriceRaw,
-      commissionPrice: commissionPriceRaw,
       salePrice: salePriceRaw,
       advanceAmount: advanceAmountRaw,
       description,
@@ -272,12 +297,17 @@ exports.updateProduct = async (req, res) => {
     product.listingType = listingType;
     if (rentPriceRaw !== undefined && rentPriceRaw !== "")
       product.rentPrice = Number(rentPriceRaw);
-    if (commissionPriceRaw !== undefined && commissionPriceRaw !== "")
-      product.commissionPrice = Number(commissionPriceRaw);
     if (salePriceRaw !== undefined && salePriceRaw !== "")
       product.salePrice = Number(salePriceRaw);
     if (advanceAmountRaw !== undefined && advanceAmountRaw !== "")
       product.advanceAmount = Math.round(Number(advanceAmountRaw));
+
+    // Commission: always auto-calculated
+    if (listingType === "sale") {
+      product.commissionPrice = calcSaleCommission(product.salePrice);
+    } else {
+      product.commissionPrice = calcRentCommission(product.rentPrice, product.advanceAmount);
+    }
     if (description !== undefined) product.description = description;
     if (available !== undefined)
       product.available =

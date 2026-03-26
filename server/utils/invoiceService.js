@@ -49,25 +49,29 @@ async function generateOrderReference() {
   return `ORD-${year}-${paddedSeq}`;
 }
 
-function calculateTaxes(rentAmount, commissionAmount, advanceAmount) {
-  const totalTaxable = rentAmount + commissionAmount;
+function calculateTaxes(rentAmount, commissionAmount, advanceAmount, deliveryCharge = 0) {
+  // Delivery charge is taxable — include it in the GST base
+  const totalTaxable = rentAmount + commissionAmount + deliveryCharge;
   const taxableValue = totalTaxable / 1.18;
-  const cgstAmount = taxableValue * 0.09;
-  const sgstAmount = taxableValue * 0.09;
-  const totalGst = cgstAmount + sgstAmount;
-  const depositAmount = advanceAmount - rentAmount;
-  const grandTotal = advanceAmount + commissionAmount;
+  const cgstAmount   = taxableValue * 0.09;
+  const sgstAmount   = taxableValue * 0.09;
+  const totalGst     = cgstAmount + sgstAmount;
+  // depositAmount = the full advance amount (entirely refundable security deposit)
+  const depositAmount = advanceAmount;
+  // grandTotal = total taxable (incl. GST) + advance
+  const grandTotal = totalTaxable + advanceAmount;
 
   return {
     advanceAmount,
     commissionAmount,
     rentAmount,
     depositAmount,
-    taxableValue: Number(taxableValue.toFixed(2)),
-    cgstAmount: Number(cgstAmount.toFixed(2)),
-    sgstAmount: Number(sgstAmount.toFixed(2)),
-    totalGst: Number(totalGst.toFixed(2)),
-    grandTotal: Number(grandTotal.toFixed(2)),
+    deliveryCharge: Number(deliveryCharge.toFixed(2)),
+    taxableValue:   Number(taxableValue.toFixed(2)),
+    cgstAmount:     Number(cgstAmount.toFixed(2)),
+    sgstAmount:     Number(sgstAmount.toFixed(2)),
+    totalGst:       Number(totalGst.toFixed(2)),
+    grandTotal:     Number(grandTotal.toFixed(2)),
   };
 }
 
@@ -191,35 +195,45 @@ async function createInvoicePDF(invoiceObj, title = 'TAX INVOICE') {
       });
       Y += tRowH;
 
-      // Draw data row
+      // Draw data rows — two separate line items for GST audit compliance
       const taxableValue = invoiceObj.taxableValue;
-      const rowData = [
-        '1',
-        `${invoiceObj.productName} (Rental Service)`,
-        'SAC: 9973',
-        '1',
-        `${taxableValue.toFixed(2)}`,
-        `${taxableValue.toFixed(2)}`,
+      const rentTaxable     = (invoiceObj.rentAmount + invoiceObj.commissionAmount) / 1.18;
+      const deliveryTaxable = invoiceObj.deliveryCharge > 0 ? invoiceObj.deliveryCharge / 1.18 : 0;
+
+      const tableRows = [
+        {
+          data: ['1', 'Rental Services (SAC 9973)', '9973', '1',
+            rentTaxable.toFixed(2), rentTaxable.toFixed(2)],
+          bg: '#FAFAFA',
+        },
+        ...(invoiceObj.deliveryCharge > 0 ? [{
+          data: ['2', 'Delivery Charges (Part of Composite Supply)', '9973', '1',
+            deliveryTaxable.toFixed(2), deliveryTaxable.toFixed(2)],
+          bg: '#F5F5F5',
+        }] : []),
       ];
-      rect(M, Y, CW, tRowH + 4, '#FAFAFA', '#DDDDDD');
-      colX = M;
-      rowData.forEach((d, i) => {
-        doc.font('Helvetica').fontSize(8).fillColor('#222222');
-        const align = i >= 3 ? 'right' : 'left';
-        doc.text(d, colX + 5, Y + 8, { width: tColW[i] - 10, align });
-        colX += tColW[i];
+
+      tableRows.forEach((row) => {
+        rect(M, Y, CW, tRowH + 4, row.bg, '#DDDDDD');
+        colX = M;
+        row.data.forEach((d, i) => {
+          doc.font('Helvetica').fontSize(8).fillColor('#222222');
+          const align = i >= 3 ? 'right' : 'left';
+          doc.text(d, colX + 5, Y + 8, { width: tColW[i] - 10, align });
+          colX += tColW[i];
+        });
+        // Column separators
+        colX = M;
+        tColW.forEach((w, i) => {
+          if (i < tColW.length - 1) {
+            doc.save().strokeColor('#DDDDDD').lineWidth(0.5)
+              .moveTo(colX + w, Y).lineTo(colX + w, Y + tRowH + 4).stroke().restore();
+          }
+          colX += w;
+        });
+        Y += tRowH + 4;
       });
 
-      // Column separators for data row
-      colX = M;
-      tColW.forEach((w, i) => {
-        if (i < tColW.length - 1) {
-          doc.save().strokeColor('#DDDDDD').lineWidth(0.5)
-            .moveTo(colX + w, Y).lineTo(colX + w, Y + tRowH + 4).stroke().restore();
-        }
-        colX += w;
-      });
-      Y += tRowH + 4;
       hline(Y, M, PW - M, 1, '#CCCCCC');
       Y += 14;
 
@@ -228,13 +242,21 @@ async function createInvoicePDF(invoiceObj, title = 'TAX INVOICE') {
       const summaryLabelW = 140;
       const summaryValW   = 75;
 
+      // totalRent+Delivery = rent + commission + delivery (all taxable, all incl. GST)
+      const totalRentAndDelivery = invoiceObj.rentAmount + invoiceObj.commissionAmount + invoiceObj.deliveryCharge;
+      const totalLabel = invoiceObj.deliveryCharge > 0
+        ? `Total Rent + Delivery (Incl. GST)`
+        : `Total Rent (Incl. GST)`;
+
+      const summaryStartY = Y; // remember Y for the Place of Supply note on the left
+
       const summaryRows = [
-        { label: 'Taxable Value',         value: `₹ ${invoiceObj.taxableValue.toFixed(2)}`,   bold: false },
-        { label: 'CGST @ 9%',             value: `₹ ${invoiceObj.cgstAmount.toFixed(2)}`,     bold: false },
-        { label: 'SGST @ 9%',             value: `₹ ${invoiceObj.sgstAmount.toFixed(2)}`,     bold: false },
-        { label: 'Total GST',             value: `₹ ${invoiceObj.totalGst.toFixed(2)}`,       bold: false },
-        { label: 'Rental Charge (Incl. GST)', value: `₹ ${(invoiceObj.taxableValue + invoiceObj.cgstAmount + invoiceObj.sgstAmount).toFixed(2)}`, bold: true, bg: '#EEF1FF' },
-        { label: 'Refundable Deposit (No GST)', value: `₹ ${invoiceObj.depositAmount.toFixed(2)}`, bold: false, note: true },
+        { label: 'Taxable Value',                          value: `₹ ${invoiceObj.taxableValue.toFixed(2)}`,      bold: false },
+        { label: 'CGST @ 9%',                             value: `₹ ${invoiceObj.cgstAmount.toFixed(2)}`,        bold: false },
+        { label: 'SGST @ 9%',                             value: `₹ ${invoiceObj.sgstAmount.toFixed(2)}`,        bold: false },
+        { label: 'Total GST',                             value: `₹ ${invoiceObj.totalGst.toFixed(2)}`,          bold: false },
+        { label: totalLabel,                              value: `₹ ${totalRentAndDelivery.toFixed(2)}`,         bold: true,  bg: '#EEF1FF' },
+        { label: 'Advance – Refundable Security Deposit', value: `₹ ${invoiceObj.depositAmount.toFixed(2)}`,     bold: false, note: true },
       ];
 
       summaryRows.forEach((row) => {
@@ -246,6 +268,20 @@ async function createInvoicePDF(invoiceObj, title = 'TAX INVOICE') {
         Y += 18;
       });
 
+      // Deposit sub-note (below the advance row)
+      doc.font('Helvetica').fontSize(7).fillColor('#999999');
+      doc.text('This is a refundable security deposit and not taxable under GST unless adjusted against damages or dues.',
+        summaryX + 4, Y, { width: summaryLabelW + summaryValW + 6 });
+      Y += 14;
+
+      // Place of Supply note (left column, aligned with summary top)
+      const posNoteW = summaryX - M - 10;
+      doc.font('Helvetica-Bold').fontSize(7.5).fillColor('#333333');
+      doc.text('Place of Supply:', M, summaryStartY, { width: posNoteW });
+      doc.font('Helvetica').fontSize(7.5).fillColor('#555555');
+      doc.text('Karnataka (29) – Intra-state supply', M, summaryStartY + 11, { width: posNoteW });
+      doc.text('(CGST + SGST applicable)', M, summaryStartY + 22, { width: posNoteW });
+
       Y += 6;
       hline(Y, summaryX, PW - M, 1.5, '#1A1A2E');
       Y += 8;
@@ -253,7 +289,7 @@ async function createInvoicePDF(invoiceObj, title = 'TAX INVOICE') {
       // ─── 6. GRAND TOTAL ──────────────────────────────────────────────────
       rect(summaryX, Y - 2, summaryLabelW + summaryValW + 10, 24, '#1A1A2E', '#1A1A2E');
       doc.font('Helvetica-Bold').fontSize(11).fillColor('#FFFFFF');
-      doc.text('GRAND TOTAL', summaryX + 4, Y + 5, { width: summaryLabelW, align: 'left' });
+      doc.text('TOTAL AMOUNT PAID', summaryX + 4, Y + 5, { width: summaryLabelW, align: 'left' });
       doc.text(`₹ ${invoiceObj.grandTotal.toFixed(2)}`, summaryX + summaryLabelW, Y + 5, { width: summaryValW, align: 'right' });
       Y += 34;
 
@@ -277,13 +313,15 @@ async function createInvoicePDF(invoiceObj, title = 'TAX INVOICE') {
       // ─── 7. NOTES ────────────────────────────────────────────────────────
       hline(Y, M, PW - M, 0.5);
       Y += 8;
-      rect(M, Y, CW, 46, '#FFFDF0', '#FDECC8');
+      rect(M, Y, CW, 72, '#FFFDF0', '#FDECC8');
       doc.font('Helvetica-Bold').fontSize(8).fillColor('#555500');
       doc.text('Notes & Terms:', M + 8, Y + 7, { width: CW - 16 });
       doc.font('Helvetica').fontSize(7.5).fillColor('#444400');
-      doc.text('1. The refundable deposit of ₹ ' + invoiceObj.depositAmount.toFixed(2) + ' will be returned directly upon safe return of the product.', M + 8, Y + 19, { width: CW - 16 });
+      doc.text('1. The refundable advance of ₹ ' + invoiceObj.depositAmount.toFixed(2) + ' will be returned in full upon safe return of the product.', M + 8, Y + 19, { width: CW - 16 });
       doc.text('2. Late return charges may apply as per the rental agreement. GST as applicable will be charged on any additional charges.', M + 8, Y + 31, { width: CW - 16 });
-      Y += 56;
+      doc.text('3. GST is applied on total taxable value including delivery charges as per GST rules.', M + 8, Y + 43, { width: CW - 16 });
+      doc.text('4. Security deposit is not included in taxable value and does not attract GST unless forfeited.', M + 8, Y + 55, { width: CW - 16 });
+      Y += 82;
 
       // ─── 8. FOOTER ───────────────────────────────────────────────────────
       const footerY = PH - 30;
@@ -350,8 +388,8 @@ async function processOrderConfirmation(orderId) {
       return;
     }
 
-    const { rentPrice, commissionPrice, advanceAmount } = order;
-    const taxes = calculateTaxes(rentPrice || 0, commissionPrice || 0, advanceAmount || 0);
+    const { rentPrice, commissionPrice, advanceAmount, deliveryCharge, deliveryCity } = order;
+    const taxes = calculateTaxes(rentPrice || 0, commissionPrice || 0, advanceAmount || 0, deliveryCharge || 0);
 
     const invoiceNumber = await generateInvoiceNumber();
     
@@ -372,6 +410,7 @@ async function processOrderConfirmation(orderId) {
       rentalStartDate: order.startDate,
       rentalEndDate: order.endDate,
       ...taxes,
+      deliveryCity: deliveryCity || '',
       paymentMode: order.paymentMethod,
       paymentReference: order.paymentId,
       type: 'Tax Invoice'
@@ -407,7 +446,7 @@ async function processOrderConfirmation(orderId) {
     // 5. Send Email
     try {
       const emailSubject = `Order Confirmed: ${newInvoice.productName} - ${newInvoice.invoiceNumber}`;
-      const emailBody = `Hi ${newInvoice.customerName},\n\nYour order has been confirmed!\nOrder Reference: ${order.orderReference}\nProduct: ${newInvoice.productName}\nTotal Paid: Rs. ${newInvoice.grandTotal.toFixed(2)}\n\nPlease find your tax invoice attached. Note that your refundable deposit of Rs. ${newInvoice.depositAmount.toFixed(2)} will be returned directly upon product return.\n\nThank you for choosing People&Style!`;
+      const emailBody = `Hi ${newInvoice.customerName},\n\nYour order has been confirmed!\nOrder Reference: ${order.orderReference}\nProduct: ${newInvoice.productName}\nTotal Paid: Rs. ${newInvoice.grandTotal.toFixed(2)}\n\nPlease find your tax invoice attached. Your refundable advance of Rs. ${newInvoice.depositAmount.toFixed(2)} will be returned in full upon safe return of the product.\n\nThank you for choosing People&Style!`;
 
       await withRetry(() => sendEmailWithAttachment(newInvoice.customerEmail, emailSubject, emailBody, pdfBuffer, fileName));
       newInvoice.emailedTo = newInvoice.customerEmail;
