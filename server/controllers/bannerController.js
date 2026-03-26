@@ -1,17 +1,49 @@
 const Banner = require('../models/Banner');
-const { deleteFromS3 } = require('../config/s3');
+const { s3, S3_BUCKET, deleteFromS3 } = require('../config/s3');
+const { PutObjectCommand } = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+const path = require('path');
+
+// GET /api/banners/sign-upload  (protected – store_owner / super_admin)
+// Returns a presigned S3 PUT URL so the browser can upload directly to S3.
+// No image bytes pass through this server (bypasses Vercel's 4.5 MB limit).
+exports.signBannerUpload = async (req, res) => {
+  try {
+    const { filename, contentType } = req.query;
+    if (!filename) {
+      return res.status(400).json({ message: 'filename query param is required' });
+    }
+
+    const ext = filename.includes('.') ? filename.substring(filename.lastIndexOf('.')) : '';
+    const baseName = filename.replace(/\.[^.]+$/, '').replace(/\s+/g, '-');
+    const key = `banners/${Date.now()}-${baseName}${ext}`;
+
+    const command = new PutObjectCommand({
+      Bucket: S3_BUCKET,
+      Key: key,
+      ContentType: contentType || 'image/jpeg',
+    });
+
+    const presignedUrl = await getSignedUrl(s3, command, { expiresIn: 300 });
+    const publicUrl = `https://${S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+
+    return res.json({ presignedUrl, publicUrl, key });
+  } catch (error) {
+    console.error('[Banner] signUpload error:', error.message);
+    return res.status(500).json({ message: 'Failed to generate presigned upload URL' });
+  }
+};
 
 // POST /api/banners
+// Accepts { imageUrl, imagePublicId, title, category, type } as JSON body.
+// The browser already uploaded the image directly to S3 via the presigned URL.
 exports.uploadBanner = async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ message: 'Image file is required' });
-    }
-    const { title, category, type } = req.body;
+    const { imageUrl, imagePublicId, title, category, type } = req.body;
 
-    // multer-s3 already uploaded image, file.location is URL, file.key is S3 key
-    const imageUrl = req.file.location;
-    const imagePublicId = req.file.key; // S3 key e.g. banners/1700000000-image.jpg
+    if (!imageUrl || !imagePublicId) {
+      return res.status(400).json({ message: 'imageUrl and imagePublicId are required' });
+    }
 
     const banner = await Banner.create({
       title,
