@@ -129,14 +129,7 @@ const BannerImagesAdmin = () => {
                 className="hidden"
                 onChange={(e) => {
                   const f = e.target.files?.[0];
-                  if (!f) { setFile(null); return; }
-                  if (f.size > 5 * 1024 * 1024) {
-                    toast.error("File too large. Max size is 5 MB.");
-                    e.target.value = null;
-                    setFile(null);
-                  } else {
-                    setFile(f);
-                  }
+                  setFile(f || null);
                 }}
               />
               <label htmlFor="banner-file-upload" className="cursor-pointer flex flex-col items-center gap-2">
