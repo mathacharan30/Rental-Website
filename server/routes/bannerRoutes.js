@@ -8,8 +8,8 @@ const { allowRoles }      = require('../middlewares/roleMiddleware');
 
 const storeGuard = [verifyFirebaseToken, attachUserRole, allowRoles(['store_owner', 'super_admin'])];
 
-router.post('/',    ...storeGuard, bannerUpload.single('image'), uploadBanner);
-router.get('/',     getBanners);
+router.post('/',      ...storeGuard, bannerUpload.single('image'), uploadBanner);
+router.get('/',       getBanners);
 router.delete('/:id', ...storeGuard, deleteBanner);
 
 module.exports = router;
