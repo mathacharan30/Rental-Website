@@ -42,7 +42,7 @@ const Products = () => {
             decodedCategory,
             currentPage,
             ITEMS_PER_PAGE,
-            searchQuery
+            searchQuery,
           );
           setItems(result.products || []);
           setPagination(result.pagination);
@@ -97,11 +97,19 @@ const Products = () => {
       transition={{ duration: 0.6 }}
     >
       <Helmet>
-        <title>{displayTitle} — Rent Designer Outfits | People &amp; Style</title>
-        <meta name="description" content={`Browse and rent ${decodedCategory || "designer"} outfits in Bangalore, Mysuru and across Karnataka. Premium ethnic wear rentals for every occasion.`} />
-        <link rel="canonical" href={`https://peopleandstyle.in/products${decodedCategory ? `/${encodeURIComponent(decodedCategory)}` : ""}`} />
+        <title>
+          {displayTitle} — Rent Designer Outfits | People &amp; Style
+        </title>
+        <meta
+          name="description"
+          content={`Browse and rent ${decodedCategory || "designer"} outfits in Bangalore, Mysuru and across Karnataka. Premium ethnic wear rentals for every occasion.`}
+        />
+        <link
+          rel="canonical"
+          href={`https://peopleandstyle.in/products${decodedCategory ? `/${encodeURIComponent(decodedCategory)}` : ""}`}
+        />
       </Helmet>
-      <div className="max-w-7xl mx-auto ">
+      <div className="max-w-7xl ">
         <div className="flex justify-center">
           <Link
             to="/"
@@ -120,7 +128,9 @@ const Products = () => {
             {decodedCategory && !searchQuery && (
               <p className="text-sm text-neutral-500">
                 {isJewels
-                  ? listingTab === "rent" ? "Jewels available for rent" : "Jewels available for sale"
+                  ? listingTab === "rent"
+                    ? "Jewels available for rent"
+                    : "Jewels available for sale"
                   : `Curated rentals for ${decodedCategory}`}
               </p>
             )}
@@ -132,7 +142,6 @@ const Products = () => {
           </div>
         </div>
 
-        {/* Rent / Sale tabs — Jewels only */}
         {isJewels && !loading && (
           <div className="flex justify-center gap-2 mb-6">
             {["rent", "sale"].map((tab) => (
@@ -155,15 +164,20 @@ const Products = () => {
           <div className="flex justify-center items-center py-20">
             <Loader />
           </div>
-        ) : (isJewels ? items.filter((p) => p.listingType === listingTab) : items).length > 0 ? (
+        ) : (isJewels
+            ? items.filter((p) => p.listingType === listingTab)
+            : items
+          ).length > 0 ? (
           <>
-            <div className=" justify-center  items-center flex gap-4  flex-wrap mt-4">
-              {(isJewels ? items.filter((p) => p.listingType === listingTab) : items).map((product) => (
+            <div className=" justify-center  items-center flex gap-2  flex-wrap mt-4">
+              {(isJewels
+                ? items.filter((p) => p.listingType === listingTab)
+                : items
+              ).map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
 
-            {/* Pagination Controls */}
             {pagination && pagination.totalPages > 1 && (
               <div className="flex items-center justify-center gap-4 mt-12 mb-8">
                 <button
@@ -176,7 +190,7 @@ const Products = () => {
                   }`}
                 >
                   <ChevronLeft size={18} />
-                  Previous
+                  Prev
                 </button>
 
                 <div className="flex items-center gap-2 text-sm">
