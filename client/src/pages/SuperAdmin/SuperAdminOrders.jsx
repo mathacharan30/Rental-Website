@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getAllOrders, updateOrderStatus } from '../../services/orderService';
+import { getAllOrders } from '../../services/orderService';
 import toast from 'react-hot-toast';
 import Loader from '../../components/Loader';
 
@@ -10,8 +10,6 @@ const STATUS_COLORS = {
   completed: 'bg-neutral-500/10 text-neutral-400',
   cancelled: 'bg-red-500/10 text-red-400',
 };
-
-const STATUSES = ['pending', 'confirmed', 'active', 'completed', 'cancelled'];
 
 export default function SuperAdminOrders() {
   const [orders,  setOrders]  = useState([]);
@@ -29,17 +27,6 @@ export default function SuperAdminOrders() {
   };
 
   useEffect(() => { load(); }, []);
-
-  const handleStatus = async (orderId, status) => {
-    const tid = toast.loading('Updating…');
-    try {
-      await updateOrderStatus(orderId, status);
-      toast.success('Status updated', { id: tid });
-      load();
-    } catch {
-      toast.error('Failed to update', { id: tid });
-    }
-  };
 
   if (loading) return <div className="p-12 flex justify-center"><Loader /></div>;
 
@@ -69,7 +56,6 @@ export default function SuperAdminOrders() {
                   <th className="px-4 py-3">Total</th>
                   <th className="px-4 py-3">Status</th>
                   <th className="px-4 py-3">Date</th>
-                  <th className="px-4 py-3">Update</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
@@ -91,10 +77,23 @@ export default function SuperAdminOrders() {
                       <span className="text-xs text-neutral-500">{o.store?.slug}</span>
                     </td>
                     {/* Customer */}
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 min-w-[180px]">
                       <div className="font-medium text-white">{o.customer?.name || '—'}</div>
-                      <div className="text-xs text-neutral-500">{o.customer?.email}</div>
-                      {o.customer?.phone && <div className="text-xs text-neutral-500">{o.customer.phone}</div>}
+                      {o.customer?.email && (
+                        <div className="text-xs text-neutral-400 mt-0.5">{o.customer.email}</div>
+                      )}
+                      {o.customer?.phone && (
+                        <div className="text-xs text-neutral-400 mt-0.5">📞 {o.customer.phone}</div>
+                      )}
+                      {o.customer?.whatsapp && (
+                        <div className="text-xs text-green-400 mt-0.5">💬 {o.customer.whatsapp}</div>
+                      )}
+                      {(o.customer?.address || o.customer?.city || o.customer?.pincode) && (
+                        <div className="text-xs text-neutral-500 mt-1 leading-snug">
+                          {[o.customer?.address, o.customer?.city, o.customer?.pincode]
+                            .filter(Boolean).join(', ')}
+                        </div>
+                      )}
                     </td>
                     {/* Type badge */}
                     <td className="px-4 py-3">
@@ -123,16 +122,7 @@ export default function SuperAdminOrders() {
                     <td className="px-4 py-3 text-neutral-500 whitespace-nowrap">
                       {new Date(o.createdAt).toLocaleDateString()}
                     </td>
-                    {/* Status dropdown */}
-                    <td className="px-4 py-3">
-                      <select
-                        value={o.status}
-                        onChange={(e) => handleStatus(o._id, e.target.value)}
-                        className="text-xs bg-[#1a1a1a] border border-white/10 text-neutral-300 rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-violet-500"
-                      >
-                        {STATUSES.map((s) => <option key={s} value={s} className="bg-[#1a1a1a] text-neutral-300">{s}</option>)}
-                      </select>
-                    </td>
+
                   </tr>
                 ))}
               </tbody>

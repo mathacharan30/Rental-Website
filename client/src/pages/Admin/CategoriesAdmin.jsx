@@ -208,7 +208,7 @@ const CategoriesAdmin = () => {
                         <button
                           onClick={() => handleEdit(c)}
                           className="p-2 text-neutral-500 hover:text-violet-400 hover:bg-violet-500/10
-                          rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                          rounded-lg transition-colors"
                           title="Edit"
                         >
                           <Edit2 size={18} />
@@ -216,7 +216,7 @@ const CategoriesAdmin = () => {
                         <button
                           onClick={() => handleDelete(c._id)}
                           className="p-2 text-neutral-500 hover:text-red-400 hover:bg-red-500/10
-                          rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                          rounded-lg transition-colors"
                           title="Delete"
                         >
                           <Trash2 size={18} />
