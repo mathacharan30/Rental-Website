@@ -109,7 +109,7 @@ const Products = () => {
           href={`https://peopleandstyle.in/products${decodedCategory ? `/${encodeURIComponent(decodedCategory)}` : ""}`}
         />
       </Helmet>
-      <div className="max-w-7xl ">
+      <div className="max-w-7xl mx-auto ">
         <div className="flex justify-center">
           <Link
             to="/"
@@ -183,40 +183,34 @@ const Products = () => {
                 <button
                   onClick={handlePrevPage}
                   disabled={!pagination.hasPrevPage}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                  className={`flex items-center gap-2 p-2 rounded-lg font-medium transition-all ${
                     pagination.hasPrevPage
                       ? "bg-violet-600 hover:bg-violet-700 text-white"
                       : "bg-white/5 text-neutral-600 cursor-not-allowed"
                   }`}
                 >
                   <ChevronLeft size={18} />
-                  Prev
                 </button>
 
                 <div className="flex items-center gap-2 text-sm">
-                  <span className="text-neutral-400">Page</span>
-                  <span className="px-3 py-1 bg-violet-600 text-white rounded-lg font-semibold">
+                  <span className="px-3 py-1  text-white rounded-lg font-semibold">
                     {pagination.currentPage}
                   </span>
                   <span className="text-neutral-400">of</span>
                   <span className="text-white font-semibold">
                     {pagination.totalPages}
                   </span>
-                  <span className="text-neutral-600 ml-2">
-                    ({pagination.totalProducts} total)
-                  </span>
                 </div>
 
                 <button
                   onClick={handleNextPage}
                   disabled={!pagination.hasNextPage}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                  className={`flex items-center gap-2 p-2 rounded-lg font-medium transition-all ${
                     pagination.hasNextPage
                       ? "bg-violet-600 hover:bg-violet-700 text-white"
                       : "bg-white/5 text-neutral-600 cursor-not-allowed"
                   }`}
                 >
-                  Next
                   <ChevronRight size={18} />
                 </button>
               </div>
@@ -232,6 +226,7 @@ const Products = () => {
           </div>
         )}
       </div>
+
       <Footer />
     </motion.section>
   );
