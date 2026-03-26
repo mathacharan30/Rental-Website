@@ -53,7 +53,7 @@ const Categories = () => {
             <div key={c.id}>
               <Link
                 to={`/products/${encodeURIComponent((c.name || "").toLowerCase())}`}
-                className="relative group overflow-hidden rounded-bl-3xl rounded-tr-3xl h-60 w-40 md:w-48 md:h-70 flex items-end 
+                className="relative group overflow-hidden rounded-bl-3xl rounded-tr-3xl h-58 w-40 md:w-48 md:h-70 flex items-end 
              bg-neutral-900/40 backdrop-blur-md border border-white/10
              hover:shadow-[0_12px_40px_rgba(139,92,246,0.25)]
              transition-all duration-300"

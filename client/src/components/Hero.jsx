@@ -42,7 +42,7 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative w-full h-[90vh] overflow-hidden">
+    <section className="relative w-full h-[90vh] mb-10 md:h-[90vh] overflow-hidden">
       {images.map((src, index) => (
         <img
           key={`${src}-${index}`}

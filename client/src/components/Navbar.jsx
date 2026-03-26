@@ -209,11 +209,11 @@ const Navbar = () => {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between py-3">
+        <div className="flex items-center justify-between py-1.5 md:py-3">
           <div className="flex items-center gap-8">
             <Link
               to="/"
-              className="text-xl font-semibold tracking-tight text-white hover:opacity-80 transition-opacity"
+              className="text-sm font-semibold tracking-tight text-white hover:opacity-80 transition-opacity"
             >
               People & Style
             </Link>
@@ -250,11 +250,8 @@ const Navbar = () => {
             )}
           </div>
 
-          <div className="flex items-center gap-3">
-            <div
-              className="hidden md:flex relative mr-2"
-              ref={desktopSearchRef}
-            >
+          <div className="flex items-center ">
+            <div className="hidden md:flex relative " ref={desktopSearchRef}>
               <form
                 onSubmit={handleSearchSubmit}
                 className="flex items-center relative w-full"
