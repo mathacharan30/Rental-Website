@@ -4,9 +4,11 @@ import { Menu, X, Search } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { getAllProducts } from "../services/productService";
 import { getCategories } from "../services/categoryService";
+import { HOME_NAV_ITEMS } from "../data/Content";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const desktopSearchRef = useRef(null);
   const mobileSearchRef = useRef(null);
@@ -84,16 +86,24 @@ const Navbar = () => {
     if (searchQuery.trim()) {
       navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
       setOpen(false);
+      setMobileSearchOpen(false);
       setShowSuggestions(false);
     }
   };
 
   useEffect(() => {
     const onResize = () => {
-      if (window.innerWidth >= 768) setOpen(false);
+      if (window.innerWidth >= 768) {
+        setOpen(false);
+        setMobileSearchOpen(false);
+      }
     };
     const onKey = (e) => {
-      if (e.key === "Escape") setOpen(false);
+      if (e.key === "Escape") {
+        setOpen(false);
+        setMobileSearchOpen(false);
+        setShowSuggestions(false);
+      }
     };
     const onScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -108,11 +118,68 @@ const Navbar = () => {
     };
   }, []);
 
-  const handleMobileLink = () => setOpen(false);
+  const closeAllMenus = () => {
+    setOpen(false);
+    setMobileSearchOpen(false);
+    setShowSuggestions(false);
+  };
+
+  const handleMobileLink = () => closeAllMenus();
+
+  const handleSearchChange = (value) => {
+    setSearchQuery(value);
+    setShowSuggestions(true);
+  };
+
+  const handleSuggestionClick = (closeMobileSearch = false) => {
+    setShowSuggestions(false);
+    setSearchQuery("");
+    setOpen(false);
+    if (closeMobileSearch) {
+      setMobileSearchOpen(false);
+    }
+  };
+
+  const renderSuggestions = (containerClassName, closeMobileSearch = false) => {
+    if (!showSuggestions || suggestions.length === 0) return null;
+
+    return (
+      <div className={containerClassName}>
+        {suggestions.map((p) => (
+          <Link
+            key={`${p.type}-${p.id}`}
+            to={p.url}
+            onClick={() => handleSuggestionClick(closeMobileSearch)}
+            className="flex items-center gap-3 p-3 hover:bg-white/5 transition-colors border-b border-white/5 last:border-b-0"
+          >
+            {p.image ? (
+              <img
+                src={p.image}
+                alt={p.title}
+                className="w-10 h-10 object-cover rounded-md"
+              />
+            ) : (
+              <div className="w-10 h-10 bg-white/5 rounded-md flex items-center justify-center">
+                <Search size={16} className="text-neutral-500" />
+              </div>
+            )}
+            <div className="flex flex-col text-left">
+              <span className="text-white text-sm font-medium line-clamp-1">
+                {p.title}
+              </span>
+              <span className="text-neutral-400 text-xs text-left">
+                {p.type === "category" ? "Category" : p.category}
+              </span>
+            </div>
+          </Link>
+        ))}
+      </div>
+    );
+  };
 
   const handleLogout = async () => {
     await logout();
-    setOpen(false);
+    closeAllMenus();
     navigate("/");
   };
 
@@ -144,7 +211,6 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between py-3">
           <div className="flex items-center gap-8">
-            {/* Logo */}
             <Link
               to="/"
               className="text-xl font-semibold tracking-tight text-white hover:opacity-80 transition-opacity"
@@ -152,17 +218,12 @@ const Navbar = () => {
               People & Style
             </Link>
 
-            {/* Desktop nav — public / customer only */}
             {isPublicOrCustomer && isHomePage && (
               <nav
                 className="hidden md:flex items-center gap-1 text-sm"
                 aria-label="Primary Navigation"
               >
-                {[
-                  { href: "#categories", label: "Categories" },
-                  { href: "#products", label: "Rentals" },
-                  { href: "#gallery", label: "Gallery" },
-                ].map((item) => (
+                {HOME_NAV_ITEMS.map((item) => (
                   <a
                     key={item.href}
                     href={item.href}
@@ -174,7 +235,6 @@ const Navbar = () => {
               </nav>
             )}
 
-            {/* Desktop nav — admin / super admin */}
             {(isAdmin || isSuperAdmin) && (
               <nav
                 className="hidden md:flex items-center gap-1 text-sm"
@@ -190,7 +250,6 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Desktop search and auth actions */}
           <div className="flex items-center gap-3">
             <div
               className="hidden md:flex relative mr-2"
@@ -204,10 +263,7 @@ const Navbar = () => {
                   type="text"
                   placeholder="Search rentals..."
                   value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    setShowSuggestions(true);
-                  }}
+                  onChange={(e) => handleSearchChange(e.target.value)}
                   onFocus={() => setShowSuggestions(true)}
                   className="bg-white/10 text-white placeholder-neutral-400 border border-white/20 rounded-full py-1.5 px-4 pr-9 text-sm focus:outline-none focus:border-violet-500 transition-colors w-56"
                 />
@@ -219,40 +275,8 @@ const Navbar = () => {
                 </button>
               </form>
 
-              {showSuggestions && suggestions.length > 0 && (
-                <div className="absolute top-full right-0 mt-2 w-72 bg-neutral-900 border border-white/10 rounded-xl overflow-hidden shadow-2xl z-50">
-                  {suggestions.map((p) => (
-                    <Link
-                      key={`${p.type}-${p.id}`}
-                      to={p.url}
-                      onClick={() => {
-                        setShowSuggestions(false);
-                        setSearchQuery("");
-                      }}
-                      className="flex items-center gap-3 p-3 hover:bg-white/5 transition-colors border-b border-white/5 last:border-b-0"
-                    >
-                      {p.image ? (
-                        <img
-                          src={p.image}
-                          alt={p.title}
-                          className="w-10 h-10 object-cover rounded-md"
-                        />
-                      ) : (
-                        <div className="w-10 h-10 bg-white/5 rounded-md flex items-center justify-center">
-                          <Search size={16} className="text-neutral-500" />
-                        </div>
-                      )}
-                      <div className="flex flex-col text-left">
-                        <span className="text-white text-sm font-medium line-clamp-1">
-                          {p.title}
-                        </span>
-                        <span className="text-neutral-400 text-xs text-left">
-                          {p.type === "category" ? "Category" : p.category}
-                        </span>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
+              {renderSuggestions(
+                "absolute top-full right-0 mt-2 w-72 bg-neutral-900 border border-white/10 rounded-xl overflow-hidden shadow-2xl z-50",
               )}
             </div>
 
@@ -314,8 +338,27 @@ const Navbar = () => {
             )}
 
             <button
-              className="md:hidden relative w-12 h-12 flex items-center justify-center rounded-xl "
-              onClick={() => setOpen((s) => !s)}
+              type="button"
+              className="md:hidden relative w-12 h-12 flex items-center justify-center rounded-xl"
+              onClick={() => {
+                setMobileSearchOpen((s) => !s);
+                setOpen(false);
+                setShowSuggestions(false);
+              }}
+              aria-expanded={mobileSearchOpen}
+              aria-controls="mobile-search"
+              aria-label={mobileSearchOpen ? "Close search" : "Open search"}
+            >
+              <Search className="text-white" size={18} />
+            </button>
+
+            <button
+              type="button"
+              className="md:hidden relative w-12 h-12 flex items-center justify-center rounded-xl"
+              onClick={() => {
+                setOpen((s) => !s);
+                setMobileSearchOpen(false);
+              }}
               aria-expanded={open}
               aria-controls="mobile-menu"
               aria-label={open ? "Close menu" : "Open menu"}
@@ -329,84 +372,54 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* ALWAYS VISIBLE MOBILE SEARCH */}
-        <div
-          className="md:hidden px-4 pb-3 relative z-40"
-          ref={mobileSearchRef}
-        >
-          <form onSubmit={handleSearchSubmit} className="relative w-full">
-            <input
-              type="text"
-              placeholder="Search rentals..."
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setShowSuggestions(true);
-              }}
-              onFocus={() => setShowSuggestions(true)}
-              className="w-full bg-white/10 text-white placeholder-neutral-400 border border-white/20 rounded-xl py-2.5 px-4 pr-10 text-sm focus:outline-none focus:border-white/40 transition-all"
-            />
-            <button
-              type="submit"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white"
+        {mobileSearchOpen && (
+          <div
+            id="mobile-search"
+            className="md:hidden fixed inset-0 z-50 bg-black/45 backdrop-blur-[1px] px-4 pt-24"
+            onClick={() => {
+              setMobileSearchOpen(false);
+              setShowSuggestions(false);
+            }}
+          >
+            <div
+              ref={mobileSearchRef}
+              className="relative mx-auto w-full max-w-md"
+              onClick={(e) => e.stopPropagation()}
             >
-              <Search size={18} />
-            </button>
-          </form>
-
-          {showSuggestions && suggestions.length > 0 && (
-            <div className="absolute left-4 right-4 top-full mt-2 bg-neutral-900 border border-white/10 rounded-xl overflow-hidden shadow-2xl z-50">
-              {suggestions.map((p) => (
-                <Link
-                  key={`${p.type}-${p.id}`}
-                  to={p.url}
-                  onClick={() => {
-                    setShowSuggestions(false);
-                    setOpen(false);
-                    setSearchQuery("");
-                  }}
-                  className="flex items-center gap-3 p-3 hover:bg-white/5 transition-colors border-b border-white/5 last:border-b-0"
+              <form onSubmit={handleSearchSubmit} className="relative w-full">
+                <input
+                  type="text"
+                  placeholder="Search rentals..."
+                  value={searchQuery}
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                  onFocus={() => setShowSuggestions(true)}
+                  className="w-full bg-neutral-900/95 text-white placeholder-neutral-400 border border-white/20 rounded-full py-3 px-4 pr-10 text-base focus:outline-none focus:border-white/40 transition-all shadow-2xl"
+                />
+                <button
+                  type="submit"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white"
                 >
-                  {p.image ? (
-                    <img
-                      src={p.image}
-                      alt={p.title}
-                      className="w-10 h-10 object-cover rounded-md"
-                    />
-                  ) : (
-                    <div className="w-10 h-10 bg-white/5 rounded-md flex items-center justify-center">
-                      <Search size={16} className="text-neutral-500" />
-                    </div>
-                  )}
-                  <div className="flex flex-col text-left">
-                    <span className="text-white text-sm font-medium line-clamp-1">
-                      {p.title}
-                    </span>
-                    <span className="text-neutral-400 text-xs text-left">
-                      {p.type === "category" ? "Category" : p.category}
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
+                  <Search size={20} />
+                </button>
+              </form>
 
-        {/* Mobile menu */}
+              {renderSuggestions(
+                "absolute left-0 right-0 top-full mt-2 bg-neutral-900 border border-white/10 rounded-xl overflow-hidden shadow-2xl z-50",
+                true,
+              )}
+            </div>
+          </div>
+        )}
+
         <nav
           id="mobile-menu"
           className={`${open ? "block" : "hidden"} md:hidden`}
           aria-hidden={!open}
         >
           <div className="flex flex-col gap-1 pb-4 pt-1 text-sm">
-            {/* Public / customer links */}
             {isPublicOrCustomer && isHomePage && (
               <>
-                {[
-                  { href: "#categories", label: "Categories" },
-                  { href: "#products", label: "Rentals" },
-                  { href: "#gallery", label: "Gallery" },
-                ].map((item) => (
+                {HOME_NAV_ITEMS.map((item) => (
                   <a
                     key={item.href}
                     href={item.href}
@@ -429,9 +442,6 @@ const Navbar = () => {
               </Link>
             )}
 
-            <div className="h-px bg-white/10 my-2" />
-
-            {/* Auth actions */}
             {!firebaseUser ? (
               <>
                 <Link

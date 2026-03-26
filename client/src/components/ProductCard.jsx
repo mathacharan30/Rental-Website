@@ -16,13 +16,10 @@ const ProductCard = ({ product }) => {
           decoding="async"
           className="w-full h-full object-cover"
         />
-
-        {/* Favorite Button */}
         <div className="absolute top-2 right-2 z-10">
           <FavoriteButton productId={product.id} size={18} />
         </div>
       </div>
-
       <div className="py-2 px-1">
         <p className="text-xs tracking-tight text-violet-400">
           {product.category}
