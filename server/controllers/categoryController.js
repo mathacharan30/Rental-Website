@@ -1,6 +1,34 @@
 const Category = require('../models/Category');
 const Product = require('../models/Product');
-const { deleteFromS3 } = require('../config/s3');
+const { s3, S3_BUCKET, deleteFromS3 } = require('../config/s3');
+const { PutObjectCommand } = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+
+// GET /api/categories/sign-upload  (protected – store_owner / super_admin)
+// Returns a presigned S3 PUT URL so the browser uploads directly to S3.
+exports.signCategoryUpload = async (req, res) => {
+  try {
+    const { filename, contentType } = req.query;
+    if (!filename) {
+      return res.status(400).json({ message: 'filename query param is required' });
+    }
+    const ext = filename.includes('.') ? filename.substring(filename.lastIndexOf('.')) : '';
+    const baseName = filename.replace(/\.[^.]+$/, '').replace(/\s+/g, '-');
+    const key = `categories/${Date.now()}-${baseName}${ext}`;
+
+    const command = new PutObjectCommand({
+      Bucket: S3_BUCKET,
+      Key: key,
+      ContentType: contentType || 'image/jpeg',
+    });
+    const presignedUrl = await getSignedUrl(s3, command, { expiresIn: 300 });
+    const publicUrl = `https://${S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+    return res.json({ presignedUrl, publicUrl, key });
+  } catch (error) {
+    console.error('[Category] signUpload error:', error.message);
+    return res.status(500).json({ message: 'Failed to generate presigned upload URL' });
+  }
+};
 
 // GET /api/categories
 exports.getCategories = async (req, res) => {
@@ -14,16 +42,15 @@ exports.getCategories = async (req, res) => {
   }
 };
 
-// POST /api/categories (admin only) — accepts multipart/form-data with single file field 'image'
+// POST /api/categories (admin only) — accepts JSON { name, description, imageUrl, imagePublicId }
 exports.createCategory = async (req, res) => {
   try {
-    const { name, description } = req.body;
+    const { name, description, imageUrl, imagePublicId } = req.body;
     if (!name) {
       return res.status(400).json({ message: 'Name is required' });
     }
-
-    if (!req.file) {
-      return res.status(400).json({ message: 'Image file is required' });
+    if (!imageUrl || !imagePublicId) {
+      return res.status(400).json({ message: 'Image is required' });
     }
 
     const exists = await Category.findOne({ name: name.trim() });
@@ -31,7 +58,7 @@ exports.createCategory = async (req, res) => {
       return res.status(409).json({ message: 'Category already exists' });
     }
 
-    const image = { url: req.file.location, publicId: req.file.key };
+    const image = { url: imageUrl, publicId: imagePublicId };
     const category = await Category.create({ name: name.trim(), description, image });
     res.status(201).json(category);
   } catch (error) {
@@ -112,9 +139,9 @@ exports.updateCategory = async (req, res) => {
       category.description = description;
     }
 
-    // If a new image file is uploaded, delete the old one and update
-    if (req.file) {
-      // Delete old image from S3 if it exists
+    // If a new image was uploaded directly to S3, delete old one and update
+    const { imageUrl, imagePublicId } = req.body;
+    if (imageUrl && imagePublicId) {
       if (category.image && category.image.publicId) {
         try {
           await deleteFromS3(category.image.publicId);
@@ -123,8 +150,7 @@ exports.updateCategory = async (req, res) => {
           console.error('[Category] Error deleting old image from S3:', err.message);
         }
       }
-      // Set new image
-      category.image = { url: req.file.location, publicId: req.file.key };
+      category.image = { url: imageUrl, publicId: imagePublicId };
     }
 
     await category.save();

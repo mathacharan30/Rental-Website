@@ -3,20 +3,16 @@ const router = express.Router();
 const verifyFirebaseToken = require('../middlewares/verifyFirebaseToken');
 const attachUserRole      = require('../middlewares/attachUserRole');
 const { allowRoles }      = require('../middlewares/roleMiddleware');
-const { categoryUpload }  = require('../middlewares/upload');
 
 const storeGuard = [verifyFirebaseToken, attachUserRole, allowRoles(['store_owner', 'super_admin'])];
-const { getCategories, createCategory, updateCategory, deleteCategory, getProductsByCategory } = require('../controllers/categoryController');
+const { getCategories, createCategory, updateCategory, deleteCategory, getProductsByCategory, signCategoryUpload } = require('../controllers/categoryController');
 
+// sign-upload must come before /:id to avoid being consumed by the param route
+router.get('/sign-upload', ...storeGuard, signCategoryUpload);
 router.get('/', getCategories);
 router.get('/:id/products', getProductsByCategory);
-// Create category with single image upload (field name: 'image')
-router.post('/', ...storeGuard, categoryUpload.single('image'), createCategory);
-
-// Update category with optional image upload (field name: 'image')
-router.put('/:id', ...storeGuard, categoryUpload.single('image'), updateCategory);
-
-// Delete category and cascade delete products
+router.post('/', ...storeGuard, createCategory);
+router.put('/:id', ...storeGuard, updateCategory);
 router.delete('/:id', ...storeGuard, deleteCategory);
 
 module.exports = router;

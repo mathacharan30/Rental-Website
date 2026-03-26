@@ -53,15 +53,11 @@ const CategoriesAdmin = () => {
     );
 
     try {
-      const fd = new FormData();
-      fd.append("name", name);
-      if (imageFile) fd.append("image", imageFile);
-
       if (isEditMode && editingCategory) {
-        await updateCategory(editingCategory._id, fd);
+        await updateCategory(editingCategory._id, { name, imageFile });
         toast.success("Category updated successfully", { id: loadingToast });
       } else {
-        await createCategory(fd);
+        await createCategory({ name, imageFile });
         toast.success("Category created successfully", { id: loadingToast });
       }
 
@@ -283,17 +279,7 @@ const CategoriesAdmin = () => {
                 accept="image/*"
                 onChange={(e) => {
                   const selectedFile = e.target.files?.[0];
-                  if (selectedFile) {
-                    if (selectedFile.size > 2 * 1024 * 1024) {
-                      toast.error("File is too large. Max size is 2MB.");
-                      e.target.value = null; // Reset input
-                      setImageFile(null);
-                    } else {
-                      setImageFile(selectedFile);
-                    }
-                  } else {
-                    setImageFile(null);
-                  }
+                  setImageFile(selectedFile || null);
                 }}
                 className="hidden"
                 id="cat-file-upload"

@@ -9,35 +9,48 @@ export function mapCategory(c = {}) {
   };
 }
 
-// Category APIs
+// ─── Direct-to-S3 helpers ────────────────────────────────────────────────────
+async function uploadImageToS3(file) {
+  const { data } = await api.get("/api/categories/sign-upload", {
+    params: { filename: file.name, contentType: file.type },
+  });
+  const { presignedUrl, publicUrl, key } = data;
+  const res = await fetch(presignedUrl, {
+    method: "PUT",
+    headers: { "Content-Type": file.type },
+    body: file,
+  });
+  if (!res.ok) throw new Error(`S3 upload failed (${res.status})`);
+  return { imageUrl: publicUrl, imagePublicId: key };
+}
+
+// ─── Category APIs ────────────────────────────────────────────────────────────
 export async function getCategories() {
   const { data } = await api.get("/api/categories");
   return Array.isArray(data) ? data : [];
 }
 
-export async function createCategory(payload) {
-  // Accepts FormData (preferred for file upload) or plain object
-  if (typeof FormData !== 'undefined' && payload instanceof FormData) {
-    const { data } = await api.post("/api/categories", payload);
-    return data;
+export async function createCategory({ name, description, imageFile }) {
+  const body = { name };
+  if (description) body.description = description;
+  if (imageFile) {
+    const { imageUrl, imagePublicId } = await uploadImageToS3(imageFile);
+    body.imageUrl = imageUrl;
+    body.imagePublicId = imagePublicId;
   }
-  const body = { name: payload?.name };
-  if (payload?.image) body.image = payload.image;
-  if (payload?.description) body.description = payload.description;
   const { data } = await api.post("/api/categories", body);
   return data;
 }
 
-export async function updateCategory(id, payload) {
-  // Accepts FormData (preferred for file upload) or plain object
-  if (typeof FormData !== 'undefined' && payload instanceof FormData) {
-    const { data } = await api.put(`/api/categories/${id}`, payload);
-    return data;
-  }
+export async function updateCategory(id, { name, description, imageFile }) {
   const body = {};
-  if (payload?.name) body.name = payload.name;
-  if (payload?.image) body.image = payload.image;
-  if (payload?.description !== undefined) body.description = payload.description;
+  if (name) body.name = name;
+  if (description !== undefined) body.description = description;
+  if (imageFile) {
+    const { imageUrl, imagePublicId } = await uploadImageToS3(imageFile);
+    body.imageUrl = imageUrl;
+    body.imagePublicId = imagePublicId;
+  }
   const { data } = await api.put(`/api/categories/${id}`, body);
   return data;
 }
