@@ -66,17 +66,6 @@ const Categories = () => {
                group-hover:scale-110 transition-transform duration-500 ease-out"
                 />
 
-                <div
-                  className="absolute inset-0 bg-gradient-to-t 
-                  from-black/80 via-black/30 to-transparent 
-                  group-hover:from-black/70 transition-all duration-300"
-                />
-
-                <div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 
-                  bg-violet-500/10 blur-2xl transition duration-500"
-                />
-
                 <div className="relative w-full p-4 flex items-center justify-between">
                   <span className="text-white font-light text-sm uppercase md:text-base tracking-tight">
                     {c.name}
