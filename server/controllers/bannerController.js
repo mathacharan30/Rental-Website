@@ -35,22 +35,30 @@ exports.signBannerUpload = async (req, res) => {
 };
 
 // POST /api/banners
-// Accepts { imageUrl, imagePublicId, title, category, type } as JSON body.
+// Accepts { imageUrl, imagePublicId, title, caption, category, type, device } as JSON body.
 // The browser already uploaded the image directly to S3 via the presigned URL.
 exports.uploadBanner = async (req, res) => {
   try {
-    const { imageUrl, imagePublicId, title, category, type } = req.body;
+    const { imageUrl, imagePublicId, title, caption, category, type, device } = req.body;
 
     if (!imageUrl || !imagePublicId) {
       return res.status(400).json({ message: 'imageUrl and imagePublicId are required' });
     }
+    if (!title || !title.trim()) {
+      return res.status(400).json({ message: 'Title is required' });
+    }
+    if (!caption || !caption.trim()) {
+      return res.status(400).json({ message: 'Caption is required' });
+    }
 
     const banner = await Banner.create({
-      title,
+      title: title.trim(),
+      caption: caption.trim(),
       category,
       imageUrl,
       imagePublicId,
       type: type === 'hero' ? 'hero' : 'gallery',
+      device: device === 'mobile' ? 'mobile' : 'desktop',
     });
 
     console.log('[Banner] Upload Success:', imagePublicId);
@@ -58,11 +66,14 @@ exports.uploadBanner = async (req, res) => {
     return res.status(201).json({
       message: 'Banner uploaded successfully',
       banner: {
+        _id: banner._id,
         title: banner.title,
+        caption: banner.caption,
         category: banner.category,
         imageUrl: banner.imageUrl,
         imagePublicId: banner.imagePublicId,
-        _id: banner._id,
+        type: banner.type,
+        device: banner.device,
       },
     });
   } catch (error) {
@@ -71,15 +82,18 @@ exports.uploadBanner = async (req, res) => {
   }
 };
 
-// GET /api/banners?type=hero|gallery
+// GET /api/banners?type=hero|gallery&device=mobile|desktop
 exports.getBanners = async (req, res) => {
   try {
     const filter = {};
     if (req.query.type === 'hero' || req.query.type === 'gallery') {
       filter.type = req.query.type;
     }
+    if (req.query.device === 'mobile' || req.query.device === 'desktop') {
+      filter.device = req.query.device;
+    }
     const banners = await Banner.find(filter).sort({ createdAt: -1 });
-    res.set("Cache-Control", "public, s-maxage=120, stale-while-revalidate=300");
+    res.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
     return res.json(banners);
   } catch (error) {
     console.error('[Banner] Fetch Error:', error.message);

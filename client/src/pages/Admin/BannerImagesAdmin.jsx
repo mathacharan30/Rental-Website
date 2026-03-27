@@ -9,6 +9,8 @@ const BannerImagesAdmin = () => {
   const [banners, setBanners] = useState([]);
   const [file, setFile] = useState(null);
   const [title, setTitle] = useState("");
+  const [caption, setCaption] = useState("");
+  const [device, setDevice] = useState("desktop");
   const [loading, setLoading] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -30,13 +32,17 @@ const BannerImagesAdmin = () => {
 
   const add = async (e) => {
     e.preventDefault();
-    if (!file) { toast.error("Please select a file"); return; }
+    if (!file) { toast.error("Please select an image file"); return; }
+    if (!title.trim()) { toast.error("Title is required"); return; }
+    if (!caption.trim()) { toast.error("Caption is required"); return; }
     setLoading(true);
     const tid = toast.loading("Uploading banner...");
     try {
-      await bannerService.uploadBanner({ file, title, type: 'hero' });
+      await bannerService.uploadBanner({ file, title, caption, type: 'hero', device });
       setFile(null);
       setTitle("");
+      setCaption("");
+      setDevice("desktop");
       toast.success("Banner uploaded successfully", { id: tid });
       setIsModalOpen(false);
       await load();
@@ -91,25 +97,32 @@ const BannerImagesAdmin = () => {
             {banners.map((b, idx) => (
               <div
                 key={b._id}
-                className="relative bg-white/5 rounded-xl overflow-hidden border border-white/10 aspect-video"
+                className={`relative bg-white/5 rounded-xl overflow-hidden border border-white/10 ${b.device === 'mobile' ? 'aspect-9/16' : 'aspect-video'}`}
               >
                 <img
                   src={b.imageUrl}
                   alt={b.title || `Banner ${idx + 1}`}
                   className="w-full h-full object-cover"
                 />
+                {/* Device badge */}
+                <span className={`absolute top-2 left-2 text-[10px] font-semibold px-2 py-0.5 rounded-full ${b.device === 'mobile' ? 'bg-violet-600 text-white' : 'bg-sky-600 text-white'}`}>
+                  {b.device === 'mobile' ? '📱 Mobile' : '🖥 Desktop'}
+                </span>
                 {/* Always-visible overlay strip at bottom */}
-                <div className="absolute bottom-0 inset-x-0 bg-black/60 px-3 py-2 flex items-center justify-between gap-2">
-                  <span className="text-white text-xs truncate">
-                    {b.title || `Slide ${idx + 1}`}
-                  </span>
-                  <button
-                    onClick={() => remove(b._id)}
-                    className="shrink-0 p-1.5 text-red-400 hover:bg-red-500/20 rounded transition-colors"
-                    title="Delete"
-                  >
-                    <Trash2 size={14} />
-                  </button>
+                <div className="absolute bottom-0 inset-x-0 bg-black/70 px-3 py-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-white text-xs font-medium truncate">{b.title || `Slide ${idx + 1}`}</span>
+                    <button
+                      onClick={() => remove(b._id)}
+                      className="shrink-0 p-1.5 text-red-400 hover:bg-red-500/20 rounded transition-colors"
+                      title="Delete"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                  {b.caption && (
+                    <p className="text-neutral-300 text-[11px] mt-0.5 truncate">{b.caption}</p>
+                  )}
                 </div>
               </div>
             ))}
@@ -139,13 +152,43 @@ const BannerImagesAdmin = () => {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-neutral-300 mb-1">Title (Optional)</label>
+            <label className="block text-sm font-medium text-neutral-300 mb-1">Title <span className="text-red-400">*</span></label>
             <input
+              required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Wedding Collection"
               className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
             />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-neutral-300 mb-1">Caption <span className="text-red-400">*</span></label>
+            <input
+              required
+              value={caption}
+              onChange={(e) => setCaption(e.target.value)}
+              placeholder="e.g. Explore our exclusive bridal collection"
+              className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-neutral-300 mb-2">Device <span className="text-red-400">*</span></label>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setDevice("desktop")}
+                className={`flex-1 py-2 rounded-lg border text-sm font-medium transition-colors ${device === 'desktop' ? 'bg-sky-600 border-sky-500 text-white' : 'border-white/10 text-neutral-400 hover:bg-white/5'}`}
+              >
+                🖥 Desktop (16:9)
+              </button>
+              <button
+                type="button"
+                onClick={() => setDevice("mobile")}
+                className={`flex-1 py-2 rounded-lg border text-sm font-medium transition-colors ${device === 'mobile' ? 'bg-violet-600 border-violet-500 text-white' : 'border-white/10 text-neutral-400 hover:bg-white/5'}`}
+              >
+                📱 Mobile (9:16)
+              </button>
+            </div>
           </div>
           <div className="flex gap-3 pt-4 border-t border-white/10">
             <button

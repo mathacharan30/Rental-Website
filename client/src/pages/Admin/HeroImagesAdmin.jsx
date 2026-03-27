@@ -9,6 +9,7 @@ const HeroImagesAdmin = () => {
   const [banners, setBanners] = useState([]);
   const [file, setFile] = useState(null);
   const [title, setTitle] = useState("");
+  const [caption, setCaption] = useState("");
   const [category, setCategory] = useState("");
   const [loading, setLoading] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
@@ -33,18 +34,18 @@ const HeroImagesAdmin = () => {
 
   const add = async (e) => {
     e.preventDefault();
-    if (!file) {
-      toast.error("Please select a file");
-      return;
-    }
+    if (!file) { toast.error("Please select an image file"); return; }
+    if (!title.trim()) { toast.error("Title is required"); return; }
+    if (!caption.trim()) { toast.error("Caption is required"); return; }
     setLoading(true);
-    const loadingToast = toast.loading("Uploading banner...");
+    const loadingToast = toast.loading("Uploading image...");
     try {
-      await bannerService.uploadBanner({ file, title, category, type: 'gallery' });
+      await bannerService.uploadBanner({ file, title, caption, category, type: 'gallery' });
       setFile(null);
       setTitle("");
+      setCaption("");
       setCategory("");
-      toast.success("Banner uploaded successfully", { id: loadingToast });
+      toast.success("Image uploaded successfully", { id: loadingToast });
       setIsModalOpen(false);
       await load();
     } catch (e) {
@@ -168,12 +169,26 @@ const HeroImagesAdmin = () => {
 
           <div>
             <label className="block text-sm font-medium text-neutral-300 mb-1">
-              Title (Optional)
+              Title <span className="text-red-400">*</span>
             </label>
             <input
+              required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Summer Collection"
+              className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-neutral-300 mb-1">
+              Caption <span className="text-red-400">*</span>
+            </label>
+            <input
+              required
+              value={caption}
+              onChange={(e) => setCaption(e.target.value)}
+              placeholder="e.g. Handpicked styles for every occasion"
               className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
             />
           </div>

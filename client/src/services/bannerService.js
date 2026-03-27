@@ -1,8 +1,11 @@
 import api from "./api";
 
 // type: 'hero' | 'gallery' | undefined (all)
-export async function getBanners(type) {
-  const params = type ? { type } : {};
+// device: 'mobile' | 'desktop' | undefined (all)
+export async function getBanners(type, device) {
+  const params = {};
+  if (type) params.type = type;
+  if (device) params.device = device;
   const { data } = await api.get("/api/banners", { params });
   return Array.isArray(data) ? data : [];
 }
@@ -31,11 +34,11 @@ async function uploadToS3(file) {
 
 // ─── API calls ───────────────────────────────────────────────────────────────
 
-export async function uploadBanner({ file, title, category, type = 'gallery' }) {
+export async function uploadBanner({ file, title, caption, category, type = 'gallery', device = 'desktop' }) {
   // 1. Upload image directly to S3
   const { imageUrl, imagePublicId } = await uploadToS3(file);
   // 2. Send only metadata + S3 references to the server (no file bytes)
-  const { data } = await api.post("/api/banners", { imageUrl, imagePublicId, title, category, type });
+  const { data } = await api.post("/api/banners", { imageUrl, imagePublicId, title, caption, category, type, device });
   return data;
 }
 

@@ -1,51 +1,56 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import bannerService from "../services/bannerService";
 
 const Hero = () => {
   const [activeSlide, setActiveSlide] = useState(0);
-  const [images, setImages] = useState([]);
+  const [banners, setBanners] = useState([]);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
 
-  // Fetch hero banners from API
-  useEffect(() => {
-    bannerService.getBanners('hero').then((list) => {
-      const urls = list.map((b) => b.imageUrl).filter(Boolean);
-      setImages(urls);
-    }).catch(() => {
-      setImages([]);
-    });
+  const loadBanners = useCallback((mobile) => {
+    const device = mobile ? 'mobile' : 'desktop';
+    bannerService.getBanners('hero', device).then((list) => {
+      setBanners(list.filter((b) => b.imageUrl));
+      setActiveSlide(0);
+    }).catch(() => setBanners([]));
   }, []);
 
+  // Detect screen size on mount and on resize
   useEffect(() => {
-    if (images.length < 2) return;
+    loadBanners(isMobile);
 
+    const mq = window.matchMedia('(max-width: 767px)');
+    const onChange = (e) => {
+      setIsMobile(e.matches);
+      loadBanners(e.matches);
+    };
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, [loadBanners]);
+
+  useEffect(() => {
+    if (banners.length < 2) return;
     const interval = window.setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % images.length);
+      setActiveSlide((prev) => (prev + 1) % banners.length);
     }, 5500);
-
     return () => window.clearInterval(interval);
-  }, [images]);
+  }, [banners]);
 
   useEffect(() => {
-    if (activeSlide >= images.length && images.length > 0) {
-      setActiveSlide(0);
-    }
-  }, [activeSlide, images.length]);
+    if (activeSlide >= banners.length && banners.length > 0) setActiveSlide(0);
+  }, [activeSlide, banners.length]);
 
-  const goToPrevSlide = () => {
-    setActiveSlide((prev) => (prev - 1 + images.length) % images.length);
-  };
+  const goToPrevSlide = () => setActiveSlide((prev) => (prev - 1 + banners.length) % banners.length);
+  const goToNextSlide = () => setActiveSlide((prev) => (prev + 1) % banners.length);
 
-  const goToNextSlide = () => {
-    setActiveSlide((prev) => (prev + 1) % images.length);
-  };
+  const activeBanner = banners[activeSlide];
 
   return (
     <section className="relative w-full h-[90vh] overflow-hidden">
-      {images.map((src, index) => (
+      {banners.map((b, index) => (
         <img
-          key={`${src}-${index}`}
-          src={src}
-          alt="Rent designer outfits in Bangalore and Karnataka — People &amp; Style"
+          key={b._id || `${b.imageUrl}-${index}`}
+          src={b.imageUrl}
+          alt={b.title || "People & Style — Rent designer outfits in Bangalore"}
           loading={index === 0 ? "eager" : "lazy"}
           fetchpriority={index === activeSlide ? "high" : "auto"}
           decoding="async"
@@ -53,10 +58,10 @@ const Hero = () => {
         />
       ))}
 
-      <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/10 to-[#0e0e0e]" />
+      <div className="absolute inset-0 bg-linear-to-b from-black/25 via-black/10 to-[#0e0e0e]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_98%)]" />
 
-      {images.length > 1 && (
+      {banners.length > 1 && (
         <>
           <button
             type="button"
@@ -75,6 +80,22 @@ const Hero = () => {
             &#10095;
           </button>
         </>
+      )}
+
+      {/* Title + Caption overlay */}
+      {activeBanner && (activeBanner.title || activeBanner.caption) && (
+        <div className="absolute z-10 bottom-24 left-0 right-0 px-6 md:px-16 text-center pointer-events-none">
+          {activeBanner.title && (
+            <h2 className="text-white text-2xl md:text-4xl font-bold drop-shadow-lg mb-1 leading-tight">
+              {activeBanner.title}
+            </h2>
+          )}
+          {activeBanner.caption && (
+            <p className="text-white/80 text-sm md:text-lg drop-shadow">
+              {activeBanner.caption}
+            </p>
+          )}
+        </div>
       )}
 
       <div className="relative z-10 max-w-7xl mx-auto h-full flex items-end pb-10 justify-center px-4">
