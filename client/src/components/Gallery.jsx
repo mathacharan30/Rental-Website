@@ -3,15 +3,16 @@ import bannerService from "../services/bannerService";
 
 const Gallery = () => {
   const [galleryImages, setGalleryImages] = useState([]);
+  const [activeImage, setActiveImage] = useState(null);
 
   useEffect(() => {
     (async () => {
       try {
-        const banners = await bannerService.getBanners('gallery');
+        const banners = await bannerService.getBanners("gallery");
         const urls = Array.isArray(banners)
           ? banners.map((b) => b.imageUrl).filter(Boolean)
           : [];
-        setGalleryImages(urls.slice(0, 6));
+        setGalleryImages(urls);
       } catch (e) {
         console.error("[Gallery] Failed to load banners", e);
         setGalleryImages([]);
@@ -32,32 +33,50 @@ const Gallery = () => {
             Curated designs where timeless craft meets modern silhouettes
           </p>
         </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 md:gap-3">
-          <div className="relative col-span-2 sm:col-span-3 md:col-span-3 row-span-2 overflow-hidden rounded-xl">
-            <img
-              src={galleryImages[0]}
-              alt="Gallery Highlight"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-          </div>
-
-          {galleryImages.slice(1).map((img, i) => (
-            <div
+        <div className="columns-2 sm:columns-3 lg:columns-4 gap-3 md:gap-4">
+          {galleryImages.map((img, i) => (
+            <button
               key={i}
-              className="relative overflow-hidden rounded-xl h-48 md:h-auto"
+              type="button"
+              onClick={() => setActiveImage(img)}
+              className="group relative mb-3 block w-full overflow-hidden rounded-xl break-inside-avoid md:mb-4"
+              aria-label={`View gallery image ${i + 1}`}
             >
               <img
                 src={img}
-                alt={`Gallery ${i + 2}`}
-                className="w-full h-full object-cover"
+                alt={`Gallery ${i + 1}`}
+                className="h-auto w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                loading="lazy"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-            </div>
+            </button>
           ))}
         </div>
       </div>
+
+      {activeImage && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setActiveImage(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Gallery image preview"
+        >
+          <button
+            type="button"
+            className="absolute top-4 right-4 text-white/90 hover:text-white text-3xl leading-none"
+            onClick={() => setActiveImage(null)}
+            aria-label="Close image preview"
+          >
+            ×
+          </button>
+          <img
+            src={activeImage}
+            alt="Selected gallery preview"
+            className="max-h-[90vh] max-w-[92vw] object-contain rounded-lg"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </section>
   );
 };

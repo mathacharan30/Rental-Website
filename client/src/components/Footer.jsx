@@ -10,7 +10,7 @@ import {
 
 const SOCIAL_LINKS = {
   instagram: "https://www.instagram.com/peopleandstyle.in",
-  whatsapp: "https://wa.me/918431094754",
+  whatsapp: "https://wa.me/message/FRASHXI7BJGSG1",
   youtube: "https://www.youtube.com/",
   facebook: "https://www.facebook.com/",
   threads: "https://www.threads.net/",
@@ -136,81 +136,6 @@ const Footer = () => {
                     >
                       FAQs
                     </Link>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-semibold text-sm text-white mb-4 uppercase tracking-wider">
-                  Connect
-                </h4>
-                <ul className="space-y-3 text-neutral-500 text-sm">
-                  <li>
-                    <a
-                      href={SOCIAL_LINKS.instagram}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="hover:text-violet-400 transition-colors"
-                    >
-                      Instagram
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href={SOCIAL_LINKS.whatsapp}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="hover:text-violet-400 transition-colors"
-                    >
-                      WhatsApp
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href={SOCIAL_LINKS.youtube}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="hover:text-violet-400 transition-colors"
-                    >
-                      YouTube
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href={SOCIAL_LINKS.facebook}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="hover:text-violet-400 transition-colors"
-                    >
-                      Facebook
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href={SOCIAL_LINKS.threads}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="hover:text-violet-400 transition-colors"
-                    >
-                      Threads
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href={SOCIAL_LINKS.infoVideo}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="hover:text-violet-400 transition-colors"
-                    >
-                      Info Video
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="mailto:hello@peopleandstyle.in"
-                      className="hover:text-violet-400 transition-colors"
-                    >
-                      Email Us
-                    </a>
                   </li>
                 </ul>
               </div>

@@ -6,9 +6,9 @@ const ProductCard = ({ product }) => {
   return (
     <Link
       to={`/product/${product.id}`}
-      className="relative w-[150px] mb-4 md:w-53 overflow-hidden block"
+      className="relative w-[155px] mb-6 md:w-54 overflow-hidden block"
     >
-      <div className="relative h-60 md:h-80 overflow-hidden rounded-xl">
+      <div className="relative h-65 md:h-80 overflow-hidden rounded-xl">
         <img
           src={product.image}
           alt={product.title}
@@ -17,7 +17,6 @@ const ProductCard = ({ product }) => {
           className="w-full h-full object-cover"
         />
 
-        {/* Favorite Button */}
         <div className="absolute top-2 right-2 z-10">
           <FavoriteButton productId={product.id} size={18} />
         </div>

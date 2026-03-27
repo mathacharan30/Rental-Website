@@ -128,7 +128,6 @@ const ContactUs = () => {
         />
         <link rel="canonical" href="https://peopleandstyle.in/contact" />
       </Helmet>
-      {/* Header */}
       <div className="relative py-16 px-4 text-center overflow-hidden">
         <div className="relative z-10">
           <motion.h1

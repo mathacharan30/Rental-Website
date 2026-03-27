@@ -368,7 +368,6 @@ const ProductDetail = () => {
         )}
       </motion.div>
 
-      {/* Lightbox */}
       <AnimatePresence>
         {lightboxOpen && (
           <motion.div
@@ -401,7 +400,6 @@ const ProductDetail = () => {
         )}
       </AnimatePresence>
 
-      {/* Details */}
       <motion.div
         className="max-w-3xl mx-auto mt-10 px-4 pb-16"
         initial={{ opacity: 0, y: 30 }}
@@ -504,7 +502,6 @@ const ProductDetail = () => {
         </div>
       </motion.div>
 
-      {/* Testimonials */}
       {testimonials.length > 0 && (
         <motion.div
           className="max-w-4xl mx-auto px-4 pb-16"
@@ -575,7 +572,6 @@ const ProductDetail = () => {
         </motion.div>
       )}
 
-      {/* Review Image Lightbox */}
       <AnimatePresence>
         {reviewLightboxImage && (
           <motion.div
@@ -609,12 +605,9 @@ const ProductDetail = () => {
       </AnimatePresence>
 
       <Footer />
-
-      {/* ── Checkout Sidebar ──────────────────────────────────────────────── */}
       <AnimatePresence>
         {checkoutOpen && (
           <>
-            {/* Backdrop */}
             <motion.div
               className="fixed inset-0 z-9998 bg-black/70 backdrop-blur-sm"
               initial={{ opacity: 0 }}
@@ -622,8 +615,6 @@ const ProductDetail = () => {
               exit={{ opacity: 0 }}
               onClick={() => !ordering && setCheckoutOpen(false)}
             />
-
-            {/* Sidebar panel */}
             <motion.div
               className="fixed top-0 right-0 h-full w-full max-w-md z-9999 bg-[#111] border-l border-white/10 flex flex-col shadow-2xl"
               initial={{ x: "100%" }}
@@ -631,7 +622,6 @@ const ProductDetail = () => {
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 28, stiffness: 280 }}
             >
-              {/* Header */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
                 <h2 className="text-lg font-bold text-white">Order Summary</h2>
                 <button
@@ -642,9 +632,7 @@ const ProductDetail = () => {
                 </button>
               </div>
 
-              {/* Body — scrollable */}
               <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
-                {/* Product thumbnail + name */}
                 <div className="flex gap-4 items-start glass p-4 rounded-2xl">
                   {(product.images?.[0] || product.image) && (
                     <img
@@ -654,30 +642,46 @@ const ProductDetail = () => {
                     />
                   )}
                   <div className="min-w-0">
-                    <p className="text-xs uppercase tracking-widest text-violet-400 font-medium">{product.category}</p>
-                    <p className="text-white font-semibold mt-0.5 leading-tight">{product.title}</p>
+                    <p className="text-xs uppercase tracking-widest text-violet-400 font-medium">
+                      {product.category}
+                    </p>
+                    <p className="text-white font-semibold mt-0.5 leading-tight">
+                      {product.title}
+                    </p>
                     {selectedSize && (
-                      <p className="text-xs text-neutral-400 mt-1">Size: <span className="text-neutral-200">{selectedSize}</span></p>
+                      <p className="text-xs text-neutral-400 mt-1">
+                        Size:{" "}
+                        <span className="text-neutral-200">{selectedSize}</span>
+                      </p>
                     )}
                   </div>
                 </div>
 
-                {/* Price breakdown */}
                 <div className="glass rounded-2xl p-4 space-y-3 text-sm">
-                  <p className="text-xs uppercase tracking-widest text-neutral-500 font-medium mb-1">Price Breakdown</p>
+                  <p className="text-xs uppercase tracking-widest text-neutral-500 font-medium mb-1">
+                    Price Breakdown
+                  </p>
 
                   {isSale ? (
                     <div className="flex justify-between text-neutral-300">
                       <span>Sale Price</span>
                       <span className="font-medium text-white">
-                        ₹{((product.salePrice || 0) + (product.commissionPrice || 0)).toLocaleString()}
+                        ₹
+                        {(
+                          (product.salePrice || 0) +
+                          (product.commissionPrice || 0)
+                        ).toLocaleString()}
                       </span>
                     </div>
                   ) : (
                     <div className="flex justify-between text-neutral-300">
                       <span>Total Rent Price</span>
                       <span className="font-medium text-white">
-                        ₹{((product.rentPrice || 0) + (product.commissionPrice || 0)).toLocaleString()}
+                        ₹
+                        {(
+                          (product.rentPrice || 0) +
+                          (product.commissionPrice || 0)
+                        ).toLocaleString()}
                       </span>
                     </div>
                   )}
@@ -689,8 +693,12 @@ const ProductDetail = () => {
                         Advance (Refundable)
                       </span>
                       <div className="text-right">
-                        <span className="font-medium text-white">₹{product.advanceAmount?.toLocaleString()}</span>
-                        <p className="text-[10px] text-green-400 mt-0.5">Returned after product return</p>
+                        <span className="font-medium text-white">
+                          ₹{product.advanceAmount?.toLocaleString()}
+                        </span>
+                        <p className="text-[10px] text-green-400 mt-0.5">
+                          Returned after product return
+                        </p>
                       </div>
                     </div>
                   )}
@@ -702,18 +710,26 @@ const ProductDetail = () => {
                         Delivery ({selectedCity.name})
                       </span>
                       <span className="font-medium text-white">
-                        {selectedCity.deliveryCharge === 0 ? "Free" : `₹${selectedCity.deliveryCharge.toLocaleString()}`}
+                        {selectedCity.deliveryCharge === 0
+                          ? "Free"
+                          : `₹${selectedCity.deliveryCharge.toLocaleString()}`}
                       </span>
                     </div>
                   )}
 
                   <div className="border-t border-white/10 pt-3 flex justify-between items-center">
-                    <span className="font-semibold text-neutral-200">Total Payable</span>
+                    <span className="font-semibold text-neutral-200">
+                      Total Payable
+                    </span>
                     <span className="text-xl font-bold gradient-text">
-                      ₹{(
+                      ₹
+                      {(
                         (isSale
-                          ? (product.salePrice || 0) + (product.commissionPrice || 0)
-                          : (product.rentPrice || 0) + (product.commissionPrice || 0) + (product.advanceAmount || 0)) +
+                          ? (product.salePrice || 0) +
+                            (product.commissionPrice || 0)
+                          : (product.rentPrice || 0) +
+                            (product.commissionPrice || 0) +
+                            (product.advanceAmount || 0)) +
                         (selectedCity?.deliveryCharge || 0)
                       ).toLocaleString()}
                     </span>
@@ -724,8 +740,6 @@ const ProductDetail = () => {
                     </p>
                   )}
                 </div>
-
-                {/* Delivery city selector */}
                 <div className="glass rounded-2xl p-4 space-y-3">
                   <p className="text-xs uppercase tracking-widest text-neutral-500 font-medium flex items-center gap-1.5">
                     <MapPin size={12} /> Select Delivery City
@@ -733,7 +747,9 @@ const ProductDetail = () => {
                   {citiesLoading ? (
                     <p className="text-sm text-neutral-500">Loading cities…</p>
                   ) : cities.length === 0 ? (
-                    <p className="text-sm text-neutral-500">No delivery cities available. Please contact us.</p>
+                    <p className="text-sm text-neutral-500">
+                      No delivery cities available. Please contact us.
+                    </p>
                   ) : (
                     <div className="grid grid-cols-2 gap-2">
                       {cities.map((city) => (
@@ -748,7 +764,9 @@ const ProductDetail = () => {
                         >
                           <p className="font-medium">{city.name}</p>
                           <p className="text-[11px] mt-0.5 opacity-80">
-                            {city.deliveryCharge === 0 ? "Free delivery" : `₹${city.deliveryCharge}`}
+                            {city.deliveryCharge === 0
+                              ? "Free delivery"
+                              : `₹${city.deliveryCharge}`}
                           </p>
                         </button>
                       ))}
@@ -757,7 +775,6 @@ const ProductDetail = () => {
                 </div>
               </div>
 
-              {/* Footer CTA */}
               <div className="px-5 py-4 border-t border-white/10">
                 <button
                   onClick={handleProceedToPayment}
@@ -765,12 +782,19 @@ const ProductDetail = () => {
                   className="btn-funky w-full rounded-xl! disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <span>
-                    {ordering ? "Redirecting to payment…" : selectedCity ? `Pay ₹${(
-                      (isSale
-                        ? (product.salePrice || 0) + (product.commissionPrice || 0)
-                        : (product.rentPrice || 0) + (product.commissionPrice || 0) + (product.advanceAmount || 0)) +
-                      (selectedCity?.deliveryCharge || 0)
-                    ).toLocaleString()} →` : "Select a city to continue"}
+                    {ordering
+                      ? "Redirecting to payment…"
+                      : selectedCity
+                        ? `Pay ₹${(
+                            (isSale
+                              ? (product.salePrice || 0) +
+                                (product.commissionPrice || 0)
+                              : (product.rentPrice || 0) +
+                                (product.commissionPrice || 0) +
+                                (product.advanceAmount || 0)) +
+                            (selectedCity?.deliveryCharge || 0)
+                          ).toLocaleString()} →`
+                        : "Select a city to continue"}
                   </span>
                 </button>
                 <p className="text-center text-[11px] text-neutral-600 mt-2">

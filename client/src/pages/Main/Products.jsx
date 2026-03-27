@@ -42,7 +42,7 @@ const Products = () => {
             decodedCategory,
             currentPage,
             ITEMS_PER_PAGE,
-            searchQuery
+            searchQuery,
           );
           setItems(result.products || []);
           setPagination(result.pagination);
@@ -97,9 +97,17 @@ const Products = () => {
       transition={{ duration: 0.6 }}
     >
       <Helmet>
-        <title>{displayTitle} — Rent Designer Outfits | People &amp; Style</title>
-        <meta name="description" content={`Browse and rent ${decodedCategory || "designer"} outfits in Bangalore, Mysuru and across Karnataka. Premium ethnic wear rentals for every occasion.`} />
-        <link rel="canonical" href={`https://peopleandstyle.in/products${decodedCategory ? `/${encodeURIComponent(decodedCategory)}` : ""}`} />
+        <title>
+          {displayTitle} — Rent Designer Outfits | People &amp; Style
+        </title>
+        <meta
+          name="description"
+          content={`Browse and rent ${decodedCategory || "designer"} outfits in Bangalore, Mysuru and across Karnataka. Premium ethnic wear rentals for every occasion.`}
+        />
+        <link
+          rel="canonical"
+          href={`https://peopleandstyle.in/products${decodedCategory ? `/${encodeURIComponent(decodedCategory)}` : ""}`}
+        />
       </Helmet>
       <div className="max-w-7xl mx-auto ">
         <div className="flex justify-center">
@@ -120,7 +128,9 @@ const Products = () => {
             {decodedCategory && !searchQuery && (
               <p className="text-sm text-neutral-500">
                 {isJewels
-                  ? listingTab === "rent" ? "Jewels available for rent" : "Jewels available for sale"
+                  ? listingTab === "rent"
+                    ? "Jewels available for rent"
+                    : "Jewels available for sale"
                   : `Curated rentals for ${decodedCategory}`}
               </p>
             )}
@@ -132,7 +142,6 @@ const Products = () => {
           </div>
         </div>
 
-        {/* Rent / Sale tabs — Jewels only */}
         {isJewels && !loading && (
           <div className="flex justify-center gap-2 mb-6">
             {["rent", "sale"].map((tab) => (
@@ -155,54 +164,53 @@ const Products = () => {
           <div className="flex justify-center items-center py-20">
             <Loader />
           </div>
-        ) : (isJewels ? items.filter((p) => p.listingType === listingTab) : items).length > 0 ? (
+        ) : (isJewels
+            ? items.filter((p) => p.listingType === listingTab)
+            : items
+          ).length > 0 ? (
           <>
-            <div className=" justify-center  items-center flex gap-4  flex-wrap mt-4">
-              {(isJewels ? items.filter((p) => p.listingType === listingTab) : items).map((product) => (
+            <div className=" justify-center  items-center flex gap-2  flex-wrap mt-4">
+              {(isJewels
+                ? items.filter((p) => p.listingType === listingTab)
+                : items
+              ).map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
 
-            {/* Pagination Controls */}
             {pagination && pagination.totalPages > 1 && (
               <div className="flex items-center justify-center gap-4 mt-12 mb-8">
                 <button
                   onClick={handlePrevPage}
                   disabled={!pagination.hasPrevPage}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                  className={`flex items-center gap-2 p-2 rounded-lg font-medium transition-all ${
                     pagination.hasPrevPage
                       ? "bg-violet-600 hover:bg-violet-700 text-white"
                       : "bg-white/5 text-neutral-600 cursor-not-allowed"
                   }`}
                 >
                   <ChevronLeft size={18} />
-                  Previous
                 </button>
 
                 <div className="flex items-center gap-2 text-sm">
-                  <span className="text-neutral-400">Page</span>
-                  <span className="px-3 py-1 bg-violet-600 text-white rounded-lg font-semibold">
+                  <span className="px-3 py-1  text-white rounded-lg font-semibold">
                     {pagination.currentPage}
                   </span>
                   <span className="text-neutral-400">of</span>
                   <span className="text-white font-semibold">
                     {pagination.totalPages}
                   </span>
-                  <span className="text-neutral-600 ml-2">
-                    ({pagination.totalProducts} total)
-                  </span>
                 </div>
 
                 <button
                   onClick={handleNextPage}
                   disabled={!pagination.hasNextPage}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                  className={`flex items-center gap-2 p-2 rounded-lg font-medium transition-all ${
                     pagination.hasNextPage
                       ? "bg-violet-600 hover:bg-violet-700 text-white"
                       : "bg-white/5 text-neutral-600 cursor-not-allowed"
                   }`}
                 >
-                  Next
                   <ChevronRight size={18} />
                 </button>
               </div>
@@ -218,6 +226,7 @@ const Products = () => {
           </div>
         )}
       </div>
+
       <Footer />
     </motion.section>
   );
