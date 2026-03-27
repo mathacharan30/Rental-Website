@@ -58,7 +58,7 @@ const Hero = () => {
         />
       ))}
 
-      <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/10 to-[#0e0e0e]" />
+      <div className="absolute inset-0 bg-linear-to-b from-black/25 via-black/10 to-[#0e0e0e]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_98%)]" />
 
       {banners.length > 1 && (

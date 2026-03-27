@@ -2,7 +2,6 @@ const Banner = require('../models/Banner');
 const { s3, S3_BUCKET, deleteFromS3 } = require('../config/s3');
 const { PutObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
-const path = require('path');
 
 // GET /api/banners/sign-upload  (protected – store_owner / super_admin)
 // Returns a presigned S3 PUT URL so the browser can upload directly to S3.
@@ -89,8 +88,11 @@ exports.getBanners = async (req, res) => {
     if (req.query.type === 'hero' || req.query.type === 'gallery') {
       filter.type = req.query.type;
     }
-    if (req.query.device === 'mobile' || req.query.device === 'desktop') {
-      filter.device = req.query.device;
+    if (req.query.device === 'mobile') {
+      filter.device = 'mobile';
+    } else if (req.query.device === 'desktop') {
+      // Also match legacy records that were saved before the device field existed
+      filter.$or = [{ device: 'desktop' }, { device: { $exists: false } }, { device: null }];
     }
     const banners = await Banner.find(filter).sort({ createdAt: -1 });
     res.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
