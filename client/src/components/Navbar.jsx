@@ -191,7 +191,7 @@ const Navbar = () => {
   const dashboardLink = isSuperAdmin
     ? "/superadmin"
     : isAdmin
-      ? `/admin/${storeName}`
+      ? `/admin/${storeName}/products`
       : null;
 
   const dashboardLabel = isSuperAdmin

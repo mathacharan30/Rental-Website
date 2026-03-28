@@ -20,7 +20,7 @@ const STATUS_LABELS = {
   confirmed: "payment confirm",
   cancelled: "payment cancelled",
   active: "order active",
-  completed: "order completed"
+  completed: "order completed",
 };
 
 const CustomerProfile = () => {
@@ -65,7 +65,7 @@ const CustomerProfile = () => {
     if (!comment.trim()) {
       return toast.error("Please write a comment.");
     }
-    
+
     setSubmittingReview(true);
     const fd = new FormData();
     fd.append("productId", reviewOrder.product._id || reviewOrder.product.id);
@@ -74,7 +74,7 @@ const CustomerProfile = () => {
     if (reviewImage) {
       fd.append("image", reviewImage);
     }
-    
+
     try {
       await addProductTestimonial(fd);
       toast.success("Testimonial submitted!");
@@ -96,7 +96,7 @@ const CustomerProfile = () => {
 
   if (!userProfile) return null;
 
-  const { name, email, phone, address, role, uid } = userProfile;
+  const { name, email, phone, address, role } = userProfile;
 
   const Row = ({ label, value }) => (
     <div className="flex justify-between py-3 border-b border-white/5 last:border-b-0">
@@ -162,9 +162,15 @@ const CustomerProfile = () => {
           ) : (
             <div className="space-y-4">
               {orders.map((o) => {
-                const amountPaid = o.listingType === 'sale'
-                  ? ((o.salePrice || 0) + (o.commissionPrice || 0) + (o.deliveryCharge || 0))
-                  : ((o.rentPrice || 0) + (o.commissionPrice || 0) + (o.advanceAmount || 0) + (o.deliveryCharge || 0));
+                const amountPaid =
+                  o.listingType === "sale"
+                    ? (o.salePrice || 0) +
+                      (o.commissionPrice || 0) +
+                      (o.deliveryCharge || 0)
+                    : (o.rentPrice || 0) +
+                      (o.commissionPrice || 0) +
+                      (o.advanceAmount || 0) +
+                      (o.deliveryCharge || 0);
                 const refundable = o.advanceAmount || 0;
 
                 return (
@@ -188,15 +194,25 @@ const CustomerProfile = () => {
                             {STATUS_LABELS[o.status] || o.status}
                           </span>
                         </div>
-                        {o.listingType !== 'sale' && (
+                        {o.listingType !== "sale" && (
                           <p className="text-sm text-neutral-500 mt-0.5">
-                            Size: {o.size || '—'}
+                            Size: {o.size || "—"}
                           </p>
                         )}
                         <div className="mt-2 text-sm text-neutral-400 flex flex-col gap-1">
-                          <div>Amount Paid: <strong className="text-green-400">₹{amountPaid}</strong></div>
-                          {o.listingType !== 'sale' && (
-                            <div>Refundable Amount: <strong className="text-blue-400">₹{refundable}</strong></div>
+                          <div>
+                            Amount Paid:{" "}
+                            <strong className="text-green-400">
+                              ₹{amountPaid}
+                            </strong>
+                          </div>
+                          {o.listingType !== "sale" && (
+                            <div>
+                              Refundable Amount:{" "}
+                              <strong className="text-blue-400">
+                                ₹{refundable}
+                              </strong>
+                            </div>
                           )}
                         </div>
                         <p className="text-xs text-neutral-600 mt-1">
@@ -232,21 +248,30 @@ const CustomerProfile = () => {
             >
               <X size={20} />
             </button>
-            <h3 className="text-xl font-bold text-white mb-4">Write Testimonial</h3>
+            <h3 className="text-xl font-bold text-white mb-4">
+              Write Testimonial
+            </h3>
             <div className="mb-4 flex items-center gap-2">
               <img
-                src={reviewOrder.product?.images?.[0]?.url || reviewOrder.product?.image}
+                src={
+                  reviewOrder.product?.images?.[0]?.url ||
+                  reviewOrder.product?.image
+                }
                 alt=""
                 className="w-10 h-10 object-cover rounded-md"
               />
               <span className="text-sm font-medium text-white line-clamp-1">
-                {reviewOrder.product?.name || reviewOrder.product?.title || "Product"}
+                {reviewOrder.product?.name ||
+                  reviewOrder.product?.title ||
+                  "Product"}
               </span>
             </div>
-            
+
             <form onSubmit={submitReview} className="space-y-4">
               <div>
-                <label className="block text-sm text-neutral-400 mb-2">Rating</label>
+                <label className="block text-sm text-neutral-400 mb-2">
+                  Rating
+                </label>
                 <div className="flex gap-1">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
@@ -266,9 +291,11 @@ const CustomerProfile = () => {
                   ))}
                 </div>
               </div>
-              
+
               <div>
-                <label className="block text-sm text-neutral-400 mb-2">Comment</label>
+                <label className="block text-sm text-neutral-400 mb-2">
+                  Comment
+                </label>
                 <textarea
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
@@ -280,7 +307,9 @@ const CustomerProfile = () => {
               </div>
 
               <div>
-                <label className="block text-sm text-neutral-400 mb-2">Add Photo (Optional)</label>
+                <label className="block text-sm text-neutral-400 mb-2">
+                  Add Photo (Optional)
+                </label>
                 <div className="flex items-center gap-3 flex-wrap">
                   <label className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 bg-black/50 text-sm hover:bg-white/5 cursor-pointer transition-colors text-white">
                     <Camera size={16} />
@@ -293,7 +322,7 @@ const CustomerProfile = () => {
                       className="hidden"
                     />
                   </label>
-                  
+
                   <label className="flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 bg-black/50 text-sm hover:bg-white/5 cursor-pointer transition-colors text-white">
                     <Upload size={16} />
                     <span>Upload Image</span>
@@ -304,7 +333,7 @@ const CustomerProfile = () => {
                       className="hidden"
                     />
                   </label>
-                  
+
                   {reviewImagePreview && (
                     <img
                       src={reviewImagePreview}

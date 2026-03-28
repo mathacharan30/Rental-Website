@@ -15,7 +15,7 @@ const calcRentCommission = (rentPrice, advanceAmount) => {
   const r = parseFloat(rentPrice) || 0;
   const a = parseFloat(advanceAmount) || 0;
   if (r <= 0) return 0;
-  const tempCommission = r * 0.10;
+  const tempCommission = r * 0.1;
   const gst = (r + tempCommission) * 0.18;
   const txCharges = (r + gst + tempCommission + a) * 0.02;
   const raw = tempCommission + gst + txCharges + 100;
@@ -32,7 +32,7 @@ const calcRentCommission = (rentPrice, advanceAmount) => {
 const calcSaleCommission = (salePrice) => {
   const s = parseFloat(salePrice) || 0;
   if (s <= 0) return 0;
-  const tempCommission = s * 0.10;
+  const tempCommission = s * 0.1;
   const gst = (s + tempCommission) * 0.18;
   const txCharges = (s + gst + tempCommission) * 0.02;
   const raw = tempCommission + gst + txCharges + 100;
@@ -45,7 +45,7 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
   const [categoryId, setCategoryId] = useState("");
   const [listingType, setListingType] = useState("rent"); // 'rent' | 'sale' — only for Jewels
   const [rentPrice, setRentPrice] = useState("");
-  const [commissionPrice, setCommissionPrice] = useState("");
+  const [_, setCommissionPrice] = useState("");
   const [salePrice, setSalePrice] = useState("");
   const [advanceAmount, setAdvanceAmount] = useState("");
   const [stock, setStock] = useState(0);
@@ -251,8 +251,12 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
       fd.append("rentPrice", isNaN(rentPriceNum) ? "0" : String(rentPriceNum));
 
       // Auto-calculate commission for rent listings
-      const advanceAmountForCalc = parseFloat(String(advanceAmount).replace(/[^0-9.]/g, "")) || 0;
-      const computedCommission = calcRentCommission(rentPriceNum || 0, advanceAmountForCalc);
+      const advanceAmountForCalc =
+        parseFloat(String(advanceAmount).replace(/[^0-9.]/g, "")) || 0;
+      const computedCommission = calcRentCommission(
+        rentPriceNum || 0,
+        advanceAmountForCalc,
+      );
       fd.append("commissionPrice", String(computedCommission));
       fd.append("salePrice", "0");
     }
@@ -298,10 +302,14 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
           uploaded.push({ url: result.url, publicId: result.publicId });
         }
         fd.append("images", JSON.stringify(uploaded));
-        toast.success(`${uploaded.length} image(s) ready`, { id: "img-upload" });
+        toast.success(`${uploaded.length} image(s) ready`, {
+          id: "img-upload",
+        });
       } catch (uploadErr) {
         console.error("[ProductForm] S3 upload error:", uploadErr);
-        toast.error("Image upload failed: " + uploadErr.message, { id: "img-upload" });
+        toast.error("Image upload failed: " + uploadErr.message, {
+          id: "img-upload",
+        });
         setLoading(false);
         return;
       }
@@ -429,7 +437,6 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
                 type="number"
                 className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-neutral-400 outline-none cursor-not-allowed"
               />
-
             </div>
 
             <div className="col-span-2 sm:col-span-1">
@@ -440,7 +447,8 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
                 readOnly
                 value={
                   salePrice !== ""
-                    ? (parseFloat(salePrice) || 0) + calcSaleCommission(salePrice)
+                    ? (parseFloat(salePrice) || 0) +
+                      calcSaleCommission(salePrice)
                     : ""
                 }
                 placeholder="Sale + Commission"
@@ -472,12 +480,15 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
               </label>
               <input
                 readOnly
-                value={rentPrice !== "" ? calcRentCommission(rentPrice, advanceAmount) : ""}
+                value={
+                  rentPrice !== ""
+                    ? calcRentCommission(rentPrice, advanceAmount)
+                    : ""
+                }
                 placeholder="Auto-calculated"
                 type="number"
                 className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-neutral-400 outline-none cursor-not-allowed"
               />
-
             </div>
 
             <div className="col-span-2 sm:col-span-1">
@@ -488,7 +499,8 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
                 readOnly
                 value={
                   rentPrice !== ""
-                    ? (parseFloat(rentPrice) || 0) + calcRentCommission(rentPrice, advanceAmount)
+                    ? (parseFloat(rentPrice) || 0) +
+                      calcRentCommission(rentPrice, advanceAmount)
                     : ""
                 }
                 placeholder="Rent + Commission"
@@ -586,7 +598,12 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
           {/* Upload slots – 4 positional image pickers */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {imageSlots.map((slotFile, slotIdx) => {
-              const slotLabels = ["Image 1 (Hero)", "Image 2", "Image 3", "Image 4"];
+              const slotLabels = [
+                "Image 1 (Hero)",
+                "Image 2",
+                "Image 3",
+                "Image 4",
+              ];
               const inputId = `slot-upload-${slotIdx}`;
               const isHeroSlot = slotIdx === 0 && existingImages.length === 0;
               return (
@@ -644,9 +661,11 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
                     className="hidden"
                     id={inputId}
                   />
-                  <span className={`text-[10px] font-medium ${
-                    isHeroSlot ? "text-amber-400" : "text-neutral-500"
-                  }`}>
+                  <span
+                    className={`text-[10px] font-medium ${
+                      isHeroSlot ? "text-amber-400" : "text-neutral-500"
+                    }`}
+                  >
                     {slotLabels[slotIdx]}
                   </span>
                 </div>

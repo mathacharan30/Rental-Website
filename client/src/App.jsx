@@ -78,7 +78,6 @@ const App = () => {
                     element={<PaymentStatus />}
                   />
 
-                  {/* ── Customer routes ── */}
                   <Route
                     path="/:uid/profile"
                     element={
@@ -96,7 +95,6 @@ const App = () => {
                     }
                   />
 
-                  {/* ── Admin routes ── */}
                   <Route
                     path="/admin/:storename/*"
                     element={
@@ -111,7 +109,6 @@ const App = () => {
                     <Route path="orders" element={<OrdersAdmin />} />
                   </Route>
 
-                  {/* ── Super admin routes ── */}
                   <Route
                     path="/superadmin/*"
                     element={

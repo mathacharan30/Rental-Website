@@ -1,13 +1,18 @@
+/* eslint-disable react-refresh/only-export-components */
 // src/context/AuthContext.jsx
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { onAuthChange, fetchMe, logout as firebaseLogout } from '../services/firebaseAuthService';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import {
+  onAuthChange,
+  fetchMe,
+  logout as firebaseLogout,
+} from "../services/firebaseAuthService";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [firebaseUser, setFirebaseUser] = useState(undefined); // undefined = loading
-  const [userProfile,  setUserProfile]  = useState(null);      // MongoDB profile
-  const [loading,      setLoading]      = useState(true);
+  const [userProfile, setUserProfile] = useState(null); // MongoDB profile
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Listen to Firebase auth state changes
@@ -39,20 +44,16 @@ export function AuthProvider({ children }) {
     userProfile,
     loading,
     logout,
-    role:      userProfile?.role      ?? null,
+    role: userProfile?.role ?? null,
     storeName: userProfile?.storeName ?? null,
-    uid:       userProfile?.uid       ?? null,
+    uid: userProfile?.uid ?? null,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used inside <AuthProvider>');
+  if (!ctx) throw new Error("useAuth must be used inside <AuthProvider>");
   return ctx;
 }

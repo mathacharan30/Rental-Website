@@ -1,3 +1,4 @@
+/* global process */
 /**
  * Vercel Serverless Function — Prerender.io proxy
  *
@@ -7,15 +8,17 @@
  */
 export default async function handler(req, res) {
   const PRERENDER_TOKEN = process.env.PRERENDER_TOKEN;
-  const userAgent = req.headers['user-agent'] || 'Unknown';
+  const userAgent = req.headers["user-agent"] || "Unknown";
   const path = req.query.path || "";
 
-  console.log('[Prerender] Invoked for path:', path);
-  console.log('[Prerender] User-Agent:', userAgent);
-  console.log('[Prerender] Token present:', !!PRERENDER_TOKEN);
+  console.log("[Prerender] Invoked for path:", path);
+  console.log("[Prerender] User-Agent:", userAgent);
+  console.log("[Prerender] Token present:", !!PRERENDER_TOKEN);
 
   if (!PRERENDER_TOKEN) {
-    console.error('[Prerender] ERROR: PRERENDER_TOKEN not set in environment variables');
+    console.error(
+      "[Prerender] ERROR: PRERENDER_TOKEN not set in environment variables",
+    );
     // Return a diagnostic response for verification
     return res.status(503).send(`
       <!DOCTYPE html>
@@ -35,7 +38,7 @@ export default async function handler(req, res) {
   const targetUrl = `https://peopleandstyle.in/${path}`;
   const prerenderUrl = `https://service.prerender.io/${targetUrl}`;
 
-  console.log('[Prerender] Fetching from:', prerenderUrl);
+  console.log("[Prerender] Fetching from:", prerenderUrl);
 
   try {
     const response = await fetch(prerenderUrl, {
@@ -46,7 +49,7 @@ export default async function handler(req, res) {
       redirect: "follow",
     });
 
-    console.log('[Prerender] Response status:', response.status);
+    console.log("[Prerender] Response status:", response.status);
 
     if (!response.ok) {
       throw new Error(`Prerender.io returned status ${response.status}`);
@@ -54,12 +57,12 @@ export default async function handler(req, res) {
 
     const html = await response.text();
 
-    console.log('[Prerender] Success - HTML length:', html.length);
+    console.log("[Prerender] Success - HTML length:", html.length);
 
     // Cache the pre-rendered page at the edge for 1 hour, revalidate for 1 day
     res.setHeader(
       "Cache-Control",
-      "public, s-maxage=3600, stale-while-revalidate=86400"
+      "public, s-maxage=3600, stale-while-revalidate=86400",
     );
     res.setHeader("Content-Type", "text/html; charset=utf-8");
     res.setHeader("X-Prerendered", "true");
@@ -83,4 +86,3 @@ export default async function handler(req, res) {
     `);
   }
 }
-

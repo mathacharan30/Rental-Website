@@ -29,7 +29,10 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0e0e0e]">\n      <form\n        onSubmit={handleSubmit}\n        className="glass p-8 rounded-xl w-full max-w-md"
+    <div className="min-h-screen flex items-center justify-center bg-[#0e0e0e]">
+      <form
+        onSubmit={handleSubmit}
+        className="glass p-8 rounded-xl w-full max-w-md"
       >
         <h2 className="text-2xl font-bold display-font gradient-text mb-6">
           Admin Login
