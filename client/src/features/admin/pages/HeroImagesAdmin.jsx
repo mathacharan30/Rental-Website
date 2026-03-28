@@ -1,0 +1,230 @@
+import React, { useEffect, useState } from "react";
+import bannerService from '../../../services/bannerService';
+import toast from "react-hot-toast";
+import Loader from '../../shared/components/Loader';
+import Modal from '../components/Modal';
+import { Plus } from "lucide-react";
+
+const HeroImagesAdmin = () => {
+  const [banners, setBanners] = useState([]);
+  const [file, setFile] = useState(null);
+  const [title, setTitle] = useState("");
+  const [caption, setCaption] = useState("");
+  const [category, setCategory] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const load = async () => {
+    setDataLoading(true);
+    try {
+      const list = await bannerService.getBanners('gallery');
+      setBanners(Array.isArray(list) ? list : []);
+    } catch (e) {
+      console.error("Failed to load banners", e);
+      toast.error("Failed to load banners");
+    } finally {
+      setDataLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  const add = async (e) => {
+    e.preventDefault();
+    if (!file) { toast.error("Please select an image file"); return; }
+    if (!title.trim()) { toast.error("Title is required"); return; }
+    if (!caption.trim()) { toast.error("Caption is required"); return; }
+    setLoading(true);
+    const loadingToast = toast.loading("Uploading image...");
+    try {
+      await bannerService.uploadBanner({ file, title, caption, category, type: 'gallery' });
+      setFile(null);
+      setTitle("");
+      setCaption("");
+      setCategory("");
+      toast.success("Image uploaded successfully", { id: loadingToast });
+      setIsModalOpen(false);
+      await load();
+    } catch (e) {
+      console.error("Upload failed", e);
+      toast.error(e?.response?.data?.message || "Failed to upload banner", {
+        id: loadingToast,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const remove = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this banner?")) return;
+    const loadingToast = toast.loading("Deleting banner...");
+    try {
+      await bannerService.deleteBanner(id);
+      toast.success("Banner deleted successfully", { id: loadingToast });
+      await load();
+    } catch (e) {
+      console.error("Delete banner failed", e);
+      toast.error(e?.response?.data?.message || "Failed to delete banner", {
+        id: loadingToast,
+      });
+    }
+  };
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-2xl font-bold text-white">
+            Gallery Images
+          </h1>
+          <p className="text-neutral-500 mt-1">Manage website gallery images</p>
+        </div>
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+        >
+          <Plus size={18} />
+          Upload Image
+        </button>
+      </div>
+
+      <div className="glass rounded-xl overflow-hidden">
+        {dataLoading ? (
+          <div className="p-12 flex justify-center">
+            <Loader />
+          </div>
+        ) : banners.length === 0 ? (
+          <div className="p-8 text-center text-neutral-500">
+            No images found. Upload one to get started.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-6">
+            {banners.map((b) => (
+              <div
+                key={b._id}
+                className="group relative bg-white/5 rounded-xl overflow-hidden border border-white/10 aspect-4/3"
+              >
+                <img
+                  src={b.imageUrl}
+                  alt={b.title || "banner"}
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-4">
+                  <div className="text-white font-medium truncate">
+                    {b.title || "Untitled"}
+                  </div>
+                  {b.category && (
+                    <div className="text-white/80 text-xs truncate">
+                      {b.category}
+                    </div>
+                  )}
+                  <button
+                    onClick={() => remove(b._id)}
+                    className="mt-2 w-full bg-red-600 hover:bg-red-700 text-white py-1.5 rounded text-sm font-medium transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Upload Gallery Image"
+      >
+        <form onSubmit={add} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-neutral-300 mb-1">
+              Image File
+            </label>
+            <div className="border-2 border-dashed border-white/10 rounded-lg p-4 text-center hover:bg-white/5 transition-colors">
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const selectedFile = e.target.files?.[0];
+                  setFile(selectedFile || null);
+                }}
+                className="hidden"
+                id="gallery-file-upload"
+              />
+              <label
+                htmlFor="gallery-file-upload"
+                className="cursor-pointer flex flex-col items-center gap-2"
+              >
+                <Plus size={28} />
+                <span className="text-sm text-neutral-400">
+                  {file ? file.name : "Click to upload image"}
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-neutral-300 mb-1">
+              Title <span className="text-red-400">*</span>
+            </label>
+            <input
+              required
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="e.g. Summer Collection"
+              className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-neutral-300 mb-1">
+              Caption <span className="text-red-400">*</span>
+            </label>
+            <input
+              required
+              value={caption}
+              onChange={(e) => setCaption(e.target.value)}
+              placeholder="e.g. Handpicked styles for every occasion"
+              className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-neutral-300 mb-1">
+              Category (Optional)
+            </label>
+            <input
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              placeholder="e.g. Wedding"
+              className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
+            />
+          </div>
+
+          <div className="flex gap-3 pt-4 border-t border-white/10">
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(false)}
+              className="flex-1 px-4 py-2 border border-white/10 text-neutral-300 rounded-lg hover:bg-white/5 transition-colors font-medium"
+            >
+              Cancel
+            </button>
+            <button
+              disabled={loading}
+              className="flex-1 bg-violet-600 text-white px-4 py-2 rounded-lg hover:bg-violet-700 transition-colors disabled:opacity-60 font-medium"
+              type="submit"
+            >
+              {loading ? "Uploading..." : "Upload Image"}
+            </button>
+          </div>
+        </form>
+      </Modal>
+    </div>
+  );
+};
+
+export default HeroImagesAdmin;

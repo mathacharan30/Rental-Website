@@ -10,9 +10,9 @@
 import React, { lazy, Suspense } from "react";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import Loader from "../components/Loader";
+import Loader from '../features/shared/components/Loader';
 
-const ComingSoon = lazy(() => import("../pages/Main/ComingSoon"));
+const ComingSoon = lazy(() => import('../features/public/pages/ComingSoon'));
 
 const COMING_SOON = import.meta.env.VITE_COMING_SOON === "true";
 

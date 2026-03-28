@@ -10,35 +10,35 @@ import ScrollToTop from "./utils/ScrollToTop";
 import ComingSoonGate from "./utils/ComingSoonGate";
 
 // Layout (keep eagerly loaded — always visible)
-import Navbar from "./components/Navbar";
-import Loader from "./components/Loader";
+import Navbar from './features/shared/components/Navbar';
+import Loader from './features/shared/components/Loader';
 import { Toaster } from "react-hot-toast";
 
 // ── Lazy-loaded pages ───────────────────────────────────
-const Home = lazy(() => import("./pages/Main/Home"));
-const Login = lazy(() => import("./pages/Main/Login"));
-const Signup = lazy(() => import("./pages/Main/Signup"));
-const ForgotPassword = lazy(() => import("./pages/Main/ForgotPassword"));
-const Products = lazy(() => import("./pages/Main/Products"));
-const ProductDetail = lazy(() => import("./pages/Main/ProductDetail"));
-const AboutUs = lazy(() => import("./pages/Main/AboutUs"));
-const ContactUs = lazy(() => import("./pages/Main/ContactUs"));
+const Home = lazy(() => import('./features/public/pages/Home'));
+const Login = lazy(() => import('./features/public/pages/Login'));
+const Signup = lazy(() => import('./features/public/pages/Signup'));
+const ForgotPassword = lazy(() => import('./features/public/pages/ForgotPassword'));
+const Products = lazy(() => import('./features/public/pages/Products'));
+const ProductDetail = lazy(() => import('./features/public/pages/ProductDetail'));
+const AboutUs = lazy(() => import('./features/public/pages/AboutUs'));
+const ContactUs = lazy(() => import('./features/public/pages/ContactUs'));
 const TermsAndConditions = lazy(
-  () => import("./pages/Main/TermsAndConditions"),
+  () => import('./features/public/pages/TermsAndConditions'),
 );
-const PrivacyPolicy = lazy(() => import("./pages/Main/DataPolicyPage"));
-const RefundPolicy = lazy(() => import("./pages/Main/RefundPolicy"));
-const FAQ = lazy(() => import("./pages/Main/FAQ"));
-const PaymentStatus = lazy(() => import("./pages/Main/PaymentStatus"));
-const CustomerProfile = lazy(() => import("./pages/Main/CustomerProfile"));
-const Favorites = lazy(() => import("./pages/Main/Favorites"));
-const AdminDashboard = lazy(() => import("./pages/Admin/Dashboard"));
-const ProductsAdmin = lazy(() => import("./pages/Admin/ProductsAdmin"));
-const OrdersAdmin = lazy(() => import("./pages/Admin/OrdersAdmin"));
+const PrivacyPolicy = lazy(() => import('./features/public/pages/DataPolicyPage'));
+const RefundPolicy = lazy(() => import('./features/public/pages/RefundPolicy'));
+const FAQ = lazy(() => import('./features/public/pages/FAQ'));
+const PaymentStatus = lazy(() => import('./features/public/pages/PaymentStatus'));
+const CustomerProfile = lazy(() => import('./features/public/pages/CustomerProfile'));
+const Favorites = lazy(() => import('./features/public/pages/Favorites'));
+const AdminDashboard = lazy(() => import('./features/admin/pages/Dashboard'));
+const ProductsAdmin = lazy(() => import('./features/admin/pages/ProductsAdmin'));
+const OrdersAdmin = lazy(() => import('./features/admin/pages/OrdersAdmin'));
 const SuperAdminDashboard = lazy(
-  () => import("./pages/SuperAdmin/SuperAdminDashboard"),
+  () => import('./features/admin/pages/Dashboard'),
 );
-const ComingSoon = lazy(() => import("./pages/Main/ComingSoon"));
+const ComingSoon = lazy(() => import('./features/public/pages/ComingSoon'));
 
 const PageLoader = () => (
   <div className="min-h-[60vh] flex items-center justify-center">
