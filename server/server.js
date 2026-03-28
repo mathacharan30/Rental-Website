@@ -27,11 +27,21 @@ app.use('/api/payment/sync-pending', cors({ origin: '*' }));
 
 // Middleware
 app.use(compression());
+const allowedOrigins = process.env.CLIENT_ORIGIN.split(",");
 app.use(
   cors({
-    origin: process.env.CLIENT_ORIGIN,
+    origin: function (origin, callback) {
+      // allow requests with no origin (Postman, mobile apps, etc.)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
-  }),
+  })
 );
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
