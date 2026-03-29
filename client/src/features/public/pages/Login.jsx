@@ -50,7 +50,7 @@ const Login = () => {
       } else if (profile?.role === "store_owner" && profile.storeName) {
         navigate(`/admin/${profile.storeName}`);
       } else if (profile?.role === "customer" && profile.uid) {
-        navigate(`/${profile.uid}/profile/products`);
+        navigate(`/${profile.uid}/profile`);
       } else {
         navigate("/");
       }
