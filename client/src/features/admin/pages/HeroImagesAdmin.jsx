@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import bannerService from '../../../services/bannerService';
+import bannerService from "../../../services/bannerService";
 import toast from "react-hot-toast";
-import Loader from '../../shared/components/Loader';
-import Modal from '../components/Modal';
+import Loader from "../../shared/components/Loader";
+import Modal from "../components/Modal";
 import { Plus } from "lucide-react";
 
 const HeroImagesAdmin = () => {
@@ -18,7 +18,7 @@ const HeroImagesAdmin = () => {
   const load = async () => {
     setDataLoading(true);
     try {
-      const list = await bannerService.getBanners('gallery');
+      const list = await bannerService.getBanners("gallery");
       setBanners(Array.isArray(list) ? list : []);
     } catch (e) {
       console.error("Failed to load banners", e);
@@ -34,13 +34,28 @@ const HeroImagesAdmin = () => {
 
   const add = async (e) => {
     e.preventDefault();
-    if (!file) { toast.error("Please select an image file"); return; }
-    if (!title.trim()) { toast.error("Title is required"); return; }
-    if (!caption.trim()) { toast.error("Caption is required"); return; }
+    if (!file) {
+      toast.error("Please select an image file");
+      return;
+    }
+    if (!title.trim()) {
+      toast.error("Title is required");
+      return;
+    }
+    if (!caption.trim()) {
+      toast.error("Caption is required");
+      return;
+    }
     setLoading(true);
     const loadingToast = toast.loading("Uploading image...");
     try {
-      await bannerService.uploadBanner({ file, title, caption, category, type: 'gallery' });
+      await bannerService.uploadBanner({
+        file,
+        title,
+        caption,
+        category,
+        type: "gallery",
+      });
       setFile(null);
       setTitle("");
       setCaption("");
@@ -77,9 +92,7 @@ const HeroImagesAdmin = () => {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-white">
-            Gallery Images
-          </h1>
+          <h1 className="text-2xl font-bold text-white">Gallery Images</h1>
           <p className="text-neutral-500 mt-1">Manage website gallery images</p>
         </div>
         <button
@@ -91,7 +104,7 @@ const HeroImagesAdmin = () => {
         </button>
       </div>
 
-      <div className="glass rounded-xl overflow-hidden">
+      <div className="overflow-hidden">
         {dataLoading ? (
           <div className="p-12 flex justify-center">
             <Loader />
@@ -101,11 +114,11 @@ const HeroImagesAdmin = () => {
             No images found. Upload one to get started.
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
             {banners.map((b) => (
               <div
                 key={b._id}
-                className="group relative bg-white/5 rounded-xl overflow-hidden border border-white/10 aspect-4/3"
+                className="group relative rounded-xl overflow-hidden border border-white/10"
               >
                 <img
                   src={b.imageUrl}

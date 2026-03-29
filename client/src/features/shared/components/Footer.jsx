@@ -24,12 +24,12 @@ const Footer = () => {
         <div className="h-px w-full bg-white/5" />
       </div>
 
-      <footer className="bg-[#0e0e0e] pt-16 pb-8 text-white relative">
+      <footer className="bg-[#191919] pt-16 pb-8 text-black relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
             <div className="md:col-span-1">
-              <h3 className="text-2xl font-semibold text-white">
-                people & style
+              <h3 className="text-2xl font-semibold text-white display-font tracking-tight">
+                People & style
               </h3>
               <p className="mt-3 text-neutral-500 text-sm max-w-xs leading-relaxed">
                 Premium clothing rentals for weddings, events, and special

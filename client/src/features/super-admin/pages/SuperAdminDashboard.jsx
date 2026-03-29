@@ -1,8 +1,8 @@
 // src/pages/SuperAdmin/SuperAdminDashboard.jsx
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { getIdToken } from '../../../services/firebaseAuthService';
-import api from '../../../services/api';
+import { getIdToken } from "../../../services/firebaseAuthService";
+import api from "../../../services/api";
 import toast from "react-hot-toast";
 import {
   Building2,
@@ -15,12 +15,16 @@ import {
   MapPin,
 } from "lucide-react";
 
-import CategoriesAdmin from '../../admin/pages/CategoriesAdmin';
-import HeroImagesAdmin from '../../admin/pages/HeroImagesAdmin';
-import BannerImagesAdmin from '../../admin/pages/BannerImagesAdmin';
-import InstaAdmin from '../../admin/pages/InstaAdmin';
-import TestimonialsAdmin from '../../admin/pages/TestimonialsAdmin';
-import SuperAdminOrders from './SuperAdminOrders';
+import ViewStores from "./ViewStores";
+import AddStore from "./AddStore";
+import AllUsers from "./AllUsers";
+import CitiesAdmin from "./CitiesAdmin";
+import CategoriesAdmin from "../../admin/pages/CategoriesAdmin";
+import HeroImagesAdmin from "../../admin/pages/HeroImagesAdmin";
+import BannerImagesAdmin from "../../admin/pages/BannerImagesAdmin";
+import InstaAdmin from "../../admin/pages/InstaAdmin";
+import TestimonialsAdmin from "../../admin/pages/TestimonialsAdmin";
+import SuperAdminOrders from "./SuperAdminOrders";
 
 async function authHeader() {
   const token = await getIdToken();
@@ -216,6 +220,7 @@ export default function SuperAdminDashboard() {
     }
   };
 
+  // Main render
   return (
     <div className=" bg-[#0e0e0e] flex">
       <div className={` transition-all duration-300 overflow-hidden`}>
@@ -250,358 +255,45 @@ export default function SuperAdminDashboard() {
           </nav>
         </aside>
       </div>
-
       <main className="flex-1 h-screen overflow-y-auto flex flex-col">
         <div className="flex-1 p-2 overflow-y-auto">
           <div className="mx-2 mt-4 space-y-4">
             {activeTab === "view-stores" && (
-              <section>
-                <h2 className="text-2xl font-bold mb-6 text-white">
-                  Manage Stores
-                </h2>
-                {stores.length === 0 ? (
-                  <div className="glass rounded-xl p-8 text-center text-neutral-500">
-                    No stores found.{" "}
-                    <button
-                      onClick={() => setActiveTab("add-store")}
-                      className="text-violet-400 hover:underline"
-                    >
-                      Create one
-                    </button>
-                  </div>
-                ) : (
-                  <div className="glass rounded-xl overflow-hidden">
-                    <table className="w-full text-sm">
-                      <thead className="bg-white/5 border-b border-white/10">
-                        <tr>
-                          {["Name", "Email", "Store Slug", "Actions"].map(
-                            (h) => (
-                              <th
-                                key={h}
-                                className="text-left px-6 py-4 font-medium text-neutral-400"
-                              >
-                                {h}
-                              </th>
-                            ),
-                          )}
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-white/5">
-                        {stores.map((s) => (
-                          <tr
-                            key={s._id}
-                            className="hover:bg-white/5 transition-colors"
-                          >
-                            <td className="px-6 py-4 text-white font-medium">
-                              {s.name}
-                            </td>
-                            <td className="px-6 py-4 text-neutral-400">
-                              {s.owner?.email || "-"}
-                            </td>
-                            <td className="px-6 py-4 text-neutral-400">
-                              {s.slug}
-                            </td>
-                            <td className="px-6 py-4 flex gap-3">
-                              <button
-                                onClick={() => navigate(`/admin/${s.slug}`)}
-                                className="text-violet-400 hover:text-violet-300 text-sm font-medium"
-                              >
-                                View
-                              </button>
-                              <button
-                                onClick={() => handleDelete(s.owner?.uid)}
-                                className="text-red-400 hover:text-red-300 text-sm font-medium"
-                              >
-                                Delete
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </section>
+              <ViewStores
+                stores={stores}
+                navigate={navigate}
+                handleDelete={handleDelete}
+                setActiveTab={setActiveTab}
+              />
             )}
-
             {activeTab === "add-store" && (
-              <section>
-                <h2 className="text-2xl font-bold mb-6 text-white">
-                  Create New Store
-                </h2>
-                <div className="glass rounded-xl p-8 max-w-2xl">
-                  <form onSubmit={handleCreateStore} className="space-y-6">
-                    {[
-                      {
-                        label: "Owner Name",
-                        name: "name",
-                        type: "text",
-                        placeholder: "John Doe",
-                      },
-                      {
-                        label: "Email",
-                        name: "email",
-                        type: "email",
-                        placeholder: "owner@store.com",
-                      },
-                      {
-                        label: "Password",
-                        name: "password",
-                        type: "password",
-                        placeholder: "Temporary password",
-                      },
-                      {
-                        label: "Store Slug",
-                        name: "storeName",
-                        type: "text",
-                        placeholder: "my-store",
-                      },
-                    ].map(({ label, name, type, placeholder }) => (
-                      <div key={name}>
-                        <label className="block text-sm font-medium text-neutral-300 mb-2">
-                          {label}
-                        </label>
-                        <input
-                          type={type}
-                          value={form[name]}
-                          onChange={(e) =>
-                            setForm((p) => ({ ...p, [name]: e.target.value }))
-                          }
-                          placeholder={placeholder}
-                          className="w-full border border-white/10 bg-white/5 px-4 py-3 rounded-lg text-white placeholder-neutral-600 focus:outline-none focus:border-violet-500"
-                        />
-                      </div>
-                    ))}
-                    <button
-                      type="submit"
-                      disabled={busy}
-                      className="w-full bg-violet-600 hover:bg-violet-700 disabled:bg-neutral-700 text-white py-3 rounded-lg font-medium transition-colors"
-                    >
-                      {busy ? "Creating..." : "Create Store Owner"}
-                    </button>
-                  </form>
-                </div>
-              </section>
+              <AddStore
+                form={form}
+                setForm={setForm}
+                handleCreateStore={handleCreateStore}
+                busy={busy}
+              />
             )}
-
-            {activeTab === "all-users" && (
-              <section>
-                <h2 className="text-2xl font-bold mb-6 text-white">
-                  All Users
-                </h2>
-                {users.length === 0 ? (
-                  <div className="glass rounded-xl p-8 text-center text-neutral-500">
-                    No users found.
-                  </div>
-                ) : (
-                  <div className="glass rounded-xl overflow-hidden">
-                    <table className="w-full text-sm">
-                      <thead className="bg-white/5 border-b border-white/10">
-                        <tr>
-                          {["Name", "Email", "Role", "Store"].map((h) => (
-                            <th
-                              key={h}
-                              className="text-left px-6 py-4 font-medium text-neutral-400"
-                            >
-                              {h}
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-white/5">
-                        {users.map((u) => (
-                          <tr
-                            key={u._id}
-                            className="hover:bg-white/5 transition-colors"
-                          >
-                            <td className="px-6 py-4 text-white font-medium">
-                              {u.name || "-"}
-                            </td>
-                            <td className="px-6 py-4 text-neutral-400">
-                              {u.email}
-                            </td>
-                            <td className="px-6 py-4">
-                              <span
-                                className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                  u.role === "super_admin"
-                                    ? "bg-violet-500/10 text-violet-400"
-                                    : u.role === "store_owner"
-                                      ? "bg-blue-500/10 text-blue-400"
-                                      : "bg-green-500/10 text-green-400"
-                                }`}
-                              >
-                                {u.role}
-                              </span>
-                            </td>
-                            <td className="px-6 py-4 text-neutral-400">
-                              {u.storeName || "-"}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </section>
-            )}
-
+            {activeTab === "all-users" && <AllUsers users={users} />}
             {activeTab === "categories" && <CategoriesAdmin />}
             {activeTab === "banners" && <BannerImagesAdmin />}
             {activeTab === "gallery" && <HeroImagesAdmin />}
             {activeTab === "instagram" && <InstaAdmin />}
             {activeTab === "testimonials" && <TestimonialsAdmin />}
             {activeTab === "orders" && <SuperAdminOrders />}
-
             {activeTab === "cities" && (
-              <section className="space-y-6">
-                <h2 className="text-2xl font-bold text-white">
-                  Delivery Cities
-                </h2>
-
-                <div className="glass rounded-xl p-8 max-w-2xl">
-                  <h3 className="text-lg font-medium text-white mb-6">
-                    {editingCity
-                      ? `Edit: ${editingCity.name}`
-                      : "Add New Delivery City"}
-                  </h3>
-                  <form onSubmit={handleCitySubmit} className="space-y-6">
-                    <div>
-                      <label className="block text-sm font-medium text-neutral-300 mb-2">
-                        City Name
-                      </label>
-                      <input
-                        type="text"
-                        value={cityForm.name}
-                        onChange={(e) =>
-                          setCityForm((p) => ({ ...p, name: e.target.value }))
-                        }
-                        placeholder="e.g. Mumbai"
-                        className="w-full border border-white/10 bg-white/5 px-4 py-3 rounded-lg text-white placeholder-neutral-600 focus:outline-none focus:border-violet-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-neutral-300 mb-2">
-                        Delivery Charge (Rs)
-                      </label>
-                      <input
-                        type="number"
-                        min="0"
-                        value={cityForm.deliveryCharge}
-                        onChange={(e) =>
-                          setCityForm((p) => ({
-                            ...p,
-                            deliveryCharge: e.target.value,
-                          }))
-                        }
-                        placeholder="0 for free delivery"
-                        className="w-full border border-white/10 bg-white/5 px-4 py-3 rounded-lg text-white placeholder-neutral-600 focus:outline-none focus:border-violet-500"
-                      />
-                    </div>
-                    <div className="flex gap-3">
-                      <button
-                        type="submit"
-                        disabled={cityBusy}
-                        className="flex-1 bg-violet-600 hover:bg-violet-700 disabled:bg-neutral-700 text-white py-3 rounded-lg font-medium transition-colors"
-                      >
-                        {cityBusy
-                          ? "Saving..."
-                          : editingCity
-                            ? "Update City"
-                            : "Add City"}
-                      </button>
-                      {editingCity && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setEditingCity(null);
-                            setCityForm({ name: "", deliveryCharge: "" });
-                          }}
-                          className="px-6 py-3 rounded-lg border border-white/10 text-neutral-300 hover:bg-white/5 font-medium"
-                        >
-                          Cancel
-                        </button>
-                      )}
-                    </div>
-                  </form>
-                </div>
-
-                {cities.length === 0 ? (
-                  <div className="glass rounded-xl p-8 text-center text-neutral-500">
-                    No delivery cities added yet.
-                  </div>
-                ) : (
-                  <div className="glass rounded-xl overflow-hidden">
-                    <table className="w-full text-sm">
-                      <thead className="bg-white/5 border-b border-white/10">
-                        <tr>
-                          {["City", "Delivery Charge", "Status", "Actions"].map(
-                            (h) => (
-                              <th
-                                key={h}
-                                className="text-left px-6 py-4 font-medium text-neutral-400"
-                              >
-                                {h}
-                              </th>
-                            ),
-                          )}
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-white/5">
-                        {cities.map((city) => (
-                          <tr
-                            key={city._id}
-                            className="hover:bg-white/5 transition-colors"
-                          >
-                            <td className="px-6 py-4 text-white font-medium">
-                              {city.name}
-                            </td>
-                            <td className="px-6 py-4 text-neutral-300">
-                              {city.deliveryCharge === 0 ? (
-                                <span className="text-green-400 font-medium">
-                                  Free
-                                </span>
-                              ) : (
-                                `Rs ${city.deliveryCharge.toLocaleString()}`
-                              )}
-                            </td>
-                            <td className="px-6 py-4">
-                              <span
-                                className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                  city.active
-                                    ? "bg-green-500/10 text-green-400"
-                                    : "bg-neutral-500/10 text-neutral-500"
-                                }`}
-                              >
-                                {city.active ? "Active" : "Inactive"}
-                              </span>
-                            </td>
-                            <td className="px-6 py-4 flex gap-4">
-                              <button
-                                onClick={() => handleCityEdit(city)}
-                                className="text-violet-400 hover:text-violet-300 font-medium"
-                              >
-                                Edit
-                              </button>
-                              <button
-                                onClick={() => handleCityToggle(city)}
-                                className="text-yellow-400 hover:text-yellow-300 font-medium"
-                              >
-                                {city.active ? "Deactivate" : "Activate"}
-                              </button>
-                              <button
-                                onClick={() => handleCityDelete(city._id)}
-                                className="text-red-400 hover:text-red-300 font-medium"
-                              >
-                                Delete
-                              </button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </section>
+              <CitiesAdmin
+                cities={cities}
+                cityForm={cityForm}
+                setCityForm={setCityForm}
+                cityBusy={cityBusy}
+                editingCity={editingCity}
+                setEditingCity={setEditingCity}
+                handleCitySubmit={handleCitySubmit}
+                handleCityEdit={handleCityEdit}
+                handleCityToggle={handleCityToggle}
+                handleCityDelete={handleCityDelete}
+              />
             )}
           </div>
         </div>

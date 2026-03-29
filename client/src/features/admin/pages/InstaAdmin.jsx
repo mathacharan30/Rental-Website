@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import instaService from '../../../services/instaService';
+import instaService from "../../../services/instaService";
 import toast from "react-hot-toast";
-import Loader from '../../shared/components/Loader';
-import Modal from '../components/Modal';
+import Loader from "../../shared/components/Loader";
+import Modal from "../components/Modal";
 import { Plus } from "lucide-react";
 
 const InstaAdmin = () => {
@@ -71,9 +71,7 @@ const InstaAdmin = () => {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-white">
-            Instagram Posts
-          </h1>
+          <h1 className="text-2xl font-bold text-white">Instagram Posts</h1>
           <p className="text-neutral-500 mt-1">Manage social media feed</p>
         </div>
         <button
@@ -85,7 +83,7 @@ const InstaAdmin = () => {
         </button>
       </div>
 
-      <div className="glass rounded-xl overflow-hidden">
+      <div className="overflow-hidden">
         {loading ? (
           <div className="p-12 flex justify-center">
             <Loader />
@@ -95,7 +93,7 @@ const InstaAdmin = () => {
             No posts found. Add one to get started.
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 ">
             {posts.map((p) => (
               <div
                 key={p._id}
