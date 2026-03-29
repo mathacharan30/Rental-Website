@@ -56,6 +56,10 @@ const { getCities }          = require("./controllers/superAdminController");
 
 const app = express();
 
+// Trust Vercel's reverse proxy so express-rate-limit reads the real client IP
+// from X-Forwarded-For instead of the proxy's IP.
+app.set("trust proxy", 1);
+
 // ── Server-to-server routes registered BEFORE global middleware ────────────────
 // PhonePe webhook and sync-pending must accept cross-origin server calls.
 app.use("/api/payment/webhook", cors({ origin: "*" }));
