@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, Search } from "lucide-react";
-import { useAuth } from '../../../context/AuthContext';
-import { getAllProducts } from '../../../services/productService';
-import { getCategories } from '../../../services/categoryService';
-import { HOME_NAV_ITEMS } from '../../../data/Content';
+import { Menu, X, Search, ArrowLeft, ArrowRight } from "lucide-react";
+import { useAuth } from "../../../context/AuthContext";
+import { getAllProducts } from "../../../services/productService";
+import { getCategories } from "../../../services/categoryService";
+import { HOME_NAV_ITEMS } from "../../../data/Content";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -242,9 +242,9 @@ const Navbar = () => {
               >
                 <Link
                   to={dashboardLink}
-                  className="px-3 py-1.5 rounded-full text-neutral-400 hover:text-white hover:bg-white/5 transition-all"
+                  className="px-3 py-1.5 rounded-full flex items-center gap-1 text-violet-400 capitalize border hover:bg-violet-500/20 border-violet-500/20 bg-violet-500/10 px-3 py-1  transition-all"
                 >
-                  {dashboardLabel}
+                  {dashboardLabel} <ArrowRight size={20} />
                 </Link>
               </nav>
             )}
@@ -320,12 +320,9 @@ const Navbar = () => {
                   </>
                 ) : (
                   <>
-                    <span className="text-xs text-violet-400 capitalize border border-violet-500/20 bg-violet-500/10 px-3 py-1 rounded-lg">
-                      {role === "store_owner" ? "Store Admin" : "Super Admin"}
-                    </span>
                     <button
                       onClick={handleLogout}
-                      className="text-sm text-neutral-500 hover:text-red-400 transition-colors"
+                      className="text-sm text-neutral-500 mx-4 bg-red-600 px-4 py-1.5 rounded-full text-white hover:bg-red-800 transition-colors"
                     >
                       Logout
                     </button>
