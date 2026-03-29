@@ -190,6 +190,9 @@ connectDB().then(() => {
       console.log(`[Server] Running on port ${PORT}`);
     }
   });
+}).catch((err) => {
+  console.error("[Server] Failed to connect to MongoDB, exiting:", err.message);
+  process.exit(1);
 });
 
 module.exports = app;
