@@ -364,7 +364,7 @@ const ProductDetail = () => {
                   toast.success("Link copied to clipboard!");
                 }
               }}
-              className="p-2 rounded-full bg-white/20 text-violet-400 border border-violet-300/40 hover:bg-violet-500/15 hover:text-violet-500 transition-all duration-200"
+              className="p-2 rounded-full  text-violet-400 border border-violet-300/40 hover:bg-violet-500/15 hover:text-violet-500 transition-all duration-200"
               title="Share product link"
               aria-label="Share product"
             >

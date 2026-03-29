@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { Heart } from "lucide-react";
-import { useAuth } from '../../../context/AuthContext';
-import { toggleFavorite, checkFavorite } from '../../../services/favoriteService';
+import { useAuth } from "../../../context/AuthContext";
+import {
+  toggleFavorite,
+  checkFavorite,
+} from "../../../services/favoriteService";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
@@ -69,7 +72,7 @@ const FavoriteButton = ({ productId, className = "", size = 20 }) => {
           ? "bg-rose-500/20 text-rose-500 border border-rose-400/40 hover:bg-rose-500/30"
           : canManageFavorites
             ? "bg-white/20 text-rose-500 border border-rose-300/40 hover:bg-rose-500/15 hover:text-rose-600"
-            : "bg-white/20 text-rose-400 border border-rose-300/30 hover:bg-rose-500/12 hover:text-rose-500"
+            : " text-rose-400 border border-rose-300/30 hover:bg-rose-500/12 hover:text-rose-500"
       } ${loading || authLoading ? "opacity-50 cursor-not-allowed" : ""} ${className}`}
       title={
         isFavorite
