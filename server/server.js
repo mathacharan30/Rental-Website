@@ -141,6 +141,20 @@ app.use(compression());
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ limit: "10kb", extended: true }));
 
+// ── DB readiness guard — ensures connection is live before any route runs ─────
+// Critical for Vercel serverless: requests can arrive before connectDB() resolves.
+// connectDB() is idempotent (skips if already connected), so this is cheap on
+// warm instances and correctly awaits on cold starts.
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error("[Server] DB not ready:", err.message);
+    res.status(503).json({ message: "Service temporarily unavailable. Please retry." });
+  }
+});
+
 // ── Root health-check ─────────────────────────────────────────────────────────
 app.get("/", (req, res) => {
   res.json({ status: "ok", service: "Cloth Rental Backend" });
@@ -184,17 +198,15 @@ app.use((err, req, res, next) => {
 
 // ── Start server ──────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
-connectDB()
-  .then(() => {
-    app.listen(PORT, () => {
-      if (process.env.NODE_ENV !== "production") {
-        console.log(`[Server] Running on port ${PORT}`);
-      }
-    });
-  })
-  .catch((err) => {
-    console.error("[Server] MongoDB connection failed on startup:", err.message);
-    process.exit(1);
-  });
+app.listen(PORT, () => {
+  if (process.env.NODE_ENV !== "production") {
+    console.log(`[Server] Running on port ${PORT}`);
+  }
+  // Attempt eager DB connection on startup — if it fails the per-request
+  // middleware retries automatically on every incoming request.
+  connectDB().catch((err) =>
+    console.error("[Server] Eager DB connect failed (will retry per-request):", err.message)
+  );
+});
 
 module.exports = app;
