@@ -193,17 +193,8 @@ connectDB()
     });
   })
   .catch((err) => {
-    // In serverless (Vercel), do NOT exit on a transient DB connection failure.
-    // The process exiting kills the function instance and makes every in-flight
-    // request (including harmless OPTIONS preflights) return 500.
-    // Instead, log the error and let the server start — mongoose will reconnect
-    // on the next operation, and controllers return 500 only for DB-dependent routes.
     console.error("[Server] MongoDB connection failed on startup:", err.message);
-    if (process.env.NODE_ENV !== "production") {
-      process.exit(1); // fail fast locally so dev notices immediately
-    }
-    // In production (Vercel) we swallow the error and let mongoose retry.
-    app.listen(PORT);
+    process.exit(1);
   });
 
 module.exports = app;
