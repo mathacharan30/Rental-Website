@@ -3,10 +3,25 @@ const multerS3 = require("multer-s3");
 const path = require("path");
 const { s3, S3_BUCKET } = require("../config/s3");
 
-// Shared image file filter
+// Allowlisted safe image MIME types — SVG excluded (can embed JavaScript)
+const ALLOWED_MIME_TYPES = new Set([
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+]);
+
+const ALLOWED_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif"]);
+
+// Shared image file filter — validates both MIME type AND extension
 const imageFileFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith("image/")) cb(null, true);
-  else cb(new Error("Only image files are allowed"), false);
+  const ext = path.extname(file.originalname).toLowerCase();
+  if (ALLOWED_MIME_TYPES.has(file.mimetype) && ALLOWED_EXTENSIONS.has(ext)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only jpeg, png, webp, and gif images are allowed"), false);
+  }
 };
 
 /**
@@ -20,8 +35,10 @@ const makeS3Storage = (folder) =>
     bucket: S3_BUCKET,
     contentType: multerS3.AUTO_CONTENT_TYPE,
     key: (req, file, cb) => {
-      const ext = path.extname(file.originalname) || "";
-      const baseName = path.basename(file.originalname, ext).replace(/\s+/g, "-");
+      const ext = path.extname(file.originalname).toLowerCase() || "";
+      // path.basename strips directory traversal; then sanitize to safe chars only
+      const rawBase = path.basename(file.originalname, path.extname(file.originalname));
+      const baseName = rawBase.replace(/[^a-zA-Z0-9\-_]/g, "-").slice(0, 80);
       const key = `${folder}/${Date.now()}-${baseName}${ext}`;
       cb(null, key);
     },

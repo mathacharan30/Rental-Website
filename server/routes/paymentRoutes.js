@@ -14,7 +14,17 @@ const {
   getRefundStatus,
 } = require('../controllers/paymentController');
 
-const customerGuard = [verifyFirebaseToken, attachUserRole, allowRoles(['customer'])];
+const customerGuard   = [verifyFirebaseToken, attachUserRole, allowRoles(['customer'])];
+const superAdminGuard = [verifyFirebaseToken, attachUserRole, allowRoles(['super_admin'])];
+
+// Secret-token guard for cron-triggered endpoints (not user-facing)
+const syncSecretGuard = (req, res, next) => {
+  const secret = req.headers['x-sync-secret'] || req.query.secret;
+  if (!process.env.SYNC_SECRET || secret !== process.env.SYNC_SECRET) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+  next();
+};
 
 // ── Routes ───────────────────────────────────────────────────────────────────
 
@@ -33,13 +43,13 @@ router.get('/webhook', (req, res) => {
 router.get('/status/:merchantOrderId', getOrderStatus);
 
 // Webhook fallback — sync all stale PENDING payments by calling PhonePe API
-// Call via cron (e.g. cron-job.org) every 2–5 min, or manually
-router.get('/sync-pending', syncPending);
+// Call via cron (e.g. cron-job.org) every 2–5 min. Requires X-Sync-Secret header.
+router.get('/sync-pending', syncSecretGuard, syncPending);
 
-// Initiate a refund
-router.post('/refund', createRefund);
+// Initiate a refund (super_admin only)
+router.post('/refund', ...superAdminGuard, createRefund);
 
-// Check refund status
-router.get('/refund-status/:refundId', getRefundStatus);
+// Check refund status (super_admin only)
+router.get('/refund-status/:refundId', ...superAdminGuard, getRefundStatus);
 
 module.exports = router;

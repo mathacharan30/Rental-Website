@@ -91,8 +91,22 @@ exports.getTestimonialsByProduct = async (req, res) => {
 exports.updateTestimonial = async (req, res) => {
   try {
     const { id } = req.params;
-    const updates = req.body;
-    const updated = await Testimonial.findByIdAndUpdate(id, updates, { new: true });
+    // Whitelist allowed fields — never pass raw req.body to the DB
+    const { userName, handle, comment, rating, isTop } = req.body;
+    const updates = {};
+    if (userName !== undefined) updates.userName = String(userName).trim().slice(0, 100);
+    if (handle   !== undefined) updates.handle   = String(handle).trim().slice(0, 50);
+    if (comment  !== undefined) updates.comment  = String(comment).trim().slice(0, 1000);
+    if (rating   !== undefined) {
+      const r = Number(rating);
+      if (!Number.isFinite(r) || r < 1 || r > 5) {
+        return res.status(400).json({ message: 'Rating must be between 1 and 5' });
+      }
+      updates.rating = r;
+    }
+    if (isTop !== undefined) updates.isTop = Boolean(isTop);
+
+    const updated = await Testimonial.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
     if (!updated) return res.status(404).json({ message: 'Testimonial not found' });
     return res.status(200).json(updated);
   } catch (error) {

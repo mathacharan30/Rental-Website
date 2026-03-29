@@ -3,6 +3,9 @@ const { s3, S3_BUCKET, deleteFromS3 } = require('../config/s3');
 const { PutObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
+const SIGN_UPLOAD_ALLOWED_EXTS  = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif']);
+const SIGN_UPLOAD_ALLOWED_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
+
 // GET /api/banners/sign-upload  (protected – store_owner / super_admin)
 // Returns a presigned S3 PUT URL so the browser can upload directly to S3.
 // No image bytes pass through this server (bypasses Vercel's 4.5 MB limit).
@@ -13,14 +16,23 @@ exports.signBannerUpload = async (req, res) => {
       return res.status(400).json({ message: 'filename query param is required' });
     }
 
-    const ext = filename.includes('.') ? filename.substring(filename.lastIndexOf('.')) : '';
-    const baseName = filename.replace(/\.[^.]+$/, '').replace(/\s+/g, '-');
+    const ext = filename.includes('.') ? filename.substring(filename.lastIndexOf('.')).toLowerCase() : '';
+    if (!SIGN_UPLOAD_ALLOWED_EXTS.has(ext)) {
+      return res.status(400).json({ message: 'Invalid file extension. Allowed: jpg, jpeg, png, webp, gif' });
+    }
+
+    const baseName = filename
+      .replace(/\.[^.]+$/, '')
+      .replace(/[^a-zA-Z0-9\-_]/g, '-')
+      .slice(0, 80);
+
+    const safeContentType = SIGN_UPLOAD_ALLOWED_TYPES.has(contentType) ? contentType : 'image/jpeg';
     const key = `banners/${Date.now()}-${baseName}${ext}`;
 
     const command = new PutObjectCommand({
       Bucket: S3_BUCKET,
       Key: key,
-      ContentType: contentType || 'image/jpeg',
+      ContentType: safeContentType,
     });
 
     const presignedUrl = await getSignedUrl(s3, command, { expiresIn: 300 });

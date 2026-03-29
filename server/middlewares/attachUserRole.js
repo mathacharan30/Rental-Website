@@ -20,8 +20,6 @@ module.exports = async (req, res, next) => {
     req.user.storeId   = user.storeId   || null;
     req.user.dbId      = user._id;
 
-    console.log(`[attachUserRole] uid=${req.user.uid} role=${user.role} storeName=${user.storeName} storeId=${user.storeId}`);
-
     // ── Self-heal: resolve storeId for store owners who were created before
     //   the Store collection existed, or where the save was incomplete.
     if (!req.user.storeId && req.user.storeName) {

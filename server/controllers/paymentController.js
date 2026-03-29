@@ -160,7 +160,9 @@ exports.createPayment = async (req, res) => {
     // ── PhonePe payment ───────────────────────────────────────────────────
     const merchantOrderId = uuidv4();
     const amountInPaise   = Math.round(payableAmount * 100);
-    const redirectUrl     = `${process.env.CLIENT_ORIGIN}/payment/status/${merchantOrderId}`;
+    // CLIENT_ORIGIN may be comma-separated (multiple allowed origins) — use the first as the redirect base
+    const clientUrl   = (process.env.CLIENT_URL || process.env.CLIENT_ORIGIN.split(',')[0]).trim();
+    const redirectUrl = `${clientUrl}/payment/status/${merchantOrderId}`;
 
     const payRequest = StandardCheckoutPayRequest.builder()
       .merchantOrderId(merchantOrderId)
@@ -197,21 +199,17 @@ exports.createPayment = async (req, res) => {
 // ─── 2. Webhook Handler ──────────────────────────────────────────────────────
 
 exports.webhook = async (req, res) => {
-  // ── Log everything so Vercel logs show whether PhonePe is calling us ────────
+  // Log essential fields only — do NOT log all headers (may contain sensitive values)
   console.log('[Webhook] ===== INCOMING REQUEST =====');
   console.log('[Webhook] Time         :', new Date().toISOString());
   console.log('[Webhook] Method       :', req.method);
-  console.log('[Webhook] Headers      :', JSON.stringify(req.headers, null, 2));
+  console.log('[Webhook] Content-Type :', req.headers['content-type']);
   console.log('[Webhook] Body         :', JSON.stringify(req.body));
 
   try {
     const authorization = (req.headers.authorization || '').trim();
     const webhookUser   = process.env.PHONEPE_WEBHOOK_USERNAME || '';
     const webhookPass   = process.env.PHONEPE_WEBHOOK_PASSWORD || '';
-
-    console.log('[Webhook] Authorization header :', authorization || '(missing)');
-    console.log('[Webhook] WEBHOOK_USER env      :', webhookUser || '(not set)');
-    console.log('[Webhook] WEBHOOK_PASS env      :', webhookPass ? '(set)' : '(not set)');
 
     // ── Manual SHA-256 verification (replaces SDK validateCallback) ──────
     // PhonePe sends:  Authorization: SHA256(webhookUsername + ":" + webhookPassword)
@@ -220,11 +218,11 @@ exports.webhook = async (req, res) => {
       .update(webhookUser + ':' + webhookPass)
       .digest('hex');
 
-    console.log('[Webhook] Expected hash         :', expectedHash);
-    console.log('[Webhook] Received hash         :', authorization);
-    console.log('[Webhook] Hash match?           :', authorization === expectedHash);
+    const hashMatch = authorization === expectedHash;
+    console.log('[Webhook] Auth header present   :', !!authorization);
+    console.log('[Webhook] Hash match?           :', hashMatch);
 
-    if (authorization !== expectedHash) {
+    if (!hashMatch) {
       console.error('[Webhook] ❌ Authorization hash mismatch — rejecting');
       return res.status(200).json({ success: false, message: 'Authorization mismatch' });
     }

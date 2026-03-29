@@ -85,10 +85,10 @@ exports.deleteStore = async (req, res) => {
 };
 
 // ─── GET /api/superadmin/users ────────────────────────────────────────────────
-// Returns all users (all roles).
+// Returns all users (all roles). Sensitive fields (phone, address) excluded.
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().lean();
+    const users = await User.find().select('uid email role storeName storeId name createdAt').lean();
     return res.json({ users });
   } catch (err) {
     console.error('[SuperAdmin] getAllUsers:', err.message);

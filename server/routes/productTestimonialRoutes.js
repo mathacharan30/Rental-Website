@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const verifyFirebaseToken = require('../middlewares/verifyFirebaseToken');
 const attachUserRole = require('../middlewares/attachUserRole');
+const { allowRoles } = require('../middlewares/roleMiddleware');
 const { productTestimonialUpload } = require('../middlewares/upload');
 
 const {
@@ -26,11 +27,12 @@ const uploadImage = (req, res, next) => {
 router.get('/product/:productId', getTestimonialsByProduct);
 
 // @route   POST /api/product-testimonials
-// Protected route: user must be authenticated
+// Protected route: authenticated customers only
 router.post(
   '/',
   verifyFirebaseToken,
   attachUserRole,
+  allowRoles(['customer']),
   uploadImage,
   addTestimonial
 );

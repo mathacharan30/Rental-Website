@@ -9,7 +9,6 @@ module.exports.verifyToken = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.adminId = decoded.id;
-    console.log("token verified");
     next();
   } catch (error) {
     return res.status(401).json({ message: 'Invalid or expired access token' });
