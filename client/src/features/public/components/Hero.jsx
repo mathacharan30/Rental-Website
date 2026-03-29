@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import bannerService from '../../../services/bannerService';
+import bannerService from "../../../services/bannerService";
 
 const Hero = () => {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -7,24 +7,27 @@ const Hero = () => {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
 
   const loadBanners = useCallback((mobile) => {
-    const device = mobile ? 'mobile' : 'desktop';
-    bannerService.getBanners('hero', device).then((list) => {
-      setBanners(list.filter((b) => b.imageUrl));
-      setActiveSlide(0);
-    }).catch(() => setBanners([]));
+    const device = mobile ? "mobile" : "desktop";
+    bannerService
+      .getBanners("hero", device)
+      .then((list) => {
+        setBanners(list.filter((b) => b.imageUrl));
+        setActiveSlide(0);
+      })
+      .catch(() => setBanners([]));
   }, []);
 
   // Detect screen size on mount and on resize
   useEffect(() => {
     loadBanners(isMobile);
 
-    const mq = window.matchMedia('(max-width: 767px)');
+    const mq = window.matchMedia("(max-width: 767px)");
     const onChange = (e) => {
       setIsMobile(e.matches);
       loadBanners(e.matches);
     };
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
   }, [loadBanners]);
 
   useEffect(() => {
@@ -39,13 +42,15 @@ const Hero = () => {
     if (activeSlide >= banners.length && banners.length > 0) setActiveSlide(0);
   }, [activeSlide, banners.length]);
 
-  const goToPrevSlide = () => setActiveSlide((prev) => (prev - 1 + banners.length) % banners.length);
-  const goToNextSlide = () => setActiveSlide((prev) => (prev + 1) % banners.length);
+  const goToPrevSlide = () =>
+    setActiveSlide((prev) => (prev - 1 + banners.length) % banners.length);
+  const goToNextSlide = () =>
+    setActiveSlide((prev) => (prev + 1) % banners.length);
 
   const activeBanner = banners[activeSlide];
 
   return (
-    <section className="relative w-full h-[90vh] overflow-hidden">
+    <section className="relative w-full h-[85vh] overflow-hidden">
       {banners.map((b, index) => (
         <img
           key={b._id || `${b.imageUrl}-${index}`}
@@ -82,9 +87,8 @@ const Hero = () => {
         </>
       )}
 
-      {/* Title + Caption overlay */}
       {activeBanner && (activeBanner.title || activeBanner.caption) && (
-        <div className="absolute z-10 bottom-24 left-0 right-0 px-6 md:px-16 text-center pointer-events-none">
+        <div className="absolute z-10 bottom-40 left-0 right-0 px-6 md:px-16 text-center pointer-events-none">
           {activeBanner.title && (
             <h2 className="text-white text-2xl md:text-4xl font-bold drop-shadow-lg mb-1 leading-tight">
               {activeBanner.title}
