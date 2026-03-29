@@ -102,7 +102,7 @@ const Hero = () => {
         </div>
       )}
 
-      <div className="relative z-10 max-w-7xl mx-auto h-full flex items-end pb-10 justify-center px-4">
+      <div className="relative z-10 max-w-7xl mx-auto h-full flex items-end pb-20 justify-center px-4">
         <a
           href="#categories"
           className="btn-funky inline-flex items-center justify-center text-center min-w-[220px]"

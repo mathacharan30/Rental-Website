@@ -44,7 +44,7 @@ const ProductsAdmin = lazy(
 );
 const OrdersAdmin = lazy(() => import("./features/admin/pages/OrdersAdmin"));
 const SuperAdminDashboard = lazy(
-  () => import("./features/super-admin/pages/SuperAdminDashboard"),
+  () => import("./features/super-admin/SuperAdminDashboard"),
 );
 const ComingSoon = lazy(() => import("./features/public/pages/ComingSoon"));
 

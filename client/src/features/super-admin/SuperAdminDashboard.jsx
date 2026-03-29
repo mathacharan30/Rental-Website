@@ -1,8 +1,8 @@
 // src/pages/SuperAdmin/SuperAdminDashboard.jsx
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { getIdToken } from "../../../services/firebaseAuthService";
-import api from "../../../services/api";
+import { getIdToken } from "../../services/firebaseAuthService";
+import api from "../../services/api";
 import toast from "react-hot-toast";
 import {
   Building2,
@@ -19,11 +19,11 @@ import ViewStores from "./ViewStores";
 import AddStore from "./AddStore";
 import AllUsers from "./AllUsers";
 import CitiesAdmin from "./CitiesAdmin";
-import CategoriesAdmin from "../../admin/pages/CategoriesAdmin";
-import HeroImagesAdmin from "../../admin/pages/HeroImagesAdmin";
-import BannerImagesAdmin from "../../admin/pages/BannerImagesAdmin";
-import InstaAdmin from "../../admin/pages/InstaAdmin";
-import TestimonialsAdmin from "../../admin/pages/TestimonialsAdmin";
+import CategoriesAdmin from "./CategoriesAdmin";
+import HeroImagesAdmin from "./HeroImagesAdmin";
+import BannerImagesAdmin from "./BannerImagesAdmin";
+import InstaAdmin from "./InstaAdmin";
+import TestimonialsAdmin from "./TestimonialsAdmin";
 import SuperAdminOrders from "./SuperAdminOrders";
 
 async function authHeader() {

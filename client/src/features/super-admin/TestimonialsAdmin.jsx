@@ -3,11 +3,11 @@ import {
   listTestimonials,
   createTestimonial,
   deleteTestimonial,
-} from '../../../services/testimonialService';
-import { getAllProducts } from '../../../services/productService';
+} from "../../services/testimonialService";
+import { getAllProducts } from "../../services/productService";
 import toast from "react-hot-toast";
-import Loader from '../../shared/components/Loader';
-import Modal from '../components/Modal';
+import Loader from "../shared/components/Loader";
+import Modal from "../admin/components/Modal";
 import { Plus, Star, Trash2 } from "lucide-react";
 
 const TestimonialsAdmin = () => {
@@ -73,7 +73,7 @@ const TestimonialsAdmin = () => {
         e?.response?.data?.message || "Failed to create testimonial",
         {
           id: loadingToast,
-        }
+        },
       );
     }
   };
@@ -92,7 +92,7 @@ const TestimonialsAdmin = () => {
         e?.response?.data?.message || "Failed to delete testimonial",
         {
           id: loadingToast,
-        }
+        },
       );
     }
   };

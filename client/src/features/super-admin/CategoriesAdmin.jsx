@@ -4,13 +4,19 @@ import {
   createCategory,
   updateCategory,
   deleteCategory,
-} from '../../../services/categoryService';
+} from "../../services/categoryService";
 
 import toast from "react-hot-toast";
-import Loader from '../../shared/components/Loader';
-import Modal from '../components/Modal';
+import Loader from "../shared/components/Loader";
+import Modal from "../admin/components/Modal";
 
-import { Plus, Image as ImageIcon, Trash2, UploadCloud, Edit2 } from "lucide-react";
+import {
+  Plus,
+  Image as ImageIcon,
+  Trash2,
+  UploadCloud,
+  Edit2,
+} from "lucide-react";
 
 const CategoriesAdmin = () => {
   const [categories, setCategories] = useState([]);
@@ -49,7 +55,7 @@ const CategoriesAdmin = () => {
 
     setLoading(true);
     const loadingToast = toast.loading(
-      isEditMode ? "Updating category..." : "Creating category..."
+      isEditMode ? "Updating category..." : "Creating category...",
     );
 
     try {
@@ -69,11 +75,16 @@ const CategoriesAdmin = () => {
       setEditingCategory(null);
       await load();
     } catch (e) {
-      console.error(isEditMode ? "Update category failed" : "Create category failed", e);
+      console.error(
+        isEditMode ? "Update category failed" : "Create category failed",
+        e,
+      );
       toast.error(
         e?.response?.data?.message ||
-          (isEditMode ? "Failed to update category" : "Failed to create category"),
-        { id: loadingToast }
+          (isEditMode
+            ? "Failed to update category"
+            : "Failed to create category"),
+        { id: loadingToast },
       );
     } finally {
       setLoading(false);
@@ -110,7 +121,7 @@ const CategoriesAdmin = () => {
   const handleDelete = async (id) => {
     if (
       !window.confirm(
-        "Delete this category? This will also delete all products in this category."
+        "Delete this category? This will also delete all products in this category.",
       )
     )
       return;
@@ -193,9 +204,7 @@ const CategoriesAdmin = () => {
                           )}
                         </div>
 
-                        <div className="font-medium text-white">
-                          {c.name}
-                        </div>
+                        <div className="font-medium text-white">{c.name}</div>
                       </div>
                     </td>
 
@@ -294,8 +303,8 @@ const CategoriesAdmin = () => {
                   {imageFile
                     ? imageFile.name
                     : isEditMode
-                    ? "Click to upload new image"
-                    : "Click to upload image"}
+                      ? "Click to upload new image"
+                      : "Click to upload image"}
                 </span>
               </label>
             </div>
@@ -323,8 +332,8 @@ const CategoriesAdmin = () => {
                   ? "Updating..."
                   : "Adding..."
                 : isEditMode
-                ? "Update Category"
-                : "Add Category"}
+                  ? "Update Category"
+                  : "Add Category"}
             </button>
           </div>
         </form>

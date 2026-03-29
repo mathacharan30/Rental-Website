@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import bannerService from "../../../services/bannerService";
+import bannerService from "../../services/bannerService";
 import toast from "react-hot-toast";
-import Loader from "../../shared/components/Loader";
-import Modal from "../components/Modal";
+import Loader from "../shared/components/Loader";
+import Modal from "../admin/components/Modal";
 import { Plus, Trash2 } from "lucide-react";
 
 const BannerImagesAdmin = () => {
