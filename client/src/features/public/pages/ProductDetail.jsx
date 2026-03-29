@@ -1,17 +1,19 @@
 import { useEffect, useState, useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Star, X, MapPin, Truck, ShieldCheck } from "lucide-react";
-import Footer from '../../shared/components/Footer';
-import FavoriteButton from '../../shared/components/FavoriteButton';
-import { getProductById } from '../../../services/productService';
-import { createPayment } from '../../../services/paymentService';
-import { getDeliveryCities } from '../../../services/deliveryCityService';
-import { getProductTestimonials } from '../../../services/productTestimonialService';
-import { useAuth } from '../../../context/AuthContext';
+import { Share } from "lucide-react";
+import Footer from "../../shared/components/Footer";
+import FavoriteButton from "../../shared/components/FavoriteButton";
+import { getProductById } from "../../../services/productService";
+import { createPayment } from "../../../services/paymentService";
+import { getDeliveryCities } from "../../../services/deliveryCityService";
+import { getProductTestimonials } from "../../../services/productTestimonialService";
+import { useAuth } from "../../../context/AuthContext";
 import toast from "react-hot-toast";
-import Loader from '../../shared/components/Loader';
+import Loader from "../../shared/components/Loader";
 
 const fade = {
   initial: { opacity: 0 },
@@ -24,13 +26,44 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const { firebaseUser, role } = useAuth();
 
-  const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // React Query for product and testimonials
+  const {
+    data: product,
+    isLoading: loading,
+    error,
+  } = useQuery({
+    queryKey: ["product", id],
+    queryFn: async () => {
+      try {
+        return await getProductById(id);
+      } catch (e) {
+        toast.error("Failed to load product details", error);
+        throw e;
+      }
+    },
+    enabled: !!id,
+    staleTime: 1000 * 60 * 5,
+    cacheTime: 1000 * 60 * 30,
+  });
+
+  const { data: testimonials = [] } = useQuery({
+    queryKey: ["product-testimonials", id],
+    queryFn: async () => {
+      try {
+        return await getProductTestimonials(id);
+      } catch {
+        return [];
+      }
+    },
+    enabled: !!id,
+    staleTime: 1000 * 60 * 5,
+    cacheTime: 1000 * 60 * 30,
+  });
   const [ordering, setOrdering] = useState(false);
   const [selectedSize, setSelectedSize] = useState("");
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
-  const [testimonials, setTestimonials] = useState([]);
+
   const [reviewLightboxImage, setReviewLightboxImage] = useState(null);
   const carouselRef = useRef(null);
 
@@ -68,24 +101,6 @@ const ProductDetail = () => {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
-
-  useEffect(() => {
-    setLoading(true);
-    Promise.all([
-      getProductById(id),
-      getProductTestimonials(id).catch(() => []),
-    ])
-      .then(([prodData, testData]) => {
-        setProduct(prodData);
-        setTestimonials(testData);
-      })
-      .catch((e) => {
-        console.error("[ProductDetail]", e);
-        toast.error("Failed to load product details");
-        setProduct(null);
-      })
-      .finally(() => setLoading(false));
-  }, [id]);
 
   if (loading)
     return (
@@ -271,102 +286,203 @@ const ProductDetail = () => {
         </Link>
       </div>
 
-      <motion.div
-        className="text-center mt-6 px-4"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-      >
-        <p className="text-xs uppercase tracking-[0.25em] text-violet-400 font-medium mb-2">
-          {product.category}
-        </p>
-        <div className="flex items-center justify-center gap-3">
-          <h1 className="text-3xl md:text-5xl font-bold display-font text-white tracking-tight">
-            {product.title}
-          </h1>
-          <FavoriteButton productId={product.id} size={16} />
-        </div>
-        <div className="flex items-center justify-center gap-1 mt-3">
-          {[...Array(5)].map((_, i) =>
-            i < Math.floor(rating) ? (
-              <Star
-                key={i}
-                size={16}
-                className="text-violet-400 fill-violet-400"
-              />
-            ) : (
-              <Star key={i} size={16} className="text-violet-400/30" />
-            ),
-          )}
-          <span className="text-sm text-neutral-500 ml-1.5">
-            {rating.toFixed(1)}
-          </span>
-        </div>
-      </motion.div>
-
-      <motion.div
-        className="relative max-w-2xl mx-auto mt-4 px-4"
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-      >
-        <div
-          ref={carouselRef}
-          className="flex gap-2 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4"
-          style={{
-            scrollbarWidth: "thin",
-            scrollbarColor: "#7c3aed33 transparent",
-          }}
+      <div className="flex flex-col md:flex-row md:items-start md:gap-6 max-w-6xl mx-auto mt-4 px-2 md:px-4">
+        <motion.div
+          className="relative w-full md:w-[48%] max-w-xl mx-auto md:mx-0"
+          initial={{ opacity: 0, scale: 0.97 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.15 }}
         >
-          {allImages.map((imgUrl, i) => (
-            <div
-              key={i}
-              className="relative shrink-0 w-full snap-center rounded-3xl overflow-hidden border border-white/6"
-            >
-              <img
-                src={imgUrl}
-                alt={`${product.title} — view ${i + 1}`}
-                className="w-full h-[360px] rounded-xl md:h-[450px] object-contain cursor-pointer"
-                draggable={false}
-                onClick={() => {
-                  setLightboxIndex(i);
-                  setLightboxOpen(true);
-                }}
-              />
-              {allImages.length > 1 && (
-                <div className="absolute bottom-4 left-4 z-10 px-3 py-1 rounded-full glass text-xs text-white/60 font-medium backdrop-blur-md">
-                  {i + 1} / {allImages.length}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-        {allImages.length > 1 && (
-          <>
-            <div
-              className="flex justify-center gap-2 mt-3 overflow-x-auto pb-1"
-              style={{
-                scrollbarWidth: "thin",
-                scrollbarColor: "#7c3aed33 transparent",
-              }}
-            >
+          <div
+            ref={carouselRef}
+            className="flex gap-2 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2"
+            style={{
+              scrollbarWidth: "thin",
+              scrollbarColor: "#7c3aed33 transparent",
+            }}
+          >
+            {allImages.map((imgUrl, i) => (
+              <div
+                key={i}
+                className="relative shrink-0 w-full snap-center rounded-2xl overflow-hidden border border-white/6 aspect-[4/5] md:aspect-[3/4] max-h-[420px] md:max-h-[480px]"
+              >
+                <img
+                  src={imgUrl}
+                  alt={`${product.title} — view ${i + 1}`}
+                  className="w-full h-full object-contain rounded-xl cursor-pointer bg-neutral-900"
+                  draggable={false}
+                  onClick={() => {
+                    setLightboxIndex(i);
+                    setLightboxOpen(true);
+                  }}
+                />
+                {allImages.length > 1 && (
+                  <div className="absolute bottom-3 left-3 z-10 px-2 py-0.5 rounded-full glass text-xs text-white/60 font-medium backdrop-blur-md">
+                    {i + 1} / {allImages.length}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          {allImages.length > 1 && (
+            <div className="flex justify-center gap-1 mt-2 overflow-x-auto pb-1">
               {allImages.map((imgUrl, i) => (
                 <img
                   key={i}
                   src={imgUrl}
                   alt={`${product.title} thumb ${i + 1}`}
-                  className="w-14 h-14 object-cover rounded-xl cursor-pointer border border-white/10 hover:border-violet-500/40 transition-all duration-200 hover:scale-105 shrink-0"
+                  className="w-10 h-10 object-cover rounded-lg cursor-pointer border border-white/10 hover:border-violet-500/40 transition-all duration-200 hover:scale-105 shrink-0"
                   onClick={() => scrollToImage(i)}
                   draggable={false}
                 />
               ))}
             </div>
-            <p className="text-center text-xs text-neutral-500 mt-2">
-              Swipe or scroll to see more photos
-            </p>
-          </>
-        )}
-      </motion.div>
+          )}
+        </motion.div>
+
+        <motion.div
+          className="w-full md:w-[52%] max-w-2xl p-4 mx-auto md:mx-0 mt-6 md:mt-0 pb-10"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.22 }}
+        >
+          <div className="flex items-center gap-2 justify-between md:justify-start">
+            <h1 className="text-2xl md:text-4xl font-bold display-font text-white tracking-tight flex-1">
+              {product.title}
+            </h1>
+            <FavoriteButton productId={product.id} size={18} />
+            <button
+              onClick={() => {
+                if (navigator.share) {
+                  navigator.share({
+                    title: product.title,
+                    text: product.description || product.title,
+                    url: window.location.href,
+                  });
+                } else {
+                  navigator.clipboard.writeText(window.location.href);
+                  toast.success("Link copied to clipboard!");
+                }
+              }}
+              className="p-2 rounded-full bg-white/20 text-violet-400 border border-violet-300/40 hover:bg-violet-500/15 hover:text-violet-500 transition-all duration-200"
+              title="Share product link"
+              aria-label="Share product"
+            >
+              <Share size={18} />
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2 mt-2 flex-wrap">
+            <div className="flex flex-col items-start gap-2">
+              <div className="flex items-center gap-1">
+                {[...Array(5)].map((_, i) =>
+                  i < Math.floor(rating) ? (
+                    <Star
+                      key={i}
+                      size={15}
+                      className="text-violet-400 fill-violet-400"
+                    />
+                  ) : (
+                    <Star key={i} size={15} className="text-violet-400/30" />
+                  ),
+                )}
+                <span className="text-xs text-neutral-500 ml-1">
+                  {rating.toFixed(1)}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="flex items-end gap-3 flex-wrap mt-4">
+            <span className="text-3xl font-bold gradient-text">
+              {product.price}
+            </span>
+            {product.advanceAmount > 0 && (
+              <span className="text-xs text-violet-400 font-medium pb-1">
+                Advance: ₹
+                {Number.isInteger(product.advanceAmount)
+                  ? product.advanceAmount
+                  : product.advanceAmount.toFixed(2)}
+              </span>
+            )}
+          </div>
+
+          <p className="mt-3 text-sm text-neutral-400 leading-relaxed max-w-xl">
+            {product.description ||
+              "Elegant rental piece — perfect for special occasions. Contact us for custom durations and styling options."}
+          </p>
+          <div className="flex flex-row gap-2 mt-3">
+            {[
+              {
+                color: "bg-green-400",
+                label: "Condition",
+                value: "Excellent",
+              },
+              {
+                color:
+                  product.available === false ? "bg-red-400" : "bg-violet-400",
+                label: "Availability",
+                value:
+                  product.available === false
+                    ? "Not Available"
+                    : isSale
+                      ? "Available for sale"
+                      : "Ready to rent",
+              },
+            ].map(({ label, value }) => (
+              <div
+                key={label}
+                className="flex items-center gap-1 text-xs text-neutral-400 glass px-3 py-1 rounded-lg"
+              >
+                <span>
+                  <strong className="text-neutral-300">{label}:</strong> {value}
+                </span>
+              </div>
+            ))}
+          </div>
+          {!isJewels && (
+            <div className="mt-5">
+              <p className="text-xs font-medium text-neutral-300 mb-2">
+                Select Size
+              </p>
+
+              <div className="flex flex-wrap gap-2">
+                {sizes.map((size) => (
+                  <button
+                    key={size}
+                    onClick={() => setSelectedSize(size)}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${selectedSize === size ? "bg-violet-600 text-white shadow-lg shadow-violet-600/20" : "glass text-neutral-400 hover:text-white hover:border-violet-500/30"}`}
+                  >
+                    {size}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          <div className="mt-7 flex gap-3">
+            <button
+              onClick={handleRent}
+              disabled={ordering || product.available === false}
+              className="btn-funky flex-1 rounded-xl! px-0 disabled:opacity-60 min-w-0"
+            >
+              <span>
+                {ordering
+                  ? "Redirecting to payment…"
+                  : product.available === false
+                    ? "Currently Unavailable"
+                    : isSale
+                      ? "Buy Now →"
+                      : "Rent Now →"}
+              </span>
+            </button>
+            <button
+              onClick={handleEnquire}
+              className="btn-outline-funky flex-1 rounded-xl! px-0 min-w-0"
+            >
+              Enquire Now
+            </button>
+          </div>
+        </motion.div>
+      </div>
 
       <AnimatePresence>
         {lightboxOpen && (
@@ -399,108 +515,6 @@ const ProductDetail = () => {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <motion.div
-        className="max-w-3xl mx-auto mt-10 px-4 pb-16"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.35 }}
-      >
-        <div className="flex items-end justify-center gap-4 flex-wrap">
-          <span className="text-4xl font-bold gradient-text">
-            {product.price}
-          </span>
-          {product.advanceAmount > 0 && (
-            <span className="text-sm text-violet-400 font-medium pb-1">
-              Advance: ₹
-              {Number.isInteger(product.advanceAmount)
-                ? product.advanceAmount
-                : product.advanceAmount.toFixed(2)}
-            </span>
-          )}
-        </div>
-
-        <p className="mt-5 text-sm text-neutral-400 leading-relaxed text-center max-w-xl mx-auto">
-          {product.description ||
-            "Elegant rental piece — perfect for special occasions. Contact us for custom durations and styling options."}
-        </p>
-
-        <div className="flex justify-center gap-4 mt-6 flex-wrap">
-          {[
-            { color: "bg-green-400", label: "Condition", value: "Excellent" },
-            {
-              color:
-                product.available === false ? "bg-red-400" : "bg-violet-400",
-              label: "Availability",
-              value:
-                product.available === false
-                  ? "Not Available"
-                  : isSale
-                    ? "Available for sale"
-                    : "Ready to rent",
-            },
-          ].map(({ color, label, value }) => (
-            <div
-              key={label}
-              className="flex items-center gap-2 text-sm text-neutral-400 glass px-4 py-2 rounded-xl"
-            >
-              <span className={`w-2 h-2 rounded-full ${color}`} />
-              <span>
-                <strong className="text-neutral-300">{label}:</strong> {value}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        <div className="h-px bg-white/6 my-8 max-w-md mx-auto" />
-
-        {!isJewels && (
-          <div className="text-center">
-            <p className="text-sm font-medium text-neutral-300 mb-3">
-              Select Size
-            </p>
-            <div className="flex justify-center flex-wrap gap-2">
-              {sizes.map((size) => (
-                <button
-                  key={size}
-                  onClick={() => setSelectedSize(size)}
-                  className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${
-                    selectedSize === size
-                      ? "bg-violet-600 text-white shadow-lg shadow-violet-600/20"
-                      : "glass text-neutral-400 hover:text-white hover:border-violet-500/30"
-                  }`}
-                >
-                  {size}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div className="mt-8 flex flex-col sm:flex-row justify-center gap-3">
-          <button
-            onClick={handleRent}
-            disabled={ordering || product.available === false}
-            className="btn-funky rounded-xl! px-10 disabled:opacity-60"
-          >
-            <span>
-              {ordering
-                ? "Redirecting to payment…"
-                : product.available === false
-                  ? "Currently Unavailable"
-                  : isSale
-                    ? "Buy Now →"
-                    : "Rent Now →"}
-            </span>
-          </button>
-          <button
-            onClick={handleEnquire}
-            className="btn-outline-funky rounded-xl! px-10"
-          >
-            Enquire Now
-          </button>
-        </div>
-      </motion.div>
 
       {testimonials.length > 0 && (
         <motion.div

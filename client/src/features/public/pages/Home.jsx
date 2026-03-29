@@ -1,31 +1,29 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
-import Hero from '../components/Hero';
-import Categories from '../components/Categories';
-import ProductsGrid from '../components/ProductsGrid';
-import Gallery from '../components/Gallery';
-import Testimonials from '../components/Testimonials';
-import Footer from '../../shared/components/Footer';
-import { getTopPicks } from '../../../services/productService';
+import Hero from "../components/Hero";
+import Categories from "../components/Categories";
+import ProductsGrid from "../components/ProductsGrid";
+import Gallery from "../components/Gallery";
+import Testimonials from "../components/Testimonials";
+import Footer from "../../shared/components/Footer";
+import { getTopPicks } from "../../../services/productService";
 import toast from "react-hot-toast";
 
 const Home = () => {
-  const [productList, setProductList] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    (async () => {
+  const { data: productList = [], isLoading: loading } = useQuery({
+    queryKey: ["top-picks"],
+    queryFn: async () => {
       try {
         const data = await getTopPicks();
-        setProductList(Array.isArray(data) ? data.slice(0, 7) : []);
+        return Array.isArray(data) ? data.slice(0, 7) : [];
       } catch (e) {
-        console.error("[Home] Failed to load top picks", e);
         toast.error("Failed to load top picks");
-      } finally {
-        setLoading(false);
+        throw e;
       }
-    })();
-  }, []);
+    },
+    staleTime: 1000 * 60 * 5,
+    cacheTime: 1000 * 60 * 30,
+  });
 
   return (
     <div className="bg-[#0e0e0e]">

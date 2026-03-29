@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import { useParams, Link, useLocation } from "react-router-dom";
-import ProductCard from '../components/ProductCard';
+import ProductCard from "../components/ProductCard";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import Footer from '../../shared/components/Footer';
+import Footer from "../../shared/components/Footer";
 import {
   getAllProducts,
   getProductsByCategorySlug,
-} from '../../../services/productService';
-import Loader from '../../shared/components/Loader';
-import toast from "react-hot-toast";
+} from "../../../services/productService";
+import Loader from "../../shared/components/Loader";
 
 const Products = () => {
   const { category } = useParams();
@@ -24,43 +24,37 @@ const Products = () => {
   const searchParams = new URLSearchParams(location.search);
   const searchQuery = searchParams.get("search") || "";
 
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [pagination, setPagination] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [listingTab, setListingTab] = useState("rent");
   const ITEMS_PER_PAGE = 10;
 
   const isJewels = decodedCategory === "jewels";
 
-  useEffect(() => {
-    setLoading(true);
-    (async () => {
-      try {
-        if (decodedCategory) {
-          const result = await getProductsByCategorySlug(
-            decodedCategory,
-            currentPage,
-            ITEMS_PER_PAGE,
-            searchQuery,
-          );
-          setItems(result.products || []);
-          setPagination(result.pagination);
-        } else {
-          const data = await getAllProducts(searchQuery);
-          setItems(data);
-          setPagination(null); // No pagination for "All Products"
-        }
-      } catch (e) {
-        console.error("[Products] Failed to load products", e);
-        toast.error("Failed to load products");
-        setItems([]);
-        setPagination(null);
-      } finally {
-        setLoading(false);
+  const { data: productsData, isLoading: loading } = useQuery({
+    queryKey: decodedCategory
+      ? ["products", decodedCategory, currentPage, searchQuery]
+      : ["products", "all", searchQuery],
+    queryFn: async () => {
+      if (decodedCategory) {
+        const result = await getProductsByCategorySlug(
+          decodedCategory,
+          currentPage,
+          ITEMS_PER_PAGE,
+          searchQuery,
+        );
+        return result;
+      } else {
+        const data = await getAllProducts(searchQuery);
+        return { products: data, pagination: null };
       }
-    })();
-  }, [decodedCategory, currentPage, searchQuery]);
+    },
+    keepPreviousData: true,
+    staleTime: 1000 * 60 * 3,
+    cacheTime: 1000 * 60 * 20,
+  });
+
+  const items = productsData?.products || [];
+  const pagination = productsData?.pagination;
 
   // Reset to page 1 when category or search changes
   useEffect(() => {
