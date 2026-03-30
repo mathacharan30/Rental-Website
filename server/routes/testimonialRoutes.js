@@ -14,8 +14,8 @@ const verifyFirebaseToken = require('../middlewares/verifyFirebaseToken');
 const attachUserRole      = require('../middlewares/attachUserRole');
 const { allowRoles }      = require('../middlewares/roleMiddleware');
 
-const storeGuard    = [verifyFirebaseToken, attachUserRole, allowRoles(['store_owner', 'super_admin'])];
-const customerGuard = [verifyFirebaseToken, attachUserRole, allowRoles(['customer'])];
+const storeGuard      = [verifyFirebaseToken, attachUserRole, allowRoles(['store_owner', 'super_admin'])];
+const superAdminGuard = [verifyFirebaseToken, attachUserRole, allowRoles(['super_admin'])];
 
 const validate = (req, res, next) => {
   const errors = validationResult(req);
@@ -27,7 +27,7 @@ const validate = (req, res, next) => {
 
 router.post(
   '/',
-  ...customerGuard,
+  ...superAdminGuard,
   [
     body('userName').trim().notEmpty().withMessage('userName is required').isLength({ max: 100 }),
     body('handle').optional().trim().isLength({ max: 50 }),
