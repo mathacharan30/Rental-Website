@@ -103,12 +103,12 @@ export async function getProductById(id) {
   return mapProduct(data || {});
 }
 
-export async function getProductsByCategorySlug(slug, page = 1, limit = 10, search = "") {
+export async function getProductsByCategorySlug(slug, page = 1, limit = 10, search = "", listingType = "") {
   const catId = await findCategoryIdBySlug(slug);
   if (!catId) return { products: [], pagination: null };
 
   const { data } = await api.get(`/api/categories/${catId}/products`, {
-    params: { page, limit, ...(search && { search }) }
+    params: { page, limit, ...(search && { search }), ...(listingType && { listingType }) }
   });
 
   // Handle both paginated and non-paginated responses

@@ -32,7 +32,7 @@ const Products = () => {
 
   const { data: productsData, isLoading: loading } = useQuery({
     queryKey: decodedCategory
-      ? ["products", decodedCategory, currentPage, searchQuery]
+      ? ["products", decodedCategory, currentPage, searchQuery, isJewels ? listingTab : ""]
       : ["products", "all", searchQuery],
     queryFn: async () => {
       if (decodedCategory) {
@@ -41,6 +41,7 @@ const Products = () => {
           currentPage,
           ITEMS_PER_PAGE,
           searchQuery,
+          isJewels ? listingTab : "",
         );
         return result;
       } else {
@@ -49,17 +50,17 @@ const Products = () => {
       }
     },
     keepPreviousData: true,
-    staleTime: 1000 * 60 * 3,
-    cacheTime: 1000 * 60 * 20,
+    staleTime: 0,
+    cacheTime: 0,
   });
 
   const items = productsData?.products || [];
   const pagination = productsData?.pagination;
 
-  // Reset to page 1 when category or search changes
+  // Reset to page 1 when category, search, or listing tab changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [decodedCategory, searchQuery]);
+  }, [decodedCategory, searchQuery, listingTab]);
 
   const handleNextPage = () => {
     if (pagination && pagination.hasNextPage) {
@@ -158,16 +159,10 @@ const Products = () => {
           <div className="flex justify-center items-center py-20">
             <Loader />
           </div>
-        ) : (isJewels
-            ? items.filter((p) => p.listingType === listingTab)
-            : items
-          ).length > 0 ? (
+        ) : (isJewels ? items.filter((p) => p.listingType === listingTab) : items).length > 0 ? (
           <>
             <div className=" justify-center  items-center flex gap-2  flex-wrap mt-4">
-              {(isJewels
-                ? items.filter((p) => p.listingType === listingTab)
-                : items
-              ).map((product) => (
+              {(isJewels ? items.filter((p) => p.listingType === listingTab) : items).map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>
@@ -214,7 +209,7 @@ const Products = () => {
           <div className="text-center py-20">
             <p className="text-neutral-500 text-lg">
               {isJewels
-                ? `No jewels available for ${listingTab}.`
+                ? `No jewels available for ${listingTab === "rent" ? "rent" : "sale"}.`
                 : `No products found${decodedCategory ? " in this category." : "."}`}
             </p>
           </div>
