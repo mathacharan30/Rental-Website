@@ -5,6 +5,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { getAllProducts } from "../../../services/productService";
 import { getCategories } from "../../../services/categoryService";
 import { HOME_NAV_ITEMS } from "../../../data/Content";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -283,7 +284,7 @@ const Navbar = () => {
                   <>
                     <Link
                       to="/login"
-                      className="text-sm text-neutral-400 hover:text-white transition-colors px-3 py-1.5 rounded-full hover:bg-white/5"
+                      className="text-sm text-neutral-400 hover:text-white transition-colors px-3 py-1.5 rounded-xl hover:bg-white/5"
                     >
                       Log in
                     </Link>
@@ -405,97 +406,124 @@ const Navbar = () => {
           </div>
         )}
 
-        <nav
+        <motion.div
           id="mobile-menu"
-          className={`${open ? "block" : "hidden"} md:hidden`}
+          className="md:hidden fixed top-12 right-4 left-4 z-50"
+          style={{ pointerEvents: open ? "auto" : "none" }}
           aria-hidden={!open}
         >
-          <div className="flex flex-col gap-1 pb-4 pt-1 text-sm">
-            {isPublicOrCustomer && isHomePage && (
-              <>
-                {HOME_NAV_ITEMS.map((item) => (
-                  <a
-                    key={item.href}
-                    href={item.href}
+          <AnimatePresence>
+            {open && (
+              <motion.div
+                key="mobile-menu-content"
+                initial={{
+                  opacity: 0,
+                  scale: 0.3,
+                  y: -30,
+                  transformOrigin: "top right",
+                }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                  y: 0,
+                  transition: { type: "spring", stiffness: 400, damping: 40 },
+                }}
+                exit={{
+                  opacity: 0,
+                  scale: 0.01,
+                  y: -30,
+                  transition: { duration: 0.3 },
+                }}
+                className="bg-neutral-900 rounded-4xl shadow-2xl flex flex-col gap-1 pb-3 px-2 pt-2 text-sm border border-white/10"
+                style={{ transformOrigin: "top right" }}
+              >
+                {isPublicOrCustomer && isHomePage && (
+                  <>
+                    {HOME_NAV_ITEMS.map((item) => (
+                      <a
+                        key={item.href}
+                        href={item.href}
+                        onClick={handleMobileLink}
+                        className="block px-4 py-3  text-neutral-300 hover:text-white hover:bg-white/5"
+                      >
+                        {item.label}
+                      </a>
+                    ))}
+                  </>
+                )}
+
+                {(isAdmin || isSuperAdmin) && (
+                  <Link
+                    to={dashboardLink}
                     onClick={handleMobileLink}
                     className="block px-4 py-3 rounded-xl text-neutral-300 hover:text-white hover:bg-white/5"
                   >
-                    {item.label}
-                  </a>
-                ))}
-              </>
-            )}
+                    {dashboardLabel}
+                  </Link>
+                )}
 
-            {(isAdmin || isSuperAdmin) && (
-              <Link
-                to={dashboardLink}
-                onClick={handleMobileLink}
-                className="block px-4 py-3 rounded-xl text-neutral-300 hover:text-white hover:bg-white/5"
-              >
-                {dashboardLabel}
-              </Link>
+                {!firebaseUser ? (
+                  <>
+                    <Link
+                      to="/login"
+                      onClick={handleMobileLink}
+                      className="block px-4 py-3 rounded-xl text-neutral-300 hover:text-white hover:bg-white/5"
+                    >
+                      Log in
+                    </Link>
+                    <Link
+                      to="/signup"
+                      onClick={handleMobileLink}
+                      className="block mx-2 py-3 rounded-xl text-center btn-funky"
+                    >
+                      <span>Sign up</span>
+                    </Link>
+                  </>
+                ) : role === "customer" ? (
+                  <>
+                    <Link
+                      to="/favorites"
+                      onClick={handleMobileLink}
+                      className="block px-4 py-3 rounded-xl text-neutral-300 hover:text-white hover:bg-white/5"
+                    >
+                      Favorites
+                    </Link>
+                    <Link
+                      to={`/${uid}/profile`}
+                      onClick={handleMobileLink}
+                      className="block px-4 py-3 rounded-xl text-neutral-300 hover:text-white hover:bg-white/5"
+                    >
+                      Profile
+                    </Link>
+                    <div className="flex items-center justify-between px-4 py-3">
+                      <span className="text-xs text-violet-400 capitalize border border-violet-500/20 bg-violet-500/10 px-3 py-1 rounded-lg">
+                        Customer
+                      </span>
+                      <button
+                        onClick={handleLogout}
+                        className="text-sm text-red-400 hover:text-red-300 transition-colors"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex items-center justify-between px-4 py-3">
+                    <span className="text-xs text-violet-400 capitalize border border-violet-500/20 bg-violet-500/10 px-3 py-1 rounded-lg">
+                      {role === "store_owner" ? "Store Admin" : "Super Admin"}
+                    </span>
+                    <button
+                      onClick={handleLogout}
+                      className="text-sm text-red-400 hover:text-red-300 transition-colors"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </motion.div>
             )}
-
-            {!firebaseUser ? (
-              <>
-                <Link
-                  to="/login"
-                  onClick={handleMobileLink}
-                  className="block px-4 py-3 rounded-xl text-neutral-300 hover:text-white hover:bg-white/5"
-                >
-                  Log in
-                </Link>
-                <Link
-                  to="/signup"
-                  onClick={handleMobileLink}
-                  className="block mx-2 py-3 rounded-full text-center btn-funky"
-                >
-                  <span>Sign up</span>
-                </Link>
-              </>
-            ) : role === "customer" ? (
-              <>
-                <Link
-                  to="/favorites"
-                  onClick={handleMobileLink}
-                  className="block px-4 py-3 rounded-xl text-neutral-300 hover:text-white hover:bg-white/5"
-                >
-                  Favorites
-                </Link>
-                <Link
-                  to={`/${uid}/profile`}
-                  onClick={handleMobileLink}
-                  className="block px-4 py-3 rounded-xl text-neutral-300 hover:text-white hover:bg-white/5"
-                >
-                  Profile
-                </Link>
-                <div className="flex items-center justify-between px-4 py-3">
-                  <span className="text-xs text-violet-400 capitalize border border-violet-500/20 bg-violet-500/10 px-3 py-1 rounded-lg">
-                    Customer
-                  </span>
-                  <button
-                    onClick={handleLogout}
-                    className="text-sm text-red-400 hover:text-red-300 transition-colors"
-                  >
-                    Logout
-                  </button>
-                </div>
-              </>
-            ) : (
-              <div className="flex items-center justify-between px-4 py-3">
-                <span className="text-xs text-violet-400 capitalize border border-violet-500/20 bg-violet-500/10 px-3 py-1 rounded-lg">
-                  {role === "store_owner" ? "Store Admin" : "Super Admin"}
-                </span>
-                <button
-                  onClick={handleLogout}
-                  className="text-sm text-red-400 hover:text-red-300 transition-colors"
-                >
-                  Logout
-                </button>
-              </div>
-            )}
-          </div>
-        </nav>
+          </AnimatePresence>
+        </motion.div>
       </div>
     </header>
   );
