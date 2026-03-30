@@ -308,7 +308,7 @@ exports.updateProduct = async (req, res) => {
     } else {
       product.commissionPrice = calcRentCommission(product.rentPrice, product.advanceAmount);
     }
-    if (description !== undefined) product.description = description;
+    if (description !== undefined) product.description = description ?? "";
     if (available !== undefined)
       product.available =
         typeof available === "string" ? available === "true" : !!available;

@@ -280,7 +280,7 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
       fd.append("rating", String(r));
     }
 
-    if (description) fd.append("description", description);
+    fd.append("description", description);
     fd.append("available", available ? "true" : "false");
 
     // Send list of images to delete (by publicId)
