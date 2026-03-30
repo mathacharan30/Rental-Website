@@ -92,10 +92,21 @@ exports.getProductsByCategory = async (req, res) => {
     const skip = (pageNum - 1) * limitNum;
 
     // Build the query object
+    const { listingType } = req.query;
     let query = { category: id };
     if (search) {
       const searchRegex = new RegExp(search, "i");
       query.name = searchRegex;
+    }
+    if (listingType === "sale") {
+      query.listingType = "sale";
+    } else if (listingType === "rent") {
+      // Match explicit "rent" OR documents where listingType was never set
+      query.$or = [
+        { listingType: "rent" },
+        { listingType: { $exists: false } },
+        { listingType: null },
+      ];
     }
 
     // Get total count for pagination metadata
@@ -109,7 +120,7 @@ exports.getProductsByCategory = async (req, res) => {
       .skip(skip)
       .limit(limitNum);
 
-    res.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
+    res.set("Cache-Control", "no-store");
     res.json({
       products,
       pagination: {
