@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
-import bannerService from '../../../services/bannerService';
+import bannerService from "../../../services/bannerService";
+import Loader from "../../shared/components/Loader";
 
 const Gallery = () => {
   const [galleryImages, setGalleryImages] = useState([]);
   const [activeImage, setActiveImage] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
+      setIsLoading(true);
       try {
         const banners = await bannerService.getBanners("gallery");
         const urls = Array.isArray(banners)
@@ -16,6 +19,8 @@ const Gallery = () => {
       } catch (e) {
         console.error("[Gallery] Failed to load banners", e);
         setGalleryImages([]);
+      } finally {
+        setIsLoading(false);
       }
     })();
   }, []);
@@ -34,22 +39,26 @@ const Gallery = () => {
           </p>
         </div>
         <div className="columns-2 sm:columns-3 lg:columns-4 gap-3 md:gap-4">
-          {galleryImages.map((img, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => setActiveImage(img)}
-              className="group relative mb-3 block w-full overflow-hidden rounded-xl break-inside-avoid md:mb-4"
-              aria-label={`View gallery image ${i + 1}`}
-            >
-              <img
-                src={img}
-                alt={`Gallery ${i + 1}`}
-                className="h-auto w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                loading="lazy"
-              />
-            </button>
-          ))}
+          {isLoading ? (
+            <Loader />
+          ) : (
+            galleryImages.map((img, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setActiveImage(img)}
+                className="group relative mb-3 block w-full overflow-hidden rounded-xl break-inside-avoid md:mb-4"
+                aria-label={`View gallery image ${i + 1}`}
+              >
+                <img
+                  src={img}
+                  alt={`Gallery ${i + 1}`}
+                  className="h-auto w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                  loading="lazy"
+                />
+              </button>
+            ))
+          )}
         </div>
       </div>
 
