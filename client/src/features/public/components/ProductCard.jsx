@@ -1,12 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import FavoriteButton from '../../shared/components/FavoriteButton';
+import FavoriteButton from "../../shared/components/FavoriteButton";
 
 const ProductCard = ({ product }) => {
   return (
     <Link
       to={`/product/${product.id}`}
-      className="relative w-[155px] mb-6 md:w-54 overflow-hidden block"
+      className="relative w-[155px] hover:transform hover:scale-[1.03] transition-transform duration-300 mb-6 md:w-54 overflow-hidden block"
     >
       <div className="relative h-65 md:h-80 overflow-hidden rounded-xl">
         <img
