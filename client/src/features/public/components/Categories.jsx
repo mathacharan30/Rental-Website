@@ -68,6 +68,7 @@ const Categories = () => {
                   className="relative group overflow-hidden rounded-bl-3xl rounded-tr-3xl h-58 w-40 md:w-48 md:h-70 flex items-end 
                bg-neutral-900/40 border border-white/10
                hover:shadow-[0_12px_40px_rgba(139,92,246,0.25)]
+               hover:transform hover:scale-[1.03] transition-transform duration-300 bg-purple-950/20
                transition-all duration-300"
                   aria-label={`View ${c.name}`}
                 >
@@ -75,7 +76,7 @@ const Categories = () => {
                     src={c.imageUrl}
                     alt={c.name}
                     className="absolute inset-0 w-full h-full object-cover 
-                 group-hover:scale-110 transition-transform duration-500 ease-out"
+                 group-hover:scale-90 transition-transform duration-500 ease-out  rounded-bl-3xl rounded-tr-3xl"
                   />
 
                   <div className="relative w-full p-4 flex items-center justify-between">
