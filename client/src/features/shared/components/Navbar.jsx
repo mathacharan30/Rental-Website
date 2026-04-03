@@ -206,7 +206,7 @@ const Navbar = () => {
       className={`sticky top-0 z-50 transition-colors duration-150 ${
         scrolled
           ? "bg-[#0e0e0e]/90 backdrop-blur-md border-b border-white/5"
-          : "bg-transparent"
+          : "bg-[#0e0e0e]"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4">

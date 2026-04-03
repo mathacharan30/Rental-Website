@@ -68,7 +68,7 @@ const Categories = () => {
                   className="relative group overflow-hidden rounded-bl-3xl rounded-tr-3xl h-58 w-40 md:w-48 md:h-70 flex items-end 
                bg-neutral-900/40 border border-white/10
                hover:shadow-[0_12px_40px_rgba(139,92,246,0.25)]
-               hover:transform hover:scale-[1.03] transition-transform duration-300 bg-purple-950/20
+               hover:transform hover:scale-[1.03] transition-transform duration-300 bg-purple-950/40
                transition-all duration-300"
                   aria-label={`View ${c.name}`}
                 >
