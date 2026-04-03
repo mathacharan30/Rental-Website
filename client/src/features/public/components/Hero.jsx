@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useCallback } from "react";
 import bannerService from "../../../services/bannerService";
+import Loader from "../../shared/components/Loader";
 
 const Hero = () => {
   const [activeSlide, setActiveSlide] = useState(0);
+  const [displayedSlide, setDisplayedSlide] = useState(null);
   const [banners, setBanners] = useState([]);
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
 
@@ -13,9 +15,62 @@ const Hero = () => {
       .then((list) => {
         setBanners(list.filter((b) => b.imageUrl));
         setActiveSlide(0);
+        setDisplayedSlide(null);
       })
-      .catch(() => setBanners([]));
+      .catch(() => {
+        setBanners([]);
+        setDisplayedSlide(null);
+      });
   }, []);
+
+  useEffect(() => {
+    const nextBanner = banners[activeSlide];
+
+    if (!nextBanner?.imageUrl) {
+      setDisplayedSlide(null);
+      return;
+    }
+
+    let cancelled = false;
+    let resolved = false;
+    const image = new Image();
+
+    const finish = () => {
+      if (cancelled || resolved) return;
+      resolved = true;
+      setDisplayedSlide(activeSlide);
+    };
+
+    image.decoding = "async";
+    image.loading = "eager";
+    image.fetchPriority = "high";
+    image.onload = finish;
+    image.onerror = finish;
+    image.src = nextBanner.imageUrl;
+
+    if (image.complete && image.naturalWidth > 0) {
+      finish();
+    }
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activeSlide, banners]);
+
+  useEffect(() => {
+    if (banners.length < 2) return;
+
+    const nextIndex = (activeSlide + 1) % banners.length;
+    const nextBanner = banners[nextIndex];
+
+    if (!nextBanner?.imageUrl) return;
+
+    const image = new Image();
+    image.decoding = "async";
+    image.loading = "eager";
+    image.fetchPriority = "low";
+    image.src = nextBanner.imageUrl;
+  }, [activeSlide, banners]);
 
   // Detect screen size on mount and on resize
   useEffect(() => {
@@ -28,7 +83,7 @@ const Hero = () => {
     };
     mq.addEventListener("change", onChange);
     return () => mq.removeEventListener("change", onChange);
-  }, [loadBanners]);
+  }, [loadBanners, isMobile]);
 
   useEffect(() => {
     if (banners.length < 2) return;
@@ -47,24 +102,32 @@ const Hero = () => {
   const goToNextSlide = () =>
     setActiveSlide((prev) => (prev + 1) % banners.length);
 
-  const activeBanner = banners[activeSlide];
+  const activeBanner = displayedSlide === null ? null : banners[displayedSlide];
 
   return (
     <section className="relative w-full h-[85vh] overflow-hidden">
-      {banners.map((b, index) => (
+      {activeBanner ? (
         <img
-          key={b._id || `${b.imageUrl}-${index}`}
-          src={b.imageUrl}
-          alt={b.title || "People & Style — Rent designer outfits in Bangalore"}
-          loading={index === 0 ? "eager" : "lazy"}
-          fetchpriority={index === activeSlide ? "high" : "auto"}
+          key={activeBanner._id || activeBanner.imageUrl}
+          src={activeBanner.imageUrl}
+          alt={
+            activeBanner.title ||
+            "People & Style — Rent designer outfits in Bangalore"
+          }
+          loading="eager"
+          fetchPriority="high"
           decoding="async"
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${index === activeSlide ? "opacity-100" : "opacity-0"}`}
+          className="absolute inset-0 h-full w-full object-cover"
         />
-      ))}
+      ) : (
+        <div className="absolute inset-0 bg-[#0e0e0e]" />
+      )}
 
-      <div className="absolute inset-0 bg-linear-to-b from-black/25 via-black/10 to-[#0e0e0e]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_98%)]" />
+      {displayedSlide === null && banners.length > 0 && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#0e0e0e]/70 backdrop-blur-[2px]">
+          <Loader />
+        </div>
+      )}
 
       {banners.length > 1 && (
         <>

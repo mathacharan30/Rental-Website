@@ -25,7 +25,7 @@ const Gallery = () => {
     })();
   }, []);
 
-  if (galleryImages.length === 0) return null;
+  if (!isLoading && galleryImages.length === 0) return null;
 
   return (
     <section className="py-20" id="gallery">
@@ -40,7 +40,9 @@ const Gallery = () => {
         </div>
         <div className="columns-2 sm:columns-3 lg:columns-4 gap-3 md:gap-4">
           {isLoading ? (
-            <Loader />
+            <div className="flex min-h-[220px] items-center justify-center rounded-2xl border border-white/5 bg-white/5">
+              <Loader />
+            </div>
           ) : (
             galleryImages.map((img, i) => (
               <button
