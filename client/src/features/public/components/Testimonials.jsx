@@ -39,7 +39,7 @@ const Testimonials = () => {
     <section className="relative py-24 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-10">
-          <h2 className="text-4xl font-semibold text-white tracking-tight">
+          <h2 className="text-4xl md:text-4xl font-semibold display-font tracking-tight text-white">
             Customer <span className="text-violet-400">Love</span>
           </h2>
           <p className="text-neutral-400 mt-3 max-w-md mx-auto text-sm">
@@ -51,11 +51,11 @@ const Testimonials = () => {
           <Loader />
         ) : (
           <Marquee gradient={false} speed={50} pauseOnHover autoFill={true}>
-            <div className="flex">
+            <div className="flex overflow-y-hidden">
               {quotes.map((q) => (
                 <article
                   key={q.id}
-                  className="group relative w-72 shrink-0 rounded-tr-2xl mx-2 rounded-bl-2xl p-[1px]  border border-violet-400/20 hover:border-violet-400/40 transition-colors"
+                  className="group relative w-72 shrink-0 rounded-tr-2xl mx-2 rounded-bl-2xl p-[1px]  border border-violet-400/20 hover:border-violet-400/40 transition-colors overflow-hidden"
                 >
                   <div className="h-full rounded-2xl bg-black/10 p-10 flex flex-col justify-between transition-all duration-300 group-hover:scale-[1.03] group-hover:shadow-[0_0_40px_rgba(139,92,246,0.25)]">
                     <div>
