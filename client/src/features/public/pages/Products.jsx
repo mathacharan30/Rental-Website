@@ -32,7 +32,13 @@ const Products = () => {
 
   const { data: productsData, isLoading: loading } = useQuery({
     queryKey: decodedCategory
-      ? ["products", decodedCategory, currentPage, searchQuery, isJewels ? listingTab : ""]
+      ? [
+          "products",
+          decodedCategory,
+          currentPage,
+          searchQuery,
+          isJewels ? listingTab : "",
+        ]
       : ["products", "all", searchQuery],
     queryFn: async () => {
       if (decodedCategory) {
@@ -117,7 +123,7 @@ const Products = () => {
 
         <div className="flex flex-col justify-center items-center text-center">
           <div className="flex flex-col my-4 items-center">
-            <h1 className="text-4xl font-bold display-font tracking-tight">
+            <h1 className="text-4xl font-medium instrument-serif tracking-wide">
               <span className="text-white">{displayTitle}</span>
             </h1>
             {decodedCategory && !searchQuery && (
@@ -159,10 +165,16 @@ const Products = () => {
           <div className="flex justify-center items-center py-20">
             <Loader />
           </div>
-        ) : (isJewels ? items.filter((p) => p.listingType === listingTab) : items).length > 0 ? (
+        ) : (isJewels
+            ? items.filter((p) => p.listingType === listingTab)
+            : items
+          ).length > 0 ? (
           <>
             <div className=" justify-center  items-center flex gap-2  flex-wrap mt-4">
-              {(isJewels ? items.filter((p) => p.listingType === listingTab) : items).map((product) => (
+              {(isJewels
+                ? items.filter((p) => p.listingType === listingTab)
+                : items
+              ).map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
             </div>

@@ -1,14 +1,14 @@
 import React from "react";
-import ProductCard from './ProductCard';
-import Loader from '../../shared/components/Loader';
+import ProductCard from "./ProductCard";
+import Loader from "../../shared/components/Loader";
 
 const ProductsGrid = ({ products = [], loading = false }) => {
   return (
     <section id="products" className="py-16">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex flex-col items-center justify-center mb-8">
-          <h2 className="text-3xl md:text-4xl font-semibold display-font tracking-tight text-white">
-            Popular <span className="text-violet-400">Rentals</span>
+          <h2 className="text-3xl md:text-4xl font-medium instrument-serif tracking-wide text-white">
+            - Popular <span className="text-violet-400 italic">Rentals -</span>
           </h2>
           <p className="mt-2 text-neutral-500 text-sm">
             Handpicked rental pieces just for you

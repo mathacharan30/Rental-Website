@@ -31,8 +31,8 @@ const Gallery = () => {
     <section className="py-20" id="gallery">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-4xl font-semibold display-font tracking-tight text-white">
-            Our <span className="text-violet-400">Collection</span>
+          <h2 className="text-3xl md:text-4xl font-medium instrument-serif tracking-wide text-white">
+            - Our <span className="text-violet-400 italic">Collection -</span>
           </h2>
           <p className="text-sm text-neutral-500 max-w-lg mx-auto mt-3">
             Curated designs where timeless craft meets modern silhouettes

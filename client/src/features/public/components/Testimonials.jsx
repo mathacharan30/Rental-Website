@@ -39,8 +39,8 @@ const Testimonials = () => {
     <section className="relative py-24 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-10">
-          <h2 className="text-4xl md:text-4xl font-semibold display-font tracking-tight text-white">
-            Customer <span className="text-violet-400">Love</span>
+          <h2 className="text-4xl md:text-4xl font-medium instrument-serif tracking-wide text-white">
+            - Customer <span className="text-violet-400 italic">Love -</span>
           </h2>
           <p className="text-neutral-400 mt-3 max-w-md mx-auto text-sm">
             Real experiences from people who used our platform

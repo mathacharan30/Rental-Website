@@ -59,7 +59,7 @@ const App = () => {
     <AuthProvider>
       <BrowserRouter>
         <ComingSoonGate>
-          <div className="min-h-screen dm-sans tracking-tight bg-[#060606] text-white">
+          <div className="min-h-screen dm-sans tracking-tight rounded-2xl bg-[#060606] text-white">
             <ScrollToTop />
             <Navbar />
             <main>

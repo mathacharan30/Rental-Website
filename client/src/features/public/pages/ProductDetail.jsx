@@ -347,7 +347,7 @@ const ProductDetail = () => {
           transition={{ duration: 0.5, delay: 0.22 }}
         >
           <div className="flex items-center gap-2 justify-between md:justify-start">
-            <h1 className="text-2xl md:text-4xl font-bold display-font text-white tracking-tight flex-1">
+            <h1 className="text-3xl md:text-4xl font-medium instrument-serif tracking-wide text-white flex-1">
               {product.title}
             </h1>
             <FavoriteButton productId={product.id} size={18} />
