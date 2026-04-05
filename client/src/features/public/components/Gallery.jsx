@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import bannerService from "../../../services/bannerService";
 import Loader from "../../shared/components/Loader";
+import OptimizedImage from "../../shared/components/OptimizedImage";
 
 const Gallery = () => {
   const [galleryImages, setGalleryImages] = useState([]);
@@ -52,8 +53,9 @@ const Gallery = () => {
                 className="group relative mb-3 block w-full overflow-hidden rounded-xl break-inside-avoid md:mb-4"
                 aria-label={`View gallery image ${i + 1}`}
               >
-                <img
-                  src={img}
+                <OptimizedImage
+                  url={img}
+                  type="gallery"
                   alt={`Gallery ${i + 1}`}
                   className="h-auto w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
                   loading="lazy"
@@ -80,11 +82,13 @@ const Gallery = () => {
           >
             ×
           </button>
-          <img
-            src={activeImage}
+          <OptimizedImage
+            url={activeImage}
+            type="modal"
             alt="Selected gallery preview"
             className="max-h-[90vh] max-w-[92vw] object-contain rounded-lg"
             onClick={(e) => e.stopPropagation()}
+            draggable={false}
           />
         </div>
       )}

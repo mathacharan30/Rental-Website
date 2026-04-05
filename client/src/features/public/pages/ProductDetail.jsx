@@ -11,9 +11,9 @@ import { getProductById } from "../../../services/productService";
 import { createPayment } from "../../../services/paymentService";
 import { getDeliveryCities } from "../../../services/deliveryCityService";
 import { getProductTestimonials } from "../../../services/productTestimonialService";
-import { useAuth } from "../../../context/AuthContext";
 import toast from "react-hot-toast";
 import Loader from "../../shared/components/Loader";
+import OptimizedImage from "../../shared/components/OptimizedImage";
 
 const fade = {
   initial: { opacity: 0 },
@@ -306,11 +306,11 @@ const ProductDetail = () => {
                 key={i}
                 className="relative shrink-0 w-full snap-center rounded-2xl overflow-hidden border border-white/6 aspect-[4/5] md:aspect-[3/4] max-h-[420px] md:max-h-[480px]"
               >
-                <img
-                  src={imgUrl}
+                <OptimizedImage
+                  url={imgUrl}
+                  type="modal"
                   alt={`${product.title} — view ${i + 1}`}
                   className="w-full h-full object-contain rounded-xl cursor-pointer bg-neutral-900"
-                  draggable={false}
                   onClick={() => {
                     setLightboxIndex(i);
                     setLightboxOpen(true);
@@ -327,14 +327,14 @@ const ProductDetail = () => {
           {allImages.length > 1 && (
             <div className="flex justify-center gap-1 mt-2 overflow-x-auto pb-1">
               {allImages.map((imgUrl, i) => (
-                <img
-                  key={i}
-                  src={imgUrl}
-                  alt={`${product.title} thumb ${i + 1}`}
-                  className="w-10 h-10 object-cover rounded-lg cursor-pointer border border-white/10 hover:border-violet-500/40 transition-all duration-200 hover:scale-105 shrink-0"
-                  onClick={() => scrollToImage(i)}
-                  draggable={false}
-                />
+                <div onClick={() => scrollToImage(i)} key={i} className="cursor-pointer">
+                  <OptimizedImage
+                    url={imgUrl}
+                    type="gallery"
+                    alt={`${product.title} thumb ${i + 1}`}
+                    className="w-10 h-10 object-cover rounded-lg border border-white/10 hover:border-violet-500/40 transition-all duration-200 hover:scale-105 shrink-0"
+                  />
+                </div>
               ))}
             </div>
           )}
@@ -501,17 +501,20 @@ const ProductDetail = () => {
             >
               <X size={28} />
             </button>
-            <motion.img
-              src={allImages[lightboxIndex] || product.image}
-              alt={`${product.title} — fullscreen`}
-              className="max-w-[92vw] max-h-[88vh] object-contain select-none"
+            <motion.div
               initial={{ opacity: 0, scale: 0.92 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.92 }}
               transition={{ duration: 0.2 }}
               onClick={(e) => e.stopPropagation()}
-              draggable={false}
-            />
+            >
+              <OptimizedImage
+                url={allImages[lightboxIndex] || product.image}
+                type="modal"
+                alt={`${product.title} — fullscreen`}
+                className="max-w-[92vw] max-h-[88vh] object-contain select-none"
+              />
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -536,8 +539,9 @@ const ProductDetail = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     {t.user?.profilePicture ? (
-                      <img
-                        src={t.user.profilePicture}
+                      <OptimizedImage
+                        url={t.user.profilePicture}
+                        type="gallery"
                         alt=""
                         className="w-10 h-10 rounded-full object-cover border border-white/10"
                       />
@@ -573,12 +577,14 @@ const ProductDetail = () => {
                   "{t.comment}"
                 </p>
                 {t.image && (
-                  <img
-                    src={t.image}
-                    alt="Review attachment"
-                    className="w-full h-40 md:h-48 object-cover rounded-xl mt-1 border border-white/5 cursor-pointer hover:border-violet-500/30 transition-colors"
-                    onClick={() => setReviewLightboxImage(t.image)}
-                  />
+                  <div onClick={() => setReviewLightboxImage(t.image)}>
+                    <OptimizedImage
+                      url={t.image}
+                      type="category"
+                      alt="Review attachment"
+                      className="w-full h-40 md:h-48 object-cover rounded-xl mt-1 border border-white/5 cursor-pointer hover:border-violet-500/30 transition-colors"
+                    />
+                  </div>
                 )}
               </div>
             ))}
@@ -603,17 +609,20 @@ const ProductDetail = () => {
             >
               <X size={28} />
             </button>
-            <motion.img
-              src={reviewLightboxImage}
-              alt="Review Fullscreen"
-              className="max-w-[92vw] max-h-[88vh] object-contain select-none"
+            <motion.div
               initial={{ opacity: 0, scale: 0.92 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.92 }}
               transition={{ duration: 0.2 }}
               onClick={(e) => e.stopPropagation()}
-              draggable={false}
-            />
+            >
+              <OptimizedImage
+                url={reviewLightboxImage}
+                type="modal"
+                alt="Review Fullscreen"
+                className="max-w-[92vw] max-h-[88vh] object-contain select-none"
+              />
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -649,8 +658,9 @@ const ProductDetail = () => {
               <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
                 <div className="flex gap-4 items-start glass p-4 rounded-2xl">
                   {(product.images?.[0] || product.image) && (
-                    <img
-                      src={product.images?.[0] || product.image}
+                    <OptimizedImage
+                      url={product.images?.[0] || product.image}
+                      type="gallery"
                       alt={product.title}
                       className="w-20 h-20 rounded-xl object-cover border border-white/10 shrink-0"
                     />

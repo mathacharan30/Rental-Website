@@ -5,6 +5,7 @@ import { getCategories } from "../../../services/categoryService";
 import toast from "react-hot-toast";
 import { ArrowBigLeft, ArrowRight } from "lucide-react";
 import Loader from "../../shared/components/Loader";
+import OptimizedImage from "../../shared/components/OptimizedImage";
 
 function mapCategory(c = {}) {
   const imageSource = c.image || "/saree.jpg";
@@ -73,9 +74,11 @@ const Categories = () => {
                transition-all duration-300"
                   aria-label={`View ${c.name}`}
                 >
-                  <img
-                    src={c.imageUrl}
+                  <OptimizedImage
+                    url={c.imageUrl}
+                    type="category"
                     alt={c.name}
+                    loading="lazy"
                     className="absolute inset-0 w-full h-full object-cover 
                  group-hover:scale-90 transition-transform duration-500 ease-out  rounded-bl-3xl rounded-tr-3xl"
                   />

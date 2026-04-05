@@ -1,6 +1,6 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import FavoriteButton from "../../shared/components/FavoriteButton";
+import OptimizedImage from "../../shared/components/OptimizedImage";
 
 const ProductCard = ({ product }) => {
   return (
@@ -9,8 +9,9 @@ const ProductCard = ({ product }) => {
       className="relative w-[155px] hover:transform hover:scale-[1.03] transition-transform duration-300 mb-6 md:w-54 overflow-hidden block"
     >
       <div className="relative h-65 md:h-80 overflow-hidden rounded-xl">
-        <img
-          src={product.image}
+        <OptimizedImage
+          url={product.image}
+          type="category"
           alt={product.title}
           loading="lazy"
           decoding="async"
