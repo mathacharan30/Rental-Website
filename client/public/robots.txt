@@ -1,5 +1,23 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://peopleandstyle.in/sitemap.xml
+# Block private/admin routes from indexing
+Disallow: /admin/
+Disallow: /superadmin/
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /favorites
+Disallow: /payment/
 
+# Allow all product and public pages
+Allow: /products/
+Allow: /product/
+Allow: /about
+Allow: /contact
+Allow: /faq
+Allow: /terms
+Allow: /privacy
+Allow: /refund
+
+Sitemap: https://peopleandstyle.in/sitemap.xml

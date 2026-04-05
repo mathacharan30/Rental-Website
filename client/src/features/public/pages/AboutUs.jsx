@@ -46,9 +46,13 @@ const AboutUs = () => (
     variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
   >
     <Helmet>
-      <title>About Us — People &amp; Style | Clothing Rental in Karnataka</title>
-      <meta name="description" content="People & Style is Karnataka's premier clothing rental service — making designer fashion accessible, affordable, and sustainable for weddings and events in Bangalore, Mysuru and beyond." />
+      <title>About People &amp; Style — Bridal Wear &amp; Clothing Rental in Mysuru &amp; Bangalore</title>
+      <meta name="description" content="People &amp; Style is Karnataka's premier clothing rental service — rent bridal lehenga, wedding gown, sherwani &amp; jewellery in Mysuru and Bangalore. Affordable, sustainable fashion for weddings &amp; events." />
+      <meta name="keywords" content="People and Style clothing rental, bridal wear rental Mysuru, dress rental Bangalore, clothing rental Karnataka, wedding outfit rental, about us" />
       <link rel="canonical" href="https://peopleandstyle.in/about" />
+      <meta property="og:title" content="About People &amp; Style — Clothing Rental in Mysuru &amp; Bangalore" />
+      <meta property="og:description" content="Karnataka's premier clothing rental — bridal lehenga, wedding gown, sherwani &amp; jewellery on rent in Mysuru and Bangalore." />
+      <meta property="og:url" content="https://peopleandstyle.in/about" />
     </Helmet>
     {/* Hero */}
     <section className="relative py-24 px-4 text-center overflow-hidden">

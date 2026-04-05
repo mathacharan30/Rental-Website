@@ -119,14 +119,16 @@ const ContactUs = () => {
       variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
     >
       <Helmet>
-        <title>
-          Contact Us — People &amp; Style | Clothing Rental Karnataka
-        </title>
+        <title>Contact Us — Bridal Wear &amp; Clothing Rental in Mysuru &amp; Bangalore | People &amp; Style</title>
         <meta
           name="description"
-          content="Get in touch with People & Style for designer outfit rentals in Bangalore, Mysuru and Karnataka. Call +91 91876 68280 or visit us in Mysuru."
+          content="Contact People &amp; Style for bridal lehenga on rent, wedding gown rental, sherwani on rent &amp; jewellery rental in Mysuru and Bangalore. Call +91 91876 68280 or WhatsApp us."
         />
+        <meta name="keywords" content="contact People and Style, bridal wear on rent Mysuru, clothing rental Bangalore, wedding dress rental enquiry, jewellery rental contact" />
         <link rel="canonical" href="https://peopleandstyle.in/contact" />
+        <meta property="og:title" content="Contact People &amp; Style — Clothing Rental in Mysuru &amp; Bangalore" />
+        <meta property="og:description" content="Enquire about bridal lehenga, wedding gown, sherwani &amp; jewellery on rent in Mysuru and Bangalore." />
+        <meta property="og:url" content="https://peopleandstyle.in/contact" />
       </Helmet>
       <div className="relative py-16 px-4 text-center overflow-hidden">
         <div className="relative z-10">
