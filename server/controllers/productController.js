@@ -415,6 +415,13 @@ exports.deleteProduct = async (req, res) => {
       console.log(`[Favorites] Removed product from ${deletedFavorites.deletedCount} users' favorites`);
     }
 
+    // Remove all testimonials for this product
+    const ProductTestimonial = require("../models/ProductTestimonial");
+    const deletedTestimonials = await ProductTestimonial.deleteMany({ product: id });
+    if (deletedTestimonials.deletedCount > 0) {
+      console.log(`[ProductTestimonials] Removed ${deletedTestimonials.deletedCount} testimonial(s) for product ${id}`);
+    }
+
     await product.deleteOne();
     res.json({ message: "Product deleted successfully" });
   } catch (error) {
