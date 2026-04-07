@@ -14,6 +14,7 @@ import { getProductTestimonials } from "../../../services/productTestimonialServ
 import toast from "react-hot-toast";
 import Loader from "../../shared/components/Loader";
 import OptimizedImage from "../../shared/components/OptimizedImage";
+import { useAuth } from "./../../../context/AuthContext";
 
 const fade = {
   initial: { opacity: 0 },
@@ -327,7 +328,11 @@ const ProductDetail = () => {
           {allImages.length > 1 && (
             <div className="flex justify-center gap-1 mt-2 overflow-x-auto pb-1">
               {allImages.map((imgUrl, i) => (
-                <div onClick={() => scrollToImage(i)} key={i} className="cursor-pointer">
+                <div
+                  onClick={() => scrollToImage(i)}
+                  key={i}
+                  className="cursor-pointer"
+                >
                   <OptimizedImage
                     url={imgUrl}
                     type="gallery"

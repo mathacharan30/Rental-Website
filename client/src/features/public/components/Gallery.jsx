@@ -39,7 +39,7 @@ const Gallery = () => {
             Curated designs where timeless craft meets modern silhouettes
           </p>
         </div>
-        <div className="columns-2 sm:columns-3 lg:columns-4 gap-3 md:gap-4">
+        <div className="columns-2 sm:columns-3 lg:columns-4 gap-2 md:gap-3">
           {isLoading ? (
             <div className="flex min-h-[220px] items-center justify-center rounded-2xl border border-white/5 bg-white/5">
               <Loader />
@@ -50,7 +50,7 @@ const Gallery = () => {
                 key={i}
                 type="button"
                 onClick={() => setActiveImage(img)}
-                className="group relative mb-3 block w-full overflow-hidden rounded-xl break-inside-avoid md:mb-4"
+                className="group relative mb-2 block w-full overflow-hidden rounded-xl break-inside-avoid md:mb-3"
                 aria-label={`View gallery image ${i + 1}`}
               >
                 <OptimizedImage

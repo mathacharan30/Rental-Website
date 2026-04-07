@@ -45,7 +45,7 @@ const Categories = () => {
     <section id="categories" className="py-15">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-10">
-          <h2 className="text-4xl md:text-4xl font-medium instrument-serif tracking-wide text-white">
+          <h2 className="text-3xl md:text-4xl font-medium instrument-serif tracking-wide text-white">
             - Browse{" "}
             <span className="text-violet-400 italic">Categories -</span>
           </h2>
