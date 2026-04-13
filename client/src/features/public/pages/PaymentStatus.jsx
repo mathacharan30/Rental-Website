@@ -1,20 +1,20 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { getPaymentStatus } from '../../../services/paymentService';
-import { useAuth } from '../../../context/AuthContext';
-import Loader from '../../shared/components/Loader';
-import Footer from '../../shared/components/Footer';
+import { getPaymentStatus } from "../../../services/paymentService";
+import { useAuth } from "../../../context/AuthContext";
+import Footer from "../../shared/components/Footer";
+import { PaymentStatusCheckingSkeleton } from "../loaders";
 
-const POLL_INTERVAL = 3000;  // 3 seconds
-const MAX_POLLS     = 20;    // stop after ~60 seconds
+const POLL_INTERVAL = 3000; // 3 seconds
+const MAX_POLLS = 20; // stop after ~60 seconds
 
 const PaymentStatus = () => {
   const { merchantOrderId } = useParams();
   const navigate = useNavigate();
   const { firebaseUser } = useAuth();
 
-  const [status, setStatus]   = useState("CHECKING"); // CHECKING | COMPLETED | FAILED | PENDING
+  const [status, setStatus] = useState("CHECKING"); // CHECKING | COMPLETED | FAILED | PENDING
   const [details, setDetails] = useState(null);
   const pollCount = useRef(0);
 
@@ -91,10 +91,7 @@ const PaymentStatus = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
       >
-        <Loader />
-        <p className="mt-6 text-neutral-400 text-sm animate-pulse">
-          Verifying your payment…
-        </p>
+        <PaymentStatusCheckingSkeleton />
       </motion.div>
     );
   }
@@ -119,7 +116,7 @@ const PaymentStatus = () => {
             <Link to="/" className="btn-outline-funky rounded-xl! px-8">
               Continue Shopping
             </Link>
-          </>
+          </>,
         )}
         <Footer />
       </>
@@ -144,7 +141,7 @@ const PaymentStatus = () => {
             <Link to="/" className="btn-outline-funky rounded-xl! px-8">
               Back to Home
             </Link>
-          </>
+          </>,
         )}
         <Footer />
       </>
@@ -171,7 +168,7 @@ const PaymentStatus = () => {
           <Link to="/" className="btn-outline-funky rounded-xl! px-8">
             Back to Home
           </Link>
-        </>
+        </>,
       )}
       <Footer />
     </>

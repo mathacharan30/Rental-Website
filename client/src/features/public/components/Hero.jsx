@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import bannerService from "../../../services/bannerService";
-import Loader from "../../shared/components/Loader";
 import OptimizedImage from "../../shared/components/OptimizedImage";
+import { HeroSkeleton } from "../loaders";
 
 const Hero = () => {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -70,11 +70,7 @@ const Hero = () => {
         />
       )}
 
-      {banners.length === 0 && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#0e0e0e]/70 backdrop-blur-[2px]">
-          <Loader />
-        </div>
-      )}
+      {banners.length === 0 && <HeroSkeleton />}
 
       {banners.length > 1 && (
         <>

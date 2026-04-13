@@ -1,6 +1,6 @@
 import React from "react";
 import ProductCard from "./ProductCard";
-import Loader from "../../shared/components/Loader";
+import { ProductRowSkeleton } from "../loaders";
 
 const ProductsGrid = ({ products = [], loading = false }) => {
   return (
@@ -17,9 +17,7 @@ const ProductsGrid = ({ products = [], loading = false }) => {
 
         <div>
           {loading ? (
-            <div className="flex justify-center items-center py-16">
-              <Loader />
-            </div>
+            <ProductRowSkeleton count={6} />
           ) : (
             <div className="flex flex-row gap-3 overflow-x-auto py-2 scrollbar-hide">
               {products.map((p) => (

@@ -1,11 +1,12 @@
 // src/pages/Main/CustomerProfile.jsx
 import React, { useEffect, useState } from "react";
-import { useAuth } from '../../../context/AuthContext';
+import { useAuth } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { getMyOrders } from '../../../services/orderService';
+import { getMyOrders } from "../../../services/orderService";
 import toast from "react-hot-toast";
-import { addProductTestimonial } from '../../../services/productTestimonialService';
+import { addProductTestimonial } from "../../../services/productTestimonialService";
 import { Star, Upload, Camera, X } from "lucide-react";
+import { OrdersSkeleton } from "../loaders";
 
 const STATUS_COLORS = {
   pending: "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30",
@@ -154,7 +155,7 @@ const CustomerProfile = () => {
       {tab === "orders" && (
         <div>
           {ordersLoading ? (
-            <p className="text-neutral-500 text-sm">Loading orders…</p>
+            <OrdersSkeleton count={3} />
           ) : orders.length === 0 ? (
             <div className="glass rounded-2xl p-8 text-center text-neutral-500">
               No orders yet.

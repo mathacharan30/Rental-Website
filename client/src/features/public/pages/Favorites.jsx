@@ -2,11 +2,14 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Heart, Trash2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { getFavorites, removeFavorite } from '../../../services/favoriteService';
-import { useAuth } from '../../../context/AuthContext';
+import {
+  getFavorites,
+  removeFavorite,
+} from "../../../services/favoriteService";
+import { useAuth } from "../../../context/AuthContext";
 import toast from "react-hot-toast";
-import Loader from '../../shared/components/Loader';
-import Footer from '../../shared/components/Footer';
+import Footer from "../../shared/components/Footer";
+import { FavoritesSkeleton } from "../loaders";
 
 const Favorites = () => {
   const [favorites, setFavorites] = useState([]);
@@ -59,11 +62,7 @@ const Favorites = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-[#0e0e0e] flex items-center justify-center">
-        <Loader />
-      </div>
-    );
+    return <FavoritesSkeleton count={6} />;
   }
 
   return (

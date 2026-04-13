@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Marquee from "react-fast-marquee";
 import testimonialService from "../../../services/testimonialService";
-import { Loader } from "lucide-react";
+import { TestimonialsSkeleton } from "../loaders";
 
 const INFO_VIDEO_LINK = "https://www.youtube.com/";
 
@@ -48,7 +48,7 @@ const Testimonials = () => {
         </div>
 
         {loading ? (
-          <Loader />
+          <TestimonialsSkeleton count={4} />
         ) : (
           <Marquee gradient={false} speed={50} pauseOnHover autoFill={true}>
             <div className="flex overflow-y-hidden">

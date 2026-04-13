@@ -11,7 +11,7 @@ import {
   getAllProducts,
   getProductsByCategorySlug,
 } from "../../../services/productService";
-import Loader from "../../shared/components/Loader";
+import { ProductListSkeleton } from "../loaders";
 
 const Products = () => {
   const { category } = useParams();
@@ -101,40 +101,89 @@ const Products = () => {
         {/* ── Per-category SEO titles, descriptions, keywords ── */}
         {(() => {
           const cat = decodedCategory;
-          if (cat === "lehenga") return (
-            <>
-              <title>Bridal Lehenga on Rent in Mysuru &amp; Bangalore | People &amp; Style</title>
-              <meta name="description" content="Rent designer bridal lehenga in Mysuru and Bangalore. Browse red bridal lehenga, heavy bridal lehenga, reception lehenga, engagement lehenga, half saree &amp; more. Affordable lehenga rental delivered to your door." />
-              <meta name="keywords" content="bridal lehenga on rent in Mysuru, bridal lehenga on rent in Bangalore, bridal lehenga rental Mysuru, bridal lehenga rental Bangalore, designer lehenga on rent, wedding lehenga rental, red bridal lehenga on rent, heavy bridal lehenga on rent, reception lehenga on rent, engagement lehenga on rent, party wear lehenga on rent, half saree on rent, bridal saree on rent, silk saree rental, wedding saree on rent, lehenga on rent" />
-            </>
-          );
-          if (cat === "gowns") return (
-            <>
-              <title>Bridal Gown on Rent in Mysuru &amp; Bangalore | Wedding Gown Rental</title>
-              <meta name="description" content="Rent bridal gown, wedding gown, reception gown &amp; designer gown in Mysuru and Bangalore. White bridal gown, maternity gown, pre-wedding &amp; photoshoot gown rental. Affordable prices delivered to your door." />
-              <meta name="keywords" content="wedding gown on rent in Mysuru, wedding gown on rent in Bangalore, bridal gown on rent, reception gown on rent, white bridal gown rental, designer gown on rent, party wear gown on rent, maternity gown on rent, pre wedding gown on rent, photoshoot gown on rent, long gown on rent Mysuru, western gown rental Bangalore, bridal dress rental in Mysuru, bridal dress rental in Bangalore" />
-            </>
-          );
-          if (cat === "men") return (
-            <>
-              <title>Men Wedding Dress on Rent in Mysuru &amp; Bangalore | Sherwani, Blazer, Suit</title>
-              <meta name="description" content="Rent sherwani, blazer, suit, tuxedo &amp; groom wear in Mysuru and Bangalore. Men wedding dress rental, indo western on rent, coat suit on rent. Affordable men ethnic wear rental." />
-              <meta name="keywords" content="men wedding dress on rent, groom wear on rent, sherwani on rent, blazer on rent, suit on rent, tuxedo on rent, men blazer rental Bangalore, sherwani rental Mysuru, wedding suit on rent, men ethnic wear on rent, indo western on rent, coat suit on rent, men collection on rent Bangalore" />
-            </>
-          );
-          if (cat === "jewels") return (
-            <>
-              <title>Bridal Jewellery on Rent in Mysuru &amp; Bangalore | Temple Jewellery Rental</title>
-              <meta name="description" content="Rent bridal jewellery, temple jewellery, imitation jewellery &amp; wedding accessories in Mysuru and Bangalore. Necklace set on rent, bridal crown on rent, bangles on rent. Affordable jewellery rental." />
-              <meta name="keywords" content="bridal jewellery on rent, temple jewellery on rent, imitation jewellery on rent, bridal accessories on rent, wedding jewels on rent, jewellery rental Mysuru, jewellery rental Bangalore, necklace set on rent, bridal crown on rent, bangles on rent, wedding accessories rental" />
-            </>
-          );
+          if (cat === "lehenga")
+            return (
+              <>
+                <title>
+                  Bridal Lehenga on Rent in Mysuru &amp; Bangalore | People
+                  &amp; Style
+                </title>
+                <meta
+                  name="description"
+                  content="Rent designer bridal lehenga in Mysuru and Bangalore. Browse red bridal lehenga, heavy bridal lehenga, reception lehenga, engagement lehenga, half saree &amp; more. Affordable lehenga rental delivered to your door."
+                />
+                <meta
+                  name="keywords"
+                  content="bridal lehenga on rent in Mysuru, bridal lehenga on rent in Bangalore, bridal lehenga rental Mysuru, bridal lehenga rental Bangalore, designer lehenga on rent, wedding lehenga rental, red bridal lehenga on rent, heavy bridal lehenga on rent, reception lehenga on rent, engagement lehenga on rent, party wear lehenga on rent, half saree on rent, bridal saree on rent, silk saree rental, wedding saree on rent, lehenga on rent"
+                />
+              </>
+            );
+          if (cat === "gowns")
+            return (
+              <>
+                <title>
+                  Bridal Gown on Rent in Mysuru &amp; Bangalore | Wedding Gown
+                  Rental
+                </title>
+                <meta
+                  name="description"
+                  content="Rent bridal gown, wedding gown, reception gown &amp; designer gown in Mysuru and Bangalore. White bridal gown, maternity gown, pre-wedding &amp; photoshoot gown rental. Affordable prices delivered to your door."
+                />
+                <meta
+                  name="keywords"
+                  content="wedding gown on rent in Mysuru, wedding gown on rent in Bangalore, bridal gown on rent, reception gown on rent, white bridal gown rental, designer gown on rent, party wear gown on rent, maternity gown on rent, pre wedding gown on rent, photoshoot gown on rent, long gown on rent Mysuru, western gown rental Bangalore, bridal dress rental in Mysuru, bridal dress rental in Bangalore"
+                />
+              </>
+            );
+          if (cat === "men")
+            return (
+              <>
+                <title>
+                  Men Wedding Dress on Rent in Mysuru &amp; Bangalore |
+                  Sherwani, Blazer, Suit
+                </title>
+                <meta
+                  name="description"
+                  content="Rent sherwani, blazer, suit, tuxedo &amp; groom wear in Mysuru and Bangalore. Men wedding dress rental, indo western on rent, coat suit on rent. Affordable men ethnic wear rental."
+                />
+                <meta
+                  name="keywords"
+                  content="men wedding dress on rent, groom wear on rent, sherwani on rent, blazer on rent, suit on rent, tuxedo on rent, men blazer rental Bangalore, sherwani rental Mysuru, wedding suit on rent, men ethnic wear on rent, indo western on rent, coat suit on rent, men collection on rent Bangalore"
+                />
+              </>
+            );
+          if (cat === "jewels")
+            return (
+              <>
+                <title>
+                  Bridal Jewellery on Rent in Mysuru &amp; Bangalore | Temple
+                  Jewellery Rental
+                </title>
+                <meta
+                  name="description"
+                  content="Rent bridal jewellery, temple jewellery, imitation jewellery &amp; wedding accessories in Mysuru and Bangalore. Necklace set on rent, bridal crown on rent, bangles on rent. Affordable jewellery rental."
+                />
+                <meta
+                  name="keywords"
+                  content="bridal jewellery on rent, temple jewellery on rent, imitation jewellery on rent, bridal accessories on rent, wedding jewels on rent, jewellery rental Mysuru, jewellery rental Bangalore, necklace set on rent, bridal crown on rent, bangles on rent, wedding accessories rental"
+                />
+              </>
+            );
           // Default — all products
           return (
             <>
-              <title>Clothes on Rent in Mysuru &amp; Bangalore | Designer Rental Outfits</title>
-              <meta name="description" content="Browse all rental outfits at People &amp; Style — bridal lehenga, wedding gown, sherwani, bridal saree, jewellery &amp; more on rent in Mysuru and Bangalore. Premium clothing rental for weddings &amp; events." />
-              <meta name="keywords" content="clothes on rent in Mysuru, clothes on rent in Bangalore, rental outfits in Mysuru, rental outfits in Bangalore, dress rental in Mysuru, dress rental in Bangalore, bridal wear on rent, wedding dress rental, clothing rental Bangalore" />
+              <title>
+                Clothes on Rent in Mysuru &amp; Bangalore | Designer Rental
+                Outfits
+              </title>
+              <meta
+                name="description"
+                content="Browse all rental outfits at People &amp; Style — bridal lehenga, wedding gown, sherwani, bridal saree, jewellery &amp; more on rent in Mysuru and Bangalore. Premium clothing rental for weddings &amp; events."
+              />
+              <meta
+                name="keywords"
+                content="clothes on rent in Mysuru, clothes on rent in Bangalore, rental outfits in Mysuru, rental outfits in Bangalore, dress rental in Mysuru, dress rental in Bangalore, bridal wear on rent, wedding dress rental, clothing rental Bangalore"
+              />
             </>
           );
         })()}
@@ -142,9 +191,18 @@ const Products = () => {
           rel="canonical"
           href={`https://peopleandstyle.in/products${decodedCategory ? `/${encodeURIComponent(decodedCategory)}` : ""}`}
         />
-        <meta property="og:title" content={`${decodedCategory ? decodedCategory.charAt(0).toUpperCase() + decodedCategory.slice(1) + " on Rent" : "Rental Outfits"} in Mysuru & Bangalore | People & Style`} />
-        <meta property="og:description" content={`Rent ${decodedCategory || "designer outfits"} in Mysuru and Bangalore. Premium clothing rental delivered to your door.`} />
-        <meta property="og:url" content={`https://peopleandstyle.in/products${decodedCategory ? `/${encodeURIComponent(decodedCategory)}` : ""}`} />
+        <meta
+          property="og:title"
+          content={`${decodedCategory ? decodedCategory.charAt(0).toUpperCase() + decodedCategory.slice(1) + " on Rent" : "Rental Outfits"} in Mysuru & Bangalore | People & Style`}
+        />
+        <meta
+          property="og:description"
+          content={`Rent ${decodedCategory || "designer outfits"} in Mysuru and Bangalore. Premium clothing rental delivered to your door.`}
+        />
+        <meta
+          property="og:url"
+          content={`https://peopleandstyle.in/products${decodedCategory ? `/${encodeURIComponent(decodedCategory)}` : ""}`}
+        />
         <meta property="og:type" content="website" />
       </Helmet>
       <div className="max-w-7xl mx-auto ">
@@ -199,8 +257,8 @@ const Products = () => {
         )}
 
         {loading ? (
-          <div className="flex justify-center items-center py-20">
-            <Loader />
+          <div className="py-6 md:py-10">
+            <ProductListSkeleton count={10} />
           </div>
         ) : (isJewels
             ? items.filter((p) => p.listingType === listingTab)

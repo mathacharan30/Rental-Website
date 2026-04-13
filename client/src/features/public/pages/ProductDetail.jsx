@@ -12,9 +12,9 @@ import { createPayment } from "../../../services/paymentService";
 import { getDeliveryCities } from "../../../services/deliveryCityService";
 import { getProductTestimonials } from "../../../services/productTestimonialService";
 import toast from "react-hot-toast";
-import Loader from "../../shared/components/Loader";
 import OptimizedImage from "../../shared/components/OptimizedImage";
 import { useAuth } from "./../../../context/AuthContext";
+import { DeliveryCitiesSkeleton, ProductDetailSkeleton } from "../loaders";
 
 const fade = {
   initial: { opacity: 0 },
@@ -103,15 +103,7 @@ const ProductDetail = () => {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  if (loading)
-    return (
-      <motion.div
-        className="min-h-[60vh] flex items-center justify-center bg-[#0e0e0e]"
-        {...fade}
-      >
-        <Loader />
-      </motion.div>
-    );
+  if (loading) return <ProductDetailSkeleton />;
 
   if (!product) {
     return (
@@ -774,7 +766,7 @@ const ProductDetail = () => {
                     <MapPin size={12} /> Select Delivery City
                   </p>
                   {citiesLoading ? (
-                    <p className="text-sm text-neutral-500">Loading cities…</p>
+                    <DeliveryCitiesSkeleton count={6} />
                   ) : cities.length === 0 ? (
                     <p className="text-sm text-neutral-500">
                       No delivery cities available. Please contact us.

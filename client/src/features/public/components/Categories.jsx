@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getCategories } from "../../../services/categoryService";
 import toast from "react-hot-toast";
-import { ArrowBigLeft, ArrowRight } from "lucide-react";
-import Loader from "../../shared/components/Loader";
+import { ArrowRight } from "lucide-react";
 import OptimizedImage from "../../shared/components/OptimizedImage";
+import { CategoriesSkeleton } from "../loaders";
 
 function mapCategory(c = {}) {
   const imageSource = c.image || "/saree.jpg";
@@ -57,7 +57,7 @@ const Categories = () => {
 
         <div className="flex flex-wrap gap-2 justify-center">
           {isLoading ? (
-            <Loader />
+            <CategoriesSkeleton count={6} />
           ) : isError ? (
             <div className="text-red-400 py-12">Failed to load categories.</div>
           ) : categories.length === 0 ? (

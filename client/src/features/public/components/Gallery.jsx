@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import bannerService from "../../../services/bannerService";
-import Loader from "../../shared/components/Loader";
 import OptimizedImage from "../../shared/components/OptimizedImage";
+import { GallerySkeleton } from "../loaders";
 
 const Gallery = () => {
   const [galleryImages, setGalleryImages] = useState([]);
@@ -41,9 +41,7 @@ const Gallery = () => {
         </div>
         <div className="columns-2 sm:columns-3 lg:columns-4 gap-2 md:gap-3">
           {isLoading ? (
-            <div className="flex min-h-[220px] items-center justify-center rounded-2xl border border-white/5 bg-white/5">
-              <Loader />
-            </div>
+            <GallerySkeleton count={8} />
           ) : (
             galleryImages.map((img, i) => (
               <button
