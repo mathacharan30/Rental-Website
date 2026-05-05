@@ -4,21 +4,28 @@ export function openWhatsApp({
   size = "",
   phone,
   link,
+  heading,
+  intro,
+  extraLines = [],
+  closingNote,
 }) {
   try {
     const currentLink = link || window.location.href;
     const number = (phone || "9187668280").replace(/[^0-9]/g, "");
     const actionText = action === "rent" ? "rent" : "enquire";
     const parts = [
-      `Hello! I'm interested to ${actionText} the following item:`,
+      intro || `Hello! I'm interested to ${actionText} the following item:`,
       `Link: ${currentLink}`,
+      heading ? `• ${heading}` : null,
       `• Product: ${product?.title ?? "N/A"}`,
       size ? `• Size: ${size}` : null,
       product?.category ? `• Category: ${product.category}` : null,
       product?.price ? `• Listed Price: ${product.price}` : null,
       product?.id ? `• Product ID: ${product.id}` : null,
+      ...extraLines,
       "",
-      "Could you please share availability, rental terms, and next steps?",
+      closingNote ||
+        "Could you please share availability, rental terms, and next steps?",
     ].filter(Boolean);
 
     const text = encodeURIComponent(parts.join("\n"));

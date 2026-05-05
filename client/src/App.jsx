@@ -21,6 +21,7 @@ const Products = lazy(() => import("./features/public/pages/Products"));
 const ProductDetail = lazy(
   () => import("./features/public/pages/ProductDetail"),
 );
+const BridalCombo = lazy(() => import("./features/public/pages/BridalCombo"));
 const AboutUs = lazy(() => import("./features/public/pages/AboutUs"));
 const ContactUs = lazy(() => import("./features/public/pages/ContactUs"));
 const TermsAndConditions = lazy(
@@ -72,6 +73,7 @@ const App = () => {
                   <Route path="/products" element={<Products />} />
                   <Route path="/products/:category" element={<Products />} />
                   <Route path="/product/:id" element={<ProductDetail />} />
+                  <Route path="/combos/:slug" element={<BridalCombo />} />
                   <Route path="/about" element={<AboutUs />} />
                   <Route path="/contact" element={<ContactUs />} />
                   <Route path="/terms" element={<TermsAndConditions />} />
