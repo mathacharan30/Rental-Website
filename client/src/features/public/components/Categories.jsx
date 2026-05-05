@@ -67,12 +67,12 @@ const Categories = () => {
           >
             Categories
           </button>
-          <button
+          {/* <button
             onClick={() => setActiveTab("combos")}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-all border inline-flex items-center gap-2 ${activeTab === "combos" ? "bg-gradient-to-r from-violet-600 to-fuchsia-500 border-violet-400 text-white" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40"}`}
           >
             <Sparkles size={14} /> Combos
-          </button>
+          </button> */}
         </div>
 
         {activeTab === "categories" ? (
