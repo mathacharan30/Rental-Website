@@ -243,7 +243,7 @@ const Navbar = () => {
               >
                 <Link
                   to={dashboardLink}
-                  className="px-3 py-1.5 rounded-full flex items-center gap-1 text-violet-400 capitalize border hover:bg-violet-500/20 border-violet-500/20 bg-violet-500/10 px-3 py-1  transition-all"
+                  className="px-3 py-1.5 rounded-full flex items-center gap-1 text-violet-400 capitalize border hover:bg-violet-500/20 border-violet-500/20 bg-violet-500/10 transition-all"
                 >
                   {dashboardLabel} <ArrowRight size={20} />
                 </Link>
@@ -323,7 +323,7 @@ const Navbar = () => {
                   <>
                     <button
                       onClick={handleLogout}
-                      className="text-sm text-neutral-500 mx-4 bg-red-600 px-4 py-1.5 rounded-full text-white hover:bg-red-800 transition-colors"
+                      className="text-sm text-white mx-4 bg-red-600 px-4 py-1.5 rounded-full hover:bg-red-800 transition-colors"
                     >
                       Logout
                     </button>

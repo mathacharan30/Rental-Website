@@ -180,7 +180,7 @@ const CustomerProfile = () => {
                       {o.product?.images?.[0]?.url && (
                         <img
                           src={o.product.images[0].url}
-                          alt=""
+                          alt={o.product?.name || "Product image"}
                           className="w-16 h-16 object-cover rounded-xl border border-white/10 shrink-0"
                         />
                       )}

@@ -104,7 +104,7 @@ const OrdersAdmin = () => {
                         {o.product?.images?.[0]?.url && (
                           <img
                             src={o.product.images[0].url}
-                            alt=""
+                            alt={o.product?.name || "Product image"}
                             className="w-10 h-10 rounded object-cover border border-white/10"
                           />
                         )}

@@ -539,7 +539,7 @@ const ProductDetail = () => {
                       <OptimizedImage
                         url={t.user.profilePicture}
                         type="gallery"
-                        alt=""
+                        alt={t.user?.name ? `${t.user.name} profile picture` : "Customer profile picture"}
                         className="w-10 h-10 rounded-full object-cover border border-white/10"
                       />
                     ) : (

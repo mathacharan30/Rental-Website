@@ -8,7 +8,10 @@
       "Bash(config\")",
       "Bash(npm install *)",
       "Bash(timeout 25 npx astro dev)",
-      "Bash(not exist *)"
+      "Bash(not exist *)",
+      "Bash(Get-ChildItem -Path \"d:\\\\Rental\\\\Rental-website-main\" -Recurse -Force)",
+      "Bash(Select-Object -Property FullName)",
+      "Bash(Sort-Object FullName)"
     ]
   }
 }

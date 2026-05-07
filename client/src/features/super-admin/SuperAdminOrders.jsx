@@ -76,7 +76,7 @@ export default function SuperAdminOrders() {
                         {o.product?.images?.[0]?.url && (
                           <img
                             src={o.product.images[0].url}
-                            alt=""
+                            alt={o.product?.name || "Product image"}
                             className="w-9 h-9 rounded object-cover border border-white/10"
                           />
                         )}
@@ -96,7 +96,7 @@ export default function SuperAdminOrders() {
                       </span>
                     </td>
                     {/* Customer */}
-                    <td className="px-4 py-3 min-w-[180px]">
+                    <td className="px-4 py-3 min-w-45">
                       <div className="font-medium text-white">
                         {o.customer?.name || "—"}
                       </div>

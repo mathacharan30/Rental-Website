@@ -922,9 +922,8 @@ After 30 days of data, look for:
 ### Month 1 — Foundation (Technical + Local)
 
 **Week 1**
-- [ ] Install react-snap and configure prerendering
-- [ ] Update main.jsx to use hydrateRoot
-- [ ] Create dynamic sitemap route in Express
+- [x] Prerendering — migrated to Astro (static HTML heads, SSR product pages)
+- [x] Create dynamic sitemap — Astro endpoint at /sitemap.xml (fetches all products from API)
 - [ ] Set up Google Search Console and submit sitemap
 
 **Week 2**
@@ -940,9 +939,9 @@ After 30 days of data, look for:
 - [ ] Submit to Justdial, Sulekha, Indiamart
 
 **Week 4**
-- [ ] Fix product page Helmet meta tags
-- [ ] Add alt text audit across all image components
-- [ ] Add canonical URLs to all pages
+- [x] Fix product page meta tags — Astro SSR product/[id].astro fetches real data
+- [x] Add alt text to all image components — 4 files fixed
+- [x] Add canonical URLs to all pages — done in all Astro page heads
 - [ ] Submit to WedMeGood, WeddingWire India
 - [ ] Publish Month 1 Blog Post 1
 
