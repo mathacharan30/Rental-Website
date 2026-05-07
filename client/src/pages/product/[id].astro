@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import ReactApp from '../../components/ReactApp.jsx'
+
+const { id } = Astro.params
+
+const API_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/+$/, '')
+
+let title = 'Rental Outfit | People & Style'
+let description = 'Rent this premium outfit from People & Style. Available for delivery in Mysuru and Bangalore, Karnataka.'
+let ogImage: string | undefined = undefined
+let productSchema: Record<string, unknown> | undefined = undefined
+
+if (API_URL && id) {
+  try {
+    const res = await fetch(`${API_URL}/api/products/${id}`)
+    if (res.ok) {
+      const product = await res.json()
+      const name: string = product?.title ?? product?.name ?? ''
+      if (name) {
+        title = `${name} — Rent in Mysuru & Bangalore | People & Style`
+        description = product?.description
+          ? String(product.description).slice(0, 160)
+          : `Rent ${name} from People & Style. Premium rental available in Mysuru and Bangalore.`
+        const firstImage: string = product?.images?.[0] ?? product?.image ?? ''
+        if (firstImage) ogImage = firstImage
+
+        const price = String(product?.advanceAmount ?? product?.rentPrice ?? '0').replace(/[^0-9.]/g, '')
+        productSchema = {
+          '@context': 'https://schema.org',
+          '@type': 'Product',
+          name,
+          image: product?.images?.length ? product.images : firstImage ? [firstImage] : [],
+          description: product?.description ?? `Premium ${product?.category ?? 'outfit'} available for rent at People & Style`,
+          brand: { '@type': 'Brand', name: 'People & Style' },
+          offers: {
+            '@type': 'Offer',
+            url: `https://peopleandstyle.in/product/${id}`,
+            priceCurrency: 'INR',
+            price,
+            availability: 'https://schema.org/InStock',
+            itemCondition: 'https://schema.org/UsedCondition',
+          },
+        }
+      }
+    }
+  } catch {
+    // fall through to defaults
+  }
+}
+
+const canonical = `https://peopleandstyle.in/product/${id}`
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+  ogImage={ogImage}
+  ogType="product"
+  schema={productSchema}
+>
+  <ReactApp client:only="react" />
+</BaseLayout>

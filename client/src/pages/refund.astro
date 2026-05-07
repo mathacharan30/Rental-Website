@@ -1,0 +1,14 @@
+---
+export const prerender = true
+import BaseLayout from '../layouts/BaseLayout.astro'
+import ReactApp from '../components/ReactApp.jsx'
+---
+
+<BaseLayout
+  title="Refund Policy | People & Style"
+  description="Refund and cancellation policy for bridal wear rental, makeup and photography bookings at People & Style."
+  canonical="https://peopleandstyle.in/refund"
+  keywords="People and Style refund policy, bridal rental cancellation policy"
+>
+  <ReactApp client:only="react" />
+</BaseLayout>

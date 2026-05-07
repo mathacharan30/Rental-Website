@@ -1,0 +1,14 @@
+---
+export const prerender = true
+import BaseLayout from '../layouts/BaseLayout.astro'
+import ReactApp from '../components/ReactApp.jsx'
+---
+
+<BaseLayout
+  title="Privacy Policy | People & Style"
+  description="Privacy policy for People & Style. Learn how we handle your data when you use our bridal rental, makeup and photography services."
+  canonical="https://peopleandstyle.in/privacy"
+  keywords="People and Style privacy policy"
+>
+  <ReactApp client:only="react" />
+</BaseLayout>

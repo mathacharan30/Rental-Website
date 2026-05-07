@@ -1,0 +1,12 @@
+---
+export const prerender = false
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import ReactApp from '../../../components/ReactApp.jsx'
+---
+
+<BaseLayout
+  title="Payment Status | People & Style"
+  description="Check the status of your payment for People & Style rental order."
+>
+  <ReactApp client:only="react" />
+</BaseLayout>

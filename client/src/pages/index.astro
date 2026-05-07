@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import ReactApp from '../components/ReactApp.jsx'
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': ['LocalBusiness', 'ClothingStore'],
+  name: 'People & Style',
+  description:
+    'Karnataka\'s premium bridal rental service. Rent lehenga, gowns, jewellery. Bridal makeup & wedding photography in Mysuru and Bangalore.',
+  url: 'https://peopleandstyle.in',
+  telephone: '+919187668280',
+  email: 'hello@peopleandstyle.in',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Mysuru',
+    addressRegion: 'Karnataka',
+    postalCode: '570026',
+    addressCountry: 'IN',
+  },
+  areaServed: [
+    { '@type': 'City', name: 'Mysuru' },
+    { '@type': 'City', name: 'Bangalore' },
+    { '@type': 'State', name: 'Karnataka' },
+  ],
+  openingHours: ['Mo-Sa 10:00-19:00', 'Su 11:00-17:00'],
+  priceRange: '₹₹',
+}
+---
+
+<BaseLayout
+  title="Bridal Wear on Rent in Mysuru & Bangalore | People & Style"
+  description="People & Style — Rent bridal lehenga, wedding gown, sherwani & jewellery in Mysuru and Bangalore. Also offering bridal makeup and wedding photography services. Karnataka's #1 bridal rental studio."
+  canonical="https://peopleandstyle.in/"
+  keywords="bridal wear on rent in Mysuru, bridal wear on rent in Bangalore, bridal lehenga on rent Mysuru, wedding gown rental Mysuru, sherwani on rent Mysuru, bridal jewellery on rent Mysuru, bridal jewellery on rent Bangalore, makeup artist Mysuru, wedding photographer Mysuru, rental clothing Mysuru, People and Style"
+  schema={schema}
+>
+  <ReactApp client:only="react" />
+</BaseLayout>

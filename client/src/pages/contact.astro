@@ -1,0 +1,14 @@
+---
+export const prerender = true
+import BaseLayout from '../layouts/BaseLayout.astro'
+import ReactApp from '../components/ReactApp.jsx'
+---
+
+<BaseLayout
+  title="Contact Us | People & Style — Bridal Rental Mysuru & Bangalore"
+  description="Get in touch with People & Style for bridal wear rental, jewellery rental, makeup bookings and photography enquiries in Mysuru and Bangalore."
+  canonical="https://peopleandstyle.in/contact"
+  keywords="contact People and Style, bridal rental enquiry Mysuru, book bridal makeup Mysuru, wedding photography enquiry Bangalore"
+>
+  <ReactApp client:only="react" />
+</BaseLayout>

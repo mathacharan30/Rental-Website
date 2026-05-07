@@ -1,0 +1,14 @@
+---
+export const prerender = true
+import BaseLayout from '../layouts/BaseLayout.astro'
+import ReactApp from '../components/ReactApp.jsx'
+---
+
+<BaseLayout
+  title="Terms & Conditions | People & Style"
+  description="Terms and conditions for using People & Style bridal rental, makeup and photography services in Mysuru and Bangalore."
+  canonical="https://peopleandstyle.in/terms"
+  keywords="People and Style terms and conditions"
+>
+  <ReactApp client:only="react" />
+</BaseLayout>

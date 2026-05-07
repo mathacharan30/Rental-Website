@@ -1,0 +1,12 @@
+---
+export const prerender = false
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import ReactApp from '../../components/ReactApp.jsx'
+---
+
+<BaseLayout
+  title="Admin Dashboard | People & Style"
+  description="People & Style store owner dashboard."
+>
+  <ReactApp client:only="react" />
+</BaseLayout>

@@ -35,7 +35,7 @@ router.post(
   [
     body('name').trim().notEmpty().withMessage('name is required').isLength({ max: 100 }),
     body('email').trim().isEmail().withMessage('Valid email is required').normalizeEmail(),
-    body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters'),
+    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
     body('storeName').trim().notEmpty().withMessage('storeName is required').isLength({ max: 100 }),
   ],
   validate,

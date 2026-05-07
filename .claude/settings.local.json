@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"d:\\\\Rental\\\\Rental-website-main\" -Force)",
+      "Bash(Select-Object Name, FullName)",
+      "Bash(Get-ChildItem -Path \"d:\\\\Rental\\\\Rental-website-main\\\\client\" -Recurse -Force)",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(config\")",
+      "Bash(npm install *)",
+      "Bash(timeout 25 npx astro dev)"
+    ]
+  }
+}

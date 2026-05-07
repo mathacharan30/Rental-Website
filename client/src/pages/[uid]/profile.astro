@@ -1,0 +1,12 @@
+---
+export const prerender = false
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import ReactApp from '../../components/ReactApp.jsx'
+---
+
+<BaseLayout
+  title="My Profile | People & Style"
+  description="Manage your People & Style account, view order history and update your details."
+>
+  <ReactApp client:only="react" />
+</BaseLayout>

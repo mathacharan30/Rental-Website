@@ -1,0 +1,13 @@
+---
+export const prerender = true
+import BaseLayout from '../layouts/BaseLayout.astro'
+import ReactApp from '../components/ReactApp.jsx'
+---
+
+<BaseLayout
+  title="Sign Up | People & Style"
+  description="Create an account with People & Style to start renting bridal wear, jewellery and booking makeup and photography services."
+  canonical="https://peopleandstyle.in/signup"
+>
+  <ReactApp client:only="react" />
+</BaseLayout>

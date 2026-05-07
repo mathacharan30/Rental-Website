@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import ReactApp from '../../components/ReactApp.jsx'
+
+const { category } = Astro.params
+const decoded = decodeURIComponent(category ?? '').toLowerCase()
+
+type CategoryMeta = {
+  title: string
+  description: string
+  keywords: string
+}
+
+const categoryMap: Record<string, CategoryMeta> = {
+  lehenga: {
+    title: 'Bridal Lehenga on Rent in Mysuru & Bangalore | People & Style',
+    description:
+      'Rent designer bridal lehenga in Mysuru and Bangalore. Browse red bridal lehenga, heavy bridal lehenga, reception lehenga, engagement lehenga, half saree & more. Affordable lehenga rental delivered to your door.',
+    keywords:
+      'bridal lehenga on rent in Mysuru, bridal lehenga on rent in Bangalore, designer lehenga on rent, wedding lehenga rental, red bridal lehenga on rent, reception lehenga on rent, half saree on rent',
+  },
+  gowns: {
+    title: 'Bridal Gown on Rent in Mysuru & Bangalore | Wedding Gown Rental',
+    description:
+      'Rent bridal gown, wedding gown, reception gown & designer gown in Mysuru and Bangalore. White bridal gown, maternity gown, pre-wedding & photoshoot gown rental.',
+    keywords:
+      'wedding gown on rent in Mysuru, wedding gown on rent in Bangalore, bridal gown on rent, reception gown on rent, white bridal gown rental, designer gown on rent, photoshoot gown on rent',
+  },
+  men: {
+    title: 'Men Wedding Dress on Rent in Mysuru & Bangalore | Sherwani, Blazer, Suit',
+    description:
+      'Rent sherwani, blazer, suit, tuxedo & groom wear in Mysuru and Bangalore. Men wedding dress rental, indo western on rent, coat suit on rent.',
+    keywords:
+      'men wedding dress on rent, groom wear on rent, sherwani on rent, blazer on rent, suit on rent, sherwani rental Mysuru, wedding suit on rent, indo western on rent',
+  },
+  jewels: {
+    title: 'Bridal Jewellery on Rent in Mysuru & Bangalore | Temple Jewellery Rental',
+    description:
+      'Rent bridal jewellery, temple jewellery, imitation jewellery & wedding accessories in Mysuru and Bangalore. Necklace set on rent, bridal crown on rent, bangles on rent.',
+    keywords:
+      'bridal jewellery on rent, temple jewellery on rent, imitation jewellery on rent, jewellery rental Mysuru, jewellery rental Bangalore, necklace set on rent, bridal crown on rent',
+  },
+}
+
+const meta = categoryMap[decoded] ?? {
+  title: `${decoded.charAt(0).toUpperCase() + decoded.slice(1)} on Rent in Mysuru & Bangalore | People & Style`,
+  description: `Rent ${decoded} in Mysuru and Bangalore at People & Style. Premium rental for weddings and special occasions.`,
+  keywords: `${decoded} on rent Mysuru, ${decoded} on rent Bangalore, ${decoded} rental`,
+}
+
+const canonical = `https://peopleandstyle.in/products/${encodeURIComponent(decoded)}`
+---
+
+<BaseLayout
+  title={meta.title}
+  description={meta.description}
+  canonical={canonical}
+  keywords={meta.keywords}
+>
+  <ReactApp client:only="react" />
+</BaseLayout>

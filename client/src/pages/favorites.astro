@@ -1,0 +1,13 @@
+---
+export const prerender = true
+import BaseLayout from '../layouts/BaseLayout.astro'
+import ReactApp from '../components/ReactApp.jsx'
+---
+
+<BaseLayout
+  title="My Favourites | People & Style"
+  description="Your saved rental outfits and items at People & Style."
+  canonical="https://peopleandstyle.in/favorites"
+>
+  <ReactApp client:only="react" />
+</BaseLayout>

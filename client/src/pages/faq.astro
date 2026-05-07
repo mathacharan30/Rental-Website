@@ -1,0 +1,62 @@
+---
+export const prerender = true
+import BaseLayout from '../layouts/BaseLayout.astro'
+import ReactApp from '../components/ReactApp.jsx'
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'How does bridal wear rental work at People & Style?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Browse our collection online, select your outfit and size, book your rental dates, and we deliver to your door in Mysuru or Bangalore. After your event, return the outfit.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do you offer bridal jewellery on rent in Mysuru?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes! We offer a wide range of bridal jewellery sets, temple jewellery, and imitation jewellery for rent in Mysuru and Bangalore.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do you provide makeup services and photography?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes, People & Style offers professional bridal makeup services and wedding photography in Mysuru and Bangalore.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How far in advance should I book?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We recommend booking at least 2-4 weeks in advance, especially during peak wedding season (October to February).',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do you deliver outside Mysuru and Bangalore?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'We deliver across Karnataka. Contact us for delivery to specific locations outside Mysuru and Bangalore.',
+      },
+    },
+  ],
+}
+---
+
+<BaseLayout
+  title="FAQ | People & Style — Bridal Rental, Makeup & Photography Mysuru"
+  description="Frequently asked questions about bridal wear rental, jewellery rental, makeup services and wedding photography at People & Style in Mysuru and Bangalore."
+  canonical="https://peopleandstyle.in/faq"
+  keywords="bridal rental FAQ Mysuru, rental questions, how does bridal rental work, People and Style FAQ"
+  schema={faqSchema}
+>
+  <ReactApp client:only="react" />
+</BaseLayout>

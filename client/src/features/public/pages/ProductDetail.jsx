@@ -297,7 +297,7 @@ const ProductDetail = () => {
             {allImages.map((imgUrl, i) => (
               <div
                 key={i}
-                className="relative shrink-0 w-full snap-center rounded-2xl overflow-hidden border border-white/6 aspect-[4/5] md:aspect-[3/4] max-h-[420px] md:max-h-[480px]"
+                className="relative shrink-0 w-full snap-center rounded-2xl overflow-hidden border border-white/6 aspect-4/5 md:aspect-3/4 max-h-105 md:max-h-120"
               >
                 <OptimizedImage
                   url={imgUrl}
