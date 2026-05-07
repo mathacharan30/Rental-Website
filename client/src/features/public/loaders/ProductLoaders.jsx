@@ -1,7 +1,7 @@
 const ProductCardSkeleton = ({ className = "" }) => {
   return (
     <div
-      className={`relative w-[155px] mb-6 md:w-54 overflow-hidden block ${className}`}
+      className={`relative w-38.75 mb-6 md:w-54 overflow-hidden block ${className}`}
       aria-hidden="true"
     >
       <div className="relative h-65 md:h-80 overflow-hidden rounded-xl skeleton-base" />
@@ -55,7 +55,7 @@ const ProductDetailSkeleton = () => {
 
       <div className="flex flex-col md:flex-row md:items-start md:gap-6 max-w-6xl mx-auto mt-4 px-2 md:px-4">
         <div className="relative w-full md:w-[48%] max-w-xl mx-auto md:mx-0">
-          <div className="w-full rounded-2xl border border-white/6 aspect-[4/5] md:aspect-[3/4] max-h-[420px] md:max-h-[480px] skeleton-base" />
+          <div className="w-full rounded-2xl border border-white/6 aspect-4/5 md:aspect-3/4 max-h-105 md:max-h-120 skeleton-base" />
           <div className="flex justify-center gap-1 mt-2 overflow-x-auto pb-1">
             {Array.from({ length: 5 }).map((_, index) => (
               <div

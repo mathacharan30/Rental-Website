@@ -1,38 +1,31 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import bannerService from "../../../services/bannerService";
 import OptimizedImage from "../../shared/components/OptimizedImage";
 import { HeroSkeleton } from "../loaders";
 
 const Hero = () => {
   const [activeSlide, setActiveSlide] = useState(0);
-  const [banners, setBanners] = useState([]);
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
+  const device = isMobile ? "mobile" : "desktop";
 
-  const loadBanners = useCallback((mobile) => {
-    const device = mobile ? "mobile" : "desktop";
-    bannerService
-      .getBanners("hero", device)
-      .then((list) => {
-        setBanners(list.filter((b) => b.imageUrl));
-        setActiveSlide(0);
-      })
-      .catch(() => {
-        setBanners([]);
-      });
-  }, []);
+  const { data: banners = [] } = useQuery({
+    queryKey: ["banners", "hero", device],
+    queryFn: () =>
+      bannerService.getBanners("hero", device).then((list) => list.filter((b) => b.imageUrl)),
+    staleTime: 5 * 60 * 1000,
+  });
 
-  // Detect screen size on mount and on resize
   useEffect(() => {
-    loadBanners(isMobile);
+    setActiveSlide(0);
+  }, [device]);
 
+  useEffect(() => {
     const mq = window.matchMedia("(max-width: 767px)");
-    const onChange = (e) => {
-      setIsMobile(e.matches);
-      loadBanners(e.matches);
-    };
+    const onChange = (e) => setIsMobile(e.matches);
     mq.addEventListener("change", onChange);
     return () => mq.removeEventListener("change", onChange);
-  }, [loadBanners, isMobile]);
+  }, []);
 
   useEffect(() => {
     if (banners.length < 2) return;

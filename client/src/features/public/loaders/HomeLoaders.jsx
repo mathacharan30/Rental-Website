@@ -6,7 +6,7 @@ const HeroSkeleton = () => {
           <div className="h-10 w-2/3 mx-auto rounded-xl skeleton-base" />
           <div className="h-4 w-1/2 mx-auto rounded skeleton-base" />
         </div>
-        <div className="mx-auto h-12 w-[220px] rounded-[1.75rem] skeleton-base" />
+        <div className="mx-auto h-12 w-55 rounded-[1.75rem] skeleton-base" />
       </div>
     </div>
   );
@@ -74,7 +74,7 @@ const TestimonialsSkeleton = ({ count = 4 }) => {
       {Array.from({ length: count }).map((_, index) => (
         <article
           key={index}
-          className="relative w-72 shrink-0 rounded-tr-2xl mx-2 rounded-bl-2xl p-[1px] border border-violet-400/20 overflow-hidden"
+          className="relative w-72 shrink-0 rounded-tr-2xl mx-2 rounded-bl-2xl p-px border border-violet-400/20 overflow-hidden"
           aria-hidden="true"
         >
           <div className="h-full rounded-2xl bg-black/10 p-10 flex flex-col justify-between">

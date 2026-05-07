@@ -55,7 +55,7 @@ const OptimizedImage = ({ url, type = "gallery", alt = "", className = "", loadi
     <IKImage
       path={path}
       transformation={[{ width: width.toString(), quality: "auto", format: "auto" }]}
-      lqip={{ active: true, quality: 20 }}
+      {...(type === "hero" ? { lqip: { active: true, quality: 10 } } : {})}
       alt={alt}
       className={className}
       loading={loading}
