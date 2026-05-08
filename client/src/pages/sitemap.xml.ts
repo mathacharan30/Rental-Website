@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro'
 
 export const GET: APIRoute = async () => {
-  const DOMAIN = import.meta.env.PUBLIC_SITE_URL || 'https://peoplenstyle.com'
+  const DOMAIN = import.meta.env.PUBLIC_SITE_URL || 'https://peopleandstyle.in'
   const API    = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '')
 
   const staticPages = [
