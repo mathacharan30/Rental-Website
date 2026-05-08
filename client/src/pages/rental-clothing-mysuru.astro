@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import ReactApp from '../components/ReactApp.jsx'
+
+export const prerender = true
+
+const SITE = 'https://peopleandstyle.in'
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': ['LocalBusiness', 'ClothingStore'],
+  name: 'People & Style — Bridal Clothing Rental Mysuru',
+  description: 'Premium bridal lehenga, wedding gown, sherwani and saree on rent in Mysuru. 200+ outfits starting from ₹500. Doorstep delivery available.',
+  url: `${SITE}/rental-clothing-mysuru`,
+  telephone: '+919187668280',
+  email: 'hello@peopleandstyle.in',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Mysuru',
+    addressRegion: 'Karnataka',
+    postalCode: '570026',
+    addressCountry: 'IN',
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: '12.2958', longitude: '76.6394' },
+  openingHours: ['Mo-Sa 10:00-19:00', 'Su 11:00-17:00'],
+  priceRange: '₹₹',
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Bridal Clothing Rental Mysuru',
+    itemListElement: [
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Bridal Lehenga on Rent in Mysuru' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Wedding Gown Rental Mysuru' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Sherwani on Rent in Mysuru' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Silk Saree on Rent Mysuru' } },
+    ],
+  },
+}
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'How much does bridal clothing rental cost in Mysuru?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Rental prices start from ₹500 for bridesmaid outfits and go up to ₹3,000+ for heavy bridal lehengas and sherwanis. Contact us on WhatsApp for a personalised quote.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'How far in advance should I book bridal wear in Mysuru?',
+      acceptedAnswer: { '@type': 'Answer', text: 'We recommend booking at least 3–4 weeks in advance. For Dasara season, book 6–8 weeks ahead.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do you offer home delivery for clothing rentals in Mysuru?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes. We deliver to all areas within Mysuru with return pickup included.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can I try on the outfit before confirming my booking?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes, you can visit our Mysuru store for a trial fitting 2–3 weeks before your event.' },
+    },
+    {
+      '@type': 'Question',
+      name: "What if the outfit doesn't fit properly on the day?",
+      acceptedAnswer: { '@type': 'Answer', text: 'Our team does a fitting check at delivery and makes on-the-spot adjustments at no extra cost.' },
+    },
+  ],
+}
+---
+
+<BaseLayout
+  title="Bridal Clothing on Rent in Mysuru | Lehenga, Gown, Sherwani — People & Style"
+  description="Rent designer bridal lehengas, wedding gowns, sherwanis and silk sarees in Mysuru. 200+ outfits starting from ₹500. Doorstep delivery. People & Style."
+  canonical={`${SITE}/rental-clothing-mysuru`}
+  keywords="bridal lehenga on rent in Mysuru, wedding gown rental Mysuru, sherwani on rent Mysuru, bridal wear rental Mysuru, designer lehenga rent Mysuru, silk saree on rent Mysuru"
+  schema={[serviceSchema, faqSchema]}
+>
+  <ReactApp client:only="react" />
+</BaseLayout>

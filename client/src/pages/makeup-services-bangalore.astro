@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import ReactApp from '../components/ReactApp.jsx'
+
+export const prerender = true
+
+const SITE = 'https://peopleandstyle.in'
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': ['LocalBusiness', 'BeautySalon'],
+  name: 'People & Style — Bridal Makeup Bangalore',
+  description: 'Professional bridal makeup artists in Bangalore. Traditional, HD and airbrush bridal makeup for all functions. Home and venue service across Bangalore.',
+  url: `${SITE}/makeup-services-bangalore`,
+  telephone: '+919187668280',
+  email: 'hello@peopleandstyle.in',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Bangalore',
+    addressRegion: 'Karnataka',
+    addressCountry: 'IN',
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: '12.9716', longitude: '77.5946' },
+  openingHours: ['Mo-Sa 10:00-19:00', 'Su 11:00-17:00'],
+  priceRange: '₹₹₹',
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Bridal Makeup Services Bangalore',
+    itemListElement: [
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Traditional Bridal Makeup Bangalore' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'HD Bridal Makeup Bangalore' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Airbrush Bridal Makeup Bangalore' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'South Indian Bridal Makeup Bangalore' } },
+    ],
+  },
+}
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Do you offer bridal makeup at home or venue in Bangalore?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes, our makeup artists travel to your home or wedding venue anywhere in Bangalore — Koramangala, Whitefield, Jayanagar, Indiranagar, JP Nagar, and more.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'What is the cost of bridal makeup in Bangalore?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Prices start from ₹3,500 for basic ceremony makeup. Full bridal HD or airbrush packages for multiple functions start from ₹8,000. Contact us for a detailed quote.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'How is HD makeup different from airbrush makeup?',
+      acceptedAnswer: { '@type': 'Answer', text: 'HD makeup uses products formulated for high-definition cameras — great for photo and video. Airbrush makeup is applied with a compressor for an ultra-thin, long-lasting layer. Airbrush tends to last longer in warm or humid conditions.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can I book a trial session before the wedding?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes, we strongly recommend a trial session 2–3 weeks before your wedding so you can see the look and make any adjustments with full confidence.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do you do makeup for South Indian weddings specifically?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes, we have extensive experience with traditional South Indian bridal looks — Kannadiga, Tamil, and Telugu styles — including silk saree makeup and traditional jewellery-complement makeup.' },
+    },
+  ],
+}
+---
+
+<BaseLayout
+  title="Bridal Makeup Services in Bangalore | HD, Airbrush & Traditional — People & Style"
+  description="Professional bridal makeup artists in Bangalore. HD, airbrush, South Indian traditional makeup. Home and venue service. Pre-wedding consultation included. People & Style."
+  canonical={`${SITE}/makeup-services-bangalore`}
+  keywords="bridal makeup artist Bangalore, bridal makeup services Bangalore, HD bridal makeup Bangalore, airbrush makeup Bangalore, professional makeup artist Bangalore, South Indian bridal makeup Bangalore"
+  schema={[serviceSchema, faqSchema]}
+>
+  <ReactApp client:only="react" />
+</BaseLayout>

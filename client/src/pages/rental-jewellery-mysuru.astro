@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import ReactApp from '../components/ReactApp.jsx'
+
+export const prerender = true
+
+const SITE = 'https://peopleandstyle.in'
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': ['LocalBusiness', 'JewelryStore'],
+  name: 'People & Style — Bridal Jewellery Rental Mysuru',
+  description: 'Bridal jewellery sets, temple jewellery, kundan, polki and gold-finish jewellery on rent in Mysuru. Starting from ₹300.',
+  url: `${SITE}/rental-jewellery-mysuru`,
+  telephone: '+919187668280',
+  email: 'hello@peopleandstyle.in',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Mysuru',
+    addressRegion: 'Karnataka',
+    postalCode: '570026',
+    addressCountry: 'IN',
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: '12.2958', longitude: '76.6394' },
+  openingHours: ['Mo-Sa 10:00-19:00', 'Su 11:00-17:00'],
+  priceRange: '₹₹',
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Bridal Jewellery Rental Mysuru',
+    itemListElement: [
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Temple Jewellery on Rent Mysuru' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Kundan Jewellery Rental Mysuru' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Gold Finish Bridal Jewellery Rental Mysuru' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Bridal Necklace Set on Rent Mysuru' } },
+    ],
+  },
+}
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'How much does bridal jewellery rental cost in Mysuru?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Jewellery rental prices start from ₹300 for single pieces and ₹800–₹3,000 for complete bridal sets depending on the design and number of pieces.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Is the jewellery gold or artificial?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Our rental jewellery is high-quality imitation jewellery crafted to look identical to gold and precious stone jewellery — ideal for weddings.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'How do I match jewellery with my bridal outfit?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Share a photo of your outfit on WhatsApp and our team will suggest the best matching sets from our collection.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'How far in advance should I book bridal jewellery in Mysuru?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Book at least 2–3 weeks before your event. For the October–February wedding season, 4–6 weeks in advance is recommended.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'What if a piece gets damaged during the rental?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Minor wear is expected and covered. For significant damage, a small damage fee may apply. We discuss this transparently before finalising.' },
+    },
+  ],
+}
+---
+
+<BaseLayout
+  title="Bridal Jewellery on Rent in Mysuru | Temple, Kundan, Gold Sets — People & Style"
+  description="Rent bridal jewellery sets, temple jewellery, kundan and gold-finish sets in Mysuru. Complete sets from ₹800. Home delivery available. People & Style."
+  canonical={`${SITE}/rental-jewellery-mysuru`}
+  keywords="bridal jewellery on rent Mysuru, wedding jewellery rental Mysuru, temple jewellery on rent Mysuru, gold jewellery rental Mysuru, kundan jewellery rental Mysuru"
+  schema={[serviceSchema, faqSchema]}
+>
+  <ReactApp client:only="react" />
+</BaseLayout>

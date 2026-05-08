@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import ReactApp from '../components/ReactApp.jsx'
+
+export const prerender = true
+
+const SITE = 'https://peopleandstyle.in'
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': ['LocalBusiness', 'JewelryStore'],
+  name: 'People & Style — Bridal Jewellery Rental Bangalore',
+  description: 'Complete bridal jewellery sets, temple jewellery, kundan, polki and meenakari sets on rent in Bangalore. Starting from ₹300.',
+  url: `${SITE}/rental-jewellery-bangalore`,
+  telephone: '+919187668280',
+  email: 'hello@peopleandstyle.in',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Bangalore',
+    addressRegion: 'Karnataka',
+    addressCountry: 'IN',
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: '12.9716', longitude: '77.5946' },
+  openingHours: ['Mo-Sa 10:00-19:00', 'Su 11:00-17:00'],
+  priceRange: '₹₹',
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Bridal Jewellery Rental Bangalore',
+    itemListElement: [
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Temple Jewellery Rental Bangalore' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Kundan Jewellery Rental Bangalore' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Polki Jewellery on Rent Bangalore' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Bridal Necklace Set Rental Bangalore' } },
+    ],
+  },
+}
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What jewellery styles are available on rent in Bangalore?',
+      acceptedAnswer: { '@type': 'Answer', text: 'We offer temple jewellery, kundan sets, polki sets, meenakari sets, gold-finish sets, and stone-studded bridal jewellery. Both South Indian and North Indian styles are available.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can I rent individual pieces instead of a full set?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes, you can rent individual pieces like just a necklace, earrings, or maang tikka. You do not have to book a full set.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Is there a security deposit for jewellery rental?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes, a refundable security deposit is collected at the time of booking. It is fully refunded after the jewellery is returned in the same condition.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do you deliver jewellery rentals to all parts of Bangalore?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes, we deliver across Bangalore — Koramangala, HSR Layout, Whitefield, Indiranagar, Jayanagar, Hebbal, and all other localities.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can I return the jewellery the day after the event?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes, you can book for multiple days. We recommend booking for 2 days — one for the event and one buffer day for return.' },
+    },
+  ],
+}
+---
+
+<BaseLayout
+  title="Bridal Jewellery on Rent in Bangalore | Temple, Kundan, Polki Sets — People & Style"
+  description="Rent complete bridal jewellery sets, temple jewellery, kundan and polki sets in Bangalore. Starting from ₹300. Home delivery across Bangalore. People & Style."
+  canonical={`${SITE}/rental-jewellery-bangalore`}
+  keywords="bridal jewellery on rent Bangalore, wedding jewellery rental Bangalore, temple jewellery rental Bangalore, kundan jewellery rental Bangalore, artificial jewellery rent Bangalore"
+  schema={[serviceSchema, faqSchema]}
+>
+  <ReactApp client:only="react" />
+</BaseLayout>

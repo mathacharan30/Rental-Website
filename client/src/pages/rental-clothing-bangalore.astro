@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import ReactApp from '../components/ReactApp.jsx'
+
+export const prerender = true
+
+const SITE = 'https://peopleandstyle.in'
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': ['LocalBusiness', 'ClothingStore'],
+  name: 'People & Style — Bridal Clothing Rental Bangalore',
+  description: 'Premium bridal lehenga, wedding gown, sherwani and saree on rent in Bangalore. 200+ outfits starting from ₹500. Home delivery across Bangalore.',
+  url: `${SITE}/rental-clothing-bangalore`,
+  telephone: '+919187668280',
+  email: 'hello@peopleandstyle.in',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Bangalore',
+    addressRegion: 'Karnataka',
+    addressCountry: 'IN',
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: '12.9716', longitude: '77.5946' },
+  openingHours: ['Mo-Sa 10:00-19:00', 'Su 11:00-17:00'],
+  priceRange: '₹₹',
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Bridal Clothing Rental Bangalore',
+    itemListElement: [
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Bridal Lehenga on Rent in Bangalore' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Wedding Gown Rental Bangalore' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Sherwani Rental Bangalore' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Designer Lehenga on Rent Bangalore' } },
+    ],
+  },
+}
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'How much does bridal lehenga rental cost in Bangalore?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Rental prices start from ₹500 for lighter occasion wear and go up to ₹4,000 for premium bridal lehengas with heavy embroidery. Contact us for specific pricing.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do you deliver bridal clothing rentals to all areas in Bangalore?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes, we deliver across Bangalore including Koramangala, Whitefield, Jayanagar, Indiranagar, JP Nagar, Marathahalli, and all other localities.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'How many days in advance should I book my bridal outfit in Bangalore?',
+      acceptedAnswer: { '@type': 'Answer', text: 'We recommend booking 3–4 weeks before your event. Bangalore wedding season (October–February) gets very busy, so earlier is always better.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can I reserve an outfit and cancel if plans change?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes, we accept cancellations up to 7 days before the rental start date for a full refund. Contact us for details.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do you have a store in Bangalore I can visit?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes, contact us to arrange a store visit for fittings. We also offer virtual consultations on WhatsApp.' },
+    },
+  ],
+}
+---
+
+<BaseLayout
+  title="Bridal Clothing on Rent in Bangalore | Lehenga, Gown, Sherwani — People & Style"
+  description="Rent designer bridal lehengas, wedding gowns, sherwanis and sarees in Bangalore. 200+ outfits starting from ₹500. Home delivery across Bangalore. People & Style."
+  canonical={`${SITE}/rental-clothing-bangalore`}
+  keywords="bridal lehenga on rent Bangalore, wedding gown rental Bangalore, sherwani rental Bangalore, designer lehenga on rent Bangalore, bridesmaid outfit rental Bangalore"
+  schema={[serviceSchema, faqSchema]}
+>
+  <ReactApp client:only="react" />
+</BaseLayout>

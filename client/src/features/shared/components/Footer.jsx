@@ -87,53 +87,70 @@ const Footer = () => {
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 col-span-1 md:col-span-3">
               <div>
                 <h4 className="font-semibold text-sm text-white mb-4 uppercase tracking-wider">
-                  Company
+                  Services — Mysuru
                 </h4>
                 <ul className="space-y-3 text-neutral-500 text-sm">
                   <li>
-                    <Link
-                      to="/about"
-                      className="hover:text-violet-400 transition-colors"
-                    >
-                      About Us
+                    <Link to="/rental-clothing-mysuru" className="hover:text-violet-400 transition-colors">
+                      Rental Clothing
                     </Link>
                   </li>
                   <li>
-                    <Link
-                      to="/contact"
-                      className="hover:text-violet-400 transition-colors"
-                    >
-                      Contact Us
+                    <Link to="/rental-jewellery-mysuru" className="hover:text-violet-400 transition-colors">
+                      Rental Jewellery
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/makeup-services-mysuru" className="hover:text-violet-400 transition-colors">
+                      Bridal Makeup
                     </Link>
                   </li>
                 </ul>
               </div>
               <div>
                 <h4 className="font-semibold text-sm text-white mb-4 uppercase tracking-wider">
-                  How It Works
+                  Services — Bangalore
                 </h4>
                 <ul className="space-y-3 text-neutral-500 text-sm">
                   <li>
-                    <Link
-                      to="/products"
-                      className="hover:text-violet-400 transition-colors"
-                    >
+                    <Link to="/rental-clothing-bangalore" className="hover:text-violet-400 transition-colors">
+                      Rental Clothing
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/rental-jewellery-bangalore" className="hover:text-violet-400 transition-colors">
+                      Rental Jewellery
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/makeup-services-bangalore" className="hover:text-violet-400 transition-colors">
+                      Bridal Makeup
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-sm text-white mb-4 uppercase tracking-wider">
+                  Company
+                </h4>
+                <ul className="space-y-3 text-neutral-500 text-sm">
+                  <li>
+                    <Link to="/about" className="hover:text-violet-400 transition-colors">
+                      About Us
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/contact" className="hover:text-violet-400 transition-colors">
+                      Contact Us
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/products" className="hover:text-violet-400 transition-colors">
                       Browse &amp; Rent
                     </Link>
                   </li>
                   <li>
-                    <Link
-                      to="/refund"
-                      className="hover:text-violet-400 transition-colors"
-                    >
-                      Delivery &amp; Returns
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/faq"
-                      className="hover:text-violet-400 transition-colors"
-                    >
+                    <Link to="/faq" className="hover:text-violet-400 transition-colors">
                       FAQs
                     </Link>
                   </li>

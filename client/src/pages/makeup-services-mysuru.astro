@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import ReactApp from '../components/ReactApp.jsx'
+
+export const prerender = true
+
+const SITE = 'https://peopleandstyle.in'
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': ['LocalBusiness', 'BeautySalon'],
+  name: 'People & Style — Bridal Makeup Mysuru',
+  description: 'Professional bridal makeup artists in Mysuru. Traditional, HD and airbrush bridal makeup for all functions. Home service available.',
+  url: `${SITE}/makeup-services-mysuru`,
+  telephone: '+919187668280',
+  email: 'hello@peopleandstyle.in',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Mysuru',
+    addressRegion: 'Karnataka',
+    postalCode: '570026',
+    addressCountry: 'IN',
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: '12.2958', longitude: '76.6394' },
+  openingHours: ['Mo-Sa 10:00-19:00', 'Su 11:00-17:00'],
+  priceRange: '₹₹₹',
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Bridal Makeup Services Mysuru',
+    itemListElement: [
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Traditional Bridal Makeup Mysuru' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'HD Bridal Makeup Mysuru' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Airbrush Bridal Makeup Mysuru' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Engagement Makeup Mysuru' } },
+    ],
+  },
+}
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What types of bridal makeup do you offer in Mysuru?',
+      acceptedAnswer: { '@type': 'Answer', text: 'We offer traditional bridal makeup, HD makeup (high-definition finish, great for photography), and airbrush makeup (long-lasting, lightweight, perfect for outdoor events).' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do you offer bridal makeup at home in Mysuru?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes, our makeup artists come to your home or venue anywhere in Mysuru. Home service is available at all hours — early morning functions are no problem.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'What is the price of bridal makeup in Mysuru?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Bridal makeup prices start from ₹3,000 for basic ceremony makeup and go up to ₹12,000+ for full HD or airbrush bridal packages with multiple functions.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'How early should I book a bridal makeup artist in Mysuru?',
+      acceptedAnswer: { '@type': 'Answer', text: 'For wedding season (October–February), book 2–3 months in advance. Off-peak months need 4–6 weeks advance booking.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do you offer makeup for bridesmaids and the wedding party?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes, we offer group booking packages for bridesmaids, the mother of the bride, and other family members at a discounted rate per person.' },
+    },
+  ],
+}
+---
+
+<BaseLayout
+  title="Bridal Makeup Services in Mysuru | HD, Airbrush & Traditional — People & Style"
+  description="Professional bridal makeup artists in Mysuru. HD, airbrush and traditional bridal makeup for all functions. Home service. Consultation included. People & Style."
+  canonical={`${SITE}/makeup-services-mysuru`}
+  keywords="bridal makeup artist Mysuru, bridal makeup services Mysuru, HD bridal makeup Mysuru, airbrush makeup Mysuru, professional makeup artist Mysuru, engagement makeup Mysuru"
+  schema={[serviceSchema, faqSchema]}
+>
+  <ReactApp client:only="react" />
+</BaseLayout>
