@@ -134,6 +134,9 @@ const App = () => {
                       </ProtectedRoute>
                     }
                   />
+                  {/* Astro-handled routes — return null so React Router doesn't warn */}
+                  <Route path="/sitemap.xml" element={null} />
+                  <Route path="/robots.txt" element={null} />
                 </Routes>
               </Suspense>
             </main>
