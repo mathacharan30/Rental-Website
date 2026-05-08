@@ -10,6 +10,7 @@ import ComingSoonGate from "./utils/ComingSoonGate";
 import Navbar from "./features/shared/components/Navbar";
 import Loader from "./features/shared/components/Loader";
 import { Toaster } from "react-hot-toast";
+import { servicePages } from "./data/serviceLandingData";
 
 const Home = lazy(() => import("./features/public/pages/Home"));
 const Login = lazy(() => import("./features/public/pages/Login"));
@@ -49,8 +50,6 @@ const SuperAdminDashboard = lazy(
 );
 const ComingSoon = lazy(() => import("./features/public/pages/ComingSoon"));
 const ServiceLandingPage = lazy(() => import("./features/public/pages/ServiceLandingPage"));
-
-import { servicePages } from "./data/serviceLandingData";
 
 const PageLoader = () => (
   <div className="min-h-[60vh] flex items-center justify-center">
