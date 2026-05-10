@@ -67,12 +67,12 @@ const Categories = () => {
           >
             Categories
           </button>
-          {/* <button
+          <button
             onClick={() => setActiveTab("combos")}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-all border inline-flex items-center gap-2 ${activeTab === "combos" ? "bg-gradient-to-r from-violet-600 to-fuchsia-500 border-violet-400 text-white" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40"}`}
           >
             <Sparkles size={14} /> Combos
-          </button> */}
+          </button>
         </div>
 
         {activeTab === "categories" ? (
@@ -130,13 +130,13 @@ const Categories = () => {
               <Link
                 key={combo.slug}
                 to={`/combos/${combo.slug}`}
-                className="group overflow-hidden rounded-bl-3xl rounded-tr-3xl  border border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(168,85,247,0.22),transparent_35%),linear-gradient(145deg,rgba(18,18,18,0.98),rgba(26,26,26,0.82))] p-4 md:p-5 hover:border-violet-400/40 transition-all duration-300
+                className="group overflow-hidden rounded-bl-4xl rounded-tr-4xl  border border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(168,85,247,0.22),transparent_35%),linear-gradient(145deg,rgba(18,18,18,0.98),rgba(26,26,26,0.82))] p-2 md:p-3 hover:border-violet-400/40 transition-all duration-300
                bg-neutral-900/40"
               >
                 <div className="grid grid-cols-1 md:grid-cols-[0.95fr_1.05fr] gap-4 items-stretch">
-                  <div className="overflow-hidden rounded-tl-3xl rounded-br-3xl border border-white/10">
+                  <div className="overflow-hidden rounded-tr-3xl rounded-bl-3xl border border-white/10">
                     <OptimizedImage
-                      url={combo.image}
+                      url={`/Combo/bridal3.jpeg`}
                       type="category"
                       alt={combo.title}
                       className="h-full min-h-[220px] w-full object-cover transition-transform duration-500 group-hover:scale-105"

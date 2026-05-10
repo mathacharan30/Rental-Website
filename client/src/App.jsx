@@ -49,7 +49,9 @@ const SuperAdminDashboard = lazy(
   () => import("./features/super-admin/SuperAdminDashboard"),
 );
 const ComingSoon = lazy(() => import("./features/public/pages/ComingSoon"));
-const ServiceLandingPage = lazy(() => import("./features/public/pages/ServiceLandingPage"));
+const ServiceLandingPage = lazy(
+  () => import("./features/public/pages/ServiceLandingPage"),
+);
 
 const PageLoader = () => (
   <div className="min-h-[60vh] flex items-center justify-center">
@@ -75,14 +77,56 @@ const App = () => {
                   <Route path="/products" element={<Products />} />
                   <Route path="/products/:category" element={<Products />} />
                   <Route path="/product/:id" element={<ProductDetail />} />
-                  {/* <Route path="/combos/:slug" element={<BridalCombo />} /> */}
+                  <Route path="/combos/:slug" element={<BridalCombo />} />
                   {/* Service landing pages */}
-                  <Route path="/rental-clothing-mysuru"         element={<ServiceLandingPage data={servicePages['rental-clothing-mysuru']} />} />
-                  <Route path="/rental-clothing-bangalore"      element={<ServiceLandingPage data={servicePages['rental-clothing-bangalore']} />} />
-                  <Route path="/rental-jewellery-mysuru"        element={<ServiceLandingPage data={servicePages['rental-jewellery-mysuru']} />} />
-                  <Route path="/rental-jewellery-bangalore"     element={<ServiceLandingPage data={servicePages['rental-jewellery-bangalore']} />} />
-                  <Route path="/makeup-services-mysuru"         element={<ServiceLandingPage data={servicePages['makeup-services-mysuru']} />} />
-                  <Route path="/makeup-services-bangalore"      element={<ServiceLandingPage data={servicePages['makeup-services-bangalore']} />} />
+                  <Route
+                    path="/rental-clothing-mysuru"
+                    element={
+                      <ServiceLandingPage
+                        data={servicePages["rental-clothing-mysuru"]}
+                      />
+                    }
+                  />
+                  <Route
+                    path="/rental-clothing-bangalore"
+                    element={
+                      <ServiceLandingPage
+                        data={servicePages["rental-clothing-bangalore"]}
+                      />
+                    }
+                  />
+                  <Route
+                    path="/rental-jewellery-mysuru"
+                    element={
+                      <ServiceLandingPage
+                        data={servicePages["rental-jewellery-mysuru"]}
+                      />
+                    }
+                  />
+                  <Route
+                    path="/rental-jewellery-bangalore"
+                    element={
+                      <ServiceLandingPage
+                        data={servicePages["rental-jewellery-bangalore"]}
+                      />
+                    }
+                  />
+                  <Route
+                    path="/makeup-services-mysuru"
+                    element={
+                      <ServiceLandingPage
+                        data={servicePages["makeup-services-mysuru"]}
+                      />
+                    }
+                  />
+                  <Route
+                    path="/makeup-services-bangalore"
+                    element={
+                      <ServiceLandingPage
+                        data={servicePages["makeup-services-bangalore"]}
+                      />
+                    }
+                  />
 
                   <Route path="/about" element={<AboutUs />} />
                   <Route path="/contact" element={<ContactUs />} />
