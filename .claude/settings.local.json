@@ -11,7 +11,11 @@
       "Bash(not exist *)",
       "Bash(Get-ChildItem -Path \"d:\\\\Rental\\\\Rental-website-main\" -Recurse -Force)",
       "Bash(Select-Object -Property FullName)",
-      "Bash(Sort-Object FullName)"
+      "Bash(Sort-Object FullName)",
+      "WebFetch(domain:www.peopleandstyle.in)"
     ]
+  },
+  "enabledPlugins": {
+    "claude-seo@agricidaniel-seo": true
   }
 }
