@@ -15,7 +15,7 @@ const {
   title = 'Bridal Wear on Rent in Mysuru & Bangalore | People & Style',
   description = "People & Style — Karnataka's premium rental service. Rent bridal lehenga, wedding gown, sherwani & jewellery. Also offering bridal makeup and wedding photography in Mysuru and Bangalore.",
   canonical,
-  ogImage,
+  ogImage = `${SITE}/og-default.jpeg`,
   ogType = 'website',
   keywords = 'bridal wear on rent in Mysuru, bridal wear on rent in Bangalore, bridal lehenga on rent Mysuru, wedding gown rental Mysuru, sherwani on rent Mysuru, bridal jewellery on rent Mysuru, makeup artist Mysuru, wedding photographer Mysuru',
   schema,
@@ -38,7 +38,6 @@ const defaultSchema = {
     '@type': 'PostalAddress',
     addressLocality: 'Mysuru',
     addressRegion: 'Karnataka',
-    postalCode: '570026',
     addressCountry: 'IN',
   },
   areaServed: [
@@ -88,13 +87,15 @@ const activeSchema = schema ?? defaultSchema
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:site_name" content="People & Style" />
     <meta property="og:locale" content="en_IN" />
-    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    {ogImage && <meta name="twitter:image" content={ogImage} />}
+    <meta name="twitter:image" content={ogImage} />
 
     <!-- Preconnects for fonts & API -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />

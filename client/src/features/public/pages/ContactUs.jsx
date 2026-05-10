@@ -75,9 +75,9 @@ const contactDetails = [
         />
       </svg>
     ),
-    label: "Address",
-    value: "Mysuru, Karnataka, India – 570026",
-    href: "https://maps.google.com/?q=Mysuru,Karnataka,India+570026",
+    label: "Service Area",
+    value: "Mysuru & Bangalore, Karnataka",
+    href: null,
   },
 ];
 
@@ -163,9 +163,9 @@ const ContactUs = () => {
                 key={item.label}
                 custom={i}
                 variants={fadeUp}
-                href={item.href}
-                target={item.label === "Address" ? "_blank" : undefined}
-                rel="noreferrer"
+                href={item.href ?? undefined}
+                target={item.href ? "_blank" : undefined}
+                rel={item.href ? "noreferrer" : undefined}
                 className="flex items-start gap-4 glass rounded-2xl p-5 hover:border-violet-500/30 transition-all duration-300 group"
               >
                 <span className="text-violet-400 mt-0.5 group-hover:scale-110 transition-transform">
