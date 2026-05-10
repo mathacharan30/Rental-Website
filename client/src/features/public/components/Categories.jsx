@@ -139,7 +139,7 @@ const Categories = () => {
                       url={`/Combo/bridal3.jpeg`}
                       type="category"
                       alt={combo.title}
-                      className="h-full min-h-[220px] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="h-[50vh] md:h-[40vh] w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </div>
                   <div className="flex flex-col justify-between gap-4 p-1 md:p-2 text-left">
