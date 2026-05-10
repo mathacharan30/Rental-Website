@@ -11,6 +11,8 @@ interface Props {
   schema?: Record<string, unknown> | Array<Record<string, unknown>>
 }
 
+const SITE = 'https://peopleandstyle.in'
+
 const {
   title = 'Bridal Wear on Rent in Mysuru & Bangalore | People & Style',
   description = "People & Style — Karnataka's premium rental service. Rent bridal lehenga, wedding gown, sherwani & jewellery. Also offering bridal makeup and wedding photography in Mysuru and Bangalore.",
@@ -20,8 +22,6 @@ const {
   keywords = 'bridal wear on rent in Mysuru, bridal wear on rent in Bangalore, bridal lehenga on rent Mysuru, wedding gown rental Mysuru, sherwani on rent Mysuru, bridal jewellery on rent Mysuru, makeup artist Mysuru, wedding photographer Mysuru',
   schema,
 } = Astro.props
-
-const SITE = 'https://peopleandstyle.in'
 
 const canonicalUrl = canonical ?? `${SITE}${Astro.url.pathname}`
 
