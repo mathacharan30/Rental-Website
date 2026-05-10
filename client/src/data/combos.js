@@ -27,7 +27,7 @@ export const bridalComboPackages = [
   },
   {
     id: "bridal",
-    name: "Makeup",
+    name: "Bridal Makeup",
     price: 8000,
     description: "Balanced bridal package with a polished finish.",
     inclusions: ["Makeup", "Saree Draping", "Hairstyle", "Hair Accessories"],

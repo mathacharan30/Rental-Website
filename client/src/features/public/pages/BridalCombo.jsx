@@ -16,8 +16,8 @@ import { comboCategories } from "../../../data/combos";
 import { openWhatsApp } from "../../../services/whatsapp";
 
 const cardMotion = {
-  initial: { opacity: 0, y: 18 },
-  animate: { opacity: 1, y: 0 },
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
   transition: { duration: 0.45 },
 };
 
@@ -117,8 +117,8 @@ const BridalCombo = () => {
 
       <motion.div
         className="max-w-7xl mx-auto px-4 pb-8"
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
         <div className="grid grid-cols-1 md:grid-cols-[1.2fr_0.8fr] gap-6 items-start">
@@ -138,9 +138,9 @@ const BridalCombo = () => {
       <div className="max-w-7xl mx-auto px-4 pb-16">
         <motion.div
           className="mb-10"
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
         >
           <h2 className="text-xl font-semibold text-white mb-4">
             Choose Your Package
@@ -188,9 +188,9 @@ const BridalCombo = () => {
 
         <motion.div
           className="grid grid-cols-1 lg:grid-cols-3 gap-6"
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.15 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
         >
           <div className="lg:col-span-2 space-y-5">
             <div className="p-2">
@@ -218,7 +218,7 @@ const BridalCombo = () => {
                 <Plus size={24} className="text-violet-400" /> Add Optional
                 Services
               </h3>
-              <div className="space-y-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {combo.addOns.map((addOn) => (
                   <label
                     key={addOn.id}
@@ -385,9 +385,9 @@ const BridalCombo = () => {
         {selectedPackage?.gallery && selectedPackage.gallery.length > 0 && (
           <motion.div
             className="mt-16"
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
           >
             <div className="mb-8">
               <h2 className="text-3xl md:text-4xl font-semibold instrument-serif text-white mb-2">
