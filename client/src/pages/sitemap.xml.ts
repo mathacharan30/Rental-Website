@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro'
 
 export const GET: APIRoute = async () => {
-  const DOMAIN = import.meta.env.PUBLIC_SITE_URL || 'https://peopleandstyle.in'
+  const DOMAIN = 'https://peopleandstyle.in'
   const API    = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '')
 
   const staticPages = [
@@ -13,10 +13,6 @@ export const GET: APIRoute = async () => {
     { loc: '/rental-jewellery-bangalore',    priority: '0.90', changefreq: 'weekly'  },
     { loc: '/makeup-services-mysuru',        priority: '0.90', changefreq: 'weekly'  },
     { loc: '/makeup-services-bangalore',     priority: '0.90', changefreq: 'weekly'  },
-    { loc: '/photography-services-mysuru',   priority: '0.90', changefreq: 'weekly'  },
-    { loc: '/photography-services-bangalore',priority: '0.90', changefreq: 'weekly'  },
-    { loc: '/bridal-package-mysuru',         priority: '0.85', changefreq: 'weekly'  },
-    { loc: '/bridal-package-bangalore',      priority: '0.85', changefreq: 'weekly'  },
     { loc: '/about',                         priority: '0.70', changefreq: 'monthly' },
     { loc: '/contact',                       priority: '0.70', changefreq: 'monthly' },
     { loc: '/faq',                           priority: '0.60', changefreq: 'monthly' },
