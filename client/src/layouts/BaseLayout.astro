@@ -45,6 +45,15 @@ const defaultSchema = {
     { '@type': 'City', name: 'Bangalore' },
     { '@type': 'State', name: 'Karnataka' },
   ],
+  image: `${SITE}/og-default.jpeg`,
+  sameAs: [
+    'https://www.instagram.com/peopleandstyle.in',
+  ],
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: '12.2958',
+    longitude: '76.6394',
+  },
   openingHours: ['Mo-Sa 10:00-19:00', 'Su 11:00-17:00'],
   priceRange: '₹₹',
   hasOfferCatalog: {
@@ -103,7 +112,12 @@ const activeSchema = schema ?? defaultSchema
     <link rel="preconnect" href="https://rental-website-6a9i.vercel.app" crossorigin />
 
     <!-- Structured data -->
-    <script type="application/ld+json" set:html={JSON.stringify(activeSchema)} />
+    {Array.isArray(activeSchema)
+      ? activeSchema.map((s) => (
+          <script type="application/ld+json" set:html={JSON.stringify(s)} />
+        ))
+      : <script type="application/ld+json" set:html={JSON.stringify(activeSchema)} />
+    }
   </head>
   <body class="bg-[#0e0e0e]">
     <slot />

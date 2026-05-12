@@ -20,9 +20,16 @@ export const GET: APIRoute = async () => {
     { loc: '/photography-services-bangalore',    priority: '0.90', changefreq: 'weekly',  lastmod: '2026-05-12' },
     { loc: '/bridal-package-mysuru',             priority: '0.90', changefreq: 'weekly',  lastmod: '2026-05-12' },
     { loc: '/bridal-package-bangalore',          priority: '0.90', changefreq: 'weekly',  lastmod: '2026-05-12' },
+    { loc: '/products/lehenga',              priority: '0.90', changefreq: 'daily',   lastmod: '2026-05-10' },
+    { loc: '/products/gowns',               priority: '0.90', changefreq: 'daily',   lastmod: '2026-05-10' },
+    { loc: '/products/men',                 priority: '0.85', changefreq: 'daily',   lastmod: '2026-05-10' },
+    { loc: '/products/jewels',              priority: '0.85', changefreq: 'daily',   lastmod: '2026-05-10' },
     { loc: '/about',                         priority: '0.70', changefreq: 'monthly', lastmod: '2026-05-10' },
     { loc: '/contact',                       priority: '0.70', changefreq: 'monthly', lastmod: '2026-05-10' },
     { loc: '/faq',                           priority: '0.60', changefreq: 'monthly', lastmod: '2026-05-10' },
+    { loc: '/terms',                         priority: '0.30', changefreq: 'yearly',  lastmod: '2026-05-10' },
+    { loc: '/privacy',                       priority: '0.30', changefreq: 'yearly',  lastmod: '2026-05-10' },
+    { loc: '/refund',                        priority: '0.30', changefreq: 'yearly',  lastmod: '2026-05-10' },
   ]
 
   type ProductEntry = {

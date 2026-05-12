@@ -1,6 +1,5 @@
 // src/pages/Main/FAQ.jsx
 import React, { useState } from "react";
-import { Helmet } from "react-helmet-async";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 
@@ -309,15 +308,6 @@ const FAQ = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <Helmet>
-        <title>FAQ — Clothing Rental in Mysuru &amp; Bangalore | People &amp; Style</title>
-        <meta name="description" content="Frequently asked questions about bridal wear rental, lehenga on rent, gown rental, sherwani on rent &amp; jewellery rental in Mysuru and Bangalore. Learn how People &amp; Style clothing rental works." />
-        <meta name="keywords" content="clothing rental FAQ, bridal lehenga rental FAQ, dress rental Mysuru FAQ, how rental works, advance refund, rental process Bangalore" />
-        <link rel="canonical" href="https://peopleandstyle.in/faq" />
-        <meta property="og:title" content="FAQ — Clothing Rental in Mysuru &amp; Bangalore | People &amp; Style" />
-        <meta property="og:description" content="Everything you need to know about renting bridal lehenga, wedding gown, sherwani &amp; jewellery in Mysuru and Bangalore." />
-        <meta property="og:url" content="https://peopleandstyle.in/faq" />
-      </Helmet>
       {/* Header */}
       <div className="py-16 px-4 text-center">
         <div>
@@ -370,7 +360,7 @@ const FAQ = () => {
 
       {/* Still have questions CTA */}
       <div className="relative py-16 px-4 text-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-t from-violet-500/10 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-violet-500/10 via-transparent to-transparent" />
         <div className="relative z-10">
           <h2 className="text-2xl font-bold display-font text-white mb-2">
             Still have questions?

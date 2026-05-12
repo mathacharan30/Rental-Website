@@ -55,7 +55,7 @@ const Testimonials = () => {
               {quotes.map((q) => (
                 <article
                   key={q.id}
-                  className="group relative w-72 shrink-0 rounded-tr-2xl mx-2 rounded-bl-2xl p-[1px]  border border-violet-400/20 hover:border-violet-400/40 transition-colors overflow-hidden"
+                  className="group relative w-72 shrink-0 rounded-tr-2xl mx-2 rounded-bl-2xl p-px border border-violet-400/20 hover:border-violet-400/40 transition-colors overflow-hidden"
                 >
                   <div className="h-full rounded-2xl bg-black/10 p-10 flex flex-col justify-between transition-all duration-300 group-hover:scale-[1.03] group-hover:shadow-[0_0_40px_rgba(139,92,246,0.25)]">
                     <div>
