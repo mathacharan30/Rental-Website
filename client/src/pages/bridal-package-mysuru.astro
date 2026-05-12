@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import ReactApp from '../components/ReactApp.jsx'
+
+export const prerender = true
+
+const SITE = 'https://peopleandstyle.in'
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': ['LocalBusiness', 'ClothingStore'],
+  name: 'People & Style — Complete Bridal Package Mysuru',
+  description: 'All-inclusive bridal package in Mysuru combining clothing rental, jewellery rental, professional makeup, and wedding photography. One team, one consultation, significant savings.',
+  url: `${SITE}/bridal-package-mysuru`,
+  telephone: '+919187668280',
+  email: 'hello@peopleandstyle.in',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Mysuru',
+    addressRegion: 'Karnataka',
+    addressCountry: 'IN',
+  },
+  openingHours: ['Mo-Sa 10:00-19:00', 'Su 11:00-17:00'],
+  priceRange: '₹₹',
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Complete Bridal Package Mysuru',
+    itemListElement: [
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Bridal Clothing Rental Mysuru' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Bridal Jewellery Rental Mysuru' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Bridal Makeup Services Mysuru' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Wedding Photography Mysuru' } },
+    ],
+  },
+}
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What is included in the complete bridal package in Mysuru?',
+      acceptedAnswer: { '@type': 'Answer', text: 'The package includes bridal clothing rental (lehenga, gown, or saree of your choice), matching jewellery rental, professional bridal makeup (with home service option), and wedding photography coverage. All services are coordinated by our team.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can I customise the bridal package to include only the services I need?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes, packages are fully customisable. If you already have your own outfit, we can exclude clothing and adjust the price accordingly. You can mix and match any combination of clothing, jewellery, makeup, and photography.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'How much does a complete bridal package cost in Mysuru?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Package pricing depends on the specific outfit, jewellery set, makeup style, and photography duration you choose. Bundled packages typically start from ₹15,000 for a single-function package. Contact us for a detailed quote tailored to your wedding.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Does the bridal package cover multiple wedding functions?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes, multi-function packages are available. We can cover mehendi, haldi, ceremony, and reception with coordinated looks for each function. Multi-function packages offer additional savings compared to single-function pricing.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'How far in advance should I book the bridal package in Mysuru?',
+      acceptedAnswer: { '@type': 'Answer', text: 'For Mysuru weddings during the October–February season, book at least 2–3 months in advance. The package consultation, outfit selection, and trial session all take time, so early booking ensures everything is perfectly planned.' },
+    },
+  ],
+}
+---
+
+<BaseLayout
+  title="Complete Bridal Package in Mysuru | Clothing, Jewellery, Makeup & Photography — People & Style"
+  description="All-inclusive bridal package in Mysuru — clothing rental, jewellery rental, bridal makeup & wedding photography bundled together. Save 15–20% vs booking separately. People & Style."
+  canonical={`${SITE}/bridal-package-mysuru`}
+  keywords="bridal package Mysuru, complete bridal package Mysuru, wedding package Mysuru, bridal combo Mysuru, wedding services Mysuru, bridal clothing makeup photography Mysuru, all inclusive bridal package Mysuru"
+  schema={[serviceSchema, faqSchema]}
+>
+  <ReactApp client:only="react" />
+</BaseLayout>

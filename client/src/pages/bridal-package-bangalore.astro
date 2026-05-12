@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import ReactApp from '../components/ReactApp.jsx'
+
+export const prerender = true
+
+const SITE = 'https://peopleandstyle.in'
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': ['LocalBusiness', 'ClothingStore'],
+  name: 'People & Style — Complete Bridal Package Bangalore',
+  description: 'All-inclusive bridal package in Bangalore combining clothing rental, jewellery rental, professional makeup, and wedding photography. One coordinated team for a seamless wedding day.',
+  url: `${SITE}/bridal-package-bangalore`,
+  telephone: '+919187668280',
+  email: 'hello@peopleandstyle.in',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Bangalore',
+    addressRegion: 'Karnataka',
+    addressCountry: 'IN',
+  },
+  openingHours: ['Mo-Sa 10:00-19:00', 'Su 11:00-17:00'],
+  priceRange: '₹₹',
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Complete Bridal Package Bangalore',
+    itemListElement: [
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Bridal Clothing Rental Bangalore' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Bridal Jewellery Rental Bangalore' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Bridal Makeup Services Bangalore' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Wedding Photography Bangalore' } },
+    ],
+  },
+}
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What services are included in the complete bridal package in Bangalore?',
+      acceptedAnswer: { '@type': 'Answer', text: 'The package covers bridal clothing rental, jewellery rental, professional bridal makeup (at home or venue), and wedding photography. All four services are coordinated by our team through a single consultation and booking process.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can I book just two or three of the services instead of all four?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes, packages are fully flexible. You can choose any combination — for example, just clothing + makeup, or jewellery + photography. The bundle discount applies when you book two or more services together.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'How much does the bridal package cost in Bangalore?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Pricing depends on your chosen outfit, jewellery set, makeup style, and photography duration. Single-function bundled packages start from ₹18,000. Multi-function and multi-day packages are priced on request. Contact us for a tailored quote.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do you travel to all parts of Bangalore for the package services?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes, our makeup artists and photographers travel across Bangalore — Koramangala, Whitefield, Jayanagar, Indiranagar, Hebbal, JP Nagar, and all other areas. Clothing and jewellery can be delivered or picked up from our store.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'What is the booking process for the bridal package in Bangalore?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Start by contacting us via phone or WhatsApp to share your wedding date, functions, and approximate budget. We will schedule a consultation — in person or on video call — to walk through outfit options, jewellery, makeup style, and photography coverage. Everything is confirmed in writing before any payment.' },
+    },
+  ],
+}
+---
+
+<BaseLayout
+  title="Complete Bridal Package in Bangalore | Clothing, Jewellery, Makeup & Photography — People & Style"
+  description="All-inclusive bridal package in Bangalore — clothing rental, jewellery rental, bridal makeup & wedding photography bundled together. Save 15–20% vs booking separately. People & Style."
+  canonical={`${SITE}/bridal-package-bangalore`}
+  keywords="bridal package Bangalore, complete bridal package Bangalore, wedding package Bangalore, bridal combo Bangalore, wedding services Bangalore, bridal clothing makeup photography Bangalore, all inclusive bridal package Bangalore"
+  schema={[serviceSchema, faqSchema]}
+>
+  <ReactApp client:only="react" />
+</BaseLayout>

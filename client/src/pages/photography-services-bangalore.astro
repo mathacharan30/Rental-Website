@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import ReactApp from '../components/ReactApp.jsx'
+
+export const prerender = true
+
+const SITE = 'https://peopleandstyle.in'
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': ['LocalBusiness', 'ProfessionalService'],
+  name: 'People & Style — Wedding Photography Bangalore',
+  description: 'Professional wedding photographers in Bangalore. Candid photography, traditional portraits, pre-wedding shoots, drone coverage, and videography for all wedding types.',
+  url: `${SITE}/photography-services-bangalore`,
+  telephone: '+919187668280',
+  email: 'hello@peopleandstyle.in',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Bangalore',
+    addressRegion: 'Karnataka',
+    addressCountry: 'IN',
+  },
+  openingHours: ['Mo-Sa 10:00-19:00', 'Su 11:00-17:00'],
+  priceRange: '₹₹₹',
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Wedding Photography Services Bangalore',
+    itemListElement: [
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Candid Wedding Photography Bangalore' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Pre-wedding Photoshoot Bangalore' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Wedding Videography Bangalore' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Drone Photography Bangalore' } },
+    ],
+  },
+}
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Do you cover multi-day weddings in Bangalore?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes, we offer multi-day packages covering all wedding functions — mehendi, haldi, sangeet, ceremony, and reception. Multi-day packages are available at a bundled price that works out cheaper than booking each day separately.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'What is the cost of wedding photography in Bangalore?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Wedding photography in Bangalore starts from ₹25,000 for a half-day single photographer package. Full-day packages with two photographers start from ₹45,000. Packages with videography and drone are priced on request. Contact us for a detailed quote.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'How many photographers will be at my wedding?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Our standard packages include one lead photographer. For larger weddings, we recommend a second photographer to cover different angles and moments simultaneously. Two-photographer packages are available at a modest additional cost.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can you do both photography and videography for the same wedding?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes, we offer combined photo and video packages where our photography and videography teams work together seamlessly. A combined package is also more cost-effective than booking them separately.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do you photograph church weddings in Bangalore?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes, we have extensive experience with church weddings across Bangalore, including both the ceremony and the reception party. We understand church lighting conditions and the key moments in a Christian wedding ceremony.' },
+    },
+  ],
+}
+---
+
+<BaseLayout
+  title="Wedding Photography in Bangalore | Candid & Traditional — People & Style"
+  description="Professional wedding photographers in Bangalore. Candid photography, multi-day packages, videography & drone coverage. All wedding types covered. People & Style."
+  canonical={`${SITE}/photography-services-bangalore`}
+  keywords="wedding photographer Bangalore, candid wedding photography Bangalore, wedding photography Bangalore, pre-wedding shoot Bangalore, wedding videography Bangalore, bridal photography Bangalore, best wedding photographer Bangalore, candid photographer Bangalore"
+  schema={[serviceSchema, faqSchema]}
+>
+  <ReactApp client:only="react" />
+</BaseLayout>

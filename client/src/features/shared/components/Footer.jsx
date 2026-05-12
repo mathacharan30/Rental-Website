@@ -105,6 +105,16 @@ const Footer = () => {
                       Bridal Makeup
                     </Link>
                   </li>
+                  <li>
+                    <Link to="/photography-services-mysuru" className="hover:text-violet-400 transition-colors">
+                      Photography
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/bridal-package-mysuru" className="hover:text-violet-400 transition-colors">
+                      Bridal Package
+                    </Link>
+                  </li>
                 </ul>
               </div>
               <div>
@@ -125,6 +135,16 @@ const Footer = () => {
                   <li>
                     <Link to="/makeup-services-bangalore" className="hover:text-violet-400 transition-colors">
                       Bridal Makeup
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/photography-services-bangalore" className="hover:text-violet-400 transition-colors">
+                      Photography
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/bridal-package-bangalore" className="hover:text-violet-400 transition-colors">
+                      Bridal Package
                     </Link>
                   </li>
                 </ul>

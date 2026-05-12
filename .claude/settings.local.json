@@ -12,7 +12,10 @@
       "Bash(Get-ChildItem -Path \"d:\\\\Rental\\\\Rental-website-main\" -Recurse -Force)",
       "Bash(Select-Object -Property FullName)",
       "Bash(Sort-Object FullName)",
-      "WebFetch(domain:www.peopleandstyle.in)"
+      "WebFetch(domain:www.peopleandstyle.in)",
+      "Bash(Get-ChildItem -Path \"d:\\\\Rental\\\\Rental-website-main\" -Recurse -File -Name)",
+      "Bash(Select-Object -First 50)",
+      "PowerShell(Get-ChildItem -Path \"d:\\\\Rental\\\\Rental-website-main\" -Recurse -File | Select-Object -First 30 | ForEach-Object { $_.FullName })"
     ]
   },
   "enabledPlugins": {

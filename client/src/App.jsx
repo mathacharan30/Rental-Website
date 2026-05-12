@@ -127,6 +127,38 @@ const App = () => {
                       />
                     }
                   />
+                  <Route
+                    path="/photography-services-mysuru"
+                    element={
+                      <ServiceLandingPage
+                        data={servicePages["photography-services-mysuru"]}
+                      />
+                    }
+                  />
+                  <Route
+                    path="/photography-services-bangalore"
+                    element={
+                      <ServiceLandingPage
+                        data={servicePages["photography-services-bangalore"]}
+                      />
+                    }
+                  />
+                  <Route
+                    path="/bridal-package-mysuru"
+                    element={
+                      <ServiceLandingPage
+                        data={servicePages["bridal-package-mysuru"]}
+                      />
+                    }
+                  />
+                  <Route
+                    path="/bridal-package-bangalore"
+                    element={
+                      <ServiceLandingPage
+                        data={servicePages["bridal-package-bangalore"]}
+                      />
+                    }
+                  />
 
                   <Route path="/about" element={<AboutUs />} />
                   <Route path="/contact" element={<ContactUs />} />

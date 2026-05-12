@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import ReactApp from '../components/ReactApp.jsx'
+
+export const prerender = true
+
+const SITE = 'https://peopleandstyle.in'
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': ['LocalBusiness', 'ProfessionalService'],
+  name: 'People & Style — Wedding Photography Mysuru',
+  description: 'Professional wedding photographers in Mysuru. Candid photography, traditional portraits, pre-wedding shoots, drone coverage, and videography for weddings and events.',
+  url: `${SITE}/photography-services-mysuru`,
+  telephone: '+919187668280',
+  email: 'hello@peopleandstyle.in',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Mysuru',
+    addressRegion: 'Karnataka',
+    addressCountry: 'IN',
+  },
+  openingHours: ['Mo-Sa 10:00-19:00', 'Su 11:00-17:00'],
+  priceRange: '₹₹₹',
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Wedding Photography Services Mysuru',
+    itemListElement: [
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Candid Wedding Photography Mysuru' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Pre-wedding Photoshoot Mysuru' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Wedding Videography Mysuru' } },
+      { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Drone Photography Mysuru' } },
+    ],
+  },
+}
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What wedding photography packages do you offer in Mysuru?',
+      acceptedAnswer: { '@type': 'Answer', text: 'We offer candid photography, traditional photography, pre-wedding shoots, drone coverage, and videography. Packages can be customised for half-day, full-day, or multi-day weddings. Contact us for a quote based on your specific requirements.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'How much does wedding photography cost in Mysuru?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Wedding photography packages in Mysuru start from ₹20,000 for a half-day shoot. Full-day candid and traditional packages start from ₹35,000. Multi-day and videography packages are priced separately. Contact us for a detailed quote.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'How early should I book a wedding photographer in Mysuru?',
+      acceptedAnswer: { '@type': 'Answer', text: 'For Mysuru weddings, especially during the October–February wedding season and Dasara period, book at least 3–4 months in advance. Popular dates fill up quickly — earlier is always better.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'How long does it take to receive the edited photos?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Edited photos are delivered within 3 weeks of the wedding date. A selection of same-day or next-day preview images can be provided on request for social media sharing.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do you do pre-wedding photoshoots in Mysuru?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes, we offer pre-wedding shoots at Mysuru Palace, Brindavan Gardens, Chamundi Hills, and other scenic locations. A pre-wedding shoot can also be combined with your wedding photography package at a discounted rate.' },
+    },
+  ],
+}
+---
+
+<BaseLayout
+  title="Wedding Photography in Mysuru | Candid & Traditional — People & Style"
+  description="Professional wedding photographers in Mysuru. Candid photography, pre-wedding shoots, videography & drone shots. Experienced with South Indian weddings. People & Style."
+  canonical={`${SITE}/photography-services-mysuru`}
+  keywords="wedding photographer Mysuru, candid wedding photography Mysuru, wedding photography Mysuru, pre-wedding shoot Mysuru, wedding videography Mysuru, bridal photography Mysuru, best wedding photographer Mysuru, candid photographer Mysuru"
+  schema={[serviceSchema, faqSchema]}
+>
+  <ReactApp client:only="react" />
+</BaseLayout>

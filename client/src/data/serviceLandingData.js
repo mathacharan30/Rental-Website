@@ -45,6 +45,7 @@ export const servicePages = {
       { to: '/rental-clothing-bangalore', label: 'Rental Clothing — Bangalore' },
       { to: '/rental-jewellery-mysuru', label: 'Bridal Jewellery — Mysuru' },
       { to: '/makeup-services-mysuru', label: 'Bridal Makeup — Mysuru' },
+      { to: '/bridal-package-mysuru', label: 'Complete Bridal Package — Mysuru' },
       { to: '/products', label: 'Browse All Products' },
       { to: '/contact', label: 'Contact Us' },
     ],
@@ -95,6 +96,7 @@ export const servicePages = {
       { to: '/rental-clothing-mysuru', label: 'Rental Clothing — Mysuru' },
       { to: '/rental-jewellery-bangalore', label: 'Bridal Jewellery — Bangalore' },
       { to: '/makeup-services-bangalore', label: 'Bridal Makeup — Bangalore' },
+      { to: '/bridal-package-bangalore', label: 'Complete Bridal Package — Bangalore' },
       { to: '/products', label: 'Browse All Products' },
       { to: '/contact', label: 'Contact Us' },
     ],
@@ -145,6 +147,7 @@ export const servicePages = {
       { to: '/rental-jewellery-bangalore', label: 'Jewellery Rental — Bangalore' },
       { to: '/rental-clothing-mysuru', label: 'Bridal Clothing — Mysuru' },
       { to: '/makeup-services-mysuru', label: 'Bridal Makeup — Mysuru' },
+      { to: '/bridal-package-mysuru', label: 'Complete Bridal Package — Mysuru' },
       { to: '/products', label: 'Browse All Products' },
       { to: '/contact', label: 'Contact Us' },
     ],
@@ -195,7 +198,210 @@ export const servicePages = {
       { to: '/rental-jewellery-mysuru', label: 'Jewellery Rental — Mysuru' },
       { to: '/rental-clothing-bangalore', label: 'Bridal Clothing — Bangalore' },
       { to: '/makeup-services-bangalore', label: 'Bridal Makeup — Bangalore' },
+      { to: '/bridal-package-bangalore', label: 'Complete Bridal Package — Bangalore' },
       { to: '/products', label: 'Browse All Products' },
+      { to: '/contact', label: 'Contact Us' },
+    ],
+  },
+
+  'photography-services-mysuru': {
+    h1: 'Wedding Photography Services in Mysuru',
+    city: 'Mysuru',
+    service: 'Wedding Photography',
+    ctaLink: '/contact',
+    ctaText: 'Book a Consultation',
+    introParagraphs: [
+      "Your wedding photographs are the one thing you will look at for the rest of your life — they deserve to be exceptional. People & Style's professional wedding photographers in Mysuru capture every emotion, every stolen glance, and every burst of laughter with a natural, storytelling approach. From the early morning rituals to the last dance of the reception, we document your day as it truly was.",
+      "Mysuru is one of India's most beautiful cities for weddings — its palaces, gardens, and heritage venues create a stunning backdrop. Our photographers know the city intimately and use every location to its fullest. Whether your wedding is at a traditional hall in Chamrajpura, an outdoor venue near Brindavan Gardens, or a destination setting at a heritage property, we bring the light and the story together beautifully.",
+      "We offer candid photography, traditional portrait sessions, pre-wedding shoots, drone aerial coverage, and full wedding videography. Every package includes edited digital photos delivered within 3 weeks, with options for albums, prints, and highlight reels. A pre-wedding consultation is included with every booking to understand your style and plan the day's coverage.",
+    ],
+    highlights: [
+      { icon: '📸', label: 'Candid & traditional coverage', desc: 'Natural storytelling alongside formal portraits' },
+      { icon: '🎬', label: 'Videography available', desc: 'Cinematic highlight reels and full-length videos' },
+      { icon: '🚁', label: 'Drone photography', desc: 'Aerial shots of venues and outdoor ceremonies' },
+      { icon: '🗓️', label: 'Pre-wedding shoots', desc: 'Couples and family sessions at Mysuru locations' },
+      { icon: '🖼️', label: 'Edited photos in 3 weeks', desc: 'Full gallery delivered digitally — albums optional' },
+      { icon: '💬', label: 'Consultation included', desc: 'We plan every detail with you before the day' },
+    ],
+    faqs: [
+      {
+        q: 'What wedding photography packages do you offer in Mysuru?',
+        a: 'We offer candid photography, traditional photography, pre-wedding shoots, drone coverage, and videography. Packages can be customised for half-day, full-day, or multi-day weddings. Contact us for a quote based on your specific requirements.',
+      },
+      {
+        q: 'How much does wedding photography cost in Mysuru?',
+        a: 'Wedding photography packages in Mysuru start from ₹20,000 for a half-day shoot. Full-day candid + traditional packages start from ₹35,000. Multi-day wedding coverage and packages with videography are priced separately. Contact us for a detailed quote.',
+      },
+      {
+        q: 'How early should I book a wedding photographer in Mysuru?',
+        a: 'For Mysuru weddings, especially during the October–February wedding season and Dasara period, book at least 3–4 months in advance. Popular dates fill up quickly — earlier is always better.',
+      },
+      {
+        q: 'How long does it take to receive the edited photos?',
+        a: 'Edited photos are delivered within 3 weeks of the wedding date. A selection of same-day or next-day preview images can be provided on request for social media sharing.',
+      },
+      {
+        q: 'Do you do pre-wedding photoshoots in Mysuru?',
+        a: 'Yes, we offer pre-wedding shoots at Mysuru Palace, Brindavan Gardens, Chamundi Hills, and other scenic locations. A pre-wedding shoot can also be combined with your wedding photography package at a discounted rate.',
+      },
+    ],
+    relatedLinks: [
+      { to: '/photography-services-bangalore', label: 'Photography — Bangalore' },
+      { to: '/makeup-services-mysuru', label: 'Bridal Makeup — Mysuru' },
+      { to: '/rental-clothing-mysuru', label: 'Bridal Clothing — Mysuru' },
+      { to: '/bridal-package-mysuru', label: 'Complete Bridal Package — Mysuru' },
+      { to: '/contact', label: 'Contact Us' },
+    ],
+  },
+
+  'photography-services-bangalore': {
+    h1: 'Wedding Photography Services in Bangalore',
+    city: 'Bangalore',
+    service: 'Wedding Photography',
+    ctaLink: '/contact',
+    ctaText: 'Book a Consultation',
+    introParagraphs: [
+      "Bangalore weddings are among the most vibrant in India — a blend of South Indian traditions, cosmopolitan style, and spectacular venues. People & Style's wedding photographers in Bangalore specialise in capturing this energy authentically. From intimate home ceremonies in Jayanagar to grand ballroom receptions in Whitefield, our photographers bring creative vision and professional precision to every event.",
+      "Our approach blends candid documentary photography — capturing real emotions as they happen — with carefully composed traditional portraits that your family will treasure. We work unobtrusively during ceremonies so nothing feels staged, and we set aside dedicated time for portraits that look timeless rather than posed. The result is a full story of your day, from the smallest detail to the biggest moments.",
+      "Bangalore's diverse wedding community means we have extensive experience with Kannada, Tamil, Telugu, and North Indian wedding traditions, as well as church weddings and court ceremonies. We understand the key moments in every ceremony and never miss them. Packages include candid photography, traditional portraits, drone shots, and videography — all customisable to your needs and budget.",
+    ],
+    highlights: [
+      { icon: '📸', label: 'Candid & portrait coverage', desc: 'Story-led photography with composed portraits' },
+      { icon: '🎬', label: 'Cinematic videography', desc: 'Highlight reels and full ceremony films' },
+      { icon: '🚁', label: 'Drone aerial shots', desc: 'Stunning overhead views of venues and outdoor events' },
+      { icon: '🌆', label: 'All Bangalore venues covered', desc: 'Koramangala to Whitefield — we know every location' },
+      { icon: '🖼️', label: 'Edited gallery in 3 weeks', desc: 'Full digital delivery — prints and albums on request' },
+      { icon: '📅', label: 'Multi-day packages', desc: 'Mehendi, sangeet, ceremony, and reception covered' },
+    ],
+    faqs: [
+      {
+        q: 'Do you cover multi-day weddings in Bangalore?',
+        a: 'Yes, we offer multi-day packages covering all wedding functions — mehendi, haldi, sangeet, ceremony, and reception. Multi-day packages are available at a bundled price that works out cheaper than booking each day separately.',
+      },
+      {
+        q: 'What is the cost of wedding photography in Bangalore?',
+        a: 'Wedding photography in Bangalore starts from ₹25,000 for a half-day single photographer package. Full-day packages with two photographers start from ₹45,000. Packages with videography and drone are priced on request. Contact us for a detailed quote.',
+      },
+      {
+        q: 'How many photographers will be at my wedding?',
+        a: 'Our standard packages include one lead photographer. For larger weddings, we recommend a second photographer to cover different angles and moments simultaneously. Two-photographer packages are available at a modest additional cost.',
+      },
+      {
+        q: 'Can you do both photography and videography for the same wedding?',
+        a: 'Yes, we offer combined photo and video packages where our photography and videography teams work together seamlessly. A combined package is also more cost-effective than booking them separately.',
+      },
+      {
+        q: 'Do you photograph church weddings in Bangalore?',
+        a: 'Yes, we have extensive experience with church weddings across Bangalore, including both the ceremony and the reception party. We understand church lighting conditions and the key moments in a Christian wedding ceremony.',
+      },
+    ],
+    relatedLinks: [
+      { to: '/photography-services-mysuru', label: 'Photography — Mysuru' },
+      { to: '/makeup-services-bangalore', label: 'Bridal Makeup — Bangalore' },
+      { to: '/rental-clothing-bangalore', label: 'Bridal Clothing — Bangalore' },
+      { to: '/bridal-package-bangalore', label: 'Complete Bridal Package — Bangalore' },
+      { to: '/contact', label: 'Contact Us' },
+    ],
+  },
+
+  'bridal-package-mysuru': {
+    h1: 'Complete Bridal Package in Mysuru',
+    city: 'Mysuru',
+    service: 'Bridal Package',
+    ctaLink: '/contact',
+    ctaText: 'Get a Package Quote',
+    introParagraphs: [
+      "Planning a wedding in Mysuru involves coordinating dozens of vendors — and that coordination is stressful. People & Style's complete bridal package brings everything together under one roof: bridal clothing rental, jewellery rental, professional makeup, and wedding photography. One team, one point of contact, and a cohesive look across every service — at a price that's significantly lower than booking each separately.",
+      "Our bridal packages are built around you. We start with a consultation to understand your wedding functions, style preferences, and budget. From there, we curate a clothing shortlist from our 200+ outfit collection, match jewellery to complement your look, brief the makeup artist on your reference styles, and plan the photography coverage for each function. Everything is coordinated so nothing falls through the gaps.",
+      "The savings on a bundled package are real — typically 15–20% compared to booking each service individually. More importantly, the experience is smoother. Your makeup artist already knows your outfit and jewellery. Your photographer already knows the ceremony timeline. On your wedding day, the team works together without briefing each other from scratch — and it shows in the results.",
+    ],
+    highlights: [
+      { icon: '👗', label: 'Bridal clothing rental', desc: 'Lehenga, gown, sherwani, and saree from 200+ outfits' },
+      { icon: '💍', label: 'Jewellery rental included', desc: 'Full sets matched to your outfit and style' },
+      { icon: '💄', label: 'Professional bridal makeup', desc: 'Traditional, HD, or airbrush — home service available' },
+      { icon: '📸', label: 'Wedding photography', desc: 'Candid and traditional coverage of your functions' },
+      { icon: '💰', label: '15–20% savings vs individual', desc: 'Bundled pricing that rewards choosing one team' },
+      { icon: '🤝', label: 'Single point of contact', desc: 'One team manages everything — less stress for you' },
+    ],
+    faqs: [
+      {
+        q: 'What is included in the complete bridal package in Mysuru?',
+        a: 'The package includes bridal clothing rental (lehenga, gown, or saree of your choice), matching jewellery rental, professional bridal makeup (with home service option), and wedding photography coverage. All services are coordinated by our team.',
+      },
+      {
+        q: 'Can I customise the package to include only the services I need?',
+        a: 'Yes, packages are fully customisable. If you already have your own outfit, we can exclude clothing and adjust the price accordingly. You can mix and match any combination of clothing, jewellery, makeup, and photography.',
+      },
+      {
+        q: 'How much does a complete bridal package cost in Mysuru?',
+        a: 'Package pricing depends on the specific outfit, jewellery set, makeup style, and photography duration you choose. Bundled packages typically start from ₹15,000 for a single-function package. Contact us for a detailed quote tailored to your wedding.',
+      },
+      {
+        q: 'Does the bridal package cover multiple wedding functions?',
+        a: 'Yes, multi-function packages are available. We can cover mehendi, haldi, ceremony, and reception with coordinated looks for each function. Multi-function packages offer additional savings compared to single-function pricing.',
+      },
+      {
+        q: 'How far in advance should I book the bridal package?',
+        a: 'For Mysuru weddings during the October–February season, book at least 2–3 months in advance. The package consultation, outfit selection, and trial session all take time, so early booking ensures everything is perfectly planned.',
+      },
+    ],
+    relatedLinks: [
+      { to: '/bridal-package-bangalore', label: 'Bridal Package — Bangalore' },
+      { to: '/rental-clothing-mysuru', label: 'Bridal Clothing — Mysuru' },
+      { to: '/rental-jewellery-mysuru', label: 'Bridal Jewellery — Mysuru' },
+      { to: '/makeup-services-mysuru', label: 'Bridal Makeup — Mysuru' },
+      { to: '/photography-services-mysuru', label: 'Photography — Mysuru' },
+      { to: '/contact', label: 'Contact Us' },
+    ],
+  },
+
+  'bridal-package-bangalore': {
+    h1: 'Complete Bridal Package in Bangalore',
+    city: 'Bangalore',
+    service: 'Bridal Package',
+    ctaLink: '/contact',
+    ctaText: 'Get a Package Quote',
+    introParagraphs: [
+      "Bangalore is one of India's top wedding destinations — and brides here expect the best. People & Style's complete bridal package in Bangalore delivers just that: premium bridal clothing rental, stunning jewellery, expert makeup, and professional photography, all coordinated by a single team that understands how to make your wedding day seamless and spectacular.",
+      "The challenge with planning a Bangalore wedding is that every vendor operates separately — your makeup artist doesn't know your outfit, your photographer hasn't seen your venue. Our bundled bridal package changes that. We bring all four services together, conduct a single joint consultation, and plan every detail in advance so your team arrives on the day already briefed and ready. No last-minute coordination stress.",
+      "Our Bangalore packages are flexible enough for every kind of wedding — a traditional South Indian ceremony in Jayanagar, a destination event at a resort near the city, or a modern multi-day celebration at a premium banquet hall. We've covered all types and all scales. A bundled package also saves you 15–20% versus booking each service separately, which adds up significantly in a city like Bangalore.",
+    ],
+    highlights: [
+      { icon: '👗', label: 'Designer clothing rental', desc: 'Lehenga, gown, sherwani — 200+ outfits, all sizes' },
+      { icon: '💍', label: 'Jewellery rental included', desc: 'Temple, kundan, polki — matched to your outfit' },
+      { icon: '💄', label: 'HD & airbrush makeup', desc: 'Professional bridal makeup at home or venue' },
+      { icon: '📸', label: 'Candid photography', desc: 'Full-day coverage with editing included' },
+      { icon: '💰', label: '15–20% bundle savings', desc: 'Real savings vs booking each service separately' },
+      { icon: '🤝', label: 'Coordinated team', desc: 'One consultation — every vendor briefed in advance' },
+    ],
+    faqs: [
+      {
+        q: 'What services are included in the complete bridal package in Bangalore?',
+        a: 'The package covers bridal clothing rental, jewellery rental, professional bridal makeup (at home or venue), and wedding photography. All four services are coordinated by our team through a single consultation and booking process.',
+      },
+      {
+        q: 'Can I book just two or three of the services instead of all four?',
+        a: 'Yes, packages are fully flexible. You can choose any combination — for example, just clothing + makeup, or jewellery + photography. The bundle discount applies when you book two or more services together.',
+      },
+      {
+        q: 'How much does the bridal package cost in Bangalore?',
+        a: 'Pricing depends on your chosen outfit, jewellery set, makeup style, and photography duration. Single-function bundled packages start from ₹18,000. Multi-function and multi-day packages are priced on request. Contact us for a tailored quote.',
+      },
+      {
+        q: 'Do you travel to all parts of Bangalore for the package services?',
+        a: 'Yes, our makeup artists and photographers travel across Bangalore — Koramangala, Whitefield, Jayanagar, Indiranagar, Hebbal, JP Nagar, and all other areas. Clothing and jewellery can be delivered or picked up from our store.',
+      },
+      {
+        q: 'What is the booking process for the bridal package?',
+        a: 'Start by contacting us via phone or WhatsApp to share your wedding date, functions, and approximate budget. We will schedule a consultation — in person or on video call — to walk through outfit options, jewellery, makeup style, and photography coverage. Everything is confirmed in writing before any payment.',
+      },
+    ],
+    relatedLinks: [
+      { to: '/bridal-package-mysuru', label: 'Bridal Package — Mysuru' },
+      { to: '/rental-clothing-bangalore', label: 'Bridal Clothing — Bangalore' },
+      { to: '/rental-jewellery-bangalore', label: 'Bridal Jewellery — Bangalore' },
+      { to: '/makeup-services-bangalore', label: 'Bridal Makeup — Bangalore' },
+      { to: '/photography-services-bangalore', label: 'Photography — Bangalore' },
       { to: '/contact', label: 'Contact Us' },
     ],
   },
@@ -245,6 +451,8 @@ export const servicePages = {
       { to: '/makeup-services-bangalore', label: 'Bridal Makeup — Bangalore' },
       { to: '/rental-clothing-mysuru', label: 'Bridal Clothing — Mysuru' },
       { to: '/rental-jewellery-mysuru', label: 'Bridal Jewellery — Mysuru' },
+      { to: '/photography-services-mysuru', label: 'Photography — Mysuru' },
+      { to: '/bridal-package-mysuru', label: 'Complete Bridal Package — Mysuru' },
       { to: '/contact', label: 'Contact Us' },
     ],
   },
@@ -294,6 +502,8 @@ export const servicePages = {
       { to: '/makeup-services-mysuru', label: 'Bridal Makeup — Mysuru' },
       { to: '/rental-clothing-bangalore', label: 'Bridal Clothing — Bangalore' },
       { to: '/rental-jewellery-bangalore', label: 'Bridal Jewellery — Bangalore' },
+      { to: '/photography-services-bangalore', label: 'Photography — Bangalore' },
+      { to: '/bridal-package-bangalore', label: 'Complete Bridal Package — Bangalore' },
       { to: '/contact', label: 'Contact Us' },
     ],
   },
