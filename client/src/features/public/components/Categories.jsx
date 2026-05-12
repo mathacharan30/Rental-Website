@@ -8,6 +8,7 @@ import { ArrowRight, Sparkles } from "lucide-react";
 import OptimizedImage from "../../shared/components/OptimizedImage";
 import { CategoriesSkeleton } from "../loaders";
 import { comboCategories } from "../../../data/combos";
+import { motion } from "framer-motion";
 
 function mapCategory(c = {}) {
   const imageSource = c.image || "/saree.jpg";
@@ -63,7 +64,7 @@ const Categories = () => {
         <div className="flex items-center justify-center gap-1 mb-8">
           <button
             onClick={() => setActiveTab("categories")}
-            className={`px-4 py-2 rounded-tl-2xl rounded-br-2xl  text-sm font-medium transition-all border ${activeTab === "categories" ? "bg-gradient-to-r from-violet-600 to-fuchsia-500 border-violet-700 text-white" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40"}`}
+            className={`px-4 py-2 rounded-tl-2xl rounded-br-2xl  text-sm font-medium transition-all border ${activeTab === "categories" ? "bg-gradient-to-r from-violet-600 to-fuchsia-500 border-violet-400 text-white" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40"}`}
           >
             Categories
           </button>
@@ -87,7 +88,14 @@ const Categories = () => {
               <div className="text-neutral-400 py-12">No categories found.</div>
             ) : (
               categories.map((c) => (
-                <div key={c.id}>
+                <motion.div
+                  key={c.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{
+                    duration: 0.5,
+                  }}
+                >
                   <Link
                     to={`/products/${encodeURIComponent((c.name || "").toLowerCase())}`}
                     className="relative group overflow-hidden rounded-bl-3xl rounded-tr-3xl h-58 w-40 md:w-48 md:h-70 flex items-end 
@@ -120,12 +128,19 @@ const Categories = () => {
                       </span>
                     </div>
                   </Link>
-                </div>
+                </motion.div>
               ))
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-5xl mx-auto">
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-5xl mx-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{
+              duration: 0.5,
+            }}
+          >
             {comboCategories.map((combo) => (
               <Link
                 key={combo.slug}
@@ -169,7 +184,7 @@ const Categories = () => {
                 </div>
               </Link>
             ))}
-          </div>
+          </motion.div>
         )}
       </div>
     </section>
