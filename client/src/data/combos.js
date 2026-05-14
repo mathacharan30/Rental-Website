@@ -2,7 +2,7 @@ export const bridalComboPackages = [
   {
     id: "basic",
     name: "Basic Makeup",
-    price: 5000,
+    price: 5999,
     description: "Entry bridal package for simple wedding-day styling.",
     inclusions: [
       "Saree Draping",
@@ -28,7 +28,7 @@ export const bridalComboPackages = [
   {
     id: "bridal",
     name: "Bridal Makeup",
-    price: 8000,
+    price: 9999,
     description: "Balanced bridal package with a polished finish.",
     inclusions: ["Makeup", "Saree Draping", "Hairstyle", "Hair Accessories"],
     gallery: [
@@ -61,7 +61,7 @@ export const bridalComboPackages = [
   {
     id: "hd",
     name: "HD Makeup",
-    price: 14000,
+    price: 15999,
     description: "High-definition finish for premium photos and video.",
     inclusions: ["HD Makeup", "Saree Draping", "Hairstyle", "Hair Accessories"],
     gallery: [
@@ -94,7 +94,7 @@ export const bridalComboPackages = [
   {
     id: "airbrush",
     name: "Airbrush Makeup",
-    price: 20000,
+    price: 22999,
     description: "Top-tier bridal package with long-wear airbrush finish.",
     inclusions: [
       "Airbrush Makeup",
@@ -254,7 +254,7 @@ export const comboCategories = [
     title: "Makeup Combos",
     subtitle:
       "Makeup, draping, hair styling, and premium add-ons in one place.",
-    priceNote: "Packages from ₹5,000 to ₹20,000",
+    priceNote: "Packages from ₹5,999 to ₹22,999",
     accent: "from-violet-600 via-fuchsia-500 to-amber-400",
     image:
       "https://images.pexels.com/photos/7760689/pexels-photo-7760689.jpeg?auto=compress&cs=tinysrgb&w=1200",
