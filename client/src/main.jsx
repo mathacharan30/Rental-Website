@@ -8,6 +8,17 @@ import App from "./App.jsx";
 
 const queryClient = new QueryClient();
 
+// Chrome prerenders pages from Google search/GSC in the background.
+// If API calls fail during prerender, invalidate everything the moment
+// the page activates so all components refetch with a live connection.
+if (typeof document !== "undefined" && document.prerendering) {
+  document.addEventListener(
+    "prerenderingchange",
+    () => queryClient.invalidateQueries(),
+    { once: true }
+  );
+}
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <IKContext urlEndpoint="https://ik.imagekit.io/kayivtq3l">

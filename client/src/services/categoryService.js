@@ -26,7 +26,9 @@ async function uploadImageToS3(file) {
 
 // ─── Category APIs ────────────────────────────────────────────────────────────
 export async function getCategories() {
-  const { data } = await api.get("/api/categories");
+  const { data } = await api.get("/api/categories", {
+    params: { _t: Date.now() },
+  });
   return Array.isArray(data) ? data : [];
 }
 
