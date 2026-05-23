@@ -91,7 +91,10 @@ const Categories = () => {
                   {error?.message || "Unknown error"}
                 </p>
                 <p className="text-xs text-neutral-500 max-w-xs text-center break-all">
-                  URL: {import.meta.env.VITE_API_URL || "(empty)"}
+                  code: {error?.code || "none"} | status: {error?.response?.status ?? "no response"}
+                </p>
+                <p className="text-xs text-neutral-500 max-w-xs text-center break-all">
+                  url: {error?.config?.baseURL}{error?.config?.url}
                 </p>
                 <button
                   onClick={() => refetch()}
