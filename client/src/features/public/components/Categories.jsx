@@ -30,6 +30,7 @@ const Categories = () => {
     data: categories = [],
     isLoading,
     isError,
+    error,
     refetch,
   } = useQuery({
     queryKey: ["categories"],
@@ -86,6 +87,9 @@ const Categories = () => {
             ) : isError ? (
               <div className="flex flex-col items-center gap-4 py-12 text-neutral-400">
                 <p className="text-sm">Could not load categories.</p>
+                <p className="text-xs text-red-400 max-w-xs text-center break-all">
+                  {error?.message || "Unknown error"}
+                </p>
                 <button
                   onClick={() => refetch()}
                   className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-violet-500/10 border border-violet-400/30 text-violet-300 hover:bg-violet-500/20 transition-all text-sm"
