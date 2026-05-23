@@ -60,6 +60,10 @@ const PageLoader = () => (
 );
 
 const App = () => {
+  React.useEffect(() => {
+    if (typeof window.__hideLoader === 'function') window.__hideLoader();
+  }, []);
+
   return (
     <AuthProvider>
       <BrowserRouter>

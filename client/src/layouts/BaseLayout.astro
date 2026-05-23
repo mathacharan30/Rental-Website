@@ -120,6 +120,21 @@ const activeSchema = schema ?? defaultSchema
     }
   </head>
   <body class="bg-[#0e0e0e]">
+    <div id="app-loader" style="position:fixed;inset:0;z-index:9999;background:#0e0e0e;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;transition:opacity 0.3s ease">
+      <span style="font-family:Georgia,serif;font-size:1.5rem;color:#ffffff;letter-spacing:0.15em">People &amp; Style</span>
+      <span style="display:block;width:36px;height:36px;border:2px solid rgba(255,255,255,0.15);border-top-color:#a855f7;border-radius:50%;animation:spin 0.8s linear infinite"></span>
+    </div>
+    <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+    <script>
+      (function(){
+        var el = document.getElementById('app-loader');
+        if (!el) return;
+        window.__hideLoader = function(){
+          el.style.opacity = '0';
+          setTimeout(function(){ el.style.display = 'none'; }, 300);
+        };
+      })();
+    </script>
     <slot />
   </body>
 </html>

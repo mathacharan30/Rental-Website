@@ -8,6 +8,7 @@ const BASE_URL = (RAW_BASE_URL || "").replace(/\/+$/, "");
 const api = axios.create({
   baseURL: BASE_URL,
   withCredentials: false,
+  timeout: 10000, // 10 s — fail fast on mobile so React Query retries quickly
 });
 
 // Attach a fresh Firebase ID token on every request (if a user is signed in)

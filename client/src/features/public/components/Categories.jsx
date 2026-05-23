@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getCategories } from "../../../services/categoryService";
 import toast from "react-hot-toast";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, RefreshCw } from "lucide-react";
 import OptimizedImage from "../../shared/components/OptimizedImage";
 import { CategoriesSkeleton } from "../loaders";
 import { comboCategories } from "../../../data/combos";
@@ -30,20 +30,23 @@ const Categories = () => {
     data: categories = [],
     isLoading,
     isError,
+    refetch,
   } = useQuery({
     queryKey: ["categories"],
     queryFn: async () => {
-      try {
-        const data = await getCategories();
-        return Array.isArray(data) ? data.map(mapCategory) : [];
-      } catch (e) {
-        toast.error("Failed to load categories");
-        throw e;
-      }
+      const data = await getCategories();
+      return Array.isArray(data) ? data.map(mapCategory) : [];
     },
-    staleTime: 1000 * 60 * 5, // 5 minutes
-    cacheTime: 1000 * 60 * 30, // 30 minutes
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
+    retry: 3,
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 8000),
   });
+
+  // Show toast only once — after all retries have been exhausted
+  useEffect(() => {
+    if (isError) toast.error("Failed to load categories");
+  }, [isError]);
 
   return (
     <section id="categories" className="py-15">
@@ -64,13 +67,13 @@ const Categories = () => {
         <div className="flex items-center justify-center gap-1 mb-8">
           <button
             onClick={() => setActiveTab("categories")}
-            className={`px-4 py-2 rounded-tl-2xl rounded-br-2xl  text-sm font-medium transition-all border ${activeTab === "categories" ? "bg-gradient-to-r from-violet-600 to-fuchsia-500 border-violet-400 text-white" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40"}`}
+            className={`px-4 py-2 rounded-tl-2xl rounded-br-2xl text-sm font-medium transition-all border ${activeTab === "categories" ? "bg-linear-to-r from-violet-600 to-fuchsia-500 border-violet-400 text-white" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40"}`}
           >
             Categories
           </button>
           <button
             onClick={() => setActiveTab("combos")}
-            className={`px-4 py-2 rounded-tr-2xl rounded-bl-2xl  text-sm font-medium transition-all border inline-flex items-center gap-2 ${activeTab === "combos" ? "bg-gradient-to-r from-fuchsia-500 to-violet-700 border-violet-400 text-white" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40"}`}
+            className={`px-4 py-2 rounded-tr-2xl rounded-bl-2xl text-sm font-medium transition-all border inline-flex items-center gap-2 ${activeTab === "combos" ? "bg-linear-to-r from-fuchsia-500 to-violet-700 border-violet-400 text-white" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40"}`}
           >
             <Sparkles size={14} /> Makeup
           </button>
@@ -81,8 +84,14 @@ const Categories = () => {
             {isLoading ? (
               <CategoriesSkeleton count={6} />
             ) : isError ? (
-              <div className="text-red-400 py-12">
-                Failed to load categories.
+              <div className="flex flex-col items-center gap-4 py-12 text-neutral-400">
+                <p className="text-sm">Could not load categories.</p>
+                <button
+                  onClick={() => refetch()}
+                  className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-violet-500/10 border border-violet-400/30 text-violet-300 hover:bg-violet-500/20 transition-all text-sm"
+                >
+                  <RefreshCw size={14} /> Try again
+                </button>
               </div>
             ) : categories.length === 0 ? (
               <div className="text-neutral-400 py-12">No categories found.</div>
@@ -98,11 +107,10 @@ const Categories = () => {
                 >
                   <Link
                     to={`/products/${encodeURIComponent((c.name || "").toLowerCase())}`}
-                    className="relative group overflow-hidden rounded-bl-3xl rounded-tr-3xl h-58 w-40 md:w-48 md:h-70 flex items-end 
-               bg-neutral-900/40 border border-white/10
+                    className="relative group overflow-hidden rounded-bl-3xl rounded-tr-3xl h-58 w-40 md:w-48 md:h-70 flex items-end
+               bg-purple-950/40 border border-white/10
                hover:shadow-[0_12px_40px_rgba(139,92,246,0.25)]
-               hover:transform hover:scale-[1.03] transition-transform duration-300 bg-purple-950/40
-               transition-all duration-300"
+               hover:scale-[1.03] transition-all duration-300"
                     aria-label={`View ${c.name}`}
                   >
                     <OptimizedImage
