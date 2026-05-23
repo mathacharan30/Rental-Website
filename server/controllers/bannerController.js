@@ -107,6 +107,7 @@ exports.getBanners = async (req, res) => {
       filter.$or = [{ device: 'desktop' }, { device: { $exists: false } }, { device: null }];
     }
     const banners = await Banner.find(filter).sort({ createdAt: -1 });
+    res.set("Cache-Control", "s-maxage=60, stale-while-revalidate=120");
     return res.json(banners);
   } catch (error) {
     console.error('[Banner] Fetch Error:', error.message);
