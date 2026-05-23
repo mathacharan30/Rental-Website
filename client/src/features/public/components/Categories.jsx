@@ -90,6 +90,9 @@ const Categories = () => {
                 <p className="text-xs text-red-400 max-w-xs text-center break-all">
                   {error?.message || "Unknown error"}
                 </p>
+                <p className="text-xs text-neutral-500 max-w-xs text-center break-all">
+                  URL: {import.meta.env.VITE_API_URL || "(empty)"}
+                </p>
                 <button
                   onClick={() => refetch()}
                   className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-violet-500/10 border border-violet-400/30 text-violet-300 hover:bg-violet-500/20 transition-all text-sm"
