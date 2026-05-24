@@ -28,7 +28,9 @@ const Home = () => {
   return (
     <div className="bg-[#0e0e0e]">
       <Helmet>
-        <title>Bridal Wear on Rent in Mysuru &amp; Bangalore | People &amp; Style</title>
+        <title>
+          Bridal Wear on Rent in Mysuru &amp; Bangalore | People &amp; Style
+        </title>
         <meta
           name="description"
           content="People &amp; Style — Karnataka's #1 clothing rental service. Rent bridal lehenga, wedding gown, sherwani, bridal saree &amp; jewellery in Mysuru and Bangalore. Affordable bridal wear rental delivered to your door."
@@ -50,39 +52,63 @@ const Home = () => {
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="People &amp; Style" />
         <meta property="og:locale" content="en_IN" />
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "ClothingStore",
-          "name": "People & Style",
-          "description": "Bridal wear rental, lehenga on rent, wedding gown rental, sherwani on rent in Mysuru and Bangalore, Karnataka.",
-          "url": "https://peopleandstyle.in",
-          "telephone": "+919187668280",
-          "email": "hello@peopleandstyle.in",
-          "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "Mysuru",
-            "addressRegion": "Karnataka",
-            "postalCode": "570026",
-            "addressCountry": "IN"
-          },
-          "areaServed": [
-            { "@type": "City", "name": "Mysuru" },
-            { "@type": "City", "name": "Bangalore" },
-            { "@type": "State", "name": "Karnataka" }
-          ],
-          "openingHours": ["Mo-Sa 10:00-19:00", "Su 11:00-17:00"],
-          "priceRange": "₹₹",
-          "hasOfferCatalog": {
-            "@type": "OfferCatalog",
-            "name": "Rental Outfits",
-            "itemListElement": [
-              { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Bridal Lehenga on Rent" } },
-              { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Wedding Gown on Rent" } },
-              { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Sherwani on Rent" } },
-              { "@type": "Offer", "itemOffered": { "@type": "Product", "name": "Bridal Jewellery on Rent" } }
-            ]
-          }
-        })}</script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ClothingStore",
+            name: "People & Style",
+            description:
+              "Bridal wear rental, lehenga on rent, wedding gown rental, sherwani on rent in Mysuru and Bangalore, Karnataka.",
+            url: "https://peopleandstyle.in",
+            telephone: "+919187668280",
+            email: "hello@peopleandstyle.in",
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: "Mysuru",
+              addressRegion: "Karnataka",
+              postalCode: "570026",
+              addressCountry: "IN",
+            },
+            areaServed: [
+              { "@type": "City", name: "Mysuru" },
+              { "@type": "City", name: "Bangalore" },
+              { "@type": "State", name: "Karnataka" },
+            ],
+            openingHours: ["Mo-Sa 10:00-19:00", "Su 11:00-17:00"],
+            priceRange: "₹₹",
+            hasOfferCatalog: {
+              "@type": "OfferCatalog",
+              name: "Rental Outfits",
+              itemListElement: [
+                {
+                  "@type": "Offer",
+                  itemOffered: {
+                    "@type": "Product",
+                    name: "Bridal Lehenga on Rent",
+                  },
+                },
+                {
+                  "@type": "Offer",
+                  itemOffered: {
+                    "@type": "Product",
+                    name: "Wedding Gown on Rent",
+                  },
+                },
+                {
+                  "@type": "Offer",
+                  itemOffered: { "@type": "Product", name: "Sherwani on Rent" },
+                },
+                {
+                  "@type": "Offer",
+                  itemOffered: {
+                    "@type": "Product",
+                    name: "Bridal Jewellery on Rent",
+                  },
+                },
+              ],
+            },
+          })}
+        </script>
       </Helmet>
       <Hero />
       <Categories />

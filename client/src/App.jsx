@@ -61,7 +61,7 @@ const PageLoader = () => (
 
 const App = () => {
   React.useEffect(() => {
-    if (typeof window.__hideLoader === 'function') window.__hideLoader();
+    if (typeof window.__hideLoader === "function") window.__hideLoader();
   }, []);
 
   return (
@@ -82,7 +82,6 @@ const App = () => {
                   <Route path="/products/:category" element={<Products />} />
                   <Route path="/product/:id" element={<ProductDetail />} />
                   <Route path="/combos/:slug" element={<BridalCombo />} />
-                  {/* Service landing pages */}
                   <Route
                     path="/rental-clothing-mysuru"
                     element={

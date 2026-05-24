@@ -37,7 +37,7 @@ const BridalCombo = () => {
   useEffect(() => {
     setSelectedPackageId(combo.packages[0]?.id || "");
     setSelectedAddOns([]);
-  }, [combo.slug]);
+  }, [combo.slug, combo.packages]);
 
   const selectedPackage =
     combo.packages.find((item) => item.id === selectedPackageId) ||
@@ -59,17 +59,21 @@ const BridalCombo = () => {
     openWhatsApp({
       action: "enquiry",
       link: window.location.href,
-      heading: "Bridal Combo Booking",
-      intro: "Hello! I'd like to book a bridal combo package.",
+      heading: `${combo.title} Booking`,
+      intro: `Hello! I'd like to book the ${combo.title} package.`,
       product: {
         title: `${combo.title} - ${selectedPackage?.name || "Package"}`,
-        category: "Bridal Combo",
-        price: `₹${selectedPackage?.price?.toLocaleString() || "0"}`,
+        category: combo.title,
+        price: selectedPackage?.originalPrice
+          ? `₹${selectedPackage.price.toLocaleString()} (was ₹${selectedPackage.originalPrice.toLocaleString()})`
+          : `₹${selectedPackage?.price?.toLocaleString() || "0"}`,
         id: `${combo.slug}-${selectedPackage?.id || "package"}`,
       },
       extraLines: [
         `• Package: ${selectedPackage?.name || "N/A"}`,
-        `• Package Price: ₹${selectedPackage?.price?.toLocaleString() || "0"}`,
+        selectedPackage?.originalPrice
+          ? `• Package Price: ₹${selectedPackage.price.toLocaleString()} (was ₹${selectedPackage.originalPrice.toLocaleString()})`
+          : `• Package Price: ₹${selectedPackage?.price?.toLocaleString() || "0"}`,
         selectedPackage?.description
           ? `• Notes: ${selectedPackage.description}`
           : null,
@@ -174,9 +178,16 @@ const BridalCombo = () => {
                       />
                     )}
                   </div>
-                  <p className="mt-2 text-xl font-bold text-violet-300">
-                    ₹{pkg.price.toLocaleString()}
-                  </p>
+                  <div className="mt-2 flex items-end gap-2">
+                    <p className="text-xl font-bold text-violet-300">
+                      ₹{pkg.price.toLocaleString()}
+                    </p>
+                    {pkg.originalPrice ? (
+                      <p className="text-xs text-neutral-500 line-through pb-1">
+                        ₹{pkg.originalPrice.toLocaleString()}
+                      </p>
+                    ) : null}
+                  </div>
                   <p className="mt-1 text-xs text-neutral-400 line-clamp-2">
                     {pkg.description}
                   </p>
@@ -255,8 +266,15 @@ const BridalCombo = () => {
               <div className="space-y-2 mb-4 pb-4 border-b border-white/10">
                 <div className="flex justify-between text-sm">
                   <span className="text-neutral-400">Package Price</span>
-                  <span className="text-white font-semibold">
-                    ₹{selectedPackage?.price.toLocaleString()}
+                  <span className="text-right">
+                    <span className="text-white font-semibold">
+                      ₹{selectedPackage?.price.toLocaleString()}
+                    </span>
+                    {selectedPackage?.originalPrice ? (
+                      <span className="ml-2 text-xs text-neutral-500 line-through">
+                        ₹{selectedPackage.originalPrice.toLocaleString()}
+                      </span>
+                    ) : null}
                   </span>
                 </div>
                 {selectedAddOns.length > 0 && (

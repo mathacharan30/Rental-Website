@@ -156,40 +156,59 @@ const Categories = () => {
                 className="group overflow-hidden rounded-bl-4xl rounded-tr-4xl  border border-white/10 bg-[radial-gradient(circle_at_top_left,rgba(168,85,247,0.22),transparent_35%),linear-gradient(145deg,rgba(18,18,18,0.98),rgba(26,26,26,0.82))] p-2 md:p-3 hover:border-violet-400/40 transition-all duration-300
                bg-neutral-900/40"
               >
-                <div className="grid grid-cols-1 md:grid-cols-[0.95fr_1.05fr] gap-4 items-stretch">
-                  <div className="overflow-hidden rounded-tr-3xl rounded-bl-3xl border border-white/10">
-                    <OptimizedImage
-                      url={`/Combo/bridal3.jpeg`}
-                      type="category"
-                      alt={combo.title}
-                      className="h-[40vh] md:h-[40vh] w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="flex flex-col justify-between gap-4 p-1 md:p-2 text-left">
-                    <div>
-                      <h3 className="mt-3 text-2xl md:text-3xl font-semibold text-white instrument-serif">
-                        {combo.title}
-                      </h3>
-                      <p className="mt-2 text-sm text-neutral-400 leading-relaxed">
-                        {combo.subtitle}
-                      </p>
-                    </div>
+                {(() => {
+                  const offerPackage = combo.packages?.find(
+                    (pkg) => Number(pkg.originalPrice) > Number(pkg.price),
+                  );
 
-                    <div className="space-y-3">
-                      <p className="text-lg font-bold text-violet-300">
-                        {combo.priceNote}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm text-neutral-300">
-                          View package details
-                        </span>
-                        <span className="flex h-9 w-9 items-center justify-center text-violet-300 transition-transform duration-300 group-hover:translate-x-1">
-                          <ArrowRight size={24} />
-                        </span>
+                  return (
+                    <div className="grid grid-cols-1 md:grid-cols-[0.95fr_1.05fr] gap-4 items-stretch">
+                      <div className="overflow-hidden rounded-tr-3xl rounded-bl-3xl border border-white/10">
+                        <OptimizedImage
+                          url={combo.image}
+                          type="category"
+                          alt={combo.title}
+                          className="h-[40vh] md:h-[40vh] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      </div>
+                      <div className="flex flex-col justify-between gap-4 p-1 md:p-2 text-left">
+                        <div>
+                          <h3 className="mt-3 text-2xl md:text-3xl font-semibold text-white instrument-serif">
+                            {combo.title}
+                          </h3>
+                          <p className="mt-2 text-sm text-neutral-400 leading-relaxed">
+                            {combo.subtitle}
+                          </p>
+                        </div>
+
+                        <div className="space-y-3">
+                          {offerPackage ? (
+                            <p className="text-lg font-bold text-violet-300 flex items-end gap-2">
+                              <span>
+                                ₹{offerPackage.price.toLocaleString()}
+                              </span>
+                              <span className="text-sm text-neutral-500 line-through pb-0.5">
+                                ₹{offerPackage.originalPrice.toLocaleString()}
+                              </span>
+                            </p>
+                          ) : (
+                            <p className="text-lg font-bold text-violet-300">
+                              {combo.priceNote}
+                            </p>
+                          )}
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-neutral-300">
+                              View package details
+                            </span>
+                            <span className="flex h-9 w-9 items-center justify-center text-violet-300 transition-transform duration-300 group-hover:translate-x-1">
+                              <ArrowRight size={24} />
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
+                  );
+                })()}
               </Link>
             ))}
           </motion.div>

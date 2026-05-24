@@ -250,14 +250,53 @@ export const comboGallery = [
 
 export const comboCategories = [
   {
+    slug: "graduation-glam-combo",
+    title: "Graduation Glam Combo",
+    subtitle:
+      "Special student offer for graduation day, photoshoots, and farewell moments.",
+    priceNote: "Special offer ₹1800 (originally ₹2000)",
+    accent: "from-amber-500 via-orange-500 to-pink-500",
+    image: "/Combo/graduation/grad2.png",
+    packages: [
+      {
+        id: "graduation-glam",
+        name: "Graduation Glam Combo",
+        price: 1800,
+        originalPrice: 2000,
+        description: "Because your graduation day deserves the perfect look.",
+        inclusions: ["Saree Draping", "Minimal Makeup", "Basic Hairstyle"],
+        gallery: [
+          {
+            id: 101,
+            src: "/Combo/graduation/grad2.png",
+            alt: "Graduation glam saree draping look",
+            category: "saree",
+          },
+        ],
+      },
+    ],
+    addOns: [],
+    termsAndConditions: {
+      ...termsAndConditions,
+      whatsIncluded: ["Saree Draping", "Minimal Makeup", "Basic Hairstyle"],
+    },
+    gallery: [
+      {
+        id: 201,
+        src: "/Combo/graduation/grad2.png",
+        alt: "Graduation glam look",
+        category: "saree",
+      },
+    ],
+  },
+  {
     slug: "bridal-combo",
     title: "Makeup Combos",
     subtitle:
       "Makeup, draping, hair styling, and premium add-ons in one place.",
     priceNote: "Packages from ₹5,999 to ₹22,999",
     accent: "from-violet-600 via-fuchsia-500 to-amber-400",
-    image:
-      "https://images.pexels.com/photos/7760689/pexels-photo-7760689.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    image: "/Combo/bridal1.jpeg",
     packages: bridalComboPackages,
     addOns: bridalComboAddOns,
     termsAndConditions,
