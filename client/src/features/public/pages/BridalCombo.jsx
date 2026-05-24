@@ -61,6 +61,7 @@ const BridalCombo = () => {
       link: window.location.href,
       heading: `${combo.title} Booking`,
       intro: `Hello! I'd like to book the ${combo.title} package.`,
+      phone: combo.slug === "graduation-glam-combo" ? "7899426372" : undefined,
       product: {
         title: `${combo.title} - ${selectedPackage?.name || "Package"}`,
         category: combo.title,
