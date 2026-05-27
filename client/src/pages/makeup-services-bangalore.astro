@@ -21,7 +21,7 @@ const serviceSchema = {
     addressCountry: 'IN',
   },
   image: `${SITE}/og-default.jpeg`,
-  sameAs: ['https://www.instagram.com/peopleandstyle.in'],
+  sameAs: ['https://www.instagram.com/peopleandstyle.in', 'https://youtube.com/@peopleandstyle_in'],
   geo: { '@type': 'GeoCoordinates', latitude: '12.9716', longitude: '77.5946' },
   areaServed: [
     { '@type': 'City', name: 'Bangalore' },
@@ -72,6 +72,15 @@ const faqSchema = {
     },
   ],
 }
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE}/` },
+    { '@type': 'ListItem', position: 2, name: 'Makeup Services Bangalore', item: `${SITE}/makeup-services-bangalore` },
+  ],
+}
 ---
 
 <BaseLayout
@@ -79,7 +88,11 @@ const faqSchema = {
   description="Professional bridal makeup artists in Bangalore. HD, airbrush, South Indian traditional makeup. Home and venue service. Pre-wedding consultation included. People & Style."
   canonical={`${SITE}/makeup-services-bangalore`}
   keywords="bridal makeup artist Bangalore, wedding makeup artist Bangalore, bridal makeup services Bangalore, wedding makeup Bangalore, HD bridal makeup Bangalore, airbrush makeup Bangalore, professional makeup artist Bangalore, South Indian bridal makeup Bangalore"
-  schema={[serviceSchema, faqSchema]}
+  schema={[serviceSchema, faqSchema, breadcrumbSchema]}
 >
+  <div class="sr-only">
+    <h1>Bridal Makeup Services in Bangalore</h1>
+    <p>People &amp; Style's professional wedding makeup artists in Bangalore bring expert artistry to your doorstep — flawless, long-lasting bridal looks for every wedding function. HD, airbrush, and traditional bridal makeup. Home and venue service across all Bangalore areas. Trial sessions available.</p>
+  </div>
   <ReactApp client:only="react" />
 </BaseLayout>

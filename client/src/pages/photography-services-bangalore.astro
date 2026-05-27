@@ -22,6 +22,9 @@ const serviceSchema = {
   },
   openingHours: ['Mo-Sa 10:00-19:00', 'Su 11:00-17:00'],
   priceRange: '₹₹₹',
+  image: `${SITE}/og-default.jpeg`,
+  sameAs: ['https://www.instagram.com/peopleandstyle.in', 'https://youtube.com/@peopleandstyle_in'],
+  geo: { '@type': 'GeoCoordinates', latitude: '12.9716', longitude: '77.5946' },
   hasOfferCatalog: {
     '@type': 'OfferCatalog',
     name: 'Wedding Photography Services Bangalore',
@@ -65,6 +68,15 @@ const faqSchema = {
     },
   ],
 }
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE}/` },
+    { '@type': 'ListItem', position: 2, name: 'Wedding Photography Bangalore', item: `${SITE}/photography-services-bangalore` },
+  ],
+}
 ---
 
 <BaseLayout
@@ -72,7 +84,11 @@ const faqSchema = {
   description="Professional wedding photographers in Bangalore. Candid photography, multi-day packages, videography & drone coverage. All wedding types covered. People & Style."
   canonical={`${SITE}/photography-services-bangalore`}
   keywords="wedding photographer Bangalore, candid wedding photography Bangalore, wedding photography Bangalore, pre-wedding shoot Bangalore, wedding videography Bangalore, bridal photography Bangalore, best wedding photographer Bangalore, candid photographer Bangalore"
-  schema={[serviceSchema, faqSchema]}
+  schema={[serviceSchema, faqSchema, breadcrumbSchema]}
 >
+  <div class="sr-only">
+    <h1>Wedding Photography Services in Bangalore</h1>
+    <p>People &amp; Style's wedding photographers in Bangalore blend candid documentary photography with traditional portraits, capturing real emotions authentically. Coverage for Kannada, Tamil, Telugu, North Indian, and church weddings. Packages include candid photography, drone shots, and videography. Packages starting from ₹25,000.</p>
+  </div>
   <ReactApp client:only="react" />
 </BaseLayout>

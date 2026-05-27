@@ -23,7 +23,8 @@ export function AuthProvider({ children }) {
           const profile = await fetchMe();
           setUserProfile(profile);
         } catch {
-          setUserProfile(null);
+          // Don't clear userProfile on transient API failures — only clear
+          // when Firebase actually signs the user out (fbUser = null below).
         }
       } else {
         setUserProfile(null);

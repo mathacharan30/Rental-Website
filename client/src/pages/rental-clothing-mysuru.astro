@@ -21,7 +21,7 @@ const serviceSchema = {
     addressCountry: 'IN',
   },
   image: `${SITE}/og-default.jpeg`,
-  sameAs: ['https://www.instagram.com/peopleandstyle.in'],
+  sameAs: ['https://www.instagram.com/peopleandstyle.in', 'https://youtube.com/@peopleandstyle_in'],
   geo: { '@type': 'GeoCoordinates', latitude: '12.2958', longitude: '76.6394' },
   areaServed: [
     { '@type': 'City', name: 'Mysuru' },
@@ -72,6 +72,15 @@ const faqSchema = {
     },
   ],
 }
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE}/` },
+    { '@type': 'ListItem', position: 2, name: 'Clothing Rental Mysuru', item: `${SITE}/rental-clothing-mysuru` },
+  ],
+}
 ---
 
 <BaseLayout
@@ -79,7 +88,11 @@ const faqSchema = {
   description="Rent designer bridal lehengas, wedding gowns, sherwanis and silk sarees in Mysuru. 200+ outfits starting from ₹500. Doorstep delivery. People & Style."
   canonical={`${SITE}/rental-clothing-mysuru`}
   keywords="bridal lehenga on rent in Mysuru, wedding lehenga on rent Mysuru, wedding gown rental Mysuru, wedding dress rental Mysuru, sherwani on rent Mysuru, bridal wear rental Mysuru, designer lehenga rent Mysuru, silk saree on rent Mysuru"
-  schema={[serviceSchema, faqSchema]}
+  schema={[serviceSchema, faqSchema, breadcrumbSchema]}
 >
+  <div class="sr-only">
+    <h1>Bridal Clothing on Rent in Mysuru</h1>
+    <p>Planning your wedding in Mysuru? At People &amp; Style, we offer a premium collection of bridal and wedding clothing on rent in Mysuru — designer lehengas, wedding gowns, silk sarees, sherwanis, and Indo-western outfits for every function and budget. Over 200 outfits starting from ₹500. Doorstep delivery available.</p>
+  </div>
   <ReactApp client:only="react" />
 </BaseLayout>

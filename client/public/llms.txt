@@ -1,5 +1,7 @@
 # People & Style — Bridal Rental Studio
 > Karnataka's premier bridal rental studio offering clothing rental, jewellery rental, makeup services and wedding photography in Mysuru and Bangalore.
+> License: RSL-1.0
+> Last-Updated: 2026-05-27
 
 ## Services
 - Bridal clothing rental: lehengas, wedding gowns, sherwanis, silk sarees
@@ -15,6 +17,8 @@
 - Phone: +91 91876 68280
 - Email: hello@peopleandstyle.in
 - Hours: Monday–Saturday 10:00–19:00, Sunday 11:00–17:00
+- Instagram: https://www.instagram.com/peopleandstyle.in
+- YouTube: https://youtube.com/@peopleandstyle_in
 
 ## Key Pages
 - Homepage: https://peopleandstyle.in/
@@ -24,6 +28,10 @@
 - Bridal Jewellery Bangalore: https://peopleandstyle.in/rental-jewellery-bangalore
 - Makeup Mysuru: https://peopleandstyle.in/makeup-services-mysuru
 - Makeup Bangalore: https://peopleandstyle.in/makeup-services-bangalore
+- Wedding Photography Mysuru: https://peopleandstyle.in/photography-services-mysuru
+- Wedding Photography Bangalore: https://peopleandstyle.in/photography-services-bangalore
+- Complete Bridal Package Mysuru: https://peopleandstyle.in/bridal-package-mysuru
+- Complete Bridal Package Bangalore: https://peopleandstyle.in/bridal-package-bangalore
 - All Products: https://peopleandstyle.in/products
 - FAQ: https://peopleandstyle.in/faq
 - Contact: https://peopleandstyle.in/contact

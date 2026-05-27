@@ -22,6 +22,9 @@ const serviceSchema = {
   },
   openingHours: ['Mo-Sa 10:00-19:00', 'Su 11:00-17:00'],
   priceRange: '₹₹',
+  image: `${SITE}/og-default.jpeg`,
+  sameAs: ['https://www.instagram.com/peopleandstyle.in', 'https://youtube.com/@peopleandstyle_in'],
+  geo: { '@type': 'GeoCoordinates', latitude: '12.9716', longitude: '77.5946' },
   hasOfferCatalog: {
     '@type': 'OfferCatalog',
     name: 'Complete Bridal Package Bangalore',
@@ -65,6 +68,15 @@ const faqSchema = {
     },
   ],
 }
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE}/` },
+    { '@type': 'ListItem', position: 2, name: 'Bridal Package Bangalore', item: `${SITE}/bridal-package-bangalore` },
+  ],
+}
 ---
 
 <BaseLayout
@@ -72,7 +84,11 @@ const faqSchema = {
   description="All-inclusive bridal package in Bangalore — clothing rental, jewellery rental, bridal makeup & wedding photography bundled together. Save 15–20% vs booking separately. People & Style."
   canonical={`${SITE}/bridal-package-bangalore`}
   keywords="bridal package Bangalore, complete bridal package Bangalore, wedding package Bangalore, bridal combo Bangalore, wedding services Bangalore, bridal clothing makeup photography Bangalore, all inclusive bridal package Bangalore"
-  schema={[serviceSchema, faqSchema]}
+  schema={[serviceSchema, faqSchema, breadcrumbSchema]}
 >
+  <div class="sr-only">
+    <h1>Complete Bridal Package in Bangalore</h1>
+    <p>People &amp; Style's complete bridal package in Bangalore delivers premium bridal clothing rental, stunning jewellery, expert makeup, and professional photography — all coordinated by a single team. Flexible packages for every Bangalore wedding type. Bundle savings of 15–20% versus booking each service separately. Starting from ₹18,000.</p>
+  </div>
   <ReactApp client:only="react" />
 </BaseLayout>

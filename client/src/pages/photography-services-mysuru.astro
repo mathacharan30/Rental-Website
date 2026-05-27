@@ -22,6 +22,9 @@ const serviceSchema = {
   },
   openingHours: ['Mo-Sa 10:00-19:00', 'Su 11:00-17:00'],
   priceRange: '₹₹₹',
+  image: `${SITE}/og-default.jpeg`,
+  sameAs: ['https://www.instagram.com/peopleandstyle.in', 'https://youtube.com/@peopleandstyle_in'],
+  geo: { '@type': 'GeoCoordinates', latitude: '12.2958', longitude: '76.6394' },
   hasOfferCatalog: {
     '@type': 'OfferCatalog',
     name: 'Wedding Photography Services Mysuru',
@@ -65,6 +68,15 @@ const faqSchema = {
     },
   ],
 }
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE}/` },
+    { '@type': 'ListItem', position: 2, name: 'Wedding Photography Mysuru', item: `${SITE}/photography-services-mysuru` },
+  ],
+}
 ---
 
 <BaseLayout
@@ -72,7 +84,11 @@ const faqSchema = {
   description="Professional wedding photographers in Mysuru. Candid photography, pre-wedding shoots, videography & drone shots. Experienced with South Indian weddings. People & Style."
   canonical={`${SITE}/photography-services-mysuru`}
   keywords="wedding photographer Mysuru, candid wedding photography Mysuru, wedding photography Mysuru, pre-wedding shoot Mysuru, wedding videography Mysuru, bridal photography Mysuru, best wedding photographer Mysuru, candid photographer Mysuru"
-  schema={[serviceSchema, faqSchema]}
+  schema={[serviceSchema, faqSchema, breadcrumbSchema]}
 >
+  <div class="sr-only">
+    <h1>Wedding Photography Services in Mysuru</h1>
+    <p>People &amp; Style's professional wedding photographers in Mysuru capture every emotion and every moment with a natural, storytelling approach. Candid photography, traditional portraits, pre-wedding shoots, drone coverage, and videography. Wedding photography packages starting from ₹20,000. Consultation included with every booking.</p>
+  </div>
   <ReactApp client:only="react" />
 </BaseLayout>

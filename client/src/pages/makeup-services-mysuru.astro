@@ -21,7 +21,7 @@ const serviceSchema = {
     addressCountry: 'IN',
   },
   image: `${SITE}/og-default.jpeg`,
-  sameAs: ['https://www.instagram.com/peopleandstyle.in'],
+  sameAs: ['https://www.instagram.com/peopleandstyle.in', 'https://youtube.com/@peopleandstyle_in'],
   geo: { '@type': 'GeoCoordinates', latitude: '12.2958', longitude: '76.6394' },
   areaServed: [
     { '@type': 'City', name: 'Mysuru' },
@@ -72,6 +72,15 @@ const faqSchema = {
     },
   ],
 }
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE}/` },
+    { '@type': 'ListItem', position: 2, name: 'Makeup Services Mysuru', item: `${SITE}/makeup-services-mysuru` },
+  ],
+}
 ---
 
 <BaseLayout
@@ -79,7 +88,11 @@ const faqSchema = {
   description="Professional bridal makeup artists in Mysuru. HD, airbrush and traditional bridal makeup for all functions. Home service. Consultation included. People & Style."
   canonical={`${SITE}/makeup-services-mysuru`}
   keywords="bridal makeup artist Mysuru, wedding makeup artist Mysuru, bridal makeup services Mysuru, wedding makeup Mysuru, HD bridal makeup Mysuru, airbrush makeup Mysuru, professional makeup artist Mysuru, engagement makeup Mysuru"
-  schema={[serviceSchema, faqSchema]}
+  schema={[serviceSchema, faqSchema, breadcrumbSchema]}
 >
+  <div class="sr-only">
+    <h1>Bridal Makeup Services in Mysuru</h1>
+    <p>People &amp; Style's professional wedding makeup artists in Mysuru specialise in bridal makeup that looks stunning in person and photographs beautifully. Traditional, HD, and airbrush bridal makeup for all functions. Home service available. Bridal consultation included with every booking.</p>
+  </div>
   <ReactApp client:only="react" />
 </BaseLayout>

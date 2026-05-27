@@ -21,7 +21,7 @@ const serviceSchema = {
     addressCountry: 'IN',
   },
   image: `${SITE}/og-default.jpeg`,
-  sameAs: ['https://www.instagram.com/peopleandstyle.in'],
+  sameAs: ['https://www.instagram.com/peopleandstyle.in', 'https://youtube.com/@peopleandstyle_in'],
   geo: { '@type': 'GeoCoordinates', latitude: '12.9716', longitude: '77.5946' },
   areaServed: [
     { '@type': 'City', name: 'Bangalore' },
@@ -72,6 +72,15 @@ const faqSchema = {
     },
   ],
 }
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE}/` },
+    { '@type': 'ListItem', position: 2, name: 'Clothing Rental Bangalore', item: `${SITE}/rental-clothing-bangalore` },
+  ],
+}
 ---
 
 <BaseLayout
@@ -79,7 +88,11 @@ const faqSchema = {
   description="Rent designer bridal lehengas, wedding gowns, sherwanis and sarees in Bangalore. 200+ outfits starting from ₹500. Home delivery across Bangalore. People & Style."
   canonical={`${SITE}/rental-clothing-bangalore`}
   keywords="bridal lehenga on rent Bangalore, wedding lehenga on rent Bangalore, wedding gown rental Bangalore, wedding dress rental Bangalore, sherwani rental Bangalore, designer lehenga on rent Bangalore, bridesmaid outfit rental Bangalore"
-  schema={[serviceSchema, faqSchema]}
+  schema={[serviceSchema, faqSchema, breadcrumbSchema]}
 >
+  <div class="sr-only">
+    <h1>Bridal Clothing on Rent in Bangalore</h1>
+    <p>Looking for the perfect wedding dress rental in Bangalore? People &amp; Style brings you a curated collection of bridal and wedding clothing on rent in Bangalore — designer lehengas, wedding gowns, silk sarees, reception dresses, and sherwanis for every occasion and budget. Over 200 outfits starting from ₹500. Home delivery across Bangalore.</p>
+  </div>
   <ReactApp client:only="react" />
 </BaseLayout>

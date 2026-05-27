@@ -21,7 +21,7 @@ const serviceSchema = {
     addressCountry: 'IN',
   },
   image: `${SITE}/og-default.jpeg`,
-  sameAs: ['https://www.instagram.com/peopleandstyle.in'],
+  sameAs: ['https://www.instagram.com/peopleandstyle.in', 'https://youtube.com/@peopleandstyle_in'],
   geo: { '@type': 'GeoCoordinates', latitude: '12.2958', longitude: '76.6394' },
   areaServed: [
     { '@type': 'City', name: 'Mysuru' },
@@ -72,6 +72,15 @@ const faqSchema = {
     },
   ],
 }
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE}/` },
+    { '@type': 'ListItem', position: 2, name: 'Jewellery Rental Mysuru', item: `${SITE}/rental-jewellery-mysuru` },
+  ],
+}
 ---
 
 <BaseLayout
@@ -79,7 +88,11 @@ const faqSchema = {
   description="Rent bridal jewellery sets, temple jewellery, kundan and gold-finish sets in Mysuru. Complete sets from ₹800. Home delivery available. People & Style."
   canonical={`${SITE}/rental-jewellery-mysuru`}
   keywords="bridal jewellery on rent Mysuru, wedding jewellery rental Mysuru, temple jewellery on rent Mysuru, gold jewellery rental Mysuru, kundan jewellery rental Mysuru"
-  schema={[serviceSchema, faqSchema]}
+  schema={[serviceSchema, faqSchema, breadcrumbSchema]}
 >
+  <div class="sr-only">
+    <h1>Bridal Jewellery on Rent in Mysuru</h1>
+    <p>Complete your bridal look with the perfect jewellery — without the cost of buying gold. At People &amp; Style, we offer bridal and wedding jewellery on rent in Mysuru: temple jewellery sets, gold-finish necklaces, kundan sets, polki sets, and maang tikka. Starting from ₹300. Home delivery in Mysuru.</p>
+  </div>
   <ReactApp client:only="react" />
 </BaseLayout>

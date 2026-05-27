@@ -1,6 +1,22 @@
 User-agent: *
 Allow: /
 
+# Allow AI crawlers to index all public content
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
 # Block private/admin routes from indexing
 Disallow: /admin/
 Disallow: /superadmin/

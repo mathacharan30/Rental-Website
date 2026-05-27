@@ -13,7 +13,12 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { initializeApp } from 'firebase/app';
-import { getAuth }       from 'firebase/auth';
+import {
+  getAuth,
+  setPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence,
+} from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey:            import.meta.env.VITE_FIREBASE_API_KEY,
@@ -26,4 +31,11 @@ const firebaseConfig = {
 
 const app  = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+
+// Use localStorage instead of IndexedDB so sessions survive page refreshes
+// reliably. Falls back to sessionStorage if localStorage is blocked.
+setPersistence(auth, browserLocalPersistence).catch(() => {
+  setPersistence(auth, browserSessionPersistence).catch(() => {});
+});
+
 export default app;

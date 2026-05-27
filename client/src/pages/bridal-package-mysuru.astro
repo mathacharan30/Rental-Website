@@ -22,6 +22,9 @@ const serviceSchema = {
   },
   openingHours: ['Mo-Sa 10:00-19:00', 'Su 11:00-17:00'],
   priceRange: '₹₹',
+  image: `${SITE}/og-default.jpeg`,
+  sameAs: ['https://www.instagram.com/peopleandstyle.in', 'https://youtube.com/@peopleandstyle_in'],
+  geo: { '@type': 'GeoCoordinates', latitude: '12.2958', longitude: '76.6394' },
   hasOfferCatalog: {
     '@type': 'OfferCatalog',
     name: 'Complete Bridal Package Mysuru',
@@ -65,6 +68,15 @@ const faqSchema = {
     },
   ],
 }
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE}/` },
+    { '@type': 'ListItem', position: 2, name: 'Bridal Package Mysuru', item: `${SITE}/bridal-package-mysuru` },
+  ],
+}
 ---
 
 <BaseLayout
@@ -72,7 +84,11 @@ const faqSchema = {
   description="All-inclusive bridal package in Mysuru — clothing rental, jewellery rental, bridal makeup & wedding photography bundled together. Save 15–20% vs booking separately. People & Style."
   canonical={`${SITE}/bridal-package-mysuru`}
   keywords="bridal package Mysuru, complete bridal package Mysuru, wedding package Mysuru, bridal combo Mysuru, wedding services Mysuru, bridal clothing makeup photography Mysuru, all inclusive bridal package Mysuru"
-  schema={[serviceSchema, faqSchema]}
+  schema={[serviceSchema, faqSchema, breadcrumbSchema]}
 >
+  <div class="sr-only">
+    <h1>Complete Bridal Package in Mysuru</h1>
+    <p>People &amp; Style's complete bridal package in Mysuru brings everything under one roof: bridal clothing rental, jewellery rental, professional makeup, and wedding photography. One coordinated team, one point of contact, and 15–20% savings versus booking each service separately. Starting from ₹15,000 for a single-function package.</p>
+  </div>
   <ReactApp client:only="react" />
 </BaseLayout>

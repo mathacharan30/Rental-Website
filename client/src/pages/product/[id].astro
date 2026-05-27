@@ -40,6 +40,8 @@ if (API_URL && id) {
             price,
             availability: 'https://schema.org/InStock',
             itemCondition: 'https://schema.org/UsedCondition',
+            priceValidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
+            seller: { '@type': 'Organization', name: 'People & Style', url: 'https://peopleandstyle.in' },
           },
         }
       }

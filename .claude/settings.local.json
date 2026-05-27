@@ -16,7 +16,10 @@
       "Bash(Get-ChildItem -Path \"d:\\\\Rental\\\\Rental-website-main\" -Recurse -File -Name)",
       "Bash(Select-Object -First 50)",
       "PowerShell(Get-ChildItem -Path \"d:\\\\Rental\\\\Rental-website-main\" -Recurse -File | Select-Object -First 30 | ForEach-Object { $_.FullName })",
-      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\('astro:', p.dependencies.astro || p.devDependencies.astro\\); console.log\\('@astrojs/vercel:', p.dependencies['@astrojs/vercel'] || p.devDependencies['@astrojs/vercel']\\)\")"
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\('astro:', p.dependencies.astro || p.devDependencies.astro\\); console.log\\('@astrojs/vercel:', p.dependencies['@astrojs/vercel'] || p.devDependencies['@astrojs/vercel']\\)\")",
+      "Bash(xargs sed -i \"s|sameAs: \\\\['https://www.instagram.com/peopleandstyle.in'\\\\]|sameAs: ['https://www.instagram.com/peopleandstyle.in', 'https://youtube.com/@peopleandstyle_in']|g\")",
+      "Bash(Get-ChildItem -Path \"d:\\\\Rental\\\\Rental-website-main\" -Recurse -Directory -ErrorAction SilentlyContinue)",
+      "Bash(xargs grep -l \"getIdToken\\\\|onAuthStateChanged\\\\|onIdTokenChanged\")"
     ]
   },
   "enabledPlugins": {

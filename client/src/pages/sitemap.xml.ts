@@ -7,29 +7,29 @@ export const GET: APIRoute = async () => {
   const DOMAIN = 'https://peopleandstyle.in'
   const API    = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '')
 
-  const staticPages: { loc: string; priority: string; changefreq: string; lastmod: string }[] = [
-    { loc: '/',                              priority: '1.0',  changefreq: 'daily',   lastmod: '2026-05-10' },
-    { loc: '/products',                      priority: '0.95', changefreq: 'daily',   lastmod: '2026-05-10' },
-    { loc: '/rental-clothing-mysuru',        priority: '0.95', changefreq: 'weekly',  lastmod: '2026-05-10' },
-    { loc: '/rental-clothing-bangalore',     priority: '0.95', changefreq: 'weekly',  lastmod: '2026-05-10' },
-    { loc: '/rental-jewellery-mysuru',       priority: '0.90', changefreq: 'weekly',  lastmod: '2026-05-10' },
-    { loc: '/rental-jewellery-bangalore',    priority: '0.90', changefreq: 'weekly',  lastmod: '2026-05-10' },
-    { loc: '/makeup-services-mysuru',            priority: '0.90', changefreq: 'weekly',  lastmod: '2026-05-10' },
-    { loc: '/makeup-services-bangalore',         priority: '0.90', changefreq: 'weekly',  lastmod: '2026-05-10' },
-    { loc: '/photography-services-mysuru',       priority: '0.90', changefreq: 'weekly',  lastmod: '2026-05-12' },
-    { loc: '/photography-services-bangalore',    priority: '0.90', changefreq: 'weekly',  lastmod: '2026-05-12' },
-    { loc: '/bridal-package-mysuru',             priority: '0.90', changefreq: 'weekly',  lastmod: '2026-05-12' },
-    { loc: '/bridal-package-bangalore',          priority: '0.90', changefreq: 'weekly',  lastmod: '2026-05-12' },
-    { loc: '/products/lehenga',              priority: '0.90', changefreq: 'daily',   lastmod: '2026-05-10' },
-    { loc: '/products/gowns',               priority: '0.90', changefreq: 'daily',   lastmod: '2026-05-10' },
-    { loc: '/products/men',                 priority: '0.85', changefreq: 'daily',   lastmod: '2026-05-10' },
-    { loc: '/products/jewels',              priority: '0.85', changefreq: 'daily',   lastmod: '2026-05-10' },
-    { loc: '/about',                         priority: '0.70', changefreq: 'monthly', lastmod: '2026-05-10' },
-    { loc: '/contact',                       priority: '0.70', changefreq: 'monthly', lastmod: '2026-05-10' },
-    { loc: '/faq',                           priority: '0.60', changefreq: 'monthly', lastmod: '2026-05-10' },
-    { loc: '/terms',                         priority: '0.30', changefreq: 'yearly',  lastmod: '2026-05-10' },
-    { loc: '/privacy',                       priority: '0.30', changefreq: 'yearly',  lastmod: '2026-05-10' },
-    { loc: '/refund',                        priority: '0.30', changefreq: 'yearly',  lastmod: '2026-05-10' },
+  const staticPages: { loc: string; lastmod: string }[] = [
+    { loc: '/',                              lastmod: '2026-05-10' },
+    { loc: '/products',                      lastmod: '2026-05-10' },
+    { loc: '/rental-clothing-mysuru',        lastmod: '2026-05-10' },
+    { loc: '/rental-clothing-bangalore',     lastmod: '2026-05-10' },
+    { loc: '/rental-jewellery-mysuru',       lastmod: '2026-05-10' },
+    { loc: '/rental-jewellery-bangalore',    lastmod: '2026-05-10' },
+    { loc: '/makeup-services-mysuru',        lastmod: '2026-05-10' },
+    { loc: '/makeup-services-bangalore',     lastmod: '2026-05-10' },
+    { loc: '/photography-services-mysuru',   lastmod: '2026-05-27' },
+    { loc: '/photography-services-bangalore',lastmod: '2026-05-27' },
+    { loc: '/bridal-package-mysuru',         lastmod: '2026-05-27' },
+    { loc: '/bridal-package-bangalore',      lastmod: '2026-05-27' },
+    { loc: '/products/lehenga',              lastmod: '2026-05-10' },
+    { loc: '/products/gowns',               lastmod: '2026-05-10' },
+    { loc: '/products/men',                 lastmod: '2026-05-10' },
+    { loc: '/products/jewels',              lastmod: '2026-05-10' },
+    { loc: '/about',                         lastmod: '2026-05-10' },
+    { loc: '/contact',                       lastmod: '2026-05-10' },
+    { loc: '/faq',                           lastmod: '2026-05-10' },
+    { loc: '/terms',                         lastmod: '2026-05-10' },
+    { loc: '/privacy',                       lastmod: '2026-05-10' },
+    { loc: '/refund',                        lastmod: '2026-05-10' },
   ]
 
   type ProductEntry = {
@@ -62,8 +62,6 @@ export const GET: APIRoute = async () => {
       (p) => `  <url>
     <loc>${DOMAIN}${p.loc}</loc>
     <lastmod>${p.lastmod}</lastmod>
-    <changefreq>${p.changefreq}</changefreq>
-    <priority>${p.priority}</priority>
   </url>`
     ),
     ...productPages.map((p) => {
@@ -77,8 +75,6 @@ export const GET: APIRoute = async () => {
       return `  <url>
     <loc>${DOMAIN}${p.loc}</loc>
     <lastmod>${p.lastmod}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.80</priority>
 ${imageTags}
   </url>`
     }),

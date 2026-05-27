@@ -3,6 +3,32 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 import ReactApp from '../components/ReactApp.jsx'
 
 export const prerender = true
+
+const SITE = 'https://peopleandstyle.in'
+
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Rental Clothing & Jewellery — People & Style',
+  description: 'Browse bridal lehengas, wedding gowns, sherwanis, sarees, and jewellery sets available for rent in Mysuru and Bangalore.',
+  url: `${SITE}/products`,
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Bridal Lehenga on Rent', url: `${SITE}/products/lehenga` },
+    { '@type': 'ListItem', position: 2, name: 'Wedding Gown on Rent', url: `${SITE}/products/gown` },
+    { '@type': 'ListItem', position: 3, name: 'Sherwani on Rent', url: `${SITE}/products/sherwani` },
+    { '@type': 'ListItem', position: 4, name: 'Saree on Rent', url: `${SITE}/products/saree` },
+    { '@type': 'ListItem', position: 5, name: 'Bridal Jewellery on Rent', url: `${SITE}/products/jewellery` },
+  ],
+}
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE}/` },
+    { '@type': 'ListItem', position: 2, name: 'All Products', item: `${SITE}/products` },
+  ],
+}
 ---
 
 <BaseLayout
@@ -10,6 +36,7 @@ export const prerender = true
   description="Browse all rental outfits at People & Style — bridal lehenga, wedding gown, sherwani, bridal saree, jewellery & more on rent in Mysuru and Bangalore. Premium clothing rental for weddings & events."
   canonical="https://peopleandstyle.in/products"
   keywords="clothes on rent in Mysuru, clothes on rent in Bangalore, rental outfits Mysuru, dress rental Mysuru, bridal wear on rent, wedding dress rental, clothing rental Bangalore, jewellery on rent Mysuru"
+  schema={[itemListSchema, breadcrumbSchema]}
 >
   <ReactApp client:only="react" />
 </BaseLayout>

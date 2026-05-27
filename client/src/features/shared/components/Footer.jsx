@@ -4,17 +4,12 @@ import {
   FaInstagram,
   FaWhatsapp,
   FaYoutube,
-  FaFacebookF,
-  FaThreads,
 } from "react-icons/fa6";
 
 const SOCIAL_LINKS = {
   instagram: "https://www.instagram.com/peopleandstyle.in",
   whatsapp: "https://wa.me/message/FRASHXI7BJGSG1",
-  youtube: "https://www.youtube.com/",
-  facebook: "https://www.facebook.com/",
-  threads: "https://www.threads.net/",
-  infoVideo: "https://www.youtube.com/",
+  youtube: "https://youtube.com/@peopleandstyle_in",
 };
 
 const Footer = () => {
@@ -62,24 +57,6 @@ const Footer = () => {
                   aria-label="YouTube"
                 >
                   <FaYoutube size={16} />
-                </a>
-                <a
-                  href={SOCIAL_LINKS.facebook}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-9 h-9 rounded-lg glass flex items-center justify-center text-neutral-400 hover:text-blue-400 transition-colors duration-150"
-                  aria-label="Facebook"
-                >
-                  <FaFacebookF size={16} />
-                </a>
-                <a
-                  href={SOCIAL_LINKS.threads}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-9 h-9 rounded-lg glass flex items-center justify-center text-neutral-400 hover:text-white transition-colors duration-150"
-                  aria-label="Threads"
-                >
-                  <FaThreads size={16} />
                 </a>
               </div>
             </div>

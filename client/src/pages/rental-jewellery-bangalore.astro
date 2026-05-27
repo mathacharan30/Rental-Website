@@ -21,7 +21,7 @@ const serviceSchema = {
     addressCountry: 'IN',
   },
   image: `${SITE}/og-default.jpeg`,
-  sameAs: ['https://www.instagram.com/peopleandstyle.in'],
+  sameAs: ['https://www.instagram.com/peopleandstyle.in', 'https://youtube.com/@peopleandstyle_in'],
   geo: { '@type': 'GeoCoordinates', latitude: '12.9716', longitude: '77.5946' },
   areaServed: [
     { '@type': 'City', name: 'Bangalore' },
@@ -72,6 +72,15 @@ const faqSchema = {
     },
   ],
 }
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE}/` },
+    { '@type': 'ListItem', position: 2, name: 'Jewellery Rental Bangalore', item: `${SITE}/rental-jewellery-bangalore` },
+  ],
+}
 ---
 
 <BaseLayout
@@ -79,7 +88,11 @@ const faqSchema = {
   description="Rent complete bridal jewellery sets, temple jewellery, kundan and polki sets in Bangalore. Starting from ₹300. Home delivery across Bangalore. People & Style."
   canonical={`${SITE}/rental-jewellery-bangalore`}
   keywords="bridal jewellery on rent Bangalore, wedding jewellery rental Bangalore, temple jewellery rental Bangalore, kundan jewellery rental Bangalore, artificial jewellery rent Bangalore"
-  schema={[serviceSchema, faqSchema]}
+  schema={[serviceSchema, faqSchema, breadcrumbSchema]}
 >
+  <div class="sr-only">
+    <h1>Bridal Jewellery on Rent in Bangalore</h1>
+    <p>People &amp; Style offers premium bridal and wedding jewellery on rent in Bangalore — temple sets, kundan, polki, meenakari, and gold-finish bridal jewellery. Complete sets or individual pieces. Starting from ₹300. Home delivery across Bangalore.</p>
+  </div>
   <ReactApp client:only="react" />
 </BaseLayout>

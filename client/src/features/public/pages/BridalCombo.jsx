@@ -160,7 +160,7 @@ const BridalCombo = () => {
                   className={`text-left rounded-[1.35rem] border min-w-[80vw] md:min-w-auto p-4 transition-all duration-200 ${
                     active
                       ? "border-violet-400/70 bg-violet-500/05"
-                      : "border-white/10 bg-white/[0.03] hover:border-violet-500/35 hover:bg-white/[0.05]"
+                      : "border-white/10 bg-white/3 hover:border-violet-500/35 hover:bg-white/5"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3">
@@ -216,7 +216,7 @@ const BridalCombo = () => {
                 {selectedPackage?.inclusions?.map((item) => (
                   <div
                     key={item}
-                    className="flex items-center gap-3 rounded-lg border border-white/8 bg-white/[0.02] px-3 py-2.5"
+                    className="flex items-center gap-3 rounded-lg border border-white/8 bg-white/2 px-3 py-2.5"
                   >
                     <span className="h-2 w-2 rounded-full bg-violet-400 shrink-0" />
                     <span className="text-sm text-neutral-300">{item}</span>
@@ -234,7 +234,7 @@ const BridalCombo = () => {
                 {combo.addOns.map((addOn) => (
                   <label
                     key={addOn.id}
-                    className="flex cursor-pointer items-start gap-3 rounded-lg border border-white/8 bg-white/[0.02] px-3 py-3 transition-all hover:border-violet-500/40 hover:bg-white/[0.05]"
+                    className="flex cursor-pointer items-start gap-3 rounded-lg border border-white/8 bg-white/2 px-3 py-3 transition-all hover:border-violet-500/40 hover:bg-white/5"
                   >
                     <input
                       type="checkbox"
@@ -257,7 +257,7 @@ const BridalCombo = () => {
           </div>
 
           <div className="space-y-5">
-            <div className="rounded-[1.4rem] border border-violet-500/30 bg-gradient-to-br from-violet-500/15 to-violet-500/5 p-5">
+            <div className="rounded-[1.4rem] border border-violet-500/30 bg-linear-to-br from-violet-500/15 to-violet-500/5 p-5">
               <p className="text-xs uppercase tracking-[0.24em] text-violet-300 mb-2">
                 Your Selection
               </p>
@@ -318,7 +318,7 @@ const BridalCombo = () => {
               <div className="rounded-[1.4rem] border border-white/10 bg-black/20 overflow-hidden">
                 <button
                   onClick={() => setShowTerms(!showTerms)}
-                  className="w-full flex items-center justify-between p-5 hover:bg-white/[0.05] transition-colors"
+                  className="w-full flex items-center justify-between p-5 hover:bg-white/5 transition-colors"
                 >
                   <h3 className="text-sm font-semibold uppercase text-white">
                     Terms & Conditions
