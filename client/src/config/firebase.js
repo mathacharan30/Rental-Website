@@ -14,8 +14,7 @@
 
 import { initializeApp } from 'firebase/app';
 import {
-  getAuth,
-  setPersistence,
+  initializeAuth,
   browserLocalPersistence,
   browserSessionPersistence,
 } from 'firebase/auth';
@@ -29,13 +28,12 @@ const firebaseConfig = {
   appId:             import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-const app  = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
+const app = initializeApp(firebaseConfig);
 
-// Use localStorage instead of IndexedDB so sessions survive page refreshes
-// reliably. Falls back to sessionStorage if localStorage is blocked.
-setPersistence(auth, browserLocalPersistence).catch(() => {
-  setPersistence(auth, browserSessionPersistence).catch(() => {});
+// initializeAuth sets persistence synchronously at startup — no race condition.
+// Tries localStorage first; falls back to sessionStorage if blocked.
+export const auth = initializeAuth(app, {
+  persistence: [browserLocalPersistence, browserSessionPersistence],
 });
 
 export default app;
