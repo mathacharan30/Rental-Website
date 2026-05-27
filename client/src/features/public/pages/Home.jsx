@@ -83,25 +83,25 @@ const Home = () => {
                 {
                   "@type": "Offer",
                   itemOffered: {
-                    "@type": "Product",
+                    "@type": "Service",
                     name: "Bridal Lehenga on Rent",
                   },
                 },
                 {
                   "@type": "Offer",
                   itemOffered: {
-                    "@type": "Product",
+                    "@type": "Service",
                     name: "Wedding Gown on Rent",
                   },
                 },
                 {
                   "@type": "Offer",
-                  itemOffered: { "@type": "Product", name: "Sherwani on Rent" },
+                  itemOffered: { "@type": "Service", name: "Sherwani on Rent" },
                 },
                 {
                   "@type": "Offer",
                   itemOffered: {
-                    "@type": "Product",
+                    "@type": "Service",
                     name: "Bridal Jewellery on Rent",
                   },
                 },
