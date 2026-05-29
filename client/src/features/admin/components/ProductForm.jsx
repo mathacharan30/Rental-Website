@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getCategories } from '../../../services/categoryService';
 import { uploadImageToS3 } from '../../../services/adminProductService';
+import { convertToJpeg } from '../../../utils/heicConvert';
 import toast from "react-hot-toast";
 import { X, Star, ImagePlus } from "lucide-react";
 
@@ -175,9 +176,10 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    toast.loading("Compressing image…", { id: `compress-${slotIndex}` });
+    toast.loading("Processing image…", { id: `compress-${slotIndex}` });
     try {
-      const compressed = await compressImage(file);
+      const converted = await convertToJpeg(file);
+      const compressed = await compressImage(converted);
       setImageSlots((prev) => {
         const updated = [...prev];
         updated[slotIndex] = compressed;
@@ -656,7 +658,7 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
                   )}
                   <input
                     type="file"
-                    accept="image/*"
+                    accept="image/*,.heic,.heif"
                     onChange={(e) => handleSlotFile(slotIdx, e)}
                     className="hidden"
                     id={inputId}

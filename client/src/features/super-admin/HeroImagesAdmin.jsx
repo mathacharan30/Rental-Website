@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import bannerService from "../../services/bannerService";
+import { convertToJpeg } from "../../utils/heicConvert";
 import toast from "react-hot-toast";
 import Loader from "../shared/components/Loader";
 import Modal from "../admin/components/Modal";
@@ -49,8 +50,9 @@ const HeroImagesAdmin = () => {
     setLoading(true);
     const loadingToast = toast.loading("Uploading image...");
     try {
+      const uploadFile = await convertToJpeg(file);
       await bannerService.uploadBanner({
-        file,
+        file: uploadFile,
         title,
         caption,
         category,
@@ -160,7 +162,7 @@ const HeroImagesAdmin = () => {
             <div className="border-2 border-dashed border-white/10 rounded-lg p-4 text-center hover:bg-white/5 transition-colors">
               <input
                 type="file"
-                accept="image/*"
+                accept="image/*,.heic,.heif"
                 onChange={(e) => {
                   const selectedFile = e.target.files?.[0];
                   setFile(selectedFile || null);

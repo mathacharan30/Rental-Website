@@ -5,7 +5,7 @@ import {
   updateCategory,
   deleteCategory,
 } from "../../services/categoryService";
-
+import { convertToJpeg } from "../../utils/heicConvert";
 import toast from "react-hot-toast";
 import Loader from "../shared/components/Loader";
 import Modal from "../admin/components/Modal";
@@ -285,10 +285,11 @@ const CategoriesAdmin = () => {
               <input
                 key={fileKey}
                 type="file"
-                accept="image/*"
-                onChange={(e) => {
+                accept="image/*,.heic,.heif"
+                onChange={async (e) => {
                   const selectedFile = e.target.files?.[0];
-                  setImageFile(selectedFile || null);
+                  if (!selectedFile) { setImageFile(null); return; }
+                  setImageFile(await convertToJpeg(selectedFile));
                 }}
                 className="hidden"
                 id="cat-file-upload"

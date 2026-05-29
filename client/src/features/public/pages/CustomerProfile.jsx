@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { getMyOrders } from "../../../services/orderService";
 import toast from "react-hot-toast";
 import { addProductTestimonial } from "../../../services/productTestimonialService";
+import { convertToJpeg } from "../../../utils/heicConvert";
 import { Star, Upload, Camera, X } from "lucide-react";
 import { OrdersSkeleton } from "../loaders";
 
@@ -53,12 +54,12 @@ const CustomerProfile = () => {
     navigate("/login");
   };
 
-  const handleReviewImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setReviewImage(file);
-      setReviewImagePreview(URL.createObjectURL(file));
-    }
+  const handleReviewImageChange = async (e) => {
+    const raw = e.target.files[0];
+    if (!raw) return;
+    const file = await convertToJpeg(raw);
+    setReviewImage(file);
+    setReviewImagePreview(URL.createObjectURL(file));
   };
 
   const submitReview = async (e) => {
@@ -317,7 +318,7 @@ const CustomerProfile = () => {
                     <span>Take Photo</span>
                     <input
                       type="file"
-                      accept="image/*"
+                      accept="image/*,.heic,.heif"
                       capture="environment"
                       onChange={handleReviewImageChange}
                       className="hidden"
@@ -329,7 +330,7 @@ const CustomerProfile = () => {
                     <span>Upload Image</span>
                     <input
                       type="file"
-                      accept="image/*"
+                      accept="image/*,.heic,.heif"
                       onChange={handleReviewImageChange}
                       className="hidden"
                     />
