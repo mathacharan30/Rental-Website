@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { ChevronDown, ChevronUp } from 'lucide-react'
-import Footer from '../../shared/components/Footer'
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import Footer from "../../shared/components/Footer";
 
 const FAQItem = ({ q, a }) => {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   return (
     <div className="border border-white/10 rounded-xl overflow-hidden">
       <button
@@ -14,10 +14,11 @@ const FAQItem = ({ q, a }) => {
         aria-expanded={open}
       >
         <span className="font-medium text-sm md:text-base pr-4">{q}</span>
-        {open
-          ? <ChevronUp size={18} className="text-violet-400 shrink-0" />
-          : <ChevronDown size={18} className="text-neutral-500 shrink-0" />
-        }
+        {open ? (
+          <ChevronUp size={18} className="text-violet-400 shrink-0" />
+        ) : (
+          <ChevronDown size={18} className="text-neutral-500 shrink-0" />
+        )}
       </button>
       {open && (
         <div className="px-4 md:px-5 pb-4 text-neutral-400 text-sm leading-relaxed border-t border-white/5">
@@ -25,13 +26,12 @@ const FAQItem = ({ q, a }) => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
 const ServiceLandingPage = ({ data }) => {
   return (
     <div className="bg-[#0e0e0e] min-h-screen text-white">
-
       {/* ── Hero ─────────────────────────────────────────────────────── */}
       <section className="max-w-4xl mx-auto px-4 pt-14 pb-12">
         <p className="text-violet-400 text-xs font-semibold uppercase tracking-widest mb-3">
@@ -42,7 +42,10 @@ const ServiceLandingPage = ({ data }) => {
         </h1>
         <div className="space-y-4">
           {data.introParagraphs.map((para, i) => (
-            <p key={i} className="text-neutral-400 text-base md:text-lg leading-relaxed">
+            <p
+              key={i}
+              className="text-neutral-400 text-base md:text-lg leading-relaxed"
+            >
               {para}
             </p>
           ))}
@@ -74,10 +77,19 @@ const ServiceLandingPage = ({ data }) => {
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {data.highlights.map((item, i) => (
-            <div key={i} className="glass rounded-xl p-5 border border-white/10">
-              <span className="text-2xl" role="img" aria-hidden="true">{item.icon}</span>
-              <p className="text-white font-medium text-sm mt-3 mb-1">{item.label}</p>
-              <p className="text-neutral-500 text-xs leading-relaxed">{item.desc}</p>
+            <div
+              key={i}
+              className="glass rounded-xl p-5 border border-white/10"
+            >
+              <span className="text-2xl" role="img" aria-hidden="true">
+                {item.icon}
+              </span>
+              <p className="text-white font-medium text-sm mt-3 mb-1">
+                {item.label}
+              </p>
+              <p className="text-neutral-500 text-xs leading-relaxed">
+                {item.desc}
+              </p>
             </div>
           ))}
         </div>
@@ -119,7 +131,7 @@ const ServiceLandingPage = ({ data }) => {
 
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default ServiceLandingPage
+export default ServiceLandingPage;
