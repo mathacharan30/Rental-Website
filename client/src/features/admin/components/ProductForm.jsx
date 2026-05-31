@@ -191,7 +191,7 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
       );
     } catch (err) {
       console.error("[Upload] Compression error:", err);
-      toast.error("Failed to process image", { id: `compress-${slotIndex}` });
+      toast.error(err?.message || "Failed to process image", { id: `compress-${slotIndex}` });
     }
     e.target.value = "";
   };

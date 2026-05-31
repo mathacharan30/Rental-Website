@@ -21,7 +21,12 @@
       "Bash(Get-ChildItem -Path \"d:\\\\Rental\\\\Rental-website-main\" -Recurse -Directory -ErrorAction SilentlyContinue)",
       "Bash(xargs grep -l \"getIdToken\\\\|onAuthStateChanged\\\\|onIdTokenChanged\")",
       "Bash(npx astro *)",
-      "Bash(npx vite *)"
+      "Bash(npx vite *)",
+      "Bash(Get-ChildItem -Path \"d:\\\\Rental\\\\Rental-website-main\" -Recurse -Directory)",
+      "Bash(Select-Object -First 20 FullName)",
+      "Bash(Get-ChildItem -Path \"d:\\\\Rental\\\\Rental-website-main\\\\server\\\\models\" -Recurse -Filter \"*.js\")",
+      "Bash(Measure-Object)",
+      "Bash(Select-Object -ExpandProperty Count)"
     ]
   },
   "enabledPlugins": {

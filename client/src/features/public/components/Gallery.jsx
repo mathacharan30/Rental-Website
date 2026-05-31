@@ -7,10 +7,12 @@ const Gallery = () => {
   const [galleryImages, setGalleryImages] = useState([]);
   const [activeImage, setActiveImage] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     (async () => {
       setIsLoading(true);
+      setError(null);
       try {
         const banners = await bannerService.getBanners("gallery");
         const urls = Array.isArray(banners)
@@ -19,14 +21,13 @@ const Gallery = () => {
         setGalleryImages(urls);
       } catch (e) {
         console.error("[Gallery] Failed to load banners", e);
+        setError("Images could not be loaded at this time.");
         setGalleryImages([]);
       } finally {
         setIsLoading(false);
       }
     })();
   }, []);
-
-  if (!isLoading && galleryImages.length === 0) return null;
 
   return (
     <section className="py-20" id="gallery">
@@ -39,29 +40,35 @@ const Gallery = () => {
             Curated designs where timeless craft meets modern silhouettes
           </p>
         </div>
-        <div className="columns-2 sm:columns-3 lg:columns-4 gap-2 md:gap-3">
-          {isLoading ? (
-            <GallerySkeleton count={8} />
-          ) : (
-            galleryImages.map((img, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => setActiveImage(img)}
-                className="group relative mb-2 block w-full overflow-hidden rounded-xl break-inside-avoid md:mb-3"
-                aria-label={`View gallery image ${i + 1}`}
-              >
-                <OptimizedImage
-                  url={img}
-                  type="gallery"
-                  alt={`Gallery ${i + 1}`}
-                  className="h-auto w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                  loading="lazy"
-                />
-              </button>
-            ))
-          )}
-        </div>
+        {error ? (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <p className="text-neutral-400 text-sm">{error}</p>
+          </div>
+        ) : (
+          <div className="columns-2 sm:columns-3 lg:columns-4 gap-2 md:gap-3">
+            {isLoading ? (
+              <GallerySkeleton count={8} />
+            ) : (
+              galleryImages.map((img, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setActiveImage(img)}
+                  className="group relative mb-2 block w-full overflow-hidden rounded-xl break-inside-avoid md:mb-3"
+                  aria-label={`View gallery image ${i + 1}`}
+                >
+                  <OptimizedImage
+                    url={img}
+                    type="gallery"
+                    alt={`Gallery ${i + 1}`}
+                    className="h-auto w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                    loading="lazy"
+                  />
+                </button>
+              ))
+            )}
+          </div>
+        )}
       </div>
 
       {activeImage && (

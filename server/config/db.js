@@ -21,11 +21,11 @@ const connectDB = async () => {
   }
 
   connectionPromise = mongoose.connect(uri, {
-    serverSelectionTimeoutMS: 15000,
+    serverSelectionTimeoutMS: 5000,
     maxPoolSize: 10,
     minPoolSize: 1,
-    socketTimeoutMS: 45000,
-    connectTimeoutMS: 15000,
+    socketTimeoutMS: 10000,
+    connectTimeoutMS: 5000,
   });
 
   try {
