@@ -11,26 +11,45 @@ export async function convertToJpeg(file) {
 
   const jpegName = file.name.replace(/\.(heic|heif)$/i, ".jpg");
 
-  // Primary: heic2any (covers most HEIC variants via libheif wasm)
+  // Stage 1: heic2any — lighter, fast for common HEIC variants (libheif ~1.12)
   try {
     const heic2any = (await import("heic2any")).default;
     const blob = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.92 });
     const outBlob = Array.isArray(blob) ? blob[0] : blob;
     return new File([outBlob], jpegName, { type: "image/jpeg", lastModified: Date.now() });
   } catch (err) {
-    // heic2any fails on some HEIC variants (HDR, HEVC, multi-sequence).
-    // Fall back to createImageBitmap which the OS/browser can decode natively
-    // (works on Safari always; works on Chrome/Edge for most iPhone HEIC files).
-    console.warn("[heicConvert] heic2any failed, trying createImageBitmap fallback:", err?.message);
+    console.warn("[heicConvert] heic2any failed:", err?.message);
   }
 
+  // Stage 2: libheif-js — newer libheif (1.19.x) handles HEVC/HDR/multi-seq variants
   try {
-    const bitmap = await createImageBitmap(file);
+    let libheif = (await import("libheif-js/wasm-bundle")).default;
+    // The CJS factory may export a Promise (async WASM init) or the module directly
+    if (typeof libheif?.then === "function") libheif = await libheif;
+
+    const decoder = new libheif.HeifDecoder();
+    const buffer = await file.arrayBuffer();
+    const images = decoder.decode(new Uint8Array(buffer));
+    if (!images?.length) throw new Error("No images decoded");
+
+    const image = images[0];
+    const width = image.get_width();
+    const height = image.get_height();
+
     const canvas = document.createElement("canvas");
-    canvas.width = bitmap.width;
-    canvas.height = bitmap.height;
-    canvas.getContext("2d").drawImage(bitmap, 0, 0);
-    bitmap.close();
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    const imageData = ctx.createImageData(width, height);
+
+    await new Promise((resolve, reject) => {
+      image.display(imageData, (displayData) => {
+        if (!displayData) reject(new Error("libheif display failed"));
+        else resolve();
+      });
+    });
+
+    ctx.putImageData(imageData, 0, 0);
     return await new Promise((resolve, reject) => {
       canvas.toBlob(
         (blob) => {
@@ -42,8 +61,36 @@ export async function convertToJpeg(file) {
       );
     });
   } catch (err) {
-    throw new Error(
-      "This HEIC file format is not supported by your browser. Please convert it to JPEG before uploading.",
-    );
+    console.warn("[heicConvert] libheif-js failed:", err?.message);
   }
+
+  // Stage 3: browser native decoder — works on Safari/macOS/iOS always,
+  // and on Windows when HEVC Video Extensions are installed
+  return await new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      canvas.getContext("2d").drawImage(img, 0, 0);
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) { reject(new Error("canvas.toBlob returned null")); return; }
+          resolve(new File([blob], jpegName, { type: "image/jpeg", lastModified: Date.now() }));
+        },
+        "image/jpeg",
+        0.92,
+      );
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error(
+        "Cannot convert this HEIC image. Please export the photo as JPEG " +
+        "from your phone's Photos app and try again.",
+      ));
+    };
+    img.src = url;
+  });
 }

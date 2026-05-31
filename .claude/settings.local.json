@@ -26,7 +26,14 @@
       "Bash(Select-Object -First 20 FullName)",
       "Bash(Get-ChildItem -Path \"d:\\\\Rental\\\\Rental-website-main\\\\server\\\\models\" -Recurse -Filter \"*.js\")",
       "Bash(Measure-Object)",
-      "Bash(Select-Object -ExpandProperty Count)"
+      "Bash(Select-Object -ExpandProperty Count)",
+      "Bash(npm show *)",
+      "Bash(node -e \"const p = require\\('./node_modules/libheif-js/package.json'\\); console.log\\(p.version, JSON.stringify\\(p.exports ? Object.keys\\(p.exports\\) : p.main\\)\\)\")",
+      "Bash(ls *.js)",
+      "Bash(dir /b *.js)",
+      "Bash(ls libheif-wasm/)",
+      "Bash(dir /b libheif-wasm/)",
+      "Bash(dir /b)"
     ]
   },
   "enabledPlugins": {

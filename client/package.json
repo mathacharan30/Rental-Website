@@ -19,6 +19,7 @@
     "framer-motion": "^12.38.0",
     "heic2any": "^0.0.4",
     "imagekitio-react": "^4.3.0",
+    "libheif-js": "^1.19.8",
     "lucide-react": "^0.552.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
