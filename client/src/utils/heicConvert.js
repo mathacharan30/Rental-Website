@@ -18,7 +18,7 @@ export async function convertToJpeg(file) {
     const outBlob = Array.isArray(blob) ? blob[0] : blob;
     return new File([outBlob], jpegName, { type: "image/jpeg", lastModified: Date.now() });
   } catch (err) {
-    console.warn("[heicConvert] heic2any failed:", err?.message);
+    console.debug("[heicConvert] heic2any failed, trying libheif-js:", err?.message);
   }
 
   // Stage 2: libheif-js — newer libheif (1.19.x) handles HEVC/HDR/multi-seq variants
@@ -61,7 +61,7 @@ export async function convertToJpeg(file) {
       );
     });
   } catch (err) {
-    console.warn("[heicConvert] libheif-js failed:", err?.message);
+    console.debug("[heicConvert] libheif-js failed, trying native decode:", err?.message);
   }
 
   // Stage 3: browser native decoder — works on Safari/macOS/iOS always,
