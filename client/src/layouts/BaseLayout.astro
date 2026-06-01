@@ -106,10 +106,21 @@ const activeSchema = schema ?? defaultSchema
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
 
-    <!-- Preconnects for fonts & API -->
+    <!-- Preconnects for fonts, API & images -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://rental-website-6a9i.vercel.app" crossorigin />
+    <link rel="preconnect" href="https://ik.imagekit.io" crossorigin />
+    <link rel="dns-prefetch" href="https://people-and-style-assets-mumbai.s3.ap-south-1.amazonaws.com" />
+
+    <!-- Fire banners API fetch before React boots so the response is ready or in-flight when Hero renders -->
+    <script define:vars={{ apiUrl: import.meta.env.VITE_API_URL || 'https://rental-website-6a9i.vercel.app' }}>
+      (function () {
+        var base = (apiUrl || '').replace(/\/+$/, '');
+        var device = window.innerWidth < 768 ? 'mobile' : 'desktop';
+        fetch(base + '/api/banners?type=hero&device=' + device, { credentials: 'omit' }).catch(function () {});
+      })();
+    </script>
 
     <!-- Structured data -->
     {Array.isArray(activeSchema)

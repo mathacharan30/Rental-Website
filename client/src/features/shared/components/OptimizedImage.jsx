@@ -35,7 +35,7 @@ const OptimizedImage = ({ url, type = "gallery", alt = "", className = "", loadi
   }
 
   // Extract path from S3
-  const s3BaseUrl = "https://people-and-style-assets.s3.ap-southeast-2.amazonaws.com/";
+  const s3BaseUrl = "https://people-and-style-assets-mumbai.s3.ap-south-1.amazonaws.com/";
   let path = url;
 
   if (url.startsWith(s3BaseUrl)) {

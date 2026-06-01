@@ -59,11 +59,20 @@ const PageLoader = () => (
   </div>
 );
 
-const App = () => {
+// Hides the HTML splash loader exactly once after the first lazy chunk resolves.
+// Must live inside Suspense so it only mounts after the fallback clears.
+const HideLoaderOnce = () => {
+  const done = React.useRef(false);
   React.useEffect(() => {
-    if (typeof window.__hideLoader === "function") window.__hideLoader();
+    if (!done.current && typeof window.__hideLoader === "function") {
+      window.__hideLoader();
+      done.current = true;
+    }
   }, []);
+  return null;
+};
 
+const App = () => {
   return (
     <AuthProvider>
       <BrowserRouter>
@@ -73,6 +82,7 @@ const App = () => {
             <Navbar />
             <main>
               <Suspense fallback={<PageLoader />}>
+                <HideLoaderOnce />
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/login" element={<Login />} />
