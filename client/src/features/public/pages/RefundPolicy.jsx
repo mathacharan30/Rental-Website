@@ -1,7 +1,6 @@
 // src/pages/Main/RefundPolicy.jsx
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
 
 const Section = ({ title, children }) => (
   <div className="mb-10">
@@ -33,29 +32,11 @@ const timelineItems = [
   },
 ];
 
-const RefundPolicy = () => (
-  <motion.div
-    className="min-h-screen bg-[#0e0e0e]"
-    initial={{ opacity: 0, y: 16 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5 }}
-  >
-    {/* Header */}
-    <div className="py-16 px-4 text-center">
-      <div>
-        <h1 className="text-4xl font-bold display-font text-white">
-          Refund &amp; Cancellation Policy
-        </h1>
-        <p className="mt-2 text-neutral-300 text-sm font-medium">
-          Kan Overseas &mdash; Handled by Sagar S
-        </p>
-        <p className="mt-1 text-neutral-500 text-sm">
-          Last updated: February 2026
-        </p>
-      </div>
-    </div>
+const RefundPolicy = () => {
+  const [view, setView] = useState("rentals"); // rentals | combos
 
-    <div className="max-w-3xl mx-auto px-4 py-14">
+  const RentalsContent = (
+    <div>
       <Section title="1. Overview">
         <p>
           We want you to love your rental experience. If plans change, we have a
@@ -249,7 +230,161 @@ const RefundPolicy = () => (
         </ul>
       </Section>
     </div>
-  </motion.div>
-);
+  );
+
+  const CombosContent = (
+    <div className="space-y-6">
+      <Section title="1. Overview">
+        <p>
+          We want every client to have a smooth and memorable beauty experience.
+          If plans change, we have a transparent cancellation policy designed to
+          clearly explain refund eligibility based on the time of cancellation.
+        </p>
+      </Section>
+
+      <Section title="2. Cancellation & Refund Timeline">
+        <p>
+          Refunds are calculated based on the time of cancellation relative to
+          your scheduled appointment date:
+        </p>
+        <table className="w-full text-sm text-neutral-300 border-collapse">
+          <tbody>
+            <tr>
+              <td className="py-2">7+ days before appointment</td>
+              <td className="py-2">100% refund of advance payment</td>
+            </tr>
+            <tr>
+              <td className="py-2">3–6 days before appointment</td>
+              <td className="py-2">50% refund of advance payment</td>
+            </tr>
+            <tr>
+              <td className="py-2">1–2 days before appointment</td>
+              <td className="py-2">25% refund of advance payment</td>
+            </tr>
+            <tr>
+              <td className="py-2">Same day / appointment day</td>
+              <td className="py-2">No refund</td>
+            </tr>
+          </tbody>
+        </table>
+        <p className="mt-2">
+          Refunds will be credited to the original payment method within 7
+          business days.
+        </p>
+      </Section>
+
+      <Section title="3. How to Cancel">
+        <ul className="list-disc pl-5">
+          <li>Contact us through WhatsApp or phone.</li>
+          <li>Provide your booking details and appointment date.</li>
+          <li>
+            Cancellation requests must be submitted before the applicable refund
+            deadline.
+          </li>
+        </ul>
+      </Section>
+
+      <Section title="4. Non-Refundable Situations">
+        <p>Refunds will not be issued in the following circumstances:</p>
+        <ul className="list-disc pl-5">
+          <li>Cancellation on the day of the appointment.</li>
+          <li>Client fails to arrive at the agreed location.</li>
+          <li>Client is unavailable at the scheduled time.</li>
+          <li>
+            Service cannot be completed due to client-related delays exceeding
+            one hour.
+          </li>
+          <li>Client changes their mind after the service has begun.</li>
+        </ul>
+      </Section>
+
+      <Section title="5. Artist Unavailability">
+        <p>
+          If the assigned makeup artist becomes unavailable due to illness,
+          emergency, or unforeseen circumstances: People &amp; Style will
+          attempt to arrange a replacement artist. If a replacement cannot be
+          arranged, a full refund will be provided.
+        </p>
+      </Section>
+
+      <Section title="6. Service Concerns">
+        <p>
+          If you are dissatisfied with the service: Concerns must be raised
+          immediately during the appointment whenever possible. People &amp;
+          Style will review the issue and determine an appropriate resolution.
+          Refunds are not guaranteed after successful completion of services.
+        </p>
+      </Section>
+
+      <Section title="7. Rescheduling Policy">
+        <p>
+          Clients may request rescheduling subject to artist availability.
+          Approved reschedules may be adjusted against the advance payment.
+          Repeated rescheduling requests may require a new booking confirmation.
+        </p>
+      </Section>
+
+      <Section title="8. Travel & Location Changes">
+        <p>
+          If the appointment location is changed after confirmation: Additional
+          travel charges may apply. If the new location is outside the artist's
+          service area, the booking may be cancelled without refund.
+        </p>
+      </Section>
+
+      <Section title="9. Force Majeure">
+        <p>
+          People &amp; Style shall not be responsible for cancellations or
+          delays caused by natural disasters, government restrictions, severe
+          weather, transportation disruptions, or other events beyond reasonable
+          control.
+        </p>
+      </Section>
+    </div>
+  );
+
+  return (
+    <motion.div
+      className="min-h-screen bg-[#0e0e0e]"
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      {/* Header */}
+      <div className="py-16 px-4 text-center">
+        <div className="max-w-3xl mx-auto">
+          <h1 className="text-4xl font-bold display-font text-white">
+            Refund &amp; Cancellation Policy
+          </h1>
+          <p className="mt-2 text-neutral-300 text-sm font-medium">
+            People &amp; Style
+          </p>
+          <p className="mt-1 text-neutral-500 text-sm">
+            Last updated: June 2026
+          </p>
+
+          <div className="mt-6 inline-flex rounded-full bg-white/3 p-1">
+            <button
+              onClick={() => setView("rentals")}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${view === "rentals" ? "bg-violet-600 text-white" : "text-neutral-200"}`}
+            >
+              Rentals
+            </button>
+            <button
+              onClick={() => setView("combos")}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${view === "combos" ? "bg-violet-600 text-white" : "text-neutral-200"}`}
+            >
+              Combos (Makeup &amp; Styling)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-3xl mx-auto px-4 py-14">
+        {view === "rentals" ? RentalsContent : CombosContent}
+      </div>
+    </motion.div>
+  );
+};
 
 export default RefundPolicy;

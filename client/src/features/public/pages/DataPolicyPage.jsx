@@ -1,5 +1,5 @@
 // src/pages/Main/PrivacyPolicy.jsx
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 
 const Section = ({ title, children }) => (
@@ -9,25 +9,10 @@ const Section = ({ title, children }) => (
   </div>
 );
 
-const PrivacyPolicy = () => (
-  <motion.div
-    className="min-h-screen bg-[#0e0e0e]"
-    initial={{ opacity: 0, y: 16 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5 }}
-  >
-    {/* Header */}
-    <div className="py-16 px-4 text-center">
-      <div>
-        <h1 className="text-4xl font-bold display-font text-white">
-          Privacy Policy
-        </h1>
-        <p className="mt-3 text-neutral-500 text-sm">
-          Last updated: February 2026
-        </p>
-      </div>
-    </div>
+const PrivacyPolicy = () => {
+  const [view, setView] = useState("rentals"); // rentals | combos
 
+  const RentalsContent = (
     <div className="max-w-3xl mx-auto px-4 py-14">
       <Section title="1. Introduction">
         <p>
@@ -175,7 +160,132 @@ const PrivacyPolicy = () => (
         </p>
       </Section>
     </div>
-  </motion.div>
-);
+  );
+
+  const CombosContent = (
+    <div className="max-w-3xl mx-auto px-4 py-14">
+      <Section title="1. Introduction">
+        <p>
+          People &amp; Style ("we", "our", "us") is committed to protecting your
+          personal information. This Privacy Policy explains what information we
+          collect, how we use it, and your rights regarding your data when you
+          use our makeup, hairstyling, saree draping, and beauty services.
+        </p>
+      </Section>
+
+      <Section title="2. Information We Collect">
+        <p>
+          We collect personal information (name, phone, email, event location),
+          booking information, communication data, and photos/videos (with
+          consent).
+        </p>
+      </Section>
+
+      <Section title="3. How We Use Your Information">
+        <p>
+          To confirm/manage bookings, process payments, provide support, improve
+          services, send marketing (with consent), and comply with legal
+          obligations.
+        </p>
+      </Section>
+
+      <Section title="4. Sharing Your Information">
+        <p>
+          We do not sell your data. We may share with makeup artists/service
+          partners, payment processors, and legal authorities when required.
+        </p>
+      </Section>
+
+      <Section title="5. Data Retention">
+        <p>
+          We retain customer information only as necessary to provide services,
+          maintain records, and comply with law. You may request deletion by
+          contacting us.
+        </p>
+      </Section>
+
+      <Section title="6. Photos &amp; Portfolio Usage">
+        <p>
+          With your permission, People &amp; Style may use photos/videos for
+          social media, website galleries, and marketing. Clients may request
+          exclusion before the service begins.
+        </p>
+      </Section>
+
+      <Section title="7. Data Security">
+        <p>
+          We implement reasonable security measures to protect your information
+          but cannot guarantee 100% security.
+        </p>
+      </Section>
+
+      <Section title="8. Your Rights">
+        <p>
+          You have the right to access, correct, or delete your data, and to
+          withdraw consent for marketing. Contact us to exercise these rights.
+        </p>
+      </Section>
+
+      <Section title="9. Third-Party Links">
+        <p>
+          Our site may link to third parties; we are not responsible for their
+          privacy practices.
+        </p>
+      </Section>
+
+      <Section title="10. Changes to This Policy">
+        <p>
+          We may update this policy periodically; changes will be posted with
+          the effective date.
+        </p>
+      </Section>
+
+      <Section title="11. Contact Us">
+        <p>
+          For privacy questions, contact: hello@peopleandstyle.in — +91 84310
+          94754 — Mysuru, Karnataka, India – 570026
+        </p>
+      </Section>
+    </div>
+  );
+
+  return (
+    <motion.div
+      className="min-h-screen bg-[#0e0e0e]"
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      {/* Header */}
+      <div className="py-16 px-4 text-center">
+        <div>
+          <h1 className="text-4xl font-bold display-font text-white">
+            Privacy Policy
+          </h1>
+          <p className="mt-3 text-neutral-500 text-sm">
+            Last updated: June 2026
+          </p>
+
+          <div className="mt-6 inline-flex rounded-full bg-white/3 p-1">
+            <button
+              onClick={() => setView("rentals")}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${view === "rentals" ? "bg-violet-600 text-white" : "text-neutral-200"}`}
+            >
+              Rentals
+            </button>
+            <button
+              onClick={() => setView("combos")}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${view === "combos" ? "bg-violet-600 text-white" : "text-neutral-200"}`}
+            >
+              Combos (Makeup &amp; Styling)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {view === "rentals" ? RentalsContent : CombosContent}
+    </motion.div>
+  );
+};
 
 export default PrivacyPolicy;
