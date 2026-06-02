@@ -33,7 +33,9 @@
       "Bash(dir /b *.js)",
       "Bash(ls libheif-wasm/)",
       "Bash(dir /b libheif-wasm/)",
-      "Bash(dir /b)"
+      "Bash(dir /b)",
+      "Bash(Get-ChildItem -Path \"d:\\\\Rental\\\\Rental-website-main\" -Recurse -Directory -Depth 2)",
+      "Bash(Select-Object FullName)"
     ]
   },
   "enabledPlugins": {

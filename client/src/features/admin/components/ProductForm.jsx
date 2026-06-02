@@ -5,13 +5,9 @@ import { convertToJpeg } from '../../../utils/heicConvert';
 import toast from "react-hot-toast";
 import { X, Star, ImagePlus } from "lucide-react";
 
-/**
- * Auto-calculates commission for rent listings.
- * tempCommission  = 10% of rentPrice
- * gst             = 18% of (rentPrice + tempCommission)
- * txCharges       = 2%  of (rentPrice + gst + tempCommission + advanceAmount)
- * commission      = tempCommission + gst + txCharges + ₹100  → ceil to nearest ₹50
- */
+// TEMPORARILY DISABLED — commission is now entered manually by admin, not auto-calculated.
+// Re-enable these functions when auto-commission is needed again.
+/*
 const calcRentCommission = (rentPrice, advanceAmount) => {
   const r = parseFloat(rentPrice) || 0;
   const a = parseFloat(advanceAmount) || 0;
@@ -23,13 +19,6 @@ const calcRentCommission = (rentPrice, advanceAmount) => {
   return Math.ceil(raw / 50) * 50;
 };
 
-/**
- * Auto-calculates commission for sale listings (no advance amount in txn charges).
- * tempCommission  = 10% of salePrice
- * gst             = 18% of (salePrice + tempCommission)
- * txCharges       = 2%  of (salePrice + gst + tempCommission)   ← no advance amount
- * commission      = tempCommission + gst + txCharges + ₹100  → ceil to nearest ₹50
- */
 const calcSaleCommission = (salePrice) => {
   const s = parseFloat(salePrice) || 0;
   if (s <= 0) return 0;
@@ -39,6 +28,7 @@ const calcSaleCommission = (salePrice) => {
   const raw = tempCommission + gst + txCharges + 100;
   return Math.ceil(raw / 50) * 50;
 };
+*/
 
 const ProductForm = ({ onSave, onCancel, initialData = null }) => {
   const isEditMode = !!initialData;
@@ -46,7 +36,7 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
   const [categoryId, setCategoryId] = useState("");
   const [listingType, setListingType] = useState("rent"); // 'rent' | 'sale' — only for Jewels
   const [rentPrice, setRentPrice] = useState("");
-  const [_, setCommissionPrice] = useState("");
+  const [commissionPrice, setCommissionPrice] = useState("");
   const [salePrice, setSalePrice] = useState("");
   const [advanceAmount, setAdvanceAmount] = useState("");
   const [stock, setStock] = useState(0);
@@ -242,9 +232,9 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
         String(salePrice).replace(/[^0-9.]/g, ""),
       );
       fd.append("salePrice", isNaN(salePriceNum) ? "0" : String(salePriceNum));
-      // Auto-calculate commission for sale listings
-      const computedSaleCommission = calcSaleCommission(salePriceNum || 0);
-      fd.append("commissionPrice", String(computedSaleCommission));
+      // Commission: manually entered by admin (auto-calc disabled)
+      // FUTURE: swap the line below with calcSaleCommission(salePriceNum || 0) when re-enabling
+      fd.append("commissionPrice", String(parseFloat(commissionPrice) || 0));
       fd.append("rentPrice", "0");
     } else {
       const rentPriceNum = parseFloat(
@@ -252,14 +242,9 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
       );
       fd.append("rentPrice", isNaN(rentPriceNum) ? "0" : String(rentPriceNum));
 
-      // Auto-calculate commission for rent listings
-      const advanceAmountForCalc =
-        parseFloat(String(advanceAmount).replace(/[^0-9.]/g, "")) || 0;
-      const computedCommission = calcRentCommission(
-        rentPriceNum || 0,
-        advanceAmountForCalc,
-      );
-      fd.append("commissionPrice", String(computedCommission));
+      // Commission: manually entered by admin (auto-calc disabled)
+      // FUTURE: swap the line below with calcRentCommission(rentPriceNum || 0, advanceAmountForCalc) when re-enabling
+      fd.append("commissionPrice", String(parseFloat(commissionPrice) || 0));
       fd.append("salePrice", "0");
     }
 
@@ -430,14 +415,15 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
 
             <div className="col-span-2 sm:col-span-1">
               <label className="block text-sm font-medium text-neutral-300 mb-1">
-                Commission (₹) — auto-computed
+                Commission (₹)
               </label>
               <input
-                readOnly
-                value={salePrice !== "" ? calcSaleCommission(salePrice) : ""}
-                placeholder="Auto-calculated"
+                value={commissionPrice}
+                onChange={(e) => setCommissionPrice(e.target.value)}
+                placeholder="0"
                 type="number"
-                className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-neutral-400 outline-none cursor-not-allowed"
+                min="0"
+                className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
               />
             </div>
 
@@ -448,9 +434,8 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
               <input
                 readOnly
                 value={
-                  salePrice !== ""
-                    ? (parseFloat(salePrice) || 0) +
-                      calcSaleCommission(salePrice)
+                  salePrice !== "" || commissionPrice !== ""
+                    ? (parseFloat(salePrice) || 0) + (parseFloat(commissionPrice) || 0)
                     : ""
                 }
                 placeholder="Sale + Commission"
@@ -478,18 +463,15 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
 
             <div className="col-span-2 sm:col-span-1">
               <label className="block text-sm font-medium text-neutral-300 mb-1">
-                Commission (₹) — auto-computed
+                Commission (₹)
               </label>
               <input
-                readOnly
-                value={
-                  rentPrice !== ""
-                    ? calcRentCommission(rentPrice, advanceAmount)
-                    : ""
-                }
-                placeholder="Auto-calculated"
+                value={commissionPrice}
+                onChange={(e) => setCommissionPrice(e.target.value)}
+                placeholder="0"
                 type="number"
-                className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-neutral-400 outline-none cursor-not-allowed"
+                min="0"
+                className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
               />
             </div>
 
@@ -500,9 +482,8 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
               <input
                 readOnly
                 value={
-                  rentPrice !== ""
-                    ? (parseFloat(rentPrice) || 0) +
-                      calcRentCommission(rentPrice, advanceAmount)
+                  rentPrice !== "" || commissionPrice !== ""
+                    ? (parseFloat(rentPrice) || 0) + (parseFloat(commissionPrice) || 0)
                     : ""
                 }
                 placeholder="Rent + Commission"

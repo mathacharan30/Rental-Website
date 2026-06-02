@@ -456,6 +456,7 @@ const ProductDetail = () => {
             </div>
           )}
           <div className="mt-7 flex gap-3">
+            {/* TEMPORARILY DISABLED — Rent Now / Buy Now button. Re-enable when order flow is ready.
             <button
               onClick={handleRent}
               disabled={ordering || product.available === false}
@@ -471,11 +472,12 @@ const ProductDetail = () => {
                       : "Rent Now →"}
               </span>
             </button>
+            */}
             <button
               onClick={handleEnquire}
               className="btn-outline-funky flex-1 rounded-xl! px-0 min-w-0"
             >
-              Enquire Now
+              Enquire &amp; Rent Now
             </button>
           </div>
         </motion.div>
