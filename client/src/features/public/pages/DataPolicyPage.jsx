@@ -1,4 +1,3 @@
-// src/pages/Main/PrivacyPolicy.jsx
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 
@@ -256,7 +255,6 @@ const PrivacyPolicy = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Header */}
       <div className="py-16 px-4 text-center">
         <div>
           <h1 className="text-4xl font-bold display-font text-white">
@@ -277,7 +275,7 @@ const PrivacyPolicy = () => {
               onClick={() => setView("combos")}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${view === "combos" ? "bg-violet-600 text-white" : "text-neutral-200"}`}
             >
-              Combos (Makeup &amp; Styling)
+              Combos{" "}
             </button>
           </div>
         </div>

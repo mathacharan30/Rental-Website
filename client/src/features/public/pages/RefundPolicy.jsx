@@ -374,7 +374,7 @@ const RefundPolicy = () => {
               onClick={() => setView("combos")}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${view === "combos" ? "bg-violet-600 text-white" : "text-neutral-200"}`}
             >
-              Combos (Makeup &amp; Styling)
+              Combos{" "}
             </button>
           </div>
         </div>
