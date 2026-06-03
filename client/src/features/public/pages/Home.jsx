@@ -26,7 +26,7 @@ const Home = () => {
   });
 
   return (
-    <div className="bg-[#0e0e0e]">
+    <div className="bg-[#0a0a0a]">
       <Helmet>
         <title>
           Bridal Wear on Rent in Mysuru &amp; Bangalore | People &amp; Style

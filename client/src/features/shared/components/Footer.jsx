@@ -1,10 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import {
-  FaInstagram,
-  FaWhatsapp,
-  FaYoutube,
-} from "react-icons/fa6";
+import { FaInstagram, FaWhatsapp, FaYoutube } from "react-icons/fa6";
 
 const SOCIAL_LINKS = {
   instagram: "https://www.instagram.com/peopleandstyle.in",
@@ -23,7 +19,7 @@ const Footer = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
             <div className="md:col-span-1">
-              <h3 className="text-2xl font-medium text-white instrument-serif tracking-wider">
+              <h3 className="text-2xl font-medium text-white instrument-serif tracking-tight">
                 People & style
               </h3>
               <p className="mt-3 text-neutral-500 text-sm max-w-xs leading-relaxed">
@@ -68,27 +64,42 @@ const Footer = () => {
                 </h4>
                 <ul className="space-y-3 text-neutral-500 text-sm">
                   <li>
-                    <Link to="/rental-clothing-mysuru" className="hover:text-violet-400 transition-colors">
+                    <Link
+                      to="/rental-clothing-mysuru"
+                      className="hover:text-violet-400 transition-colors"
+                    >
                       Rental Clothing
                     </Link>
                   </li>
                   <li>
-                    <Link to="/rental-jewellery-mysuru" className="hover:text-violet-400 transition-colors">
+                    <Link
+                      to="/rental-jewellery-mysuru"
+                      className="hover:text-violet-400 transition-colors"
+                    >
                       Rental Jewellery
                     </Link>
                   </li>
                   <li>
-                    <Link to="/makeup-services-mysuru" className="hover:text-violet-400 transition-colors">
+                    <Link
+                      to="/makeup-services-mysuru"
+                      className="hover:text-violet-400 transition-colors"
+                    >
                       Bridal Makeup
                     </Link>
                   </li>
                   <li>
-                    <Link to="/photography-services-mysuru" className="hover:text-violet-400 transition-colors">
+                    <Link
+                      to="/photography-services-mysuru"
+                      className="hover:text-violet-400 transition-colors"
+                    >
                       Photography
                     </Link>
                   </li>
                   <li>
-                    <Link to="/bridal-package-mysuru" className="hover:text-violet-400 transition-colors">
+                    <Link
+                      to="/bridal-package-mysuru"
+                      className="hover:text-violet-400 transition-colors"
+                    >
                       Bridal Package
                     </Link>
                   </li>
@@ -100,27 +111,42 @@ const Footer = () => {
                 </h4>
                 <ul className="space-y-3 text-neutral-500 text-sm">
                   <li>
-                    <Link to="/rental-clothing-bangalore" className="hover:text-violet-400 transition-colors">
+                    <Link
+                      to="/rental-clothing-bangalore"
+                      className="hover:text-violet-400 transition-colors"
+                    >
                       Rental Clothing
                     </Link>
                   </li>
                   <li>
-                    <Link to="/rental-jewellery-bangalore" className="hover:text-violet-400 transition-colors">
+                    <Link
+                      to="/rental-jewellery-bangalore"
+                      className="hover:text-violet-400 transition-colors"
+                    >
                       Rental Jewellery
                     </Link>
                   </li>
                   <li>
-                    <Link to="/makeup-services-bangalore" className="hover:text-violet-400 transition-colors">
+                    <Link
+                      to="/makeup-services-bangalore"
+                      className="hover:text-violet-400 transition-colors"
+                    >
                       Bridal Makeup
                     </Link>
                   </li>
                   <li>
-                    <Link to="/photography-services-bangalore" className="hover:text-violet-400 transition-colors">
+                    <Link
+                      to="/photography-services-bangalore"
+                      className="hover:text-violet-400 transition-colors"
+                    >
                       Photography
                     </Link>
                   </li>
                   <li>
-                    <Link to="/bridal-package-bangalore" className="hover:text-violet-400 transition-colors">
+                    <Link
+                      to="/bridal-package-bangalore"
+                      className="hover:text-violet-400 transition-colors"
+                    >
                       Bridal Package
                     </Link>
                   </li>
@@ -132,22 +158,34 @@ const Footer = () => {
                 </h4>
                 <ul className="space-y-3 text-neutral-500 text-sm">
                   <li>
-                    <Link to="/about" className="hover:text-violet-400 transition-colors">
+                    <Link
+                      to="/about"
+                      className="hover:text-violet-400 transition-colors"
+                    >
                       About Us
                     </Link>
                   </li>
                   <li>
-                    <Link to="/contact" className="hover:text-violet-400 transition-colors">
+                    <Link
+                      to="/contact"
+                      className="hover:text-violet-400 transition-colors"
+                    >
                       Contact Us
                     </Link>
                   </li>
                   <li>
-                    <Link to="/products" className="hover:text-violet-400 transition-colors">
+                    <Link
+                      to="/products"
+                      className="hover:text-violet-400 transition-colors"
+                    >
                       Browse &amp; Rent
                     </Link>
                   </li>
                   <li>
-                    <Link to="/faq" className="hover:text-violet-400 transition-colors">
+                    <Link
+                      to="/faq"
+                      className="hover:text-violet-400 transition-colors"
+                    >
                       FAQs
                     </Link>
                   </li>

@@ -205,8 +205,8 @@ const Navbar = () => {
     <header
       className={`sticky top-0 z-50 transition-colors duration-150 ${
         scrolled
-          ? "bg-[#0e0e0e]/90 backdrop-blur-md border-b border-white/5"
-          : "bg-[#0e0e0e]"
+          ? "bg-[#0a0a0a]/90 backdrop-blur-md border-b border-white/5"
+          : "bg-[#0a0a0a]"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4">
@@ -214,7 +214,7 @@ const Navbar = () => {
           <div className="flex items-center gap-8">
             <Link
               to="/"
-              className="text-sm font-semibold tracking-tight text-white hover:opacity-80 transition-opacity"
+              className="text-md font-semibold instrument-serif tracking-wide text-white hover:opacity-80 transition-opacity"
             >
               People & Style
             </Link>
