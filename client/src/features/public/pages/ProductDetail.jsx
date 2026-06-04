@@ -210,7 +210,7 @@ const ProductDetail = () => {
   };
 
   return (
-    <motion.div className="bg-[#0e0e0e] min-h-screen" {...fade}>
+    <motion.div className="min-h-screen" {...fade}>
       <Helmet>
         <title>
           {product.title} — Rent in Bangalore &amp; Karnataka | People &amp;
@@ -541,7 +541,11 @@ const ProductDetail = () => {
                       <OptimizedImage
                         url={t.user.profilePicture}
                         type="gallery"
-                        alt={t.user?.name ? `${t.user.name} profile picture` : "Customer profile picture"}
+                        alt={
+                          t.user?.name
+                            ? `${t.user.name} profile picture`
+                            : "Customer profile picture"
+                        }
                         className="w-10 h-10 rounded-full object-cover border border-white/10"
                       />
                     ) : (

@@ -12,7 +12,9 @@ const Hero = () => {
   const { data: banners = [] } = useQuery({
     queryKey: ["banners", "hero", device],
     queryFn: () =>
-      bannerService.getBanners("hero", device).then((list) => list.filter((b) => b.imageUrl)),
+      bannerService
+        .getBanners("hero", device)
+        .then((list) => list.filter((b) => b.imageUrl)),
     staleTime: 5 * 60 * 1000,
   });
 

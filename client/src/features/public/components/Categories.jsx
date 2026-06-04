@@ -9,6 +9,7 @@ import OptimizedImage from "../../shared/components/OptimizedImage";
 import { CategoriesSkeleton } from "../loaders";
 import { comboCategories } from "../../../data/combos";
 import { motion } from "framer-motion";
+import { HiOutlineSquares2X2 } from "react-icons/hi2";
 
 function mapCategory(c = {}) {
   const imageSource = c.image || "/saree.jpg";
@@ -67,9 +68,9 @@ const Categories = () => {
         <div className="flex items-center justify-center gap-1 mb-8">
           <button
             onClick={() => setActiveTab("categories")}
-            className={`px-4 py-2 rounded-tl-2xl rounded-br-2xl text-sm font-medium transition-all border ${activeTab === "categories" ? "bg-linear-to-r from-violet-600 to-fuchsia-500 border-violet-400 text-white" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40"}`}
+            className={`px-4 py-2 rounded-tl-2xl rounded-br-2xl text-sm font-medium transition-all inline-flex items-center gap-2 border ${activeTab === "categories" ? "bg-linear-to-r from-violet-600 to-fuchsia-500 border-violet-400 text-white" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40"}`}
           >
-            Categories
+            <HiOutlineSquares2X2 size={14} /> Categories
           </button>
           <button
             onClick={() => setActiveTab("combos")}

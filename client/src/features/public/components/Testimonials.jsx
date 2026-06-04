@@ -50,15 +50,18 @@ const Testimonials = () => {
         {loading ? (
           <TestimonialsSkeleton count={4} />
         ) : (
-          <Marquee gradient={false} speed={50} pauseOnHover autoFill={true}>
-            <div className="flex overflow-y-hidden">
-              {quotes.map((q) => (
-                <article
-                  key={q.id}
-                  className="group relative w-72 shrink-0 rounded-tr-2xl mx-2 rounded-bl-2xl p-px border border-violet-400/20 hover:border-violet-400/40 transition-colors overflow-hidden"
-                >
-                  <div className="h-full rounded-2xl bg-black/10 p-10 flex flex-col justify-between transition-all duration-300 group-hover:scale-[1.03] group-hover:shadow-[0_0_40px_rgba(139,92,246,0.25)]">
-                    <div>
+          <div className="relative overflow-hidden ">
+            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-[#0a0a0a] via-[#0a0a0a]/95 to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-[#0a0a0a] via-[#0a0a0a]/95 to-transparent" />
+
+            <Marquee gradient={false} speed={50} pauseOnHover autoFill={true}>
+              <div className="flex overflow-y-hidden py-2">
+                {quotes.map((q) => (
+                  <article
+                    key={q.id}
+                    className="group relative w-62 shrink-0 rounded-tr-2xl mx-2 rounded-bl-2xl p-px border-2 border-violet-400/20 hover:border-violet-400/40 transition-colors overflow-hidden"
+                  >
+                    <div className="h-full rounded-2xl bg-black/10 p-10 flex flex-col justify-between transition-all duration-300 group-hover:scale-[1.03] group-hover:shadow-[0_0_40px_rgba(139,92,246,0.25)]">
                       <div className="mt-6 flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-violet-500/20 flex items-center justify-center text-sm font-semibold text-violet-300">
                           {q.name?.charAt(0)}
@@ -79,11 +82,11 @@ const Testimonials = () => {
                     <div className="mt-4 flex gap-1 text-violet-400 text-xs">
                       ★ ★ ★ ★ ★
                     </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </Marquee>
+                  </article>
+                ))}
+              </div>
+            </Marquee>
+          </div>
         )}
 
         <div className="mt-12 text-center">
