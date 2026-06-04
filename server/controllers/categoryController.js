@@ -3,6 +3,7 @@ const Product = require('../models/Product');
 const { s3, S3_BUCKET, deleteFromS3 } = require('../config/s3');
 const { PutObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+const cache = require('../config/cache');
 
 const SIGN_UPLOAD_ALLOWED_EXTS  = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif']);
 const SIGN_UPLOAD_ALLOWED_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
@@ -46,10 +47,12 @@ exports.signCategoryUpload = async (req, res) => {
 // GET /api/categories
 exports.getCategories = async (req, res) => {
   try {
+    const cached = await cache.get('categories');
+    if (cached) return res.json(cached);
+
     const categories = await Category.find().sort({ name: 1 });
-    res.set("Cache-Control", "s-maxage=120, stale-while-revalidate=300");
-    res.set("Vary", "Origin");
-    res.json(categories);
+    await cache.set('categories', categories, 300);
+    return res.json(categories);
   } catch (error) {
     console.error('[Category] Fetch error:', error.message);
     res.status(500).json({ message: 'Server error fetching categories' });
@@ -74,6 +77,7 @@ exports.createCategory = async (req, res) => {
 
     const image = { url: imageUrl, publicId: imagePublicId };
     const category = await Category.create({ name: name.trim(), description, image });
+    await cache.invalidate('categories');
     res.status(201).json(category);
   } catch (error) {
     console.error('[Category] Create error:', error.message);
@@ -179,6 +183,7 @@ exports.updateCategory = async (req, res) => {
     }
 
     await category.save();
+    await cache.invalidate('categories');
     res.json(category);
   } catch (error) {
     console.error('[Category] Update error:', error.message);
@@ -225,6 +230,11 @@ exports.deleteCategory = async (req, res) => {
     }
 
     await category.deleteOne();
+    await Promise.all([
+      cache.invalidate('categories'),
+      cache.invalidatePattern('products:list:*'),
+      cache.invalidate('products:top-picks'),
+    ]);
     return res.json({ message: 'Category and its products deleted successfully' });
   } catch (error) {
     console.error('[Category] Delete error:', error.message);

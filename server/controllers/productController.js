@@ -5,6 +5,7 @@ const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const Category = require("../models/Category");
 const Store = require("../models/Store");
 const mongoose = require("mongoose");
+const cache = require("../config/cache");
 
 // TEMPORARILY DISABLED — commission is now entered manually by admin, not auto-calculated.
 // Re-enable these functions when auto-commission is needed again.
@@ -35,28 +36,24 @@ function calcSaleCommission(salePrice) {
 exports.getAllProducts = async (req, res) => {
   try {
     const { search } = req.query;
+    const cacheKey = `products:list:${search || ''}`;
+
+    const cached = await cache.get(cacheKey);
+    if (cached) return res.json(cached);
+
     let query = {};
 
     if (search) {
       const searchRegex = new RegExp(search, "i");
-      
-      // Find categories matching the search term
       const matchingCategories = await Category.find({ name: searchRegex }).select("_id");
       const categoryIds = matchingCategories.map((c) => c._id);
-
-      query = {
-        $or: [
-          { name: searchRegex },
-          { category: { $in: categoryIds } },
-        ],
-      };
+      query = { $or: [{ name: searchRegex }, { category: { $in: categoryIds } }] };
     }
 
     const products = await Product.find(query)
       .populate("category")
       .sort({ createdAt: -1 });
-    res.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
-    res.set("Vary", "Origin");
+    await cache.set(cacheKey, products, 60);
     res.json(products);
   } catch (error) {
     console.error("[Products] Fetch error:", error.message);
@@ -245,6 +242,10 @@ exports.createProduct = async (req, res) => {
     if (Number.isFinite(ratingNum)) payload.rating = ratingNum;
 
     const product = await Product.create(payload);
+    await Promise.all([
+      cache.invalidatePattern('products:list:*'),
+      cache.invalidate('products:top-picks'),
+    ]);
 
     const populated = await product.populate("category");
     res.status(201).json(populated);
@@ -368,6 +369,10 @@ exports.updateProduct = async (req, res) => {
     }
 
     await product.save();
+    await Promise.all([
+      cache.invalidatePattern('products:list:*'),
+      cache.invalidate(`products:id:${id}`, 'products:top-picks'),
+    ]);
     const populated = await product.populate("category");
     res.json(populated);
   } catch (error) {
@@ -422,6 +427,10 @@ exports.deleteProduct = async (req, res) => {
     }
 
     await product.deleteOne();
+    await Promise.all([
+      cache.invalidatePattern('products:list:*'),
+      cache.invalidate(`products:id:${id}`, 'products:top-picks'),
+    ]);
     res.json({ message: "Product deleted successfully" });
   } catch (error) {
     console.error("[Products] Delete error:", error.message);
@@ -483,12 +492,16 @@ exports.signUpload = async (req, res) => {
 exports.getProductById = async (req, res) => {
   try {
     const { id } = req.params;
+    const cacheKey = `products:id:${id}`;
+
+    const cached = await cache.get(cacheKey);
+    if (cached) return res.json(cached);
+
     const product = await Product.findById(id).populate("category");
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
-    res.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
-    res.set("Vary", "Origin");
+    await cache.set(cacheKey, product, 60);
     res.json(product);
   } catch (error) {
     console.error("[Products] GetById error:", error.message);
@@ -499,12 +512,14 @@ exports.getProductById = async (req, res) => {
 // Top picks = products with rating >= 4, sorted by rating desc, limited to 10
 exports.getTopPicks = async (req, res) => {
   try {
+    const cached = await cache.get('products:top-picks');
+    if (cached) return res.status(200).json(cached);
+
     const products = await Product.find({ rating: { $gte: 4 } })
       .sort({ rating: -1 })
       .limit(10)
       .populate("category");
-    res.set("Cache-Control", "public, s-maxage=120, stale-while-revalidate=300");
-    res.set("Vary", "Origin");
+    await cache.set('products:top-picks', products, 120);
     return res.status(200).json(products);
   } catch (error) {
     console.error("[Products] Top picks error:", error.message);
@@ -541,6 +556,10 @@ exports.toggleAvailability = async (req, res) => {
     }
 
     await product.save();
+    await Promise.all([
+      cache.invalidatePattern('products:list:*'),
+      cache.invalidate(`products:id:${id}`, 'products:top-picks'),
+    ]);
     return res.json({ id: product._id, available: product.available });
   } catch (error) {
     console.error("[Products] toggleAvailability error:", error.message);

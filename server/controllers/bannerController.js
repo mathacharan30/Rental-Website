@@ -2,6 +2,7 @@ const Banner = require('../models/Banner');
 const { s3, S3_BUCKET, deleteFromS3 } = require('../config/s3');
 const { PutObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+const cache = require('../config/cache');
 
 const SIGN_UPLOAD_ALLOWED_EXTS  = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif']);
 const SIGN_UPLOAD_ALLOWED_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/gif']);
@@ -73,6 +74,7 @@ exports.uploadBanner = async (req, res) => {
     });
 
     console.log('[Banner] Upload Success:', imagePublicId);
+    await cache.invalidatePattern('banners:*');
 
     return res.status(201).json({
       message: 'Banner uploaded successfully',
@@ -96,19 +98,23 @@ exports.uploadBanner = async (req, res) => {
 // GET /api/banners?type=hero|gallery&device=mobile|desktop
 exports.getBanners = async (req, res) => {
   try {
+    const type = req.query.type || '';
+    const device = req.query.device || '';
+    const cacheKey = `banners:${type}:${device}`;
+
+    const cached = await cache.get(cacheKey);
+    if (cached) return res.json(cached);
+
     const filter = {};
-    if (req.query.type === 'hero' || req.query.type === 'gallery') {
-      filter.type = req.query.type;
-    }
-    if (req.query.device === 'mobile') {
+    if (type === 'hero' || type === 'gallery') filter.type = type;
+    if (device === 'mobile') {
       filter.device = 'mobile';
-    } else if (req.query.device === 'desktop') {
-      // Also match legacy records that were saved before the device field existed
+    } else if (device === 'desktop') {
       filter.$or = [{ device: 'desktop' }, { device: { $exists: false } }, { device: null }];
     }
+
     const banners = await Banner.find(filter).sort({ createdAt: -1 });
-    res.set("Cache-Control", "s-maxage=60, stale-while-revalidate=120");
-    res.set("Vary", "Origin");
+    await cache.set(cacheKey, banners, 60);
     return res.json(banners);
   } catch (error) {
     console.error('[Banner] Fetch Error:', error.message);
@@ -133,6 +139,7 @@ exports.deleteBanner = async (req, res) => {
     }
 
     await banner.deleteOne();
+    await cache.invalidatePattern('banners:*');
     return res.json({ message: 'Banner deleted successfully' });
   } catch (error) {
     console.error('[Banner] Delete Error:', error.message);

@@ -1,4 +1,5 @@
 const Testimonial = require('../models/Testimonial');
+const cache = require('../config/cache');
 
 // POST /api/testimonials
 exports.createTestimonial = async (req, res) => {
@@ -18,6 +19,7 @@ exports.createTestimonial = async (req, res) => {
       isTop: typeof isTop === 'string' ? ['true', '1', 'on'].includes(isTop.toLowerCase()) : Boolean(isTop),
     });
     const saved = await testimonial.save();
+    await cache.invalidatePattern('testimonials:*');
     return res.status(201).json(saved);
   } catch (error) {
     console.error('[Testimonials] Create error:', error.message);
@@ -29,6 +31,11 @@ exports.createTestimonial = async (req, res) => {
 exports.getAllTestimonials = async (req, res) => {
   try {
     const { top, limit } = req.query;
+    const cacheKey = `testimonials:list:${top || ''}:${limit || ''}`;
+
+    const cached = await cache.get(cacheKey);
+    if (cached) return res.status(200).json(cached);
+
     const filter = {};
     if (top === 'true' || top === '1') filter.isTop = true;
 
@@ -38,8 +45,7 @@ exports.getAllTestimonials = async (req, res) => {
     if (!Number.isNaN(lim) && lim > 0) query = query.limit(lim);
 
     const testimonials = await query.exec();
-    res.set("Cache-Control", "public, s-maxage=120, stale-while-revalidate=300");
-    res.set("Vary", "Origin");
+    await cache.set(cacheKey, testimonials, 120);
     return res.status(200).json(testimonials);
   } catch (error) {
     console.error('[Testimonials] Fetch all error:', error.message);
@@ -50,7 +56,13 @@ exports.getAllTestimonials = async (req, res) => {
 // GET /api/testimonials/top/by-product
 exports.getTopTestimonialsAcrossProducts = async (req, res) => {
   try {
-    const limit = parseInt(req.query.limit, 10);
+    const limitRaw = req.query.limit || '';
+    const cacheKey = `testimonials:top:${limitRaw}`;
+
+    const cached = await cache.get(cacheKey);
+    if (cached) return res.status(200).json(cached);
+
+    const limit = parseInt(limitRaw, 10);
 
     const pipeline = [
       { $match: { isTop: true } },
@@ -67,8 +79,7 @@ exports.getTopTestimonialsAcrossProducts = async (req, res) => {
     const results = await Testimonial.aggregate(pipeline);
     await Testimonial.populate(results, { path: 'product', select: 'name' });
 
-    res.set("Cache-Control", "public, s-maxage=120, stale-while-revalidate=300");
-    res.set("Vary", "Origin");
+    await cache.set(cacheKey, results, 120);
     return res.status(200).json(results);
   } catch (error) {
     console.error('[Testimonials] Top by product error:', error.message);
@@ -110,6 +121,7 @@ exports.updateTestimonial = async (req, res) => {
 
     const updated = await Testimonial.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
     if (!updated) return res.status(404).json({ message: 'Testimonial not found' });
+    await cache.invalidatePattern('testimonials:*');
     return res.status(200).json(updated);
   } catch (error) {
     console.error('[Testimonials] Update error:', error.message);
@@ -123,6 +135,7 @@ exports.deleteTestimonial = async (req, res) => {
     const { id } = req.params;
     const deleted = await Testimonial.findByIdAndDelete(id);
     if (!deleted) return res.status(404).json({ message: 'Testimonial not found' });
+    await cache.invalidatePattern('testimonials:*');
     return res.status(200).json({ message: 'Testimonial deleted' });
   } catch (error) {
     console.error('[Testimonials] Delete error:', error.message);
