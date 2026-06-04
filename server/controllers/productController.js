@@ -56,6 +56,7 @@ exports.getAllProducts = async (req, res) => {
       .populate("category")
       .sort({ createdAt: -1 });
     res.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
+    res.set("Vary", "Origin");
     res.json(products);
   } catch (error) {
     console.error("[Products] Fetch error:", error.message);
@@ -487,6 +488,7 @@ exports.getProductById = async (req, res) => {
       return res.status(404).json({ message: "Product not found" });
     }
     res.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
+    res.set("Vary", "Origin");
     res.json(product);
   } catch (error) {
     console.error("[Products] GetById error:", error.message);
@@ -502,6 +504,7 @@ exports.getTopPicks = async (req, res) => {
       .limit(10)
       .populate("category");
     res.set("Cache-Control", "public, s-maxage=120, stale-while-revalidate=300");
+    res.set("Vary", "Origin");
     return res.status(200).json(products);
   } catch (error) {
     console.error("[Products] Top picks error:", error.message);

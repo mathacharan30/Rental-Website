@@ -48,6 +48,7 @@ exports.getCategories = async (req, res) => {
   try {
     const categories = await Category.find().sort({ name: 1 });
     res.set("Cache-Control", "s-maxage=120, stale-while-revalidate=300");
+    res.set("Vary", "Origin");
     res.json(categories);
   } catch (error) {
     console.error('[Category] Fetch error:', error.message);

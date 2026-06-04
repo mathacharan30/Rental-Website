@@ -39,6 +39,7 @@ exports.getAllTestimonials = async (req, res) => {
 
     const testimonials = await query.exec();
     res.set("Cache-Control", "public, s-maxage=120, stale-while-revalidate=300");
+    res.set("Vary", "Origin");
     return res.status(200).json(testimonials);
   } catch (error) {
     console.error('[Testimonials] Fetch all error:', error.message);
@@ -67,6 +68,7 @@ exports.getTopTestimonialsAcrossProducts = async (req, res) => {
     await Testimonial.populate(results, { path: 'product', select: 'name' });
 
     res.set("Cache-Control", "public, s-maxage=120, stale-while-revalidate=300");
+    res.set("Vary", "Origin");
     return res.status(200).json(results);
   } catch (error) {
     console.error('[Testimonials] Top by product error:', error.message);
