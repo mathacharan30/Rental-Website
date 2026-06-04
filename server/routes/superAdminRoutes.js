@@ -9,6 +9,7 @@ const {
   getStores,
   createStore,
   deleteStore,
+  resetStorePassword,
   getAllUsers,
   getAllCities,
   createCity,
@@ -40,6 +41,16 @@ router.post(
   ],
   validate,
   createStore,
+);
+router.patch(
+  '/stores/:uid/password',
+  ...guard,
+  [
+    param('uid').trim().notEmpty().withMessage('uid is required'),
+    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+  ],
+  validate,
+  resetStorePassword,
 );
 router.delete(
   '/stores/:uid',

@@ -122,6 +122,18 @@ export default function SuperAdminDashboard() {
     }
   };
 
+  const handleResetPassword = async (uid, newPassword) => {
+    const tid = toast.loading("Resetting password...");
+    try {
+      const headers = await authHeader();
+      await api.patch(`/api/superadmin/stores/${uid}/password`, { password: newPassword }, { headers });
+      toast.success("Password updated!", { id: tid });
+      loadStores();
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Failed to reset password", { id: tid });
+    }
+  };
+
   const handleDelete = async (uid) => {
     if (!window.confirm("Delete this store owner?")) return;
 
@@ -263,6 +275,7 @@ export default function SuperAdminDashboard() {
                 stores={stores}
                 navigate={navigate}
                 handleDelete={handleDelete}
+                handleResetPassword={handleResetPassword}
                 setActiveTab={setActiveTab}
               />
             )}

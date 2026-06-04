@@ -8,7 +8,7 @@ const DeliveryCity   = require('../models/DeliveryCity');
 exports.getStores = async (req, res) => {
   try {
     const stores = await Store.find()
-      .populate('owner', 'name email uid')
+      .populate('owner', 'name email uid loginPassword')
       .sort({ createdAt: -1 })
       .lean();
     return res.json({ stores });
@@ -39,11 +39,12 @@ exports.createStore = async (req, res) => {
 
     // 2. Persist User in MongoDB (no storeId yet)
     const user = await User.create({
-      uid:       firebaseUser.uid,
+      uid:           firebaseUser.uid,
       email,
-      role:      'store_owner',
-      storeName: slug,
+      role:          'store_owner',
+      storeName:     slug,
       name,
+      loginPassword: password,
     });
 
     // 3. Create Store document
@@ -63,6 +64,24 @@ exports.createStore = async (req, res) => {
       return res.status(409).json({ message: 'Email already in use' });
     }
     return res.status(500).json({ message: 'Server error creating store' });
+  }
+};
+
+// ─── PATCH /api/superadmin/stores/:uid/password ──────────────────────────────
+// Resets Firebase password + stores it in MongoDB for visibility.
+exports.resetStorePassword = async (req, res) => {
+  const { uid } = req.params;
+  const { password } = req.body;
+  if (!password || password.length < 6) {
+    return res.status(400).json({ message: 'Password must be at least 6 characters' });
+  }
+  try {
+    await firebaseAdmin.auth().updateUser(uid, { password });
+    await User.findOneAndUpdate({ uid }, { loginPassword: password });
+    return res.json({ message: 'Password updated' });
+  } catch (err) {
+    console.error('[SuperAdmin] resetStorePassword:', err.message);
+    return res.status(500).json({ message: 'Server error resetting password' });
   }
 };
 
