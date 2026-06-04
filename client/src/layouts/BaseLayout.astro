@@ -131,11 +131,12 @@ const activeSchema = schema ?? defaultSchema
     }
   </head>
   <body class="bg-[#0e0e0e]">
-    <div id="app-loader" style="position:fixed;inset:0;z-index:9999;background:#0e0e0e;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;transition:opacity 0.3s ease">
-      <span style="font-family:Georgia,serif;font-size:1.5rem;color:#ffffff;letter-spacing:0.15em">People &amp; Style</span>
-      <span style="display:block;width:36px;height:36px;border:2px solid rgba(255,255,255,0.15);border-top-color:#a855f7;border-radius:50%;animation:spin 0.8s linear infinite"></span>
+    <div id="app-loader" style="position:fixed;inset:0;z-index:9999;background:radial-gradient(circle at top, rgba(168,85,247,0.16), transparent 36%), linear-gradient(180deg, #101010 0%, #0b0b0b 100%);display:flex;align-items:center;justify-content:center;transition:opacity 0.3s ease">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center">
+        <span style="font-family:instrument serif,serif;font-size:1.45rem;color:#ffffff;letter-spacing:0.022em;animation:loaderText 1.8s ease-in-out infinite;display:inline-block;will-change:opacity,transform;">People &amp; Style</span>
+      </div>
     </div>
-    <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+    <style>@keyframes loaderSpin{to{transform:rotate(360deg)}}@keyframes loaderPulse{0%,100%{transform:scale(0.92);opacity:0.62}50%{transform:scale(1);opacity:1}}@keyframes loaderText{0%{opacity:0;transform:translateY(6px) scale(0.98)}20%{opacity:1;transform:translateY(0) scale(1)}75%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-4px) scale(0.99)}}</style>
     <script>
       (function(){
         var el = document.getElementById('app-loader');
