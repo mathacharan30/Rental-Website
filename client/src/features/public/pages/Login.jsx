@@ -6,7 +6,6 @@ import { signOut } from "firebase/auth";
 import { auth } from '../../../config/firebase';
 import { Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
-import { validatePassword, PASSWORD_HINT } from '../../../utils/passwordValidation';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -19,11 +18,6 @@ const Login = () => {
     e.preventDefault();
     if (!email || !password) {
       toast.error("Please fill in all fields");
-      return;
-    }
-    const pwdError = validatePassword(password);
-    if (pwdError) {
-      toast.error(pwdError);
       return;
     }
     setLoading(true);
@@ -117,7 +111,6 @@ const Login = () => {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-            <p className="mt-1 text-xs text-neutral-500">{PASSWORD_HINT}</p>
           </div>
 
           <div className="flex justify-end">
