@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import {
   listTestimonials,
   createTestimonial,
+  updateTestimonial,
   deleteTestimonial,
 } from "../../services/testimonialService";
 import { getAllProducts } from "../../services/productService";
 import toast from "react-hot-toast";
 import Loader from "../shared/components/Loader";
 import Modal from "../admin/components/Modal";
-import { Plus, Star, Trash2 } from "lucide-react";
+import { Plus, Star, Trash2, Pencil } from "lucide-react";
 
 const TestimonialsAdmin = () => {
   const [testimonials, setTestimonials] = useState([]);
@@ -22,6 +23,7 @@ const TestimonialsAdmin = () => {
 
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingTestimonial, setEditingTestimonial] = useState(null);
 
   const load = async () => {
     setLoading(true);
@@ -78,6 +80,55 @@ const TestimonialsAdmin = () => {
     }
   };
 
+  const openEdit = (t) => {
+    setEditingTestimonial(t);
+    setUserName(t.userName || "");
+    setHandle(t.handle || "");
+    setComment(t.comment || "");
+    setRating(t.rating ?? 5);
+    setIsTop(t.isTop || false);
+    setProductId(t.product?._id || t.product || (products[0]?.id ?? ""));
+    setIsModalOpen(true);
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    if (!userName || !comment || !productId) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+    const loadingToast = toast.loading("Updating testimonial...");
+    try {
+      await updateTestimonial(editingTestimonial._id, {
+        userName,
+        handle,
+        comment,
+        rating,
+        product: productId,
+        isTop,
+      });
+      toast.success("Testimonial updated successfully", { id: loadingToast });
+      closeModal();
+      await load();
+    } catch (e) {
+      console.error("Update testimonial failed", e);
+      toast.error(
+        e?.response?.data?.message || "Failed to update testimonial",
+        { id: loadingToast },
+      );
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setEditingTestimonial(null);
+    setUserName("");
+    setHandle("");
+    setComment("");
+    setRating(5);
+    setIsTop(false);
+  };
+
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this testimonial?"))
       return;
@@ -105,7 +156,7 @@ const TestimonialsAdmin = () => {
           <p className="text-neutral-500 mt-1">Manage customer reviews</p>
         </div>
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => { setEditingTestimonial(null); setUserName(""); setHandle(""); setComment(""); setRating(5); setIsTop(false); setIsModalOpen(true); }}
           className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
         >
           <Plus size={20} />
@@ -158,13 +209,22 @@ const TestimonialsAdmin = () => {
                       {t.product ? t.product.name || t.product : "-"}
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <button
-                        onClick={() => handleDelete(t._id)}
-                        className="p-2 text-neutral-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                        title="Delete"
-                      >
-                        <Trash2 size={18} />
-                      </button>
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => openEdit(t)}
+                          className="p-2 text-neutral-500 hover:text-violet-400 hover:bg-violet-500/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                          title="Edit"
+                        >
+                          <Pencil size={18} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(t._id)}
+                          className="p-2 text-neutral-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                          title="Delete"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -176,10 +236,10 @@ const TestimonialsAdmin = () => {
 
       <Modal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Add Testimonial"
+        onClose={closeModal}
+        title={editingTestimonial ? "Edit Testimonial" : "Add Testimonial"}
       >
-        <form onSubmit={handleAdd} className="space-y-4">
+        <form onSubmit={editingTestimonial ? handleUpdate : handleAdd} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-neutral-300 mb-1">
               Customer Name
@@ -264,16 +324,16 @@ const TestimonialsAdmin = () => {
           <div className="flex gap-3 pt-4 border-t border-white/10">
             <button
               type="button"
-              onClick={() => setIsModalOpen(false)}
+              onClick={closeModal}
               className="flex-1 px-4 py-2 border border-white/10 text-neutral-300 rounded-lg hover:bg-white/5 transition-colors font-medium"
             >
               Cancel
             </button>
             <button
-              onClick={handleAdd}
+              type="submit"
               className="flex-1 bg-violet-600 text-white px-4 py-2 rounded-lg hover:bg-violet-700 transition-colors font-medium"
             >
-              Add Testimonial
+              {editingTestimonial ? "Save Changes" : "Add Testimonial"}
             </button>
           </div>
         </form>

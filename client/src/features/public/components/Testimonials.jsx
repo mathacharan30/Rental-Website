@@ -51,8 +51,8 @@ const Testimonials = () => {
           <TestimonialsSkeleton count={4} />
         ) : (
           <div className="relative overflow-hidden ">
-            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-[#0a0a0a] via-[#0a0a0a]/95 to-transparent" />
-            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-[#0a0a0a] via-[#0a0a0a]/95 to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-linear-to-r from-[#0a0a0a] via-[#0a0a0a]/95 to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-linear-to-l from-[#0a0a0a] via-[#0a0a0a]/95 to-transparent" />
 
             <Marquee gradient={false} speed={50} pauseOnHover autoFill={true}>
               <div className="flex overflow-y-hidden py-2">

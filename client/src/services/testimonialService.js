@@ -16,9 +16,15 @@ export async function createTestimonial({ userName, handle, comment, rating, pro
   return data;
 }
 
+export async function updateTestimonial(id, { userName, handle, comment, rating, product, isTop }) {
+  const payload = { userName, handle, comment, rating: Number(rating), product, isTop };
+  const { data } = await api.put(`/api/testimonials/${id}`, payload);
+  return data;
+}
+
 export async function deleteTestimonial(id) {
   const { data } = await api.delete(`/api/testimonials/${id}`);
   return data;
 }
 
-export default { listTestimonials, listTopTestimonials, createTestimonial, deleteTestimonial };
+export default { listTestimonials, listTopTestimonials, createTestimonial, updateTestimonial, deleteTestimonial };
