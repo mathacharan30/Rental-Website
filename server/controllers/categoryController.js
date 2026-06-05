@@ -34,6 +34,7 @@ exports.signCategoryUpload = async (req, res) => {
       Bucket: S3_BUCKET,
       Key: key,
       ContentType: safeContentType,
+      CacheControl: 'public, max-age=31536000, immutable',
     });
     const presignedUrl = await getSignedUrl(s3, command, { expiresIn: 300 });
     const publicUrl = `https://${S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;

@@ -34,6 +34,7 @@ exports.signBannerUpload = async (req, res) => {
       Bucket: S3_BUCKET,
       Key: key,
       ContentType: safeContentType,
+      CacheControl: 'public, max-age=31536000, immutable',
     });
 
     const presignedUrl = await getSignedUrl(s3, command, { expiresIn: 300 });
