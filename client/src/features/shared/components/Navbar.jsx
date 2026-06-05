@@ -203,18 +203,21 @@ const Navbar = () => {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-colors duration-150 ${
-        scrolled
-          ? "bg-[#0a0a0a]/90 backdrop-blur-md border-b border-white/5"
-          : "bg-[#0a0a0a]"
-      }`}
+      className="sticky z-50 px-2 sm:px-4"
+      style={{ top: "var(--floating-nav-offset)" }}
     >
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between py-1.5 md:py-3">
-          <div className="flex items-center gap-8">
+      <div
+        className={`max-w-6xl mx-auto rounded-full border transition-all duration-200 ${
+          scrolled
+            ? "border-white/10 bg-[#0a0a0a]/82 shadow-[0_18px_60px_rgba(0,0,0,0.42)] backdrop-blur-xl"
+            : "border-white/8 bg-[#0a0a0a]/72 shadow-[0_12px_38px_rgba(0,0,0,0.28)] backdrop-blur-xl"
+        }`}
+      >
+        <div className="flex items-center justify-between px-4 md:px-2.5 md:py-2.5">
+          <div className="flex items-center justify-between gap-2">
             <Link
               to="/"
-              className="text-md font-semibold instrument-serif tracking-wide text-white hover:opacity-80 transition-opacity"
+              className="text-md font-semibold instrument-serif tracking-wide md:pl-4 pl-2 text-white hover:opacity-80 transition-opacity"
             >
               People & Style
             </Link>
@@ -279,22 +282,22 @@ const Navbar = () => {
             </div>
 
             {!loading && (
-              <div className="hidden md:flex items-center gap-3">
+              <div className="hidden md:flex items-center ml-6 mr-1">
                 {!firebaseUser ? (
-                  <>
+                  <div className="flex items-center gap-1">
                     <Link
                       to="/login"
-                      className="text-sm text-neutral-400 hover:text-white transition-colors px-3 py-1.5 rounded-xl hover:bg-white/5"
+                      className="text-sm text-white hover:text-white bg-white/10 rounded-l-4xl rounded-r-md transition-colors px-5 py-1.5 hover:bg-white/5"
                     >
                       Log in
                     </Link>
                     <Link
                       to="/signup"
-                      className="text-sm bg-violet-600 text-white py-1.5 px-5 rounded-lg hover:bg-violet-700 transition-colors"
+                      className="text-sm bg-violet-600 text-white py-1.5 px-5 rounded-r-4xl rounded-l-md hover:bg-violet-700 transition-colors"
                     >
                       <span>Sign up</span>
                     </Link>
-                  </>
+                  </div>
                 ) : role === "customer" ? (
                   <>
                     <Link
@@ -349,7 +352,7 @@ const Navbar = () => {
 
             <button
               type="button"
-              className="md:hidden relative w-12 h-12 flex items-center justify-center rounded-xl"
+              className="md:hidden relative px-2 flex items-center justify-center rounded-xl"
               onClick={() => {
                 setOpen((s) => !s);
                 setMobileSearchOpen(false);
@@ -361,7 +364,7 @@ const Navbar = () => {
               {open ? (
                 <X className="text-white" size={20} />
               ) : (
-                <Menu className="text-white" size={18} />
+                <Menu className="text-white" size={20} />
               )}
             </button>
           </div>
@@ -408,7 +411,7 @@ const Navbar = () => {
 
         <motion.div
           id="mobile-menu"
-          className="md:hidden fixed top-12 right-4 left-4 z-50"
+          className="md:hidden fixed top-14 right-2 left-2 z-50"
           style={{ pointerEvents: open ? "auto" : "none" }}
           aria-hidden={!open}
         >
@@ -419,7 +422,7 @@ const Navbar = () => {
                 initial={{
                   opacity: 0,
                   scale: 0.3,
-                  y: -30,
+                  y: -28,
                   transformOrigin: "top right",
                 }}
                 animate={{
@@ -431,10 +434,10 @@ const Navbar = () => {
                 exit={{
                   opacity: 0,
                   scale: 0.01,
-                  y: -30,
+                  y: -28,
                   transition: { duration: 0.3 },
                 }}
-                className="bg-neutral-900 rounded-4xl shadow-2xl flex flex-col gap-1 pb-3 px-2 pt-2 text-sm border border-white/10"
+                className="bg-[#121212] rounded-4xl shadow-2xl flex flex-col gap-1 pb-3 px-2 pt-2 text-sm border border-white/10"
                 style={{ transformOrigin: "top right" }}
               >
                 {isPublicOrCustomer && isHomePage && (

@@ -270,7 +270,7 @@ const ProductDetail = () => {
           })}
         </script>
       </Helmet>
-      <div className="max-w-6xl mx-auto px-4 pt-2">
+      <div className="max-w-6xl mx-auto px-4 pt-8">
         <Link
           to={`/products/${encodeURIComponent(product.category)}`}
           className="inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-violet-400 transition-colors"

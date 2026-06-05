@@ -92,7 +92,7 @@ const Products = () => {
 
   return (
     <motion.section
-      className="pt-2 min-h-screen"
+      className="pt-8 min-h-screen"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}

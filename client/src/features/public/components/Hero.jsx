@@ -49,7 +49,10 @@ const Hero = () => {
   const activeBanner = banners.length > 0 ? banners[activeSlide] : null;
 
   return (
-    <section className="relative w-full h-[85vh] overflow-hidden bg-[#0e0e0e]">
+    <section
+      className="relative w-full h-[100vh] overflow-hidden bg-[#0e0e0e]"
+      style={{ marginTop: "calc(var(--floating-nav-footprint) * -1)" }}
+    >
       {activeBanner && (
         <OptimizedImage
           key={activeBanner._id || activeBanner.imageUrl}
@@ -61,7 +64,7 @@ const Hero = () => {
           }
           loading="eager"
           decoding="async"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full md:mt-7 mt-4.5 object-cover"
         />
       )}
 
