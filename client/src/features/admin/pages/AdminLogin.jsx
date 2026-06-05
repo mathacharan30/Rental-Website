@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from '../../../services/authService';
 import toast from "react-hot-toast";
+import { validatePassword, PASSWORD_HINT } from '../../../utils/passwordValidation';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
@@ -13,6 +14,12 @@ const AdminLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    const pwdError = validatePassword(password);
+    if (pwdError) {
+      setError(pwdError);
+      toast.error(pwdError);
+      return;
+    }
     setLoading(true);
     const loadingToast = toast.loading("Logging in...");
     try {
@@ -57,6 +64,7 @@ const AdminLogin = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          <p className="mt-1 text-xs text-neutral-500">{PASSWORD_HINT}</p>
         </div>
         <button
           disabled={loading}

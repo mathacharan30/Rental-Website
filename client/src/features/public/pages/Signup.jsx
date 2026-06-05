@@ -4,6 +4,14 @@ import { useNavigate, Link } from "react-router-dom";
 import api from '../../../services/api';
 import { Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
+import { validatePassword } from '../../../utils/passwordValidation';
+
+const PWD_RULES = [
+  { label: "At least 6 characters", test: (p) => p.length >= 6 },
+  { label: "One uppercase letter", test: (p) => /[A-Z]/.test(p) },
+  { label: "One number", test: (p) => /[0-9]/.test(p) },
+  { label: "One special character (!@#$%...)", test: (p) => /[!@#$%^&*()\-_=+[\]{};':"\\|,.<>/?`~]/.test(p) },
+];
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -27,8 +35,9 @@ const Signup = () => {
       toast.error("Name, email and password are required");
       return;
     }
-    if (password.length < 6) {
-      toast.error("Password must be at least 6 characters");
+    const pwdError = validatePassword(password);
+    if (pwdError) {
+      toast.error(pwdError);
       return;
     }
     setLoading(true);
@@ -111,9 +120,19 @@ const Signup = () => {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
-            <p className="mt-1 text-xs text-neutral-500">
-              Password must be at least 6 characters.
-            </p>
+            {form.password.length > 0 && (
+              <ul className="mt-2 space-y-1">
+                {PWD_RULES.map(({ label, test }) => {
+                  const ok = test(form.password);
+                  return (
+                    <li key={label} className={`flex items-center gap-1.5 text-xs ${ok ? "text-emerald-400" : "text-neutral-500"}`}>
+                      <span className="text-sm">{ok ? "✓" : "✗"}</span>
+                      {label}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </div>
           {field("Phone number", "phone", "tel", "+91 98765 43210")}
           {field("Address", "address", "text", "Your address")}

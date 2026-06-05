@@ -30,7 +30,10 @@ router.post(
       .normalizeEmail(),
     body('password')
       .notEmpty().withMessage('Password is required')
-      .isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+      .isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
+      .matches(/[A-Z]/).withMessage('Password must have at least one uppercase letter')
+      .matches(/[0-9]/).withMessage('Password must have at least one number')
+      .matches(/[!@#$%^&*()\-_=+[\]{};':"\\|,.<>/?`~]/).withMessage('Password must have at least one special character'),
     body('phone')
       .optional({ checkFalsy: true })
       .trim()
