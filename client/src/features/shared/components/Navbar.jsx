@@ -213,7 +213,7 @@ const Navbar = () => {
             : "border-white/8 bg-[#0a0a0a]/72 shadow-[0_12px_38px_rgba(0,0,0,0.28)] backdrop-blur-xl"
         }`}
       >
-        <div className="flex items-center justify-between px-4 md:px-2.5 md:py-2.5">
+        <div className="flex items-center justify-between px-4 py-1 md:px-2.5 md:py-2.5">
           <div className="flex items-center justify-between gap-2">
             <Link
               to="/"
