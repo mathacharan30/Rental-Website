@@ -126,11 +126,17 @@ export default function SuperAdminDashboard() {
     const tid = toast.loading("Resetting password...");
     try {
       const headers = await authHeader();
-      await api.patch(`/api/superadmin/stores/${uid}/password`, { password: newPassword }, { headers });
+      await api.patch(
+        `/api/superadmin/stores/${uid}/password`,
+        { password: newPassword },
+        { headers },
+      );
       toast.success("Password updated!", { id: tid });
       loadStores();
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Failed to reset password", { id: tid });
+      toast.error(err?.response?.data?.message || "Failed to reset password", {
+        id: tid,
+      });
     }
   };
 
@@ -234,7 +240,7 @@ export default function SuperAdminDashboard() {
 
   // Main render
   return (
-    <div className=" bg-[#0e0e0e] flex">
+    <div className=" bg-[#0e0e0e] mt-6 flex">
       <div className={` transition-all duration-300 overflow-hidden`}>
         <aside className="w-64 h-screen bg-[#151515] border-r border-white/10 flex flex-col sticky top-0">
           <div className="p-4  border-b border-white/10">

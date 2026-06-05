@@ -411,7 +411,7 @@ const Navbar = () => {
 
         <motion.div
           id="mobile-menu"
-          className="md:hidden fixed top-14 right-2 left-2 z-50"
+          className="md:hidden fixed top-16 right-2 left-2 z-50"
           style={{ pointerEvents: open ? "auto" : "none" }}
           aria-hidden={!open}
         >
@@ -437,7 +437,7 @@ const Navbar = () => {
                   y: -28,
                   transition: { duration: 0.3 },
                 }}
-                className="bg-[#121212] rounded-4xl shadow-2xl flex flex-col gap-1 pb-3 px-2 pt-2 text-sm border border-white/10"
+                className="bg-[#0a0a0a] rounded-4xl  flex flex-col gap-1 pb-3 px-2 pt-2 text-sm border border-white/10"
                 style={{ transformOrigin: "top right" }}
               >
                 {isPublicOrCustomer && isHomePage && (

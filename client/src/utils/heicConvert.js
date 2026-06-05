@@ -14,9 +14,16 @@ export async function convertToJpeg(file) {
   // Stage 1: heic2any — lightweight, fast for common HEIC variants
   try {
     const heic2any = (await import("heic2any")).default;
-    const blob = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.92 });
+    const blob = await heic2any({
+      blob: file,
+      toType: "image/jpeg",
+      quality: 0.92,
+    });
     const outBlob = Array.isArray(blob) ? blob[0] : blob;
-    return new File([outBlob], jpegName, { type: "image/jpeg", lastModified: Date.now() });
+    return new File([outBlob], jpegName, {
+      type: "image/jpeg",
+      lastModified: Date.now(),
+    });
   } catch {
     // fall through
   }
@@ -35,14 +42,25 @@ export async function convertToJpeg(file) {
         canvas.getContext("2d").drawImage(img, 0, 0);
         canvas.toBlob(
           (blob) => {
-            if (!blob) { reject(new Error("canvas.toBlob returned null")); return; }
-            resolve(new File([blob], jpegName, { type: "image/jpeg", lastModified: Date.now() }));
+            if (!blob) {
+              reject(new Error("canvas.toBlob returned null"));
+              return;
+            }
+            resolve(
+              new File([blob], jpegName, {
+                type: "image/jpeg",
+                lastModified: Date.now(),
+              }),
+            );
           },
           "image/jpeg",
           0.92,
         );
       };
-      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("native decode failed")); };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error("native decode failed"));
+      };
       img.src = url;
     });
 
@@ -93,8 +111,16 @@ export async function convertToJpeg(file) {
     return await new Promise((resolve, reject) => {
       canvas.toBlob(
         (blob) => {
-          if (!blob) { reject(new Error("canvas.toBlob returned null")); return; }
-          resolve(new File([blob], jpegName, { type: "image/jpeg", lastModified: Date.now() }));
+          if (!blob) {
+            reject(new Error("canvas.toBlob returned null"));
+            return;
+          }
+          resolve(
+            new File([blob], jpegName, {
+              type: "image/jpeg",
+              lastModified: Date.now(),
+            }),
+          );
         },
         "image/jpeg",
         0.92,
@@ -106,6 +132,6 @@ export async function convertToJpeg(file) {
 
   throw new Error(
     "Cannot convert this HEIC image. Please export the photo as JPEG " +
-    "from your phone's Photos app and try again.",
+      "from your phone's Photos app and try again.",
   );
 }
