@@ -151,7 +151,7 @@ const Navbar = () => {
             key={`${p.type}-${p.id}`}
             to={p.url}
             onClick={() => handleSuggestionClick(closeMobileSearch)}
-            className="flex items-center gap-3 p-3 hover:bg-white/5 transition-colors border-b border-white/5 last:border-b-0"
+            className="flex items-center gap-3 px-3 py-3 rounded-2xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/5"
           >
             {p.image ? (
               <img
@@ -201,23 +201,31 @@ const Navbar = () => {
       ? "Dashboard"
       : null;
 
+  const suggestionItemMotion = {
+    hidden: { opacity: 0, y: 8 },
+    visible: { opacity: 1, y: 0 },
+  };
+
   return (
-    <header
+    <motion.header
       className="sticky z-50 px-2 sm:px-4"
       style={{ top: "var(--floating-nav-offset)" }}
+      initial={{ opacity: 0, y: -16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35, ease: "easeOut" }}
     >
       <div
-        className={`max-w-6xl mx-auto rounded-full border transition-all duration-200 ${
+        className={`max-w-6xl mx-auto rounded-full border transition-all duration-300 ${
           scrolled
-            ? "border-white/10 bg-[#0a0a0a]/82 shadow-[0_18px_60px_rgba(0,0,0,0.42)] backdrop-blur-xl"
-            : "border-white/8 bg-[#0a0a0a]/72 shadow-[0_12px_38px_rgba(0,0,0,0.28)] backdrop-blur-xl"
+            ? "border-white/12 bg-gradient-to-r from-[#0a0a0a]/88 via-[#111111]/84 to-[#0a0a0a]/88 shadow-[0_18px_60px_rgba(0,0,0,0.42)] backdrop-blur-xl"
+            : "border-white/8 bg-gradient-to-r from-[#0a0a0a]/78 via-[#121212]/74 to-[#0a0a0a]/78 shadow-[0_12px_38px_rgba(0,0,0,0.28)] backdrop-blur-xl"
         }`}
       >
-        <div className="flex items-center justify-between px-4 py-1 md:px-2.5 md:py-2.5">
-          <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center justify-between px-4 py-1 md:px-2.5 md:py-2.5 gap-3">
+          <div className="flex items-center justify-between gap-2 md:gap-4 min-w-0">
             <Link
               to="/"
-              className="text-md font-semibold instrument-serif tracking-wide md:pl-4 pl-2 text-white hover:opacity-80 transition-opacity"
+              className="text-md font-semibold instrument-serif tracking-wide md:pl-4 pl-2 text-white hover:opacity-80 transition-opacity shrink-0"
             >
               People & Style
             </Link>
@@ -228,13 +236,15 @@ const Navbar = () => {
                 aria-label="Primary Navigation"
               >
                 {HOME_NAV_ITEMS.map((item) => (
-                  <a
+                  <motion.a
                     key={item.href}
                     href={item.href}
                     className="px-3 py-1.5 rounded-full text-neutral-400 hover:text-white transition-colors duration-150"
+                    whileHover={{ y: -1, scale: 1.03 }}
+                    whileTap={{ scale: 0.98 }}
                   >
                     {item.label}
-                  </a>
+                  </motion.a>
                 ))}
               </nav>
             )}
@@ -255,7 +265,10 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center ">
-            <div className="hidden md:flex relative " ref={desktopSearchRef}>
+            <div
+              className="hidden md:flex relative w-64 lg:w-72"
+              ref={desktopSearchRef}
+            >
               <form
                 onSubmit={handleSearchSubmit}
                 className="flex items-center relative w-full"
@@ -266,7 +279,7 @@ const Navbar = () => {
                   value={searchQuery}
                   onChange={(e) => handleSearchChange(e.target.value)}
                   onFocus={() => setShowSuggestions(true)}
-                  className="bg-white/10 text-white placeholder-neutral-400 border border-white/20 rounded-full py-1.5 px-4 pr-9 text-sm focus:outline-none focus:border-violet-500 transition-colors w-56"
+                  className="w-full bg-white/8 text-white placeholder-neutral-400 border border-white/15 rounded-full py-2 pl-4 pr-10 text-sm focus:outline-none focus:border-violet-400 focus:bg-white/10 transition-all"
                 />
                 <button
                   type="submit"
@@ -276,9 +289,53 @@ const Navbar = () => {
                 </button>
               </form>
 
-              {renderSuggestions(
-                "absolute top-full right-0 mt-2 w-72 bg-neutral-900 border border-white/10 rounded-xl overflow-hidden shadow-2xl z-50",
-              )}
+              <AnimatePresence>
+                {showSuggestions && suggestions.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -8, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -6, scale: 0.98 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                    className="absolute top-full right-0 mt-3 w-full overflow-hidden rounded-3xl border border-white/10 bg-[#111111]/95 backdrop-blur-xl shadow-[0_24px_70px_rgba(0,0,0,0.45)] z-50 max-h-96 overflow-y-auto p-2"
+                  >
+                    {suggestions.map((p, index) => (
+                      <motion.div
+                        key={`${p.type}-${p.id}`}
+                        variants={suggestionItemMotion}
+                        initial="hidden"
+                        animate="visible"
+                        transition={{ duration: 0.18, delay: index * 0.03 }}
+                      >
+                        <Link
+                          to={p.url}
+                          onClick={() => handleSuggestionClick(false)}
+                          className="flex items-center gap-3 px-3 py-3 rounded-2xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/5"
+                        >
+                          {p.image ? (
+                            <img
+                              src={p.image}
+                              alt={p.title}
+                              className="w-10 h-10 object-cover rounded-md"
+                            />
+                          ) : (
+                            <div className="w-10 h-10 bg-white/5 rounded-md flex items-center justify-center">
+                              <Search size={16} className="text-neutral-500" />
+                            </div>
+                          )}
+                          <div className="flex flex-col text-left">
+                            <span className="text-white text-sm font-medium line-clamp-1">
+                              {p.title}
+                            </span>
+                            <span className="text-neutral-400 text-xs text-left">
+                              {p.type === "category" ? "Category" : p.category}
+                            </span>
+                          </div>
+                        </Link>
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {!loading && (
@@ -370,44 +427,59 @@ const Navbar = () => {
           </div>
         </div>
 
-        {mobileSearchOpen && (
-          <div
-            id="mobile-search"
-            className="md:hidden fixed inset-0 z-50 bg-black/45 backdrop-blur-[1px] px-4 pt-24"
-            onClick={() => {
-              setMobileSearchOpen(false);
-              setShowSuggestions(false);
-            }}
-          >
-            <div
-              ref={mobileSearchRef}
-              className="relative mx-auto w-full max-w-md"
-              onClick={(e) => e.stopPropagation()}
+        <AnimatePresence>
+          {mobileSearchOpen && (
+            <motion.div
+              id="mobile-search"
+              className="md:hidden fixed inset-0 z-50 pt-16 px-2"
+              onClick={() => {
+                setMobileSearchOpen(false);
+                setShowSuggestions(false);
+              }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
             >
-              <form onSubmit={handleSearchSubmit} className="relative w-full">
-                <input
-                  type="text"
-                  placeholder="Search rentals..."
-                  value={searchQuery}
-                  onChange={(e) => handleSearchChange(e.target.value)}
-                  onFocus={() => setShowSuggestions(true)}
-                  className="w-full bg-neutral-900/95 text-white placeholder-neutral-400 border border-white/20 rounded-full py-3 px-4 pr-10 text-base focus:outline-none focus:border-white/40 transition-all shadow-2xl"
-                />
-                <button
-                  type="submit"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-white"
+              <motion.div
+                ref={mobileSearchRef}
+                className="rounded-2xl border border-white/10 bg-[#090909]/92 backdrop-blur-2xl shadow-[0_30px_80px_rgba(0,0,0,0.45)]"
+                onClick={(e) => e.stopPropagation()}
+                initial={{ y: -12, opacity: 0, scale: 0.98 }}
+                animate={{ y: 0, opacity: 1, scale: 1 }}
+                exit={{ y: -10, opacity: 0, scale: 0.98 }}
+                transition={{ duration: 0.24, ease: "easeOut" }}
+              >
+                <form
+                  onSubmit={handleSearchSubmit}
+                  className="relative w-full p-2"
                 >
-                  <Search size={20} />
-                </button>
-              </form>
+                  <input
+                    type="text"
+                    placeholder="Search rentals..."
+                    value={searchQuery}
+                    onChange={(e) => handleSearchChange(e.target.value)}
+                    onFocus={() => setShowSuggestions(true)}
+                    className="w-full text-white placeholder-neutral-400 pt-2 px-4 pr-11 text-base focus:outline-none transition-all"
+                  />
+                  <button
+                    type="submit"
+                    className="absolute right-5 top-1/2 pt-2 -translate-y-1/2 text-neutral-400 hover:text-white"
+                  >
+                    <Search size={20} />
+                  </button>
+                </form>
 
-              {renderSuggestions(
-                "absolute left-0 right-0 top-full mt-2 bg-neutral-900 border border-white/10 rounded-xl overflow-hidden shadow-2xl z-50",
-                true,
-              )}
-            </div>
-          </div>
-        )}
+                <div className="px-2 pb-2">
+                  {renderSuggestions(
+                    "max-h-[55vh] overflow-y-auto rounded-2xl bg-[#111111]/96 border border-white/10 p-1",
+                    true,
+                  )}
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <motion.div
           id="mobile-menu"
@@ -528,7 +600,7 @@ const Navbar = () => {
           </AnimatePresence>
         </motion.div>
       </div>
-    </header>
+    </motion.header>
   );
 };
 
