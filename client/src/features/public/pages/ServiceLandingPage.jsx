@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import Footer from "../../shared/components/Footer";
+import { servicePages } from "../../../data/serviceLandingData";
 
 const FAQItem = ({ q, a }) => {
   const [open, setOpen] = useState(false);
@@ -29,7 +30,11 @@ const FAQItem = ({ q, a }) => {
   );
 };
 
-const ServiceLandingPage = ({ data }) => {
+const ServiceLandingPage = () => {
+  const { pathname } = useLocation();
+  const slug = pathname.replace(/^\//, '');
+  const data = servicePages[slug];
+  if (!data) return null;
   return (
     <div className="bg-[#0e0e0e] min-h-screen text-white">
       {/* ── Hero ─────────────────────────────────────────────────────── */}

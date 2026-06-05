@@ -217,8 +217,8 @@ const Navbar = () => {
       <div
         className={`max-w-7xl mx-auto rounded-full border transition-all duration-300 ${
           scrolled
-            ? "border-white/12 bg-gradient-to-r from-[#0a0a0a]/68 via-[#111111]/64 to-[#0a0a0a]/68 shadow-[#11111190] shadow-2xl backdrop-blur-xl"
-            : "border-white/8 bg-gradient-to-r from-[#0a0a0a]/48 via-[#121212]/44 to-[#0a0a0a]/48 shadow-[#12121250] shadow-lg backdrop-blur-xl"
+            ? "border-white/12 bg-linear-to-r from-[#0a0a0a]/68 via-[#111111]/64 to-[#0a0a0a]/68 shadow-[#11111190] shadow-2xl backdrop-blur-xl"
+            : "border-white/8 bg-linear-to-r from-[#0a0a0a]/48 via-[#121212]/44 to-[#0a0a0a]/48 shadow-[#12121250] shadow-lg backdrop-blur-xl"
         }`}
       >
         <div className="flex items-center justify-between px-4 py-1 md:px-2.5 md:py-2.5 gap-3">

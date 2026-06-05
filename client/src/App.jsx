@@ -10,7 +10,6 @@ import ComingSoonGate from "./utils/ComingSoonGate";
 import Navbar from "./features/shared/components/Navbar";
 import Loader from "./features/shared/components/Loader";
 import { Toaster } from "react-hot-toast";
-import { servicePages } from "./data/serviceLandingData";
 
 const Home = lazy(() => import("./features/public/pages/Home"));
 const Login = lazy(() => import("./features/public/pages/Login"));
@@ -92,86 +91,16 @@ const App = () => {
                   <Route path="/products/:category" element={<Products />} />
                   <Route path="/product/:id" element={<ProductDetail />} />
                   <Route path="/combos/:slug" element={<BridalCombo />} />
-                  <Route
-                    path="/rental-clothing-mysuru"
-                    element={
-                      <ServiceLandingPage
-                        data={servicePages["rental-clothing-mysuru"]}
-                      />
-                    }
-                  />
-                  <Route
-                    path="/rental-clothing-bangalore"
-                    element={
-                      <ServiceLandingPage
-                        data={servicePages["rental-clothing-bangalore"]}
-                      />
-                    }
-                  />
-                  <Route
-                    path="/rental-jewellery-mysuru"
-                    element={
-                      <ServiceLandingPage
-                        data={servicePages["rental-jewellery-mysuru"]}
-                      />
-                    }
-                  />
-                  <Route
-                    path="/rental-jewellery-bangalore"
-                    element={
-                      <ServiceLandingPage
-                        data={servicePages["rental-jewellery-bangalore"]}
-                      />
-                    }
-                  />
-                  <Route
-                    path="/makeup-services-mysuru"
-                    element={
-                      <ServiceLandingPage
-                        data={servicePages["makeup-services-mysuru"]}
-                      />
-                    }
-                  />
-                  <Route
-                    path="/makeup-services-bangalore"
-                    element={
-                      <ServiceLandingPage
-                        data={servicePages["makeup-services-bangalore"]}
-                      />
-                    }
-                  />
-                  <Route
-                    path="/photography-services-mysuru"
-                    element={
-                      <ServiceLandingPage
-                        data={servicePages["photography-services-mysuru"]}
-                      />
-                    }
-                  />
-                  <Route
-                    path="/photography-services-bangalore"
-                    element={
-                      <ServiceLandingPage
-                        data={servicePages["photography-services-bangalore"]}
-                      />
-                    }
-                  />
-                  <Route
-                    path="/bridal-package-mysuru"
-                    element={
-                      <ServiceLandingPage
-                        data={servicePages["bridal-package-mysuru"]}
-                      />
-                    }
-                  />
-                  <Route
-                    path="/bridal-package-bangalore"
-                    element={
-                      <ServiceLandingPage
-                        data={servicePages["bridal-package-bangalore"]}
-                      />
-                    }
-                  />
+                  <Route path="/rental-clothing-mysuru" element={<ServiceLandingPage />} />
+                  <Route path="/rental-clothing-bangalore" element={<ServiceLandingPage />} />
+                  <Route path="/rental-jewellery-mysuru" element={<ServiceLandingPage />} />
+                  <Route path="/rental-jewellery-bangalore" element={<ServiceLandingPage />} />
+                  <Route path="/makeup-services-mysuru" element={<ServiceLandingPage />} />
+                  <Route path="/makeup-services-bangalore" element={<ServiceLandingPage />} />
+                  <Route path="/photography-services-mysuru" element={<ServiceLandingPage />} />
+                  <Route path="/photography-services-bangalore" element={<ServiceLandingPage />} />
+                  <Route path="/bridal-package-mysuru" element={<ServiceLandingPage />} />
+                  <Route path="/bridal-package-bangalore" element={<ServiceLandingPage />} />
 
                   <Route path="/about" element={<AboutUs />} />
                   <Route path="/contact" element={<ContactUs />} />
