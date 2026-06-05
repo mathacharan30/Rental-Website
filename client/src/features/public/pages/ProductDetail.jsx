@@ -282,8 +282,8 @@ const ProductDetail = () => {
       <div className="flex flex-col md:flex-row md:items-start md:gap-6 max-w-6xl mx-auto mt-4 px-2 md:px-4">
         <motion.div
           className="relative w-full md:w-[48%] max-w-xl mx-auto md:mx-0"
-          initial={{ opacity: 0, scale: 0.97 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.15 }}
         >
           <div
@@ -339,8 +339,8 @@ const ProductDetail = () => {
 
         <motion.div
           className="w-full md:w-[52%] max-w-2xl p-4 mx-auto md:mx-0 mt-6 md:mt-0 pb-10"
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.22 }}
         >
           <div className="flex items-center gap-2 justify-between md:justify-start">
