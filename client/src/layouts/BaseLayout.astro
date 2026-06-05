@@ -123,6 +123,7 @@ const activeSchema = schema ?? defaultSchema
         var device = window.innerWidth < 768 ? 'mobile' : 'desktop';
         var width = device === 'mobile' ? 600 : 1400;
 
+        // Prefetch hero banners + preload first hero image
         fetch(base + '/api/banners?type=hero&device=' + device, { credentials: 'omit' })
           .then(function (r) { return r.json(); })
           .then(function (banners) {
@@ -135,7 +136,7 @@ const activeSchema = schema ?? defaultSchema
             } else if (src.includes('ik.imagekit.io')) {
               // already an imagekit URL — use as-is
             } else {
-              return; // unknown origin, skip preload
+              return;
             }
             var link = document.createElement('link');
             link.rel = 'preload';
@@ -145,6 +146,10 @@ const activeSchema = schema ?? defaultSchema
             document.head.appendChild(link);
           })
           .catch(function () {});
+
+        // Prefetch gallery + categories so responses are ready when React renders
+        fetch(base + '/api/banners?type=gallery', { credentials: 'omit' }).catch(function () {});
+        fetch(base + '/api/categories', { credentials: 'omit' }).catch(function () {});
       })();
     </script>
 
