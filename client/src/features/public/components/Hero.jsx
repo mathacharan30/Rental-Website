@@ -50,7 +50,7 @@ const Hero = () => {
 
   return (
     <section
-      className="relative w-full h-[100vh] overflow-hidden bg-[#0e0e0e]"
+      className="relative w-full h-screen overflow-hidden bg-[#0e0e0e]"
       style={{ marginTop: "calc(var(--floating-nav-footprint) * -1)" }}
     >
       {activeBanner && (
@@ -64,6 +64,7 @@ const Hero = () => {
           }
           loading="eager"
           decoding="async"
+          fetchpriority="high"
           className="absolute inset-0 h-full w-full md:mt-7 mt-4.5 object-cover"
         />
       )}

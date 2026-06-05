@@ -114,11 +114,37 @@ const activeSchema = schema ?? defaultSchema
     <link rel="dns-prefetch" href="https://people-and-style-assets-mumbai.s3.ap-south-1.amazonaws.com" />
 
     <!-- Fire banners API fetch before React boots so the response is ready or in-flight when Hero renders -->
+    <!-- Also preloads the first hero image URL at high priority as soon as the API responds -->
     <script define:vars={{ apiUrl: import.meta.env.VITE_API_URL || 'https://rental-website-6a9i.vercel.app' }}>
       (function () {
+        var IK_BASE = 'https://ik.imagekit.io/kayivtq3l/';
+        var S3_BASE = 'https://people-and-style-assets-mumbai.s3.ap-south-1.amazonaws.com/';
         var base = (apiUrl || '').replace(/\/+$/, '');
         var device = window.innerWidth < 768 ? 'mobile' : 'desktop';
-        fetch(base + '/api/banners?type=hero&device=' + device, { credentials: 'omit' }).catch(function () {});
+        var width = device === 'mobile' ? 600 : 1400;
+
+        fetch(base + '/api/banners?type=hero&device=' + device, { credentials: 'omit' })
+          .then(function (r) { return r.json(); })
+          .then(function (banners) {
+            if (!Array.isArray(banners) || !banners.length) return;
+            var first = banners.find(function (b) { return b && b.imageUrl; });
+            if (!first) return;
+            var src = first.imageUrl;
+            if (src.startsWith(S3_BASE)) {
+              src = IK_BASE + src.slice(S3_BASE.length) + '?tr=w-' + width + ',q-auto,f-auto';
+            } else if (src.includes('ik.imagekit.io')) {
+              // already an imagekit URL — use as-is
+            } else {
+              return; // unknown origin, skip preload
+            }
+            var link = document.createElement('link');
+            link.rel = 'preload';
+            link.as = 'image';
+            link.href = src;
+            link.setAttribute('fetchpriority', 'high');
+            document.head.appendChild(link);
+          })
+          .catch(function () {});
       })();
     </script>
 
