@@ -279,7 +279,7 @@ const Navbar = () => {
                   value={searchQuery}
                   onChange={(e) => handleSearchChange(e.target.value)}
                   onFocus={() => setShowSuggestions(true)}
-                  className="w-full bg-white/8 text-white placeholder-neutral-400 border border-white/15 rounded-full py-2 pl-4 pr-10 text-sm focus:outline-none focus:border-violet-400 focus:bg-white/10 transition-all"
+                  className="w-full bg-white/8 text-white placeholder-neutral-400 rounded-full py-2 pl-4 pr-10 text-sm focus:outline-none focus:border-violet-400 focus:bg-white/25 transition-all"
                 />
                 <button
                   type="submit"
@@ -344,13 +344,13 @@ const Navbar = () => {
                   <div className="flex items-center gap-1">
                     <Link
                       to="/login"
-                      className="text-sm text-white hover:text-white bg-white/10 rounded-l-4xl rounded-r-md transition-colors px-5 py-1.5 hover:bg-white/5"
+                      className="text-sm text-white hover:text-white bg-white/10 rounded-l-4xl rounded-r-md transition-colors px-5 py-2 hover:bg-white/5"
                     >
                       Log in
                     </Link>
                     <Link
                       to="/signup"
-                      className="text-sm bg-violet-600 text-white py-1.5 px-5 rounded-r-4xl rounded-l-md hover:bg-violet-700 transition-colors"
+                      className="text-sm bg-violet-600 text-white py-2 px-5 rounded-r-4xl rounded-l-md hover:bg-violet-700 transition-colors"
                     >
                       <span>Sign up</span>
                     </Link>
@@ -483,7 +483,7 @@ const Navbar = () => {
 
         <motion.div
           id="mobile-menu"
-          className="md:hidden fixed top-16 right-2 left-2 z-50"
+          className="md:hidden fixed top-16 backdrop-blur-2xl right-2 left-2 z-50"
           style={{ pointerEvents: open ? "auto" : "none" }}
           aria-hidden={!open}
         >
@@ -509,7 +509,7 @@ const Navbar = () => {
                   y: -28,
                   transition: { duration: 0.3 },
                 }}
-                className="bg-[#0a0a0a] rounded-4xl  flex flex-col gap-1 pb-3 px-2 pt-2 text-sm border border-white/10"
+                className="bg-[#0f0f0f] rounded-3xl  flex flex-col gap-1 py-2 px-2 pt-2 text-sm border border-white/10"
                 style={{ transformOrigin: "top right" }}
               >
                 {isPublicOrCustomer && isHomePage && (
@@ -519,7 +519,7 @@ const Navbar = () => {
                         key={item.href}
                         href={item.href}
                         onClick={handleMobileLink}
-                        className="block px-4 py-3  text-neutral-300 hover:text-white hover:bg-white/5"
+                        className="block px-4 py-3  bg-white/5 rounded-2xl text-neutral-300 hover:text-white hover:bg-white/5"
                       >
                         {item.label}
                       </a>
@@ -536,24 +536,27 @@ const Navbar = () => {
                     {dashboardLabel}
                   </Link>
                 )}
+                {isHomePage && (
+                  <div className="border-t border-white/10 my-4"></div>
+                )}
 
                 {!firebaseUser ? (
-                  <>
+                  <div className="flex flex-row  gap-1">
                     <Link
                       to="/login"
                       onClick={handleMobileLink}
-                      className="block px-4 py-3 rounded-xl text-neutral-300 hover:text-white hover:bg-white/5"
+                      className="block px-4 py-3 w-full rounded-l-2xl rounded-r-sm bg-violet-300/20 text-center text-white hover:text-white hover:bg-white/5"
                     >
                       Log in
                     </Link>
                     <Link
                       to="/signup"
                       onClick={handleMobileLink}
-                      className="block mx-2 py-3 rounded-xl text-center btn-funky"
+                      className="block py-3 rounded-l-sm w-full rounded-r-2xl text-center bg-violet-600 text-white hover:bg-violet-700 transition-colors"
                     >
                       <span>Sign up</span>
                     </Link>
-                  </>
+                  </div>
                 ) : role === "customer" ? (
                   <>
                     <Link
