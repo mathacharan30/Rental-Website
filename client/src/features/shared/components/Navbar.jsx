@@ -222,7 +222,7 @@ const Navbar = () => {
         }`}
       >
         <div className="flex items-center justify-between px-4 py-1 md:px-2.5 md:py-2.5 gap-3">
-          <div className="flex items-center justify-between gap-2 md:gap-4 min-w-0">
+          <div className="flex items-center justify-between gap-12 min-w-0">
             <Link
               to="/"
               className="text-md font-semibold instrument-serif tracking-wide md:pl-4 pl-2 text-white hover:opacity-80 transition-opacity shrink-0"
@@ -239,7 +239,7 @@ const Navbar = () => {
                   <motion.a
                     key={item.href}
                     href={item.href}
-                    className="px-3 py-1.5 rounded-full text-neutral-400 hover:text-white transition-colors duration-150"
+                    className="px-4 py-1.5 rounded-full bg-white/10 text-neutral-300 hover:text-white transition-colors duration-150"
                     whileHover={{ y: -1, scale: 1.03 }}
                     whileTap={{ scale: 0.98 }}
                   >
