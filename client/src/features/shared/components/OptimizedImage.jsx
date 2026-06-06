@@ -4,8 +4,8 @@ import { IKImage } from "imagekitio-react";
 const LQIP_BY_TYPE = {
   hero: { active: true, quality: 10 },
   category: { active: true, quality: 15 },
-  gallery: { active: true, quality: 15 },
-  modal: { active: true, quality: 10 },
+  gallery: { active: false },
+  modal: { active: false },
 };
 
 const OptimizedImage = ({
