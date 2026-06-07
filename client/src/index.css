@@ -41,12 +41,15 @@ body {
 .display-font {
   font-family: "Syne", "Space Grotesk", sans-serif;
 }
+
 .play-fair {
   font-family: "Playfair Display", serif;
 }
+
 .instrument-serif {
   font-family: "Instrument Serif", serif;
 }
+
 .space-grotesk {
   font-family: "Space Grotesk", sans-serif;
 }
@@ -78,12 +81,10 @@ body {
 .skeleton-base {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(
-    110deg,
-    rgba(255, 255, 255, 0.04) 8%,
-    rgba(255, 255, 255, 0.1) 18%,
-    rgba(255, 255, 255, 0.04) 33%
-  );
+  background: linear-gradient(110deg,
+      rgba(255, 255, 255, 0.04) 8%,
+      rgba(255, 255, 255, 0.1) 18%,
+      rgba(255, 255, 255, 0.04) 33%);
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.3s linear infinite;
 }
@@ -103,10 +104,12 @@ body {
   border-radius: 1.75rem;
   transition: all 0.2s ease;
 }
+
 .btn-funky:hover {
   background: var(--primary-dark);
   box-shadow: 0 4px 16px rgba(124, 58, 237, 0.25);
 }
+
 .btn-funky span {
   position: relative;
   z-index: 1;
@@ -122,6 +125,7 @@ body {
   border: 1.5px solid rgba(167, 139, 250, 0.35);
   transition: all 0.2s ease;
 }
+
 .btn-outline-funky:hover {
   border-color: var(--secondary);
   background: rgba(167, 139, 250, 0.06);
@@ -254,6 +258,7 @@ body {
 }
 
 @keyframes pulse0112 {
+
   0%,
   100% {
     transform: scale(0);
