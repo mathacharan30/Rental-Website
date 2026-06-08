@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, Search, ArrowLeft, ArrowRight } from "lucide-react";
+import { Menu, X, Search, ArrowLeft, ArrowRight, Heart, User, LogOut } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
 import { getAllProducts } from "../../../services/productService";
 import { getCategories } from "../../../services/categoryService";
@@ -215,11 +215,10 @@ const Navbar = () => {
       transition={{ duration: 0.35, ease: "easeOut" }}
     >
       <div
-        className={`max-w-7xl mx-auto rounded-full border transition-all duration-300 ${
-          scrolled
-            ? "border-white/12 bg-linear-to-r from-[#0a0a0a]/68 via-[#111111]/64 to-[#0a0a0a]/68 shadow-[#11111190] shadow-2xl backdrop-blur-xl"
-            : "border-white/8 bg-linear-to-r from-[#0a0a0a]/48 via-[#121212]/44 to-[#0a0a0a]/48 shadow-[#12121250] shadow-lg backdrop-blur-xl"
-        }`}
+        className={`max-w-7xl mx-auto rounded-full border transition-all duration-300 ${scrolled
+          ? "border-white/12 bg-linear-to-r from-[#0a0a0a]/68 via-[#111111]/64 to-[#0a0a0a]/68 shadow-[#11111190] shadow-2xl backdrop-blur-xl"
+          : "border-white/8 bg-linear-to-r from-[#0a0a0a]/48 via-[#121212]/44 to-[#0a0a0a]/48 shadow-[#12121250] shadow-lg backdrop-blur-xl"
+          }`}
       >
         <div className="flex items-center justify-between px-4 py-1 md:px-2.5 md:py-2.5 gap-3">
           <div className="flex items-center justify-between gap-12 min-w-0">
@@ -356,29 +355,30 @@ const Navbar = () => {
                     </Link>
                   </div>
                 ) : role === "customer" ? (
-                  <>
+                  <div className="flex items-center gap-1">
                     <Link
                       to="/favorites"
-                      className="text-sm text-neutral-400 hover:text-white transition-colors px-3 py-1.5 rounded-full hover:bg-white/5"
+                      className="text-sm border border-violet-400/20 hover:border-violet-500/30 bg-white/[0.02] text-neutral-300 hover:text-white transition-colors px-3.5 py-1.5 rounded-l-4xl rounded-md flex items-center gap-1.5 hover:bg-violet-500/20"
                     >
-                      Favorites
+                      <Heart size={13} className="text-violet-400 fill-violet-400/10" />
+                      <span>Favorites</span>
                     </Link>
                     <Link
                       to={`/${uid}/profile`}
-                      className="text-sm text-neutral-400 hover:text-white transition-colors px-3 py-1.5 rounded-full hover:bg-white/5"
+                      className="text-sm bg-violet-600/10 border border-violet-300/20 hover:bg-violet-500/60 text-white font-semibold transition-colors px-4 py-1.5 rounded flex items-center gap-1.5"
                     >
-                      Profile
+                      <User size={13} />
+                      <span>Profile</span>
                     </Link>
-                    <span className="text-xs text-violet-400 capitalize border border-violet-500/20 bg-violet-500/10 px-3 py-1 rounded-lg">
-                      customer
-                    </span>
+
                     <button
                       onClick={handleLogout}
-                      className="text-sm text-neutral-500 hover:text-red-400 transition-colors"
+                      className="text-sm bg-red-650/20 border border-red-500/20 text-red-400 hover:text-red-300 transition-colors px-3.5 py-1.5 rounded-r-4xl rounded-l-md hover:bg-red-500/20 flex items-center gap-1.5 cursor-pointer"
                     >
-                      Logout
+                      <LogOut size={12} />
+                      <span>Logout</span>
                     </button>
-                  </>
+                  </div>
                 ) : (
                   <>
                     <button
@@ -558,33 +558,36 @@ const Navbar = () => {
                     </Link>
                   </div>
                 ) : role === "customer" ? (
-                  <>
-                    <Link
-                      to="/favorites"
-                      onClick={handleMobileLink}
-                      className="block px-4 py-3 rounded-xl text-neutral-300 hover:text-white hover:bg-white/5"
-                    >
-                      Favorites
-                    </Link>
-                    <Link
-                      to={`/${uid}/profile`}
-                      onClick={handleMobileLink}
-                      className="block px-4 py-3 rounded-xl text-neutral-300 hover:text-white hover:bg-white/5"
-                    >
-                      Profile
-                    </Link>
-                    <div className="flex items-center justify-between px-4 py-3">
-                      <span className="text-xs text-violet-400 capitalize border border-violet-500/20 bg-violet-500/10 px-3 py-1 rounded-lg">
-                        Customer
-                      </span>
+                  <div className="flex flex-col gap-1.5">
+                    <div className="flex flex-row gap-1 mb-1">
+                      <Link
+                        to="/favorites"
+                        onClick={handleMobileLink}
+                        className="flex items-center justify-center gap-1.5 px-4 py-2.5 text-center w-full bg-white/[0.04] border border-white/8 rounded-l-2xl rounded text-neutral-300 hover:text-white hover:bg-white/10"
+                      >
+                        <Heart size={14} className="text-violet-400" />
+                        <span>Favorites</span>
+                      </Link>
+                      <Link
+                        to={`/${uid}/profile`}
+                        onClick={handleMobileLink}
+                        className="flex items-center justify-center gap-1.5 px-4 py-2.5 w-full text-center bg-violet-600/40 border border-violet-600/60 hover:bg-violet-550 rounded-r-2xl rounded text-white font-semibold shadow-md"
+                      >
+                        <User size={14} />
+                        <span>Profile</span>
+                      </Link>
+                    </div>
+
+                    <div className="flex items-center bg-red-950/10 border border-red-500/20 rounded-2xl justify-between px-4 py-2.5">
                       <button
                         onClick={handleLogout}
-                        className="text-sm text-red-400 hover:text-red-300 transition-colors"
+                        className="text-sm text-red-400 hover:text-red-300 transition-colors text-center w-full flex items-center justify-center gap-1.5 cursor-pointer"
                       >
-                        Logout
+                        <LogOut size={14} />
+                        <span>Logout</span>
                       </button>
                     </div>
-                  </>
+                  </div>
                 ) : (
                   <div className="flex items-center justify-between px-4 py-3">
                     <span className="text-xs text-violet-400 capitalize border border-violet-500/20 bg-violet-500/10 px-3 py-1 rounded-lg">

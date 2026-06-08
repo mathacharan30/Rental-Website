@@ -33,12 +33,12 @@ const Products = () => {
   const { data: productsData, isLoading: loading } = useQuery({
     queryKey: decodedCategory
       ? [
-          "products",
-          decodedCategory,
-          currentPage,
-          searchQuery,
-          isJewels ? listingTab : "",
-        ]
+        "products",
+        decodedCategory,
+        currentPage,
+        searchQuery,
+        isJewels ? listingTab : "",
+      ]
       : ["products", "all", searchQuery],
     queryFn: async () => {
       if (decodedCategory) {
@@ -244,11 +244,10 @@ const Products = () => {
               <button
                 key={tab}
                 onClick={() => setListingTab(tab)}
-                className={`px-5 py-2 rounded-full text-sm font-medium transition-all capitalize ${
-                  listingTab === tab
+                className={`px-5 py-2 rounded-full text-sm font-medium transition-all capitalize ${listingTab === tab
                     ? "bg-violet-600 text-white"
                     : "bg-white/5 text-neutral-400 hover:bg-white/10 hover:text-white"
-                }`}
+                  }`}
               >
                 {tab}
               </button>
@@ -261,9 +260,9 @@ const Products = () => {
             <ProductListSkeleton count={10} />
           </div>
         ) : (isJewels
-            ? items.filter((p) => p.listingType === listingTab)
-            : items
-          ).length > 0 ? (
+          ? items.filter((p) => p.listingType === listingTab)
+          : items
+        ).length > 0 ? (
           <>
             <div className=" justify-center  items-center flex gap-2  flex-wrap mt-4">
               {(isJewels
@@ -279,11 +278,10 @@ const Products = () => {
                 <button
                   onClick={handlePrevPage}
                   disabled={!pagination.hasPrevPage}
-                  className={`flex items-center gap-2 p-2 rounded-lg font-medium transition-all ${
-                    pagination.hasPrevPage
+                  className={`flex items-center gap-2 p-2 rounded-lg font-medium transition-all ${pagination.hasPrevPage
                       ? "bg-violet-600 hover:bg-violet-700 text-white"
                       : "bg-white/5 text-neutral-600 cursor-not-allowed"
-                  }`}
+                    }`}
                 >
                   <ChevronLeft size={18} />
                 </button>
@@ -301,11 +299,10 @@ const Products = () => {
                 <button
                   onClick={handleNextPage}
                   disabled={!pagination.hasNextPage}
-                  className={`flex items-center gap-2 p-2 rounded-lg font-medium transition-all ${
-                    pagination.hasNextPage
+                  className={`flex items-center gap-2 p-2 rounded-lg font-medium transition-all ${pagination.hasNextPage
                       ? "bg-violet-600 hover:bg-violet-700 text-white"
                       : "bg-white/5 text-neutral-600 cursor-not-allowed"
-                  }`}
+                    }`}
                 >
                   <ChevronRight size={18} />
                 </button>
