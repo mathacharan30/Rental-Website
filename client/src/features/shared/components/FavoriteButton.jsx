@@ -67,13 +67,12 @@ const FavoriteButton = ({ productId, className = "", size = 20 }) => {
     <button
       onClick={handleToggle}
       disabled={loading || authLoading}
-      className={`p-2 rounded-full transition-all duration-200 ${
-        isFavorite
-          ? "bg-rose-500/20 text-rose-500 border border-rose-400/40 hover:bg-rose-500/30"
-          : canManageFavorites
-            ? "bg-white/20 text-rose-500 border border-rose-300/40 hover:bg-rose-500/15 hover:text-rose-600"
-            : " text-rose-400 border border-rose-300/30 hover:bg-rose-500/12 hover:text-rose-500"
-      } ${loading || authLoading ? "opacity-50 cursor-not-allowed" : ""} ${className}`}
+      className={`p-1.5 rounded-full transition-all backdrop-blur-md duration-200 ${isFavorite
+        ? "bg-rose-500/20 text-rose-500 border border-rose-400/40 hover:bg-rose-500/30"
+        : canManageFavorites
+          ? "bg-white/20 text-rose-500 border border-rose-300/40 hover:bg-rose-500/15 hover:text-rose-600"
+          : " text-rose-400 border border-rose-500/30 hover:bg-rose-500/12 hover:text-rose-500"
+        } ${loading || authLoading ? "opacity-50 cursor-not-allowed" : ""} ${className}`}
       title={
         isFavorite
           ? "Remove from favorites"

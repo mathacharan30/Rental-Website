@@ -279,7 +279,8 @@ const ProductDetail = () => {
         </Link>
       </div>
 
-      <div className="flex flex-col md:flex-row md:items-start md:gap-6 max-w-6xl mx-auto mt-4 px-2 md:px-4">
+      <div className="flex flex-col md:flex-row md:items-start md:gap-8 max-w-6xl mx-auto mt-4 px-2 md:px-4">
+
         <motion.div
           className="relative w-full md:w-[48%] max-w-xl mx-auto md:mx-0"
           initial={{ opacity: 0 }}
@@ -297,20 +298,20 @@ const ProductDetail = () => {
             {allImages.map((imgUrl, i) => (
               <div
                 key={i}
-                className="relative shrink-0 w-full snap-center rounded-2xl overflow-hidden border border-white/6 aspect-4/5 md:aspect-3/4 max-h-105 md:max-h-120"
+                className="relative shrink-0 w-full snap-center rounded-2xl overflow-hidden border border-white/[0.08] bg-white/[0.01] aspect-4/5 md:aspect-3/4 max-h-105 md:max-h-120 shadow-xl shadow-black/20"
               >
                 <OptimizedImage
                   url={imgUrl}
                   type="modal"
                   alt={`${product.title} — view ${i + 1}`}
-                  className="w-full h-full object-contain rounded-xl cursor-pointer bg-neutral-900"
+                  className="w-full h-full object-contain rounded-xl cursor-pointer bg-neutral-900/60 transition-transform duration-500 hover:scale-[1.02]"
                   onClick={() => {
                     setLightboxIndex(i);
                     setLightboxOpen(true);
                   }}
                 />
                 {allImages.length > 1 && (
-                  <div className="absolute bottom-3 left-3 z-10 px-2 py-0.5 rounded-full glass text-xs text-white/60 font-medium backdrop-blur-md">
+                  <div className="absolute bottom-3 left-3 z-10 px-2.5 py-1 rounded-full bg-black/40 border border-white/10 text-xs text-white/80 font-medium backdrop-blur-md shadow-lg">
                     {i + 1} / {allImages.length}
                   </div>
                 )}
@@ -318,7 +319,7 @@ const ProductDetail = () => {
             ))}
           </div>
           {allImages.length > 1 && (
-            <div className="flex justify-center gap-1 mt-2 overflow-x-auto pb-1">
+            <div className="flex justify-center gap-1.5 mt-3 overflow-x-auto pb-1">
               {allImages.map((imgUrl, i) => (
                 <div
                   onClick={() => scrollToImage(i)}
@@ -329,21 +330,20 @@ const ProductDetail = () => {
                     url={imgUrl}
                     type="gallery"
                     alt={`${product.title} thumb ${i + 1}`}
-                    className="w-10 h-10 object-cover rounded-lg border border-white/10 hover:border-violet-500/40 transition-all duration-200 hover:scale-105 shrink-0"
+                    className="w-12 h-12 object-cover rounded-lg border border-white/[0.08] hover:border-violet-500/40 transition-all duration-200 hover:scale-105 shrink-0 bg-neutral-900"
                   />
                 </div>
               ))}
             </div>
           )}
         </motion.div>
-
         <motion.div
-          className="w-full md:w-[52%] max-w-2xl p-4 mx-auto md:mx-0 mt-6 md:mt-0 pb-10"
+          className="w-full md:w-[52%] max-w-2xl p-4 mx-auto mt-4 md:mt-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.22 }}
         >
-          <div className="flex items-center gap-2 justify-between md:justify-start">
+          <div className="flex items-center gap-3 justify-between md:justify-start">
             <h1 className="text-3xl md:text-4xl font-semibold instrument-serif tracking-wide text-white flex-1">
               {product.title}
             </h1>
@@ -361,15 +361,15 @@ const ProductDetail = () => {
                   toast.success("Link copied to clipboard!");
                 }
               }}
-              className="p-2 rounded-full  text-violet-400 border border-violet-300/40 hover:bg-violet-500/15 hover:text-violet-500 transition-all duration-200"
+              className="p-1.5 rounded-full text-violet-400 bg-white/[0.03] border border-white/[0.08] hover:border-violet-500/40 hover:bg-violet-500/10 hover:text-violet-300 transition-all duration-300 backdrop-blur-sm"
               title="Share product link"
               aria-label="Share product"
             >
-              <Share size={18} />
+              <Share size={20} />
             </button>
           </div>
 
-          <div className="flex items-center gap-2 mt-2 flex-wrap">
+          <div className="flex items-center gap-2 mt-3 flex-wrap">
             <div className="flex flex-col items-start gap-2">
               <div className="flex items-center gap-1">
                 {[...Array(5)].map((_, i) =>
@@ -383,40 +383,44 @@ const ProductDetail = () => {
                     <Star key={i} size={15} className="text-violet-400/30" />
                   ),
                 )}
-                <span className="text-xs text-neutral-500 ml-1">
+                <span className="text-xs text-neutral-400 ml-1">
                   {rating.toFixed(1)}
                 </span>
               </div>
             </div>
           </div>
-          <div className="flex items-end gap-3 flex-wrap mt-4">
-            <span className="text-2xl font-medium tracking-tight gradient-text">
-              {product.price}
-            </span>
-            {product.advanceAmount > 0 && (
-              <span className="text-xs text-violet-400 font-medium pb-1">
-                Advance: ₹
-                {Number.isInteger(product.advanceAmount)
-                  ? product.advanceAmount
-                  : product.advanceAmount.toFixed(2)}
+
+          <div className="mt-5 px-3 py-4 rounded-2xl bg-white/[0.01] border border-white/[0.04] backdrop-blur-sm flex items-center justify-between flex-wrap gap-4">
+            <div className="flex flex-col">
+              <span className="text-[10px] text-neutral-400 tracking-widest font-semibold">Rent Price</span>
+              <span className="text-2xl font-bold tracking-tight text-white mt-1">
+                {product.price}
               </span>
+            </div>
+            {product.advanceAmount > 0 && (
+              <div className="flex flex-col items-end text-right">
+                <span className="text-[10px] text-neutral-400  tracking-widest font-semibold">Refundable Advance</span>
+                <span className="text-lg font-bold text-violet-300 mt-1">
+                  ₹ {Number.isInteger(product.advanceAmount)
+                    ? product.advanceAmount.toLocaleString()
+                    : product.advanceAmount.toFixed(2)}
+                </span>
+              </div>
             )}
           </div>
 
-          <p className="mt-3 text-sm text-neutral-400 leading-relaxed max-w-xl">
+          <p className="mt-5 text-sm text-neutral-400 leading-relaxed max-w-xl">
             {product.description ||
               "Elegant rental piece — perfect for special occasions. Contact us for custom durations and styling options."}
           </p>
-          <div className="flex flex-row gap-2 mt-3">
+
+          <div className="flex flex-wrap gap-2 mt-4">
             {[
               {
-                color: "bg-green-400",
                 label: "Condition",
                 value: "Excellent",
               },
               {
-                color:
-                  product.available === false ? "bg-red-400" : "bg-violet-400",
                 label: "Availability",
                 value:
                   product.available === false
@@ -428,17 +432,18 @@ const ProductDetail = () => {
             ].map(({ label, value }) => (
               <div
                 key={label}
-                className="flex items-center gap-1 text-xs text-neutral-400 glass px-3 py-1 rounded-lg"
+                className="flex items-center gap-2 text-xs text-neutral-300 bg-white/[0.03] border border-white/[0.08] px-3.5 py-1.5 rounded-xl backdrop-blur-sm shadow-sm"
               >
                 <span>
-                  <strong className="text-neutral-300">{label}:</strong> {value}
+                  <strong className="text-neutral-400 font-semibold">{label}:</strong> {value}
                 </span>
               </div>
             ))}
           </div>
+
           {!isJewels && (
-            <div className="mt-5">
-              <p className="text-xs font-medium text-neutral-300 mb-2">
+            <div className="mt-6">
+              <p className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2.5">
                 Select Size
               </p>
 
@@ -447,7 +452,10 @@ const ProductDetail = () => {
                   <button
                     key={size}
                     onClick={() => setSelectedSize(size)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${selectedSize === size ? "bg-violet-600 text-white shadow-lg shadow-violet-600/20" : "glass text-neutral-400 hover:text-white hover:border-violet-500/30"}`}
+                    className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${selectedSize === size
+                      ? "bg-violet-600 border border-violet-500/30 text-white shadow-lg shadow-violet-600/30 scale-105"
+                      : "bg-white/[0.02] border border-white/[0.08] text-neutral-400 hover:border-violet-500/40 hover:bg-white/[0.06] hover:text-white"
+                      }`}
                   >
                     {size}
                   </button>
@@ -455,29 +463,14 @@ const ProductDetail = () => {
               </div>
             </div>
           )}
-          <div className="mt-7 flex gap-3">
-            {/* TEMPORARILY DISABLED — Rent Now / Buy Now button. Re-enable when order flow is ready.
-            <button
-              onClick={handleRent}
-              disabled={ordering || product.available === false}
-              className="btn-funky flex-1 rounded-xl! px-0 disabled:opacity-60 min-w-0"
-            >
-              <span>
-                {ordering
-                  ? "Redirecting to payment…"
-                  : product.available === false
-                    ? "Currently Unavailable"
-                    : isSale
-                      ? "Buy Now →"
-                      : "Rent Now →"}
-              </span>
-            </button>
-            */}
+
+          <div className="mt-8 flex gap-3">
             <button
               onClick={handleEnquire}
-              className="btn-outline-funky flex-1 rounded-xl! px-0 min-w-0"
+              className="relative group/btn overflow-hidden border border-violet-500/40 bg-violet-600/10 text-violet-200 hover:text-white font-semibold py-3.5 px-6 rounded-2xl hover:border-violet-400 hover:bg-violet-600/20 hover:shadow-lg hover:shadow-violet-950/30 transition-all duration-300 flex-1 min-w-0 flex items-center justify-center gap-2"
             >
-              Enquire &amp; Rent Now
+              <div className="absolute inset-0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+              <span>Enquire &amp; Rent Now</span>
             </button>
           </div>
         </motion.div>
@@ -533,7 +526,7 @@ const ProductDetail = () => {
             {testimonials.map((t, i) => (
               <div
                 key={i}
-                className="glass p-5 rounded-2xl flex flex-col gap-3"
+                className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md p-5 flex flex-col gap-3 shadow-md shadow-black/10 hover:border-violet-500/30 transition-all duration-300"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -576,7 +569,7 @@ const ProductDetail = () => {
                     ))}
                   </div>
                 </div>
-                <p className="text-sm text-neutral-300 leading-relaxed bg-black/30 p-3 rounded-xl border border-white/5">
+                <p className="text-sm text-neutral-300 leading-relaxed bg-white/[0.02] border border-white/[0.05] p-3.5 rounded-xl">
                   "{t.comment}"
                 </p>
                 {t.image && (
@@ -585,7 +578,7 @@ const ProductDetail = () => {
                       url={t.image}
                       type="category"
                       alt="Review attachment"
-                      className="w-full h-40 md:h-48 object-cover rounded-xl mt-1 border border-white/5 cursor-pointer hover:border-violet-500/30 transition-colors"
+                      className="w-full h-40 md:h-48 object-cover rounded-xl mt-1 border border-white/5 cursor-pointer hover:border-violet-500/30 transition-all duration-300 hover:scale-[1.01]"
                     />
                   </div>
                 )}
@@ -642,7 +635,7 @@ const ProductDetail = () => {
               onClick={() => !ordering && setCheckoutOpen(false)}
             />
             <motion.div
-              className="fixed top-0 right-0 h-full w-full max-w-md z-9999 bg-[#111] border-l border-white/10 flex flex-col shadow-2xl"
+              className="fixed top-0 right-0 h-full w-full max-w-md z-9999 bg-neutral-950/80 backdrop-blur-xl border-l border-white/10 flex flex-col shadow-2xl"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
@@ -659,7 +652,7 @@ const ProductDetail = () => {
               </div>
 
               <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
-                <div className="flex gap-4 items-start glass p-4 rounded-2xl">
+                <div className="flex gap-4 items-start bg-white/[0.02] border border-white/[0.08] p-4 rounded-2xl">
                   {(product.images?.[0] || product.image) && (
                     <OptimizedImage
                       url={product.images?.[0] || product.image}
@@ -684,7 +677,7 @@ const ProductDetail = () => {
                   </div>
                 </div>
 
-                <div className="glass rounded-2xl p-4 space-y-3 text-sm">
+                <div className="bg-white/[0.02] border border-white/[0.08] rounded-2xl p-4 space-y-3 text-sm">
                   <p className="text-xs uppercase tracking-widest text-neutral-500 font-medium mb-1">
                     Price Breakdown
                   </p>
@@ -753,10 +746,10 @@ const ProductDetail = () => {
                       {(
                         (isSale
                           ? (product.salePrice || 0) +
-                            (product.commissionPrice || 0)
+                          (product.commissionPrice || 0)
                           : (product.rentPrice || 0) +
-                            (product.commissionPrice || 0) +
-                            (product.advanceAmount || 0)) +
+                          (product.commissionPrice || 0) +
+                          (product.advanceAmount || 0)) +
                         (selectedCity?.deliveryCharge || 0)
                       ).toLocaleString()}
                     </span>
@@ -767,7 +760,7 @@ const ProductDetail = () => {
                     </p>
                   )}
                 </div>
-                <div className="glass rounded-2xl p-4 space-y-3">
+                <div className="bg-white/[0.02] border border-white/[0.08] rounded-2xl p-4 space-y-3">
                   <p className="text-xs uppercase tracking-widest text-neutral-500 font-medium flex items-center gap-1.5">
                     <MapPin size={12} /> Select Delivery City
                   </p>
@@ -783,11 +776,10 @@ const ProductDetail = () => {
                         <button
                           key={city._id}
                           onClick={() => setSelectedCity(city)}
-                          className={`px-3 py-2.5 rounded-xl text-sm text-left transition-all duration-200 border ${
-                            selectedCity?._id === city._id
-                              ? "bg-violet-600 border-violet-500 text-white"
-                              : "glass border-white/10 text-neutral-300 hover:border-violet-500/40 hover:text-white"
-                          }`}
+                          className={`px-3 py-2.5 rounded-xl text-sm text-left transition-all duration-200 border ${selectedCity?._id === city._id
+                            ? "bg-violet-600 border-violet-500 text-white"
+                            : "bg-white/[0.02] border border-white/[0.08] backdrop-blur-sm text-neutral-300 hover:border-violet-500/40 hover:text-white"
+                            }`}
                         >
                           <p className="font-medium">{city.name}</p>
                           <p className="text-[11px] mt-0.5 opacity-80">
@@ -813,14 +805,14 @@ const ProductDetail = () => {
                       ? "Redirecting to payment…"
                       : selectedCity
                         ? `Pay ₹${(
-                            (isSale
-                              ? (product.salePrice || 0) +
-                                (product.commissionPrice || 0)
-                              : (product.rentPrice || 0) +
-                                (product.commissionPrice || 0) +
-                                (product.advanceAmount || 0)) +
-                            (selectedCity?.deliveryCharge || 0)
-                          ).toLocaleString()} →`
+                          (isSale
+                            ? (product.salePrice || 0) +
+                            (product.commissionPrice || 0)
+                            : (product.rentPrice || 0) +
+                            (product.commissionPrice || 0) +
+                            (product.advanceAmount || 0)) +
+                          (selectedCity?.deliveryCharge || 0)
+                        ).toLocaleString()} →`
                         : "Select a city to continue"}
                   </span>
                 </button>
