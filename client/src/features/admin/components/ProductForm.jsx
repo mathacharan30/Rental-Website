@@ -668,14 +668,24 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
         </div>
 
         <div className="col-span-2">
-          <label className="block text-sm font-medium text-neutral-300 mb-1">
-            Description
-          </label>
+          <div className="flex items-center justify-between mb-1">
+            <label className="text-sm font-medium text-neutral-300">
+              Description
+            </label>
+            <span className={`text-xs font-medium ${
+              description.length > 150 ? "text-red-400" : description.length > 120 ? "text-amber-400" : "text-neutral-500"
+            }`}>
+              {description.length}/150
+            </span>
+          </div>
           <textarea
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value.length <= 150) setDescription(e.target.value);
+            }}
             placeholder="Product description..."
             rows="3"
+            maxLength={150}
             className="w-full border border-white/10 bg-white/5 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all resize-none"
           />
         </div>
