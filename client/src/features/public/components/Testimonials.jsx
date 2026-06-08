@@ -36,51 +36,59 @@ const Testimonials = () => {
   }, []);
 
   return (
-    <section className="relative py-24 overflow-hidden">
+    <section className="relative py-20 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="text-center mb-10">
-          <h2 className="text-4xl md:text-4xl font-medium instrument-serif tracking-wide text-white">
+        <div className="text-center mb-12 flex flex-col items-center justify-center">
+          <span className="text-[10px] uppercase tracking-widest text-violet-400 font-semibold mb-2">
+            Testimonials
+          </span>
+          <h2 className="text-3xl md:text-4xl font-medium instrument-serif tracking-wide text-white">
             - Customer <span className="text-violet-400 italic">Love -</span>
           </h2>
-          <p className="text-neutral-400 mt-3 max-w-md mx-auto text-sm">
-            Real experiences from people who used our platform
+          <p className="text-neutral-500 mt-2 max-w-md mx-auto text-xs md:text-sm">
+            Real experiences from people who love our styles
           </p>
         </div>
 
         {loading ? (
           <TestimonialsSkeleton count={4} />
         ) : (
-          <div className="relative overflow-hidden ">
-            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-linear-to-r from-[#0a0a0a] via-[#0a0a0a]/95 to-transparent" />
-            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-linear-to-l from-[#0a0a0a] via-[#0a0a0a]/95 to-transparent" />
+          <div className="relative overflow-hidden">
+            <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-[#0a0a0a] to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-[#0a0a0a] to-transparent" />
 
-            <Marquee gradient={false} speed={50} pauseOnHover autoFill={true}>
-              <div className="flex overflow-y-hidden py-2">
+            <Marquee gradient={false} speed={40} pauseOnHover autoFill={true}>
+              <div className="flex py-6">
                 {quotes.map((q) => (
                   <article
                     key={q.id}
-                    className="group relative w-62 shrink-0 rounded-tr-2xl mx-2 rounded-bl-2xl p-px border-2 border-violet-400/20 hover:border-violet-400/40 transition-colors overflow-hidden"
+                    className="group relative w-72 md:w-80 shrink-0 mx-2 rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md p-8 md:p-10 flex flex-col justify-between transition-all duration-500 hover:border-violet-500/40 hover:bg-white/[0.04] hover:shadow-xl hover:shadow-violet-950/10 overflow-hidden"
                   >
-                    <div className="h-full rounded-2xl bg-black/10 p-10 flex flex-col justify-between transition-all duration-300 group-hover:scale-[1.03] group-hover:shadow-[0_0_40px_rgba(139,92,246,0.25)]">
-                      <div className="mt-6 flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-violet-500/20 flex items-center justify-center text-sm font-semibold text-violet-300">
-                          {q.name?.charAt(0)}
-                        </div>
+                    <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none z-10" />
+                    <span className="absolute top-2 right-4 text-7xl font-serif text-violet-500/10 pointer-events-none select-none">
+                      “
+                    </span>
 
-                        <div>
-                          <p className="text-white text-sm font-medium">
-                            {q.name}
-                          </p>
-                          <p className="text-xs text-violet-400">{q.handle}</p>
-                        </div>
-                      </div>
-                      <p className="text-neutral-300 py-6 text-sm leading-relaxed">
-                        “{q.text}”
+                    <div className="flex flex-col gap-3 relative z-10">
+
+                      <p className="text-neutral-300 text-[13px] md:text-[14px] leading-relaxed font-medium italic">
+                        "{q.text}"
                       </p>
                     </div>
 
-                    <div className="mt-4 flex gap-1 text-violet-400 text-xs">
-                      ★ ★ ★ ★ ★
+                    {/* Author Profile */}
+                    <div className="mt-5 flex items-center gap-3 relative z-10">
+                      <div className="w-10 h-10 rounded-full bg-violet-600/10 border border-violet-500/30 flex items-center justify-center font-bold text-violet-300 text-sm shadow-inner shrink-0">
+                        {q.name?.charAt(0) || "U"}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-white text-xs md:text-sm font-semibold truncate">
+                          {q.name}
+                        </p>
+                        <p className="text-[10px] text-violet-400 font-medium tracking-wide">
+                          {q.handle}
+                        </p>
+                      </div>
                     </div>
                   </article>
                 ))}
@@ -89,14 +97,16 @@ const Testimonials = () => {
           </div>
         )}
 
+        {/* Video Button */}
         <div className="mt-12 text-center">
           <a
             href={INFO_VIDEO_LINK}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-violet-500/10 border border-violet-400/30 text-violet-300 hover:bg-violet-500/20 hover:scale-105 transition-all text-sm"
+            className="relative group inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/[0.02] border border-white/[0.08] text-violet-300 hover:text-white hover:border-violet-500/40 hover:bg-violet-600/10 transition-all duration-300 text-xs md:text-sm tracking-wide font-medium shadow-md overflow-hidden"
           >
-            ▶ Watch Info Video
+            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
+            <span>▶ Watch Info Video</span>
           </a>
         </div>
       </div>
