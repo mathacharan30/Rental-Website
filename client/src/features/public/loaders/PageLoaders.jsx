@@ -11,7 +11,7 @@ const FavoritesSkeleton = ({ count = 6 }) => (
         {Array.from({ length: count }).map((_, index) => (
           <div
             key={index}
-            className="glass rounded-2xl overflow-hidden border border-white/10"
+            className="bg-white/[0.02] border border-white/[0.08] backdrop-blur-md rounded-2xl overflow-hidden shadow-lg"
             aria-hidden="true"
           >
             <div className="h-64 w-full skeleton-base" />
@@ -36,9 +36,9 @@ const FavoritesSkeleton = ({ count = 6 }) => (
 const OrdersSkeleton = ({ count = 3 }) => (
   <div className="space-y-4" aria-label="Loading orders" aria-busy="true">
     {Array.from({ length: count }).map((_, index) => (
-      <div key={index} className="glass rounded-2xl p-4" aria-hidden="true">
+      <div key={index} className="bg-white/[0.02] border border-white/[0.08] backdrop-blur-md rounded-2xl p-4 shadow-sm" aria-hidden="true">
         <div className="flex items-start gap-4">
-          <div className="w-16 h-16 rounded-xl border border-white/10 skeleton-base shrink-0" />
+          <div className="w-16 h-16 rounded-xl border border-white/[0.08] skeleton-base shrink-0" />
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between gap-2">
               <div className="h-5 w-40 rounded skeleton-base" />
@@ -57,7 +57,7 @@ const OrdersSkeleton = ({ count = 3 }) => (
 
 const PaymentStatusCheckingSkeleton = () => {
   return (
-    <div className="glass rounded-3xl p-10 max-w-md w-full border border-white/6">
+    <div className="bg-white/[0.02] border border-white/[0.08] backdrop-blur-md rounded-3xl p-10 max-w-md w-full shadow-lg">
       <div className="h-12 w-12 mx-auto rounded-full skeleton-base" />
       <div className="h-7 w-2/3 mx-auto mt-5 rounded skeleton-base" />
       <div className="h-4 w-4/5 mx-auto mt-3 rounded skeleton-base" />

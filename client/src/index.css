@@ -82,11 +82,11 @@ body {
   position: relative;
   overflow: hidden;
   background: linear-gradient(110deg,
-      rgba(255, 255, 255, 0.04) 8%,
-      rgba(255, 255, 255, 0.1) 18%,
-      rgba(255, 255, 255, 0.04) 33%);
+      rgba(255, 255, 255, 0.02) 8%,
+      rgba(139, 92, 246, 0.08) 18%,
+      rgba(255, 255, 255, 0.02) 33%);
   background-size: 200% 100%;
-  animation: skeleton-shimmer 1.3s linear infinite;
+  animation: skeleton-shimmer 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 @keyframes skeleton-shimmer {

@@ -44,7 +44,6 @@ const Categories = () => {
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 8000),
   });
 
-  // Show toast only once — after all retries have been exhausted
   useEffect(() => {
     if (isError) toast.error("Failed to load categories");
   }, [isError]);
@@ -114,6 +113,7 @@ const Categories = () => {
                hover:scale-[1.03] transition-all duration-300"
                     aria-label={`View ${c.name}`}
                   >
+
                     <OptimizedImage
                       url={c.imageUrl}
                       type="category"
@@ -122,7 +122,6 @@ const Categories = () => {
                       className="absolute inset-0 w-full h-full object-cover 
                  group-hover:scale-90 transition-transform duration-500 ease-out  rounded-bl-3xl rounded-tr-3xl"
                     />
-
                     <div className="relative w-full p-4 flex items-center justify-between">
                       <span className="text-white font-light text-sm uppercase md:text-base tracking-tight">
                         {c.name}
@@ -136,6 +135,7 @@ const Categories = () => {
                         <ArrowRight size={24} className="rotate-315" />
                       </span>
                     </div>
+
                   </Link>
                 </motion.div>
               ))

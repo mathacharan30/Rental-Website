@@ -62,7 +62,7 @@ const Testimonials = () => {
                 {quotes.map((q) => (
                   <article
                     key={q.id}
-                    className="group relative w-72 md:w-80 shrink-0 mx-2 rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md p-8 md:p-10 flex flex-col justify-between transition-all duration-500 hover:border-violet-500/40 hover:bg-white/[0.04] hover:shadow-xl hover:shadow-violet-950/10 overflow-hidden"
+                    className="group relative w-72 md:w-80 shrink-0 mx-2 rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md p-12 md:p-14 flex flex-col justify-between transition-all duration-500 hover:border-violet-500/40 hover:bg-white/[0.04] hover:shadow-xl hover:shadow-violet-950/10 overflow-hidden"
                   >
                     <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none z-10" />
                     <span className="absolute top-2 right-4 text-7xl font-serif text-violet-500/10 pointer-events-none select-none">
@@ -76,7 +76,6 @@ const Testimonials = () => {
                       </p>
                     </div>
 
-                    {/* Author Profile */}
                     <div className="mt-5 flex items-center gap-3 relative z-10">
                       <div className="w-10 h-10 rounded-full bg-violet-600/10 border border-violet-500/30 flex items-center justify-center font-bold text-violet-300 text-sm shadow-inner shrink-0">
                         {q.name?.charAt(0) || "U"}

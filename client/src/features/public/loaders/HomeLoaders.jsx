@@ -15,19 +15,20 @@ const HeroSkeleton = () => {
 const CategoriesSkeleton = ({ count = 6 }) => {
   return (
     <div
-      className="flex flex-wrap gap-2 justify-center"
+      className="flex flex-wrap gap-4 justify-center"
       aria-label="Loading categories"
       aria-busy="true"
     >
       {Array.from({ length: count }).map((_, index) => (
         <div
           key={index}
-          className="relative overflow-hidden rounded-bl-3xl rounded-tr-3xl h-58 w-40 md:w-48 md:h-70 border border-white/10 skeleton-base"
+          className="relative overflow-hidden rounded-bl-3xl rounded-tr-3xl h-60 w-40 md:w-48 md:h-72 border border-white/[0.08] bg-white/[0.02] backdrop-blur-md shadow-lg"
           aria-hidden="true"
         >
-          <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
-            <div className="h-4 w-20 rounded skeleton-base" />
-            <div className="h-8 w-8 rounded-full skeleton-base" />
+          <div className="absolute inset-0 skeleton-base" />
+          <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between z-10">
+            <div className="h-4.5 w-24 rounded skeleton-base bg-white/5" />
+            <div className="h-8 w-8 rounded-full skeleton-base bg-white/5" />
           </div>
         </div>
       ))}
@@ -67,32 +68,31 @@ const GallerySkeleton = ({ count = 8 }) => {
 const TestimonialsSkeleton = ({ count = 4 }) => {
   return (
     <div
-      className="flex overflow-y-hidden"
+      className="flex overflow-y-hidden py-4"
       aria-label="Loading testimonials"
       aria-busy="true"
     >
       {Array.from({ length: count }).map((_, index) => (
         <article
           key={index}
-          className="relative w-72 shrink-0 rounded-tr-2xl mx-2 rounded-bl-2xl p-px border border-violet-400/20 overflow-hidden"
+          className="relative w-72 md:w-80 shrink-0 mx-3 rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md p-6 md:p-8 flex flex-col justify-between shadow-md"
           aria-hidden="true"
         >
-          <div className="h-full rounded-2xl bg-black/10 p-10 flex flex-col justify-between">
-            <div>
-              <div className="mt-6 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full skeleton-base" />
-                <div className="space-y-2">
-                  <div className="h-3 w-20 rounded skeleton-base" />
-                  <div className="h-3 w-14 rounded skeleton-base" />
-                </div>
-              </div>
-              <div className="space-y-2 py-6">
-                <div className="h-3 w-full rounded skeleton-base" />
-                <div className="h-3 w-11/12 rounded skeleton-base" />
-                <div className="h-3 w-9/12 rounded skeleton-base" />
-              </div>
+          <div className="space-y-4">
+            <div className="h-3 w-16 rounded skeleton-base" />
+            <div className="space-y-2.5 py-1">
+              <div className="h-3.5 w-full rounded skeleton-base" />
+              <div className="h-3.5 w-11/12 rounded skeleton-base" />
+              <div className="h-3.5 w-8/12 rounded skeleton-base" />
             </div>
-            <div className="mt-4 h-3 w-20 rounded skeleton-base" />
+          </div>
+          
+          <div className="mt-6 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full skeleton-base shrink-0" />
+            <div className="space-y-2 flex-1">
+              <div className="h-3.5 w-24 rounded skeleton-base" />
+              <div className="h-2.5 w-16 rounded skeleton-base" />
+            </div>
           </div>
         </article>
       ))}
