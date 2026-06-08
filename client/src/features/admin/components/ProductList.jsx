@@ -46,7 +46,7 @@ const ProductList = ({ products = [], onEdit, onDelete, onToggleAvailability }) 
                     <div className="font-medium text-white">
                       {p.title}
                     </div>
-                    <div className="text-xs text-neutral-500 truncate max-w-[200px]">
+                    <div className="text-xs text-neutral-500 truncate max-w-50">
                       {p.description || "No description"}
                     </div>
                   </div>

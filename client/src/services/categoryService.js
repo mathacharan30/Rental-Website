@@ -6,6 +6,8 @@ export function mapCategory(c = {}) {
     name: c.name || "",
     image: (c && c.image && c.image.url) ? c.image.url : (c.image || c.cover || ""),
     description: c.description || "",
+    listingMode: c.listingMode || "rent",
+    hasSizes: c.hasSizes !== false,
   };
 }
 
@@ -30,9 +32,11 @@ export async function getCategories() {
   return Array.isArray(data) ? data : [];
 }
 
-export async function createCategory({ name, description, imageFile }) {
+export async function createCategory({ name, description, imageFile, listingMode, hasSizes }) {
   const body = { name };
   if (description) body.description = description;
+  if (listingMode) body.listingMode = listingMode;
+  if (hasSizes !== undefined) body.hasSizes = hasSizes;
   if (imageFile) {
     const { imageUrl, imagePublicId } = await uploadImageToS3(imageFile);
     body.imageUrl = imageUrl;
@@ -42,10 +46,12 @@ export async function createCategory({ name, description, imageFile }) {
   return data;
 }
 
-export async function updateCategory(id, { name, description, imageFile }) {
+export async function updateCategory(id, { name, description, imageFile, listingMode, hasSizes }) {
   const body = {};
   if (name) body.name = name;
   if (description !== undefined) body.description = description;
+  if (listingMode !== undefined) body.listingMode = listingMode;
+  if (hasSizes !== undefined) body.hasSizes = hasSizes;
   if (imageFile) {
     const { imageUrl, imagePublicId } = await uploadImageToS3(imageFile);
     body.imageUrl = imageUrl;

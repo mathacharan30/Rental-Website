@@ -96,10 +96,14 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
     setImages(imageSlots.filter(Boolean));
   }, [imageSlots]);
 
-  // Derived: is the currently selected category "Jewels"?
   const selectedCategory = categories.find((c) => c._id === categoryId);
-  const isJewels =
-    selectedCategory && selectedCategory.name.toLowerCase() === "jewels";
+  const categoryListingMode = selectedCategory?.listingMode || "rent";
+  // Show Rent/Sale toggle only when the category supports both
+  const showListingToggle = categoryListingMode === "both";
+  // Whether the current listing is a sale (either forced by category or chosen via toggle)
+  const isSaleListing = showListingToggle
+    ? listingType === "sale"
+    : categoryListingMode === "sale";
 
   // Compress an image to fit within TARGET_MB, starting at highest quality and stepping down
   const compressImage = (file) =>
@@ -205,29 +209,25 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
       return;
     }
 
-    // Jewels-specific validation
-    if (isJewels && listingType === "sale") {
+    if (isSaleListing) {
       if (!salePrice) {
         toast.error("Please enter a sale price");
         return;
       }
-      // commission is auto-calculated for sale listings — no manual validation needed
     } else {
       if (!rentPrice) {
         toast.error("Please enter a rent price");
         return;
       }
-      // commission is auto-calculated for rent listings — no manual validation needed
     }
 
     const fd = new FormData();
     fd.append("name", title);
     fd.append("category", categoryId);
 
-    const actualListingType = isJewels ? listingType : "rent";
-    fd.append("listingType", actualListingType);
+    fd.append("listingType", isSaleListing ? "sale" : "rent");
 
-    if (actualListingType === "sale") {
+    if (isSaleListing) {
       const salePriceNum = parseFloat(
         String(salePrice).replace(/[^0-9.]/g, ""),
       );
@@ -248,10 +248,9 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
       fd.append("salePrice", "0");
     }
 
-    const advanceAmountNum =
-      isJewels && listingType === "sale"
-        ? 0
-        : parseFloat(String(advanceAmount).replace(/[^0-9.]/g, ""));
+    const advanceAmountNum = isSaleListing
+      ? 0
+      : parseFloat(String(advanceAmount).replace(/[^0-9.]/g, ""));
     fd.append(
       "advanceAmount",
       isNaN(advanceAmountNum) ? "0" : String(advanceAmountNum),
@@ -339,14 +338,25 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
         </div>
 
         <div className="col-span-2 sm:col-span-1">
-          <label className="block text-sm font-medium text-neutral-300 mb-1">
+          <label className="flex items-center gap-2 text-sm font-medium text-neutral-300 mb-1">
             Category
+            {!showListingToggle && categoryListingMode && (
+              <span className={`px-2 py-0.5 rounded-full text-xs font-semibold capitalize ${
+                categoryListingMode === "sale"
+                  ? "bg-amber-500/20 text-amber-300"
+                  : "bg-emerald-500/20 text-emerald-300"
+              }`}>
+                {categoryListingMode}
+              </span>
+            )}
           </label>
           <select
             value={categoryId}
             onChange={(e) => {
+              const newCat = categories.find((c) => c._id === e.target.value);
               setCategoryId(e.target.value);
-              setListingType("rent");
+              // Reset listing type to match the new category's mode
+              setListingType(newCat?.listingMode === "sale" ? "sale" : "rent");
             }}
             className="w-full border border-white/10 bg-neutral-900 px-3 py-2 rounded-lg text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 outline-none transition-all"
           >
@@ -362,8 +372,8 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
           </select>
         </div>
 
-        {/* Jewels — Rent or Sale toggle */}
-        {isJewels && (
+        {/* Rent / Sale toggle — shown only when category supports both */}
+        {showListingToggle && (
           <div className="col-span-2">
             <label className="block text-sm font-medium text-neutral-300 mb-2">
               Listing Type
@@ -395,8 +405,8 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
           </div>
         )}
 
-        {/* Sale price + commission — only for Jewels + Sale */}
-        {isJewels && listingType === "sale" ? (
+        {/* Sale price + commission — only for sale listings */}
+        {isSaleListing ? (
           <>
             <div className="col-span-2 sm:col-span-1">
               <label className="block text-sm font-medium text-neutral-300 mb-1">
@@ -494,7 +504,7 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
           </>
         )}
 
-        {!(isJewels && listingType === "sale") && (
+        {!isSaleListing && (
           <div className="col-span-2 sm:col-span-1">
             <label className="block text-sm font-medium text-neutral-300 mb-1">
               Advance Amount (₹)
@@ -714,9 +724,7 @@ const ProductForm = ({ onSave, onCancel, initialData = null }) => {
           htmlFor="available"
           className="text-sm font-medium text-neutral-300 cursor-pointer"
         >
-          {isJewels && listingType === "sale"
-            ? "Available for sale"
-            : "Available for rent"}
+          {isSaleListing ? "Available for sale" : "Available for rent"}
         </label>
       </div>
 

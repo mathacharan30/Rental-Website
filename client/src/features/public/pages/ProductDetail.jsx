@@ -127,6 +127,7 @@ const ProductDetail = () => {
   const rating = product.rating || 4.3;
   const isJewels = product.category?.toLowerCase() === "jewels";
   const isSale = product.listingType === "sale";
+  const hasSizes = product.categoryData?.hasSizes !== false;
   const sizes = product.sizes || ["XS", "S", "M", "L", "XL"];
 
   // Open checkout sidebar (pre-flight checks only)
@@ -144,7 +145,7 @@ const ProductDetail = () => {
       toast.error("This product is currently not available");
       return;
     }
-    if (!isJewels && !selectedSize) {
+    if (hasSizes && !isSale && !selectedSize) {
       toast.error("Please select a size");
       return;
     }
@@ -169,7 +170,7 @@ const ProductDetail = () => {
     try {
       const res = await createPayment({
         productId: product.id,
-        size: isSale ? "N/A" : selectedSize,
+        size: !hasSizes || isSale ? "N/A" : selectedSize,
         deliveryCharge: selectedCity.deliveryCharge,
         deliveryCity: selectedCity.name,
       });
@@ -298,7 +299,7 @@ const ProductDetail = () => {
             {allImages.map((imgUrl, i) => (
               <div
                 key={i}
-                className="relative shrink-0 w-full snap-center rounded-2xl overflow-hidden border border-white/[0.08] bg-white/[0.01] aspect-4/5 md:aspect-3/4 max-h-105 md:max-h-120 shadow-xl shadow-black/20"
+                className="relative shrink-0 w-full snap-center rounded-2xl overflow-hidden border border-white/8 bg-white/1 aspect-4/5 md:aspect-3/4 max-h-105 md:max-h-120 shadow-xl shadow-black/20"
               >
                 <OptimizedImage
                   url={imgUrl}
@@ -330,7 +331,7 @@ const ProductDetail = () => {
                     url={imgUrl}
                     type="gallery"
                     alt={`${product.title} thumb ${i + 1}`}
-                    className="w-12 h-12 object-cover rounded-lg border border-white/[0.08] hover:border-violet-500/40 transition-all duration-200 hover:scale-105 shrink-0 bg-neutral-900"
+                    className="w-12 h-12 object-cover rounded-lg border border-white/8 hover:border-violet-500/40 transition-all duration-200 hover:scale-105 shrink-0 bg-neutral-900"
                   />
                 </div>
               ))}
@@ -361,7 +362,7 @@ const ProductDetail = () => {
                   toast.success("Link copied to clipboard!");
                 }
               }}
-              className="p-1.5 rounded-full text-violet-400 bg-white/[0.03] border border-white/[0.08] hover:border-violet-500/40 hover:bg-violet-500/10 hover:text-violet-300 transition-all duration-300 backdrop-blur-sm"
+              className="p-1.5 rounded-full text-violet-400 bg-white/3 border border-white/8 hover:border-violet-500/40 hover:bg-violet-500/10 hover:text-violet-300 transition-all duration-300 backdrop-blur-sm"
               title="Share product link"
               aria-label="Share product"
             >
@@ -390,7 +391,7 @@ const ProductDetail = () => {
             </div>
           </div>
 
-          <div className="mt-5 px-3 py-4 rounded-2xl bg-white/[0.01] border border-white/[0.04] backdrop-blur-sm flex items-center justify-between flex-wrap gap-4">
+          <div className="mt-5 px-3 py-4 rounded-2xl bg-white/1 border border-white/4 backdrop-blur-sm flex items-center justify-between flex-wrap gap-4">
             <div className="flex flex-col">
               <span className="text-[10px] text-neutral-400 tracking-widest font-semibold">Rent Price</span>
               <span className="text-2xl font-bold tracking-tight text-white mt-1">
@@ -432,7 +433,7 @@ const ProductDetail = () => {
             ].map(({ label, value }) => (
               <div
                 key={label}
-                className="flex items-center gap-2 text-xs text-neutral-300 bg-white/[0.03] border border-white/[0.08] px-3.5 py-1.5 rounded-xl backdrop-blur-sm shadow-sm"
+                className="flex items-center gap-2 text-xs text-neutral-300 bg-white/3 border border-white/8 px-3.5 py-1.5 rounded-xl backdrop-blur-sm shadow-sm"
               >
                 <span>
                   <strong className="text-neutral-400 font-semibold">{label}:</strong> {value}
@@ -441,7 +442,7 @@ const ProductDetail = () => {
             ))}
           </div>
 
-          {!isJewels && (
+          {hasSizes && !isSale && (
             <div className="mt-6">
               <p className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2.5">
                 Select Size
@@ -454,7 +455,7 @@ const ProductDetail = () => {
                     onClick={() => setSelectedSize(size)}
                     className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 ${selectedSize === size
                       ? "bg-violet-600 border border-violet-500/30 text-white shadow-lg shadow-violet-600/30 scale-105"
-                      : "bg-white/[0.02] border border-white/[0.08] text-neutral-400 hover:border-violet-500/40 hover:bg-white/[0.06] hover:text-white"
+                      : "bg-white/2 border border-white/8 text-neutral-400 hover:border-violet-500/40 hover:bg-white/6 hover:text-white"
                       }`}
                   >
                     {size}
@@ -469,7 +470,7 @@ const ProductDetail = () => {
               onClick={handleEnquire}
               className="relative group/btn overflow-hidden border border-violet-500/40 bg-violet-600/10 text-violet-200 hover:text-white font-semibold py-3.5 px-6 rounded-2xl hover:border-violet-400 hover:bg-violet-600/20 hover:shadow-lg hover:shadow-violet-950/30 transition-all duration-300 flex-1 min-w-0 flex items-center justify-center gap-2"
             >
-              <div className="absolute inset-0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+              <div className="absolute inset-0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 ease-out bg-linear-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
               <span>Enquire &amp; Rent Now</span>
             </button>
           </div>
@@ -526,7 +527,7 @@ const ProductDetail = () => {
             {testimonials.map((t, i) => (
               <div
                 key={i}
-                className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md p-5 flex flex-col gap-3 shadow-md shadow-black/10 hover:border-violet-500/30 transition-all duration-300"
+                className="relative overflow-hidden rounded-2xl border border-white/8 bg-white/2 backdrop-blur-md p-5 flex flex-col gap-3 shadow-md shadow-black/10 hover:border-violet-500/30 transition-all duration-300"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -569,7 +570,7 @@ const ProductDetail = () => {
                     ))}
                   </div>
                 </div>
-                <p className="text-sm text-neutral-300 leading-relaxed bg-white/[0.02] border border-white/[0.05] p-3.5 rounded-xl">
+                <p className="text-sm text-neutral-300 leading-relaxed bg-white/2 border border-white/5 p-3.5 rounded-xl">
                   "{t.comment}"
                 </p>
                 {t.image && (
@@ -652,7 +653,7 @@ const ProductDetail = () => {
               </div>
 
               <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
-                <div className="flex gap-4 items-start bg-white/[0.02] border border-white/[0.08] p-4 rounded-2xl">
+                <div className="flex gap-4 items-start bg-white/2 border border-white/8 p-4 rounded-2xl">
                   {(product.images?.[0] || product.image) && (
                     <OptimizedImage
                       url={product.images?.[0] || product.image}
@@ -677,7 +678,7 @@ const ProductDetail = () => {
                   </div>
                 </div>
 
-                <div className="bg-white/[0.02] border border-white/[0.08] rounded-2xl p-4 space-y-3 text-sm">
+                <div className="bg-white/2 border border-white/8 rounded-2xl p-4 space-y-3 text-sm">
                   <p className="text-xs uppercase tracking-widest text-neutral-500 font-medium mb-1">
                     Price Breakdown
                   </p>
@@ -760,7 +761,7 @@ const ProductDetail = () => {
                     </p>
                   )}
                 </div>
-                <div className="bg-white/[0.02] border border-white/[0.08] rounded-2xl p-4 space-y-3">
+                <div className="bg-white/2 border border-white/8 rounded-2xl p-4 space-y-3">
                   <p className="text-xs uppercase tracking-widest text-neutral-500 font-medium flex items-center gap-1.5">
                     <MapPin size={12} /> Select Delivery City
                   </p>
@@ -778,7 +779,7 @@ const ProductDetail = () => {
                           onClick={() => setSelectedCity(city)}
                           className={`px-3 py-2.5 rounded-xl text-sm text-left transition-all duration-200 border ${selectedCity?._id === city._id
                             ? "bg-violet-600 border-violet-500 text-white"
-                            : "bg-white/[0.02] border border-white/[0.08] backdrop-blur-sm text-neutral-300 hover:border-violet-500/40 hover:text-white"
+                            : "bg-white/2 border border-white/8 backdrop-blur-sm text-neutral-300 hover:border-violet-500/40 hover:text-white"
                             }`}
                         >
                           <p className="font-medium">{city.name}</p>

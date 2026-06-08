@@ -26,10 +26,9 @@ export function mapProduct(p = {}) {
     images.unshift(mainImage);
   }
 
-  const categoryName =
-    typeof p.category === "object" && p.category !== null
-      ? p.category.name
-      : p.category;
+  const categoryObj =
+    typeof p.category === "object" && p.category !== null ? p.category : null;
+  const categoryName = categoryObj ? categoryObj.name : p.category;
 
   const rentPrice = formatPrice(
     typeof p.rentPrice === "number" ? p.rentPrice : 0,
@@ -71,6 +70,7 @@ export function mapProduct(p = {}) {
     images: images,
     rawImages: rawImages,
     category: categoryName || "",
+    categoryData: categoryObj,
     price: priceDisplay || "",
     listingType,
     rentPrice,

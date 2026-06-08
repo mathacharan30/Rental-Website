@@ -21,6 +21,8 @@ import {
 const CategoriesAdmin = () => {
   const [categories, setCategories] = useState([]);
   const [name, setName] = useState("");
+  const [listingMode, setListingMode] = useState("rent");
+  const [hasSizes, setHasSizes] = useState(true);
   const [imageFile, setImageFile] = useState(null);
   const [fileKey, setFileKey] = useState(Date.now());
   const [loading, setLoading] = useState(false);
@@ -60,14 +62,16 @@ const CategoriesAdmin = () => {
 
     try {
       if (isEditMode && editingCategory) {
-        await updateCategory(editingCategory._id, { name, imageFile });
+        await updateCategory(editingCategory._id, { name, imageFile, listingMode, hasSizes });
         toast.success("Category updated successfully", { id: loadingToast });
       } else {
-        await createCategory({ name, imageFile });
+        await createCategory({ name, imageFile, listingMode, hasSizes });
         toast.success("Category created successfully", { id: loadingToast });
       }
 
       setName("");
+      setListingMode("rent");
+      setHasSizes(true);
       setImageFile(null);
       setFileKey(Date.now());
       setIsModalOpen(false);
@@ -94,6 +98,8 @@ const CategoriesAdmin = () => {
   const handleEdit = (category) => {
     setEditingCategory(category);
     setName(category.name);
+    setListingMode(category.listingMode || "rent");
+    setHasSizes(category.hasSizes !== false);
     setImageFile(null);
     setFileKey(Date.now());
     setIsEditMode(true);
@@ -103,6 +109,8 @@ const CategoriesAdmin = () => {
   const handleAddNew = () => {
     setEditingCategory(null);
     setName("");
+    setListingMode("rent");
+    setHasSizes(true);
     setImageFile(null);
     setFileKey(Date.now());
     setIsEditMode(false);
@@ -114,6 +122,8 @@ const CategoriesAdmin = () => {
     setIsEditMode(false);
     setEditingCategory(null);
     setName("");
+    setListingMode("rent");
+    setHasSizes(true);
     setImageFile(null);
     setFileKey(Date.now());
   };
@@ -178,6 +188,8 @@ const CategoriesAdmin = () => {
               <thead>
                 <tr className="bg-white/5 border-b border-white/10 text-xs uppercase text-neutral-500 font-semibold tracking-wider">
                   <th className="px-6 py-4">Category</th>
+                  <th className="px-6 py-4">Listing</th>
+                  <th className="px-6 py-4">Sizes</th>
                   <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
@@ -206,6 +218,28 @@ const CategoriesAdmin = () => {
 
                         <div className="font-medium text-white">{c.name}</div>
                       </div>
+                    </td>
+
+                    <td className="px-6 py-4">
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold capitalize ${
+                        c.listingMode === "both"
+                          ? "bg-violet-500/20 text-violet-300"
+                          : c.listingMode === "sale"
+                          ? "bg-amber-500/20 text-amber-300"
+                          : "bg-emerald-500/20 text-emerald-300"
+                      }`}>
+                        {c.listingMode || "rent"}
+                      </span>
+                    </td>
+
+                    <td className="px-6 py-4">
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${
+                        c.hasSizes !== false
+                          ? "bg-blue-500/20 text-blue-300"
+                          : "bg-neutral-500/20 text-neutral-400"
+                      }`}>
+                        {c.hasSizes !== false ? "Yes" : "No"}
+                      </span>
                     </td>
 
                     <td className="px-6 py-4 text-right">
@@ -256,6 +290,47 @@ const CategoriesAdmin = () => {
               text-white focus:ring-2 focus:ring-violet-500 focus:border-violet-500 
               outline-none transition-all"
             />
+          </div>
+
+          {/* Listing Mode */}
+          <div>
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
+              Listing Mode
+            </label>
+            <div className="flex gap-2">
+              {[
+                { value: "rent", label: "Rent Only" },
+                { value: "sale", label: "Sale Only" },
+                { value: "both", label: "Both" },
+              ].map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setListingMode(opt.value)}
+                  className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
+                    listingMode === opt.value
+                      ? "bg-violet-600 text-white shadow-lg shadow-violet-600/20"
+                      : "border border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Has Sizes */}
+          <div className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              id="cat-has-sizes"
+              checked={hasSizes}
+              onChange={(e) => setHasSizes(e.target.checked)}
+              className="w-4 h-4 text-violet-600 border-white/10 rounded focus:ring-violet-500"
+            />
+            <label htmlFor="cat-has-sizes" className="text-sm font-medium text-neutral-300 cursor-pointer">
+              Products in this category have sizes (e.g. XS, S, M, L, XL)
+            </label>
           </div>
 
           {/* Image Upload */}

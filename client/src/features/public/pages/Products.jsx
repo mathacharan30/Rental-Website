@@ -11,6 +11,7 @@ import {
   getAllProducts,
   getProductsByCategorySlug,
 } from "../../../services/productService";
+import { getCategories } from "../../../services/categoryService";
 import { ProductListSkeleton } from "../loaders";
 
 const Products = () => {
@@ -28,17 +29,21 @@ const Products = () => {
   const [listingTab, setListingTab] = useState("rent");
   const ITEMS_PER_PAGE = 10;
 
-  const isJewels = decodedCategory === "jewels";
+  // Fetch category metadata to determine listingMode (cached, lightweight)
+  const { data: categoriesList } = useQuery({
+    queryKey: ["categories"],
+    queryFn: getCategories,
+    staleTime: 300000,
+  });
+
+  const currentCategoryMeta = categoriesList?.find(
+    (c) => (c.name || "").toLowerCase() === decodedCategory
+  );
+  const hasBothListings = currentCategoryMeta?.listingMode === "both";
 
   const { data: productsData, isLoading: loading } = useQuery({
     queryKey: decodedCategory
-      ? [
-        "products",
-        decodedCategory,
-        currentPage,
-        searchQuery,
-        isJewels ? listingTab : "",
-      ]
+      ? ["products", decodedCategory, currentPage, searchQuery, hasBothListings ? listingTab : ""]
       : ["products", "all", searchQuery],
     queryFn: async () => {
       if (decodedCategory) {
@@ -47,7 +52,7 @@ const Products = () => {
           currentPage,
           ITEMS_PER_PAGE,
           searchQuery,
-          isJewels ? listingTab : "",
+          hasBothListings ? listingTab : "",
         );
         return result;
       } else {
@@ -67,6 +72,11 @@ const Products = () => {
   useEffect(() => {
     setCurrentPage(1);
   }, [decodedCategory, searchQuery, listingTab]);
+
+  // Reset listing tab when navigating to a different category
+  useEffect(() => {
+    setListingTab("rent");
+  }, [decodedCategory]);
 
   const handleNextPage = () => {
     if (pagination && pagination.hasNextPage) {
@@ -223,10 +233,10 @@ const Products = () => {
             </h1>
             {decodedCategory && !searchQuery && (
               <p className="text-sm text-neutral-500">
-                {isJewels
+                {hasBothListings
                   ? listingTab === "rent"
-                    ? "Jewels available for rent"
-                    : "Jewels available for sale"
+                    ? `${decodedCategory} available for rent`
+                    : `${decodedCategory} available for sale`
                   : `Curated rentals for ${decodedCategory}`}
               </p>
             )}
@@ -238,7 +248,7 @@ const Products = () => {
           </div>
         </div>
 
-        {isJewels && !loading && (
+        {hasBothListings && !loading && (
           <div className="flex justify-center gap-2 mb-6">
             {["rent", "sale"].map((tab) => (
               <button
@@ -259,13 +269,13 @@ const Products = () => {
           <div className="py-6 md:py-10">
             <ProductListSkeleton count={10} />
           </div>
-        ) : (isJewels
+        ) : (hasBothListings
           ? items.filter((p) => p.listingType === listingTab)
           : items
         ).length > 0 ? (
           <>
             <div className=" justify-center  items-center flex gap-2  flex-wrap mt-4">
-              {(isJewels
+              {(hasBothListings
                 ? items.filter((p) => p.listingType === listingTab)
                 : items
               ).map((product) => (
@@ -312,8 +322,8 @@ const Products = () => {
         ) : (
           <div className="text-center py-20">
             <p className="text-neutral-500 text-lg">
-              {isJewels
-                ? `No jewels available for ${listingTab === "rent" ? "rent" : "sale"}.`
+              {hasBothListings
+                ? `No ${decodedCategory} available for ${listingTab}.`
                 : `No products found${decodedCategory ? " in this category." : "."}`}
             </p>
           </div>

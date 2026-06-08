@@ -7,9 +7,9 @@ const ProductCard = ({ product }) => {
   return (
     <Link
       to={`/product/${product.id}`}
-      className="group relative w-42 md:w-56 overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md shadow-lg shadow-black/25 hover:border-violet-500/40 hover:bg-white/[0.05] hover:shadow-violet-950/20 hover:shadow-xl transition-all duration-500 mb-6 block p-1.5 md:p-2.5"
+      className="group relative w-42 md:w-56 overflow-hidden rounded-2xl border border-white/8 bg-white/2 backdrop-blur-md shadow-lg shadow-black/25 hover:border-violet-500/40 hover:bg-white/5 hover:shadow-violet-950/20 hover:shadow-xl transition-all duration-500 mb-6 block p-1.5 md:p-2.5"
     >
-      <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-white/15 to-transparent pointer-events-none z-20" />
+      <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-linear-to-r from-transparent via-white/15 to-transparent pointer-events-none z-20" />
 
       <div className="relative h-60 md:h-74 overflow-hidden rounded-xl bg-neutral-950/50">
         <OptimizedImage
@@ -20,7 +20,7 @@ const ProductCard = ({ product }) => {
           decoding="async"
           className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-80" />
 
         <div className="absolute top-2 right-2 z-10">
           <FavoriteButton productId={product.id} size={18} />

@@ -5,9 +5,11 @@ const categorySchema = new mongoose.Schema(
     name: { type: String, required: true, unique: true, trim: true },
     description: { type: String, trim: true },
     image: {
-      url: { type: String }, // S3 URL
-      publicId: { type: String }, // S3 object key
+      url: { type: String },
+      publicId: { type: String },
     },
+    listingMode: { type: String, enum: ["rent", "sale", "both"], default: "rent" },
+    hasSizes: { type: Boolean, default: true },
   },
   { timestamps: true }
 );

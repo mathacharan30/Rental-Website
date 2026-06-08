@@ -63,7 +63,7 @@ exports.getCategories = async (req, res) => {
 // POST /api/categories (admin only) — accepts JSON { name, description, imageUrl, imagePublicId }
 exports.createCategory = async (req, res) => {
   try {
-    const { name, description, imageUrl, imagePublicId } = req.body;
+    const { name, description, imageUrl, imagePublicId, listingMode, hasSizes } = req.body;
     if (!name) {
       return res.status(400).json({ message: 'Name is required' });
     }
@@ -77,7 +77,13 @@ exports.createCategory = async (req, res) => {
     }
 
     const image = { url: imageUrl, publicId: imagePublicId };
-    const category = await Category.create({ name: name.trim(), description, image });
+    const category = await Category.create({
+      name: name.trim(),
+      description,
+      image,
+      listingMode: listingMode || "rent",
+      hasSizes: hasSizes !== undefined ? Boolean(hasSizes) : true,
+    });
     await cache.invalidate('categories');
     res.status(201).json(category);
   } catch (error) {
@@ -148,7 +154,7 @@ exports.getProductsByCategory = async (req, res) => {
 exports.updateCategory = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description } = req.body;
+    const { name, description, listingMode, hasSizes } = req.body;
 
     const category = await Category.findById(id);
     if (!category) {
@@ -164,9 +170,16 @@ exports.updateCategory = async (req, res) => {
       category.name = name.trim();
     }
 
-    // Update description if provided
     if (description !== undefined) {
       category.description = description;
+    }
+
+    if (listingMode !== undefined) {
+      category.listingMode = listingMode;
+    }
+
+    if (hasSizes !== undefined) {
+      category.hasSizes = Boolean(hasSizes);
     }
 
     // If a new image was uploaded directly to S3, delete old one and update

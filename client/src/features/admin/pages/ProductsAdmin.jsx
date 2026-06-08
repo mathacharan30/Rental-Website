@@ -6,6 +6,7 @@ import Stats from '../components/Stats';
 import Modal from '../components/Modal';
 import adminProductService from '../../../services/adminProductService';
 import { toggleAvailability } from '../../../services/adminProductService';
+import { getCategories } from '../../../services/categoryService';
 import toast from "react-hot-toast";
 import Loader from '../../shared/components/Loader';
 import { Plus } from "lucide-react";
@@ -15,8 +16,10 @@ const ProductsAdmin = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [editProduct, setEditProduct] = useState(null); // product being edited
+  const [editProduct, setEditProduct] = useState(null);
   const [activeCategory, setActiveCategory] = useState("All");
+  const [activeListingTab, setActiveListingTab] = useState("all");
+  const [categoriesMap, setCategoriesMap] = useState({});
 
   const load = async () => {
     setLoading(true);
@@ -36,15 +39,25 @@ const ProductsAdmin = () => {
 
   useEffect(() => {
     load();
+    getCategories().then((cats) => {
+      const map = {};
+      cats.forEach((c) => { map[c.name] = c; });
+      setCategoriesMap(map);
+    }).catch(() => {});
   }, []);
 
-  // Derive unique categories for tabs
   const categoryTabs = ["All", ...Array.from(new Set(products.map((p) => p.category).filter(Boolean)))];
 
-  const filteredProducts =
-    activeCategory === "All"
-      ? products
-      : products.filter((p) => p.category === activeCategory);
+  const activeCategoryMeta = activeCategory !== "All" ? categoriesMap[activeCategory] : null;
+  const showListingTabs = activeCategoryMeta?.listingMode === "both";
+
+  let filteredProducts = activeCategory === "All"
+    ? products
+    : products.filter((p) => p.category === activeCategory);
+
+  if (showListingTabs && activeListingTab !== "all") {
+    filteredProducts = filteredProducts.filter((p) => p.listingType === activeListingTab);
+  }
 
   const handleAdd = async (formData) => {
     const loadingToast = toast.loading("Creating product...");
@@ -133,7 +146,7 @@ const ProductsAdmin = () => {
           {categoryTabs.map((cat) => (
             <button
               key={cat}
-              onClick={() => setActiveCategory(cat)}
+              onClick={() => { setActiveCategory(cat); setActiveListingTab("all"); }}
               className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
                 activeCategory === cat
                   ? "bg-violet-600 text-white"
@@ -146,6 +159,29 @@ const ProductsAdmin = () => {
                   ({products.filter((p) => p.category === cat).length})
                 </span>
               )}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Rent / Sale sub-tabs — only for "both" categories */}
+      {!loading && showListingTabs && (
+        <div className="flex gap-2 mb-4">
+          {[
+            { value: "all", label: "All" },
+            { value: "rent", label: "Rent" },
+            { value: "sale", label: "Sale" },
+          ].map((tab) => (
+            <button
+              key={tab.value}
+              onClick={() => setActiveListingTab(tab.value)}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                activeListingTab === tab.value
+                  ? "bg-violet-600/80 text-white"
+                  : "bg-white/5 text-neutral-400 hover:bg-white/10 hover:text-white"
+              }`}
+            >
+              {tab.label}
             </button>
           ))}
         </div>
