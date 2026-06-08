@@ -265,7 +265,7 @@ const Navbar = () => {
 
           <div className="flex items-center ">
             <div
-              className="hidden md:flex relative w-64 lg:w-72"
+              className="hidden md:flex relative w-64 "
               ref={desktopSearchRef}
             >
               <form
@@ -338,7 +338,7 @@ const Navbar = () => {
             </div>
 
             {!loading && (
-              <div className="hidden md:flex items-center ml-6 mr-1">
+              <div className="hidden md:flex items-center ml-4 mr-1">
                 {!firebaseUser ? (
                   <div className="flex items-center gap-1">
                     <Link
