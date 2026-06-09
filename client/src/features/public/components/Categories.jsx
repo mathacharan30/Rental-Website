@@ -118,7 +118,6 @@ const Categories = () => {
         {activeTab === "categories" ? (
           <motion.div
             key="categories"
-            variants={tabVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
@@ -150,7 +149,7 @@ const Categories = () => {
                 >
                   <Link
                     to={`/products/${encodeURIComponent((c.name || "").toLowerCase())}`}
-                    className="relative group overflow-hidden rounded-bl-3xl rounded-tr-3xl h-54 w-36 md:w-42 md:h-64 flex items-end
+                    className="relative group overflow-hidden rounded-bl-3xl rounded-tr-3xl h-56 w-38 md:w-42 md:h-64 flex items-end
                  bg-purple-950/40 border border-white/10
                  hover:shadow-[0_12px_40px_rgba(139,92,246,0.25)]
                  hover:scale-[1.03] transition-all duration-300"
@@ -190,7 +189,6 @@ const Categories = () => {
         ) : (
           <motion.div
             key="makeup"
-            variants={tabVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
