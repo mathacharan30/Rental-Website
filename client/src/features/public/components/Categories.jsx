@@ -122,15 +122,22 @@ const Categories = () => {
                       className="absolute inset-0 w-full h-full object-cover 
                  group-hover:scale-90 transition-transform duration-500 ease-out  rounded-bl-3xl rounded-tr-3xl"
                     />
-                    <div className="relative w-full p-4 flex items-center justify-between">
-                      <span className="text-white font-light text-sm uppercase md:text-base tracking-tight">
+                    <div
+                      className="absolute inset-0 pointer-events-none overflow-hidden rounded-bl-3xl rounded-tr-3xl z-10 backdrop-blur-[4px]"
+                      style={{
+                        maskImage: "linear-gradient(to top, black 0%, black 10%, transparent 50%)",
+                        WebkitMaskImage: "linear-gradient(to top, black 0%, black 10%, transparent 50%)",
+                      }}
+                    />
+
+                    <div className="relative w-full pb-3 px-4 pt-10 flex items-center justify-between z-20">
+                      <span className="text-white font-semibold text-xs uppercase md:text-sm tracking-wider">
                         {c.name}
                       </span>
 
                       <span
-                        className="flex items-center justify-center w-8 h-8 rounded-full 
-                       text-white text-sm
-                       transition-all duration-300"
+                        className="flex items-center justify-center w-8 h-8 text-white
+                       group-hover:text-violet-400 group-hover:translate-x-0.5 transition-all duration-300"
                       >
                         <ArrowRight size={24} className="rotate-315" />
                       </span>
