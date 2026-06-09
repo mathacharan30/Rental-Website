@@ -215,7 +215,7 @@ const Products = () => {
         />
         <meta property="og:type" content="website" />
       </Helmet>
-      <div className="max-w-7xl mx-auto ">
+      <div className="max-w-6xl mx-auto ">
         <div className="flex justify-center">
           <Link
             to="/"
@@ -274,7 +274,7 @@ const Products = () => {
           : items
         ).length > 0 ? (
           <>
-            <div className=" justify-center  items-center flex gap-2  flex-wrap mt-4">
+            <div className=" justify-center md:justify-start items-center flex gap-2  flex-wrap mt-4">
               {(hasBothListings
                 ? items.filter((p) => p.listingType === listingTab)
                 : items
