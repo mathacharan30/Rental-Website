@@ -51,8 +51,10 @@ const superAdminRoutes       = require("./routes/superAdminRoutes");
 const productTestimonialRoutes = require("./routes/productTestimonialRoutes");
 const orderRoutes            = require("./routes/orderRoutes");
 const paymentRoutes          = require("./routes/paymentRoutes");
-const favoriteRoutes         = require("./routes/favoriteRoutes");
-const { getCities }          = require("./controllers/superAdminController");
+const favoriteRoutes            = require("./routes/favoriteRoutes");
+const makeupCategoryRoutes      = require("./routes/makeupCategoryRoutes");
+const makeupPackageRoutes       = require("./routes/makeupPackageRoutes");
+const { getCities }             = require("./controllers/superAdminController");
 
 const app = express();
 
@@ -173,6 +175,8 @@ app.use("/api/superadmin",            superAdminRoutes);
 app.use("/api/orders",                orderRoutes);
 app.use("/api/payment",               paymentRoutes);
 app.use("/api/favorites",             favoriteRoutes);
+app.use("/api/makeup-categories",     makeupCategoryRoutes);
+app.use("/api/makeup-packages",       makeupPackageRoutes);
 app.get("/api/cities",                getCities); // public — delivery city dropdown
 
 // ── 404 handler ───────────────────────────────────────────────────────────────

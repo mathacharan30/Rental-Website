@@ -22,6 +22,7 @@ const ProductDetail = lazy(
   () => import("./features/public/pages/ProductDetail"),
 );
 const BridalCombo = lazy(() => import("./features/public/pages/BridalCombo"));
+const MakeupCategoryPage = lazy(() => import("./features/public/pages/MakeupCategoryPage"));
 const AboutUs = lazy(() => import("./features/public/pages/AboutUs"));
 const ContactUs = lazy(() => import("./features/public/pages/ContactUs"));
 const TermsAndConditions = lazy(
@@ -91,6 +92,7 @@ const App = () => {
                   <Route path="/products/:category" element={<Products />} />
                   <Route path="/product/:id" element={<ProductDetail />} />
                   <Route path="/combos/:slug" element={<BridalCombo />} />
+                  <Route path="/makeup/:categoryId" element={<MakeupCategoryPage />} />
                   <Route path="/rental-clothing-mysuru" element={<ServiceLandingPage />} />
                   <Route path="/rental-clothing-bangalore" element={<ServiceLandingPage />} />
                   <Route path="/rental-jewellery-mysuru" element={<ServiceLandingPage />} />

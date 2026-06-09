@@ -38,7 +38,8 @@
       "Bash(Select-Object FullName)",
       "Bash(npm uninstall *)",
       "Bash(xargs cat)",
-      "Bash(xargs ls -lh)"
+      "Bash(xargs ls -lh)",
+      "Bash(xargs grep -l \"makeup\" -i)"
     ]
   },
   "enabledPlugins": {
