@@ -198,7 +198,9 @@ const ProductDetail = () => {
         product.id && `Product ID: ${product.id}`,
         `Link: ${window.location.href}`,
         "",
-        "Please tell me more about this product...",
+        isSale
+          ? "I'm interested in buying this product. Please share more details."
+          : "I'm interested in renting this product. Please share more details.",
       ]
         .filter(Boolean)
         .join("\n"),
@@ -466,12 +468,22 @@ const ProductDetail = () => {
           )}
 
           <div className="mt-8 flex gap-3">
+            {/* Enquire via WhatsApp */}
             <button
               onClick={handleEnquire}
               className="relative group/btn overflow-hidden border border-violet-500/40 bg-violet-600/10 text-violet-200 hover:text-white font-semibold py-3.5 px-6 rounded-2xl hover:border-violet-400 hover:bg-violet-600/20 hover:shadow-lg hover:shadow-violet-950/30 transition-all duration-300 flex-1 min-w-0 flex items-center justify-center gap-2"
             >
               <div className="absolute inset-0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 ease-out bg-linear-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
-              <span>Enquire &amp; Rent Now</span>
+              <span>{isSale ? "Enquire to Buy" : "Enquire to Rent"}</span>
+            </button>
+
+            {/* Rent Now / Buy Now — WhatsApp enquiry */}
+            <button
+              onClick={handleEnquire}
+              className="relative group/btn overflow-hidden btn-funky flex-1 min-w-0 flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl font-semibold"
+            >
+              <div className="absolute inset-0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 ease-out bg-linear-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+              <span>{isSale ? "Buy Now" : "Rent Now"}</span>
             </button>
           </div>
         </motion.div>
