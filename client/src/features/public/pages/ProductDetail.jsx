@@ -125,12 +125,13 @@ const ProductDetail = () => {
   }
 
   const rating = product.rating || 4.3;
-  const isJewels = product.category?.toLowerCase() === "jewels";
   const isSale = product.listingType === "sale";
   const hasSizes = product.categoryData?.hasSizes !== false;
   const sizes = product.sizes || ["XS", "S", "M", "L", "XL"];
 
-  // Open checkout sidebar (pre-flight checks only)
+  // FUTURE USE — Re-enable when direct checkout/payment flow is needed for Rent Now / Buy Now button.
+  // Wire this to the Rent Now / Buy Now button's onClick instead of handleEnquire.
+  /*
   const handleRent = () => {
     if (!firebaseUser) {
       toast.error("Please login to continue");
@@ -158,6 +159,7 @@ const ProductDetail = () => {
       .catch(() => toast.error("Could not load delivery cities"))
       .finally(() => setCitiesLoading(false));
   };
+  */
 
   // Proceed to PhonePe payment from the sidebar
   const handleProceedToPayment = async () => {
@@ -395,7 +397,7 @@ const ProductDetail = () => {
 
           <div className="mt-5 px-3 py-4 rounded-2xl bg-white/1 border border-white/4 backdrop-blur-sm flex items-center justify-between flex-wrap gap-4">
             <div className="flex flex-col">
-              <span className="text-[10px] text-neutral-400 tracking-widest font-semibold">Rent Price</span>
+              <span className="text-[10px] text-neutral-400 tracking-widest font-semibold">{isSale ? "Sale Price" : "Rent Price"}</span>
               <span className="text-2xl font-bold tracking-tight text-white mt-1">
                 {product.price}
               </span>
