@@ -60,12 +60,14 @@ const Login = () => {
 
   return (
     <motion.div
-      className="min-h-[80vh] flex items-center justify-center py-16 px-4 relative"
+      className="min-h-[80vh] flex items-center justify-center py-16 px-4 relative overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
-      <div className="w-full max-w-md glass rounded-xl p-8 relative z-10">
+
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-violet-600/10 rounded-full blur-[80px] pointer-events-none z-0" />
+      <div className="w-full max-w-md p-6 sm:p-8 relative z-10">
         <div className="text-center mb-6">
           <h2 className="text-2xl font-bold display-font gradient-text">
             Welcome back
