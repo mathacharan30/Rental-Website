@@ -151,7 +151,7 @@ const Navbar = () => {
             key={`${p.type}-${p.id}`}
             to={p.url}
             onClick={() => handleSuggestionClick(closeMobileSearch)}
-            className="flex items-center gap-3 px-3 py-3 rounded-2xl hover:bg-white/5 transition-colors border border-transparent hover:border-white/5"
+            className="flex items-center gap-3 px-3 py-3 rounded-2xl hover:bg-white/5 transition-colors border-y border-transparent hover:border-white/5"
           >
             {p.image ? (
               <img
@@ -215,9 +215,9 @@ const Navbar = () => {
       transition={{ duration: 0.35, ease: "easeOut" }}
     >
       <div
-        className={`max-w-7xl mx-auto rounded-full border transition-all duration-300 ${scrolled
-          ? "border-white/12 bg-linear-to-r from-[#0a0a0a]/68 via-[#111111]/64 to-[#0a0a0a]/68 shadow-[#11111190] shadow-2xl backdrop-blur-xl"
-          : "border-white/8 bg-linear-to-r from-[#0a0a0a]/48 via-[#121212]/44 to-[#0a0a0a]/48 shadow-[#12121250] shadow-lg backdrop-blur-xl"
+        className={`max-w-7xl mx-auto rounded-full border-y-2 border transition-all duration-300 ${scrolled
+          ? "border-white/12 bg-linear-to-r from-[#0a0a0a]/68  shadow-[#11111190] shadow-2xl backdrop-blur-xl"
+          : "border-white/8 bg-linear-to-r from-[#0a0a0a]/48  shadow-[#12121250] shadow-lg backdrop-blur-xl"
           }`}
       >
         <div className="flex items-center justify-between px-4 py-1 md:px-2.5 md:py-2.5 gap-3">

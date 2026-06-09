@@ -472,7 +472,7 @@ const ProductDetail = () => {
           <div className="mt-8 flex gap-3">
             <button
               onClick={handleEnquire}
-              className="relative group/btn overflow-hidden border border-violet-500/40 bg-violet-600/10 text-violet-200 hover:text-white font-semibold py-3.5 px-6 rounded-2xl hover:border-violet-400 hover:bg-violet-600/20 hover:shadow-lg hover:shadow-violet-950/30 transition-all duration-300 flex-1 min-w-0 flex items-center justify-center gap-2"
+              className="relative group/btn overflow-hidden border  border-violet-500/40 bg-violet-600/10 text-violet-200 hover:text-white font-semibold py-3.5 px-6 rounded-2xl hover:border-violet-400 hover:bg-violet-600/20 hover:shadow-lg hover:shadow-violet-950/30 transition-all duration-300 flex-1 min-w-0 flex items-center justify-center gap-2"
             >
               <div className="absolute inset-0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000 ease-out bg-linear-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
               <span>{isSale ? "Enquire to Buy" : "Enquire to Rent"}</span>

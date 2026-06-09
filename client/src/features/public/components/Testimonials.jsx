@@ -39,9 +39,7 @@ const Testimonials = () => {
     <section className="relative py-20 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-12 flex flex-col items-center justify-center">
-          <span className="text-[10px] uppercase tracking-widest text-violet-400 font-semibold mb-2">
-            Testimonials
-          </span>
+
           <h2 className="text-3xl md:text-4xl font-medium instrument-serif tracking-wide text-white">
             - Customer <span className="text-violet-400 italic">Love -</span>
           </h2>
