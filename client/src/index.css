@@ -270,3 +270,12 @@ body {
     opacity: 1;
   }
 }
+
+/* ── Package Detail Modal Layout ── */
+.pkg-modal {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: scroll;
+}

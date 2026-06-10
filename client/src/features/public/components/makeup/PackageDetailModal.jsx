@@ -12,10 +12,10 @@ const TAG_LABELS = {
 };
 
 const TAG_COLORS = {
-  "most-booked": "bg-amber-500/10 border border-amber-500/30 text-amber-300 backdrop-blur-md shadow-[0_0_10px_rgba(245,158,11,0.1)]",
-  "top-rated": "bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 backdrop-blur-md shadow-[0_0_10px_rgba(16,185,129,0.1)]",
-  "popular-choice": "bg-violet-500/10 border border-violet-500/30 text-violet-300 backdrop-blur-md shadow-[0_0_10px_rgba(139,92,246,0.1)]",
-  "new": "bg-blue-500/10 border border-blue-500/30 text-blue-300 backdrop-blur-md shadow-[0_0_10px_rgba(59,130,246,0.1)]",
+  "most-booked": "bg-amber-500/10 border-y border-amber-500/30 text-amber-300 backdrop-blur-md shadow-[0_0_10px_rgba(245,158,11,0.1)]",
+  "top-rated": "bg-emerald-500/10 border-y border-emerald-500/30 text-emerald-300 backdrop-blur-md shadow-[0_0_10px_rgba(16,185,129,0.1)]",
+  "popular-choice": "bg-violet-500/10 border-y border-violet-500/30 text-violet-300 backdrop-blur-md shadow-[0_0_10px_rgba(139,92,246,0.1)]",
+  "new": "bg-blue-500/10 border-y border-blue-500/30 text-blue-300 backdrop-blur-md shadow-[0_0_10px_rgba(59,130,246,0.1)]",
 };
 
 const ADDON_SERVICES = [
@@ -87,39 +87,39 @@ const PackageDetailModal = ({ pkg, onClose }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-end md:items-center justify-center p-0 md:p-4 overflow-hidden"
+      className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-0 md:p-4"
       onClick={onClose}
     >
       <motion.div
-        initial={{ scale: 0.95, y: 20 }}
-        animate={{ scale: 1, y: 0 }}
-        exit={{ scale: 0.95, y: 20 }}
+        initial={{ scale: 0.97, y: 30, opacity: 0 }}
+        animate={{ scale: 1, y: 0, opacity: 1 }}
+        exit={{ scale: 0.97, y: 30, opacity: 0 }}
         transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
         onClick={(e) => e.stopPropagation()}
-        className="relative bg-neutral-900 border-0 md:border border-white/10 rounded-t-3xl md:rounded-3xl w-full max-h-[100dvh] md:max-h-[92vh] md:max-w-4xl flex flex-col shadow-2xl overflow-hidden"
+        className="h-[96vh] mx-4 w-full md:w-[60vw] relative bg-neutral-900 rounded-3xl shadow-2xl overflow-y-scroll"
       >
-        <div className="flex items-center justify-between px-5 py-4 border-b border-white/5 bg-neutral-950/40 shrink-0">
+        <div className="flex items-center justify-between px-5  py-3.5 border-b border-white/5 " style={{ flexShrink: 0 }}>
           <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Package Details</span>
           <button
             onClick={onClose}
-            className="p-2 rounded-full bg-white/5 border border-white/10 text-neutral-400 hover:text-white hover:bg-white/10 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
+            className="p-2 rounded-full bg-white/5 border-y border-white/10 text-neutral-400 hover:text-white hover:bg-white/10 hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
             aria-label="Close modal"
           >
             <X size={16} />
           </button>
         </div>
 
-        <div className="overflow-y-auto flex-1 min-h-0">
+        <div className="pkg-modal-body">
           <div className="grid md:grid-cols-[0.95fr_1.05fr] gap-0">
-            <div className="p-5 space-y-4 bg-black/20">
-              <div className="relative rounded-2xl overflow-hidden aspect-square border border-white/5 bg-neutral-950/60 shadow-lg">
+            <div className="p-4 space-y-2 ">
+              <div className="relative rounded-2xl overflow-hidden aspect-[4/4.2] md:aspect-square border border-white/5 bg-neutral-950/60 shadow-lg">
                 {images.length > 0 ? (
                   <>
                     <OptimizedImage
                       url={images[imgIdx].url}
                       type="modal"
                       alt={`${pkg.name} ${imgIdx + 1}`}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain"
                     />
 
                     {images.length > 1 && (
@@ -170,10 +170,10 @@ const PackageDetailModal = ({ pkg, onClose }) => {
               )}
             </div>
 
-            <div className="p-5 md:p-6 flex flex-col gap-5 border-t md:border-t-0 md:border-l border-white/5">
+            <div className="p-4 md:p-6 space-y-5">
               <div>
                 {pkg.tag && (
-                  <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider mb-2.5 ${TAG_COLORS[pkg.tag]}`}>
+                  <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold   mb-2.5 ${TAG_COLORS[pkg.tag]}`}>
                     {TAG_LABELS[pkg.tag]}
                   </span>
                 )}
@@ -213,10 +213,12 @@ const PackageDetailModal = ({ pkg, onClose }) => {
                 </div>
               )}
 
+              {/* Description */}
               {pkg.shortDescription && (
                 <p className="text-sm text-neutral-300 leading-relaxed font-normal">{pkg.shortDescription}</p>
               )}
 
+              {/* Package Details */}
               {pkg.packageDetails && (
                 <div className="space-y-1">
                   <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Package Details</p>
@@ -239,6 +241,7 @@ const PackageDetailModal = ({ pkg, onClose }) => {
                 </div>
               )}
 
+              {/* Add-on Options */}
               <div className="space-y-3">
                 <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Add-on Options</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -278,23 +281,17 @@ const PackageDetailModal = ({ pkg, onClose }) => {
                     );
                   })}
                 </div>
-
-
               </div>
-
-
             </div>
           </div>
         </div>
 
-        {/* Sticky Footer CTA */}
-        <div className="shrink-0 px-5 py-4 border-t border-white/5 bg-neutral-950/80 backdrop-blur-sm">
-          {selectedAddons.size > 0 && (
-            <div className="flex items-center justify-between px-4 py-3 rounded-2xl bg-violet-600/5 border border-violet-500/25 shadow-inner mb-3">
-              <span className="text-xs text-violet-200/80 font-medium">Grand Total (Incl. Add-ons)</span>
-              <span className="text-sm font-bold text-white tracking-wide">₹{grandTotal.toLocaleString()}</span>
-            </div>
-          )}
+        {/* ── Fixed Footer CTA ── uses .pkg-modal-footer for guaranteed flex-shrink:0 */}
+        <div className="pkg-modal-footer px-5 py-4 border-t border-white/5 bg-neutral-950/80 backdrop-blur-sm">
+          <div className="flex items-center justify-between px-4 py-3 rounded-2xl bg-violet-600/5 border border-violet-500/25 shadow-inner mb-3">
+            <span className="text-xs text-violet-200/80 font-medium">Grand Total (Incl. Add-ons)</span>
+            <span className="text-sm font-bold text-white tracking-wide">₹{grandTotal.toLocaleString()}</span>
+          </div>
           <button
             type="button"
             onClick={handleBook}
