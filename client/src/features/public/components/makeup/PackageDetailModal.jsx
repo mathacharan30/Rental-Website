@@ -96,7 +96,7 @@ const PackageDetailModal = ({ pkg, onClose }) => {
         exit={{ scale: 0.97, y: 30, opacity: 0 }}
         transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
         onClick={(e) => e.stopPropagation()}
-        className="h-[96vh] mx-4 w-full md:w-[60vw] relative bg-neutral-900 rounded-3xl shadow-2xl overflow-y-scroll"
+        className="h-[84vh] md:h-[95vh] mx-4 w-full md:w-[60vw] relative bg-neutral-900 rounded-3xl shadow-2xl overflow-y-scroll"
       >
         <div className="flex items-center justify-between px-5  py-3.5 border-b border-white/5 " style={{ flexShrink: 0 }}>
           <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Package Details</span>
