@@ -19,12 +19,12 @@ const TAG_COLORS = {
 };
 
 const ADDON_SERVICES = [
-  { id: "makeup", label: "Makeup", price: 1500 },
-  { id: "hairstyle", label: "Hairstyle", price: 800 },
-  { id: "saree-draping", label: "Saree Draping", price: 500 },
-  { id: "saree-folding", label: "Saree Box Folding", price: 300 },
-  { id: "jewellery", label: "Jewellery", price: 600 },
-  { id: "flowers", label: "Flowers", price: 400 },
+  { id: "makeup",        label: "Makeup",            price: 1500 },
+  { id: "hairstyle",     label: "Hairstyle",         price: 800  },
+  { id: "saree-draping", label: "Saree Draping",     price: 500  },
+  { id: "saree-folding", label: "Saree Box Folding", price: 300  },
+  { id: "jewellery",     label: "Jewellery",         price: null, depends: true },
+  { id: "flowers",       label: "Flowers",           price: null, depends: true },
 ];
 
 const PackageDetailModal = ({ pkg, onClose }) => {
@@ -54,15 +54,15 @@ const PackageDetailModal = ({ pkg, onClose }) => {
     });
 
   const addonTotal = ADDON_SERVICES
-    .filter((a) => selectedAddons.has(a.id))
+    .filter((a) => selectedAddons.has(a.id) && !a.depends)
     .reduce((sum, a) => sum + a.price, 0);
 
-  const packagePrice = pkg.pricing?.offerPrice || pkg.pricing?.totalPrice || 0;
+  const packagePrice = (pkg.pricing?.offerPrice || 0) + (pkg.pricing?.commission || 0);
   const grandTotal = packagePrice + addonTotal;
 
   const handleBook = () => {
     const chosenAddons = ADDON_SERVICES.filter((a) => selectedAddons.has(a.id));
-    const addonLines = chosenAddons.map((a) => `  • ${a.label}: ₹${a.price.toLocaleString()}`);
+    const addonLines = chosenAddons.map((a) => `  • ${a.label}: ${a.depends ? "Depends on selection" : `₹${a.price.toLocaleString()}`}`);
 
     openWhatsApp({
       action: "enquiry",
@@ -184,13 +184,11 @@ const PackageDetailModal = ({ pkg, onClose }) => {
               </div>
 
               {(pkg.pricing?.offerPrice > 0 || pkg.pricing?.actualPrice > 0) && (
-                <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 space-y-2.5">
+                <div className="bg-white/2 border border-white/5 rounded-2xl p-4 space-y-2.5">
                   <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Pricing Breakdown</p>
                   {[
                     { label: "Actual Price", value: pkg.pricing?.actualPrice, strike: true },
-                    { label: "Offer Price", value: pkg.pricing?.offerPrice, highlight: true },
-                    { label: "Commission", value: pkg.pricing?.commission },
-                    { label: "Total Price", value: pkg.pricing?.totalPrice, bold: true },
+                    { label: "Offer Price", value: packagePrice, highlight: true },
                   ]
                     .filter((r) => r.value > 0)
                     .map((row) => (
@@ -252,7 +250,7 @@ const PackageDetailModal = ({ pkg, onClose }) => {
                         key={addon.id}
                         className={`flex items-center justify-between px-3 py-2.5 rounded-xl border cursor-pointer select-none transition-all duration-200 ${checked
                           ? "bg-violet-500/10 border-violet-500/40 shadow-[0_0_15px_rgba(139,92,246,0.1)]"
-                          : "border-white/5 hover:border-white/15 bg-white/[0.01] hover:bg-white/[0.03]"
+                          : "border-white/5 hover:border-white/15 bg-white/1 hover:bg-white/3"
                           }`}
                       >
                         <div className="flex items-center gap-2.5 min-w-0">
@@ -269,7 +267,7 @@ const PackageDetailModal = ({ pkg, onClose }) => {
                           <span className={`text-xs font-semibold truncate ${checked ? "text-white" : "text-neutral-300"}`}>{addon.label}</span>
                         </div>
                         <span className={`text-xs font-bold shrink-0 ${checked ? "text-violet-300" : "text-neutral-400"}`}>
-                          +₹{addon.price.toLocaleString()}
+                          {addon.depends ? "Depends" : `+₹${addon.price.toLocaleString()}`}
                         </span>
                         <input
                           type="checkbox"

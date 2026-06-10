@@ -266,6 +266,7 @@ const MakeupPackagesAdmin = () => {
                   <th className="px-6 py-4">Category</th>
                   <th className="px-6 py-4">Tag</th>
                   <th className="px-6 py-4">Offer Price</th>
+                  <th className="px-6 py-4">Commission</th>
                   <th className="px-6 py-4 text-right">Actions</th>
                 </tr>
               </thead>
@@ -306,6 +307,9 @@ const MakeupPackagesAdmin = () => {
                     </td>
                     <td className="px-6 py-4 text-white text-sm">
                       {pkg.pricing?.offerPrice ? `₹${pkg.pricing.offerPrice.toLocaleString()}` : "—"}
+                    </td>
+                    <td className="px-6 py-4 text-amber-400 text-sm">
+                      {pkg.pricing?.commission ? `₹${pkg.pricing.commission.toLocaleString()}` : "—"}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
