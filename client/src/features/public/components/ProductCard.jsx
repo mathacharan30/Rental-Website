@@ -7,7 +7,7 @@ const ProductCard = ({ product }) => {
   return (
     <Link
       to={`/product/${product.id}`}
-      className="group relative w-42 md:w-56 overflow-hidden rounded-3xl border-b-2  border-white/8 bg-white/2 backdrop-blur-md shadow-inner shadow-white/20 hover:bg-white/5  transition-all duration-500 mb-6 block p-2.5 md:p-2.5"
+      className="group relative w-42 md:w-56 overflow-hidden rounded-3xl border-b-2  border-white/8 bg-white/2 backdrop-blur-md shadow-inner shadow-white/24 hover:bg-white/5  transition-all duration-500 mb-6 block p-2.5 md:p-2.5"
     >
       <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-linear-to-r from-transparent via-white/15 to-transparent pointer-events-none z-20" />
 

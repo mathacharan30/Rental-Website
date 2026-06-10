@@ -28,7 +28,7 @@ const PackageTile = ({ pkg, onClick }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       onClick={() => onClick(pkg)}
-      className="group relative cursor-pointer w-42 md:w-56 overflow-hidden rounded-3xl border-y-2 border-white/8 bg-white/2 backdrop-blur-md transition-all duration-500 mb-6 block p-2 shadow-inner shadow-white/20 md:p-2.5"
+      className="group relative cursor-pointer w-42 md:w-56 overflow-hidden rounded-3xl border-b-2 border-white/8 bg-white/2 backdrop-blur-md transition-all duration-500 mb-6 block p-2 shadow-inner shadow-white/20 md:p-2.5"
     >
       <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-linear-to-r from-transparent via-white/15 to-transparent pointer-events-none z-20" />
 
