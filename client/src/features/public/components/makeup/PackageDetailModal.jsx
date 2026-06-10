@@ -87,7 +87,7 @@ const PackageDetailModal = ({ pkg, onClose }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-0 md:p-4 overflow-y-auto"
+      className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-end md:items-center justify-center p-0 md:p-4 overflow-hidden"
       onClick={onClose}
     >
       <motion.div
@@ -96,7 +96,7 @@ const PackageDetailModal = ({ pkg, onClose }) => {
         exit={{ scale: 0.95, y: 20 }}
         transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
         onClick={(e) => e.stopPropagation()}
-        className="relative bg-neutral-900 border-0 md:border border-white/10 rounded-none md:rounded-3xl w-full h-full md:h-auto md:max-h-[92vh] md:max-w-4xl flex flex-col shadow-2xl overflow-hidden"
+        className="relative bg-neutral-900 border-0 md:border border-white/10 rounded-t-3xl md:rounded-3xl w-full max-h-[100dvh] md:max-h-[92vh] md:max-w-4xl flex flex-col shadow-2xl overflow-hidden"
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/5 bg-neutral-950/40 shrink-0">
           <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Package Details</span>
@@ -109,7 +109,7 @@ const PackageDetailModal = ({ pkg, onClose }) => {
           </button>
         </div>
 
-        <div className="overflow-y-auto flex-grow min-h-0">
+        <div className="overflow-y-auto flex-1 min-h-0">
           <div className="grid md:grid-cols-[0.95fr_1.05fr] gap-0">
             <div className="p-5 space-y-4 bg-black/20">
               <div className="relative rounded-2xl overflow-hidden aspect-square border border-white/5 bg-neutral-950/60 shadow-lg">
