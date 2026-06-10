@@ -170,12 +170,12 @@ const Gallery = () => {
             aria-label="Gallery image preview"
           >
             <div className="absolute top-4 left-6 right-6 flex items-center justify-between z-50 pointer-events-none">
-              <div className="px-3.5 py-1.5 rounded-full bg-white/5 border-y border-white/10 backdrop-blur-md text-xs font-mono text-neutral-300 select-none font-medium">
+              <div className="px-3.5 py-1.5 rounded-full bg-white/5 border-y  backdrop-blur-md border-white/10 backdrop-blur-md text-xs font-mono text-neutral-300 select-none font-medium">
                 {activeIndex + 1} / {galleryImages.length}
               </div>
               <button
                 type="button"
-                className="pointer-events-auto p-2.5 rounded-full bg-white/5 border-y border-white/10 text-white/90 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-200 cursor-pointer"
+                className="pointer-events-auto p-2.5 rounded-full backdrop-blur-md bg-white/5 border-y border-white/10 text-white/90 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-200 cursor-pointer"
                 onClick={() => setActiveIndex(null)}
                 aria-label="Close image preview"
               >
@@ -185,7 +185,7 @@ const Gallery = () => {
 
             <button
               type="button"
-              className="absolute left-4 z-50 p-3 md:p-3.5 rounded-full bg-white/5 border-y border-white/10 text-white/80 hover:text-white hover:bg-white/10 hover:border-white/20 hover:scale-105 active:scale-95 transition-all duration-200 select-none cursor-pointer"
+              className="absolute left-4 z-50 p-3 md:p-3.5 backdrop-blur-md rounded-full bg-white/5 border-y border-white/20 text-white/80 hover:text-white hover:bg-white/10 hover:border-white/20 hover:scale-105 active:scale-95 transition-all duration-200 select-none cursor-pointer"
               onClick={(e) => {
                 e.stopPropagation();
                 handlePrev();
@@ -216,7 +216,7 @@ const Gallery = () => {
 
             <button
               type="button"
-              className="absolute right-4 z-50 p-3 md:p-3.5 rounded-full bg-white/5 border-y border-white/10 text-white/80 hover:text-white hover:bg-white/10 hover:border-white/20 hover:scale-105 active:scale-95 transition-all duration-200 select-none cursor-pointer"
+              className="absolute right-4 z-50 p-3 md:p-3.5 backdrop-blur-md rounded-full bg-white/5 border-y border-white/20 text-white/80 hover:text-white hover:bg-white/10 hover:border-white/20 hover:scale-105 active:scale-95 transition-all duration-200 select-none cursor-pointer"
               onClick={(e) => {
                 e.stopPropagation();
                 handleNext();
