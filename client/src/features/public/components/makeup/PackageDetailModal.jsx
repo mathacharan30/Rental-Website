@@ -109,7 +109,7 @@ const PackageDetailModal = ({ pkg, onClose }) => {
           </button>
         </div>
 
-        <div className="overflow-y-auto flex-grow">
+        <div className="overflow-y-auto flex-grow min-h-0">
           <div className="grid md:grid-cols-[0.95fr_1.05fr] gap-0">
             <div className="p-5 space-y-4 bg-black/20">
               <div className="relative rounded-2xl overflow-hidden aspect-square border border-white/5 bg-neutral-950/60 shadow-lg">
@@ -279,26 +279,30 @@ const PackageDetailModal = ({ pkg, onClose }) => {
                   })}
                 </div>
 
-                {/* Billing Summary */}
-                {selectedAddons.size > 0 && (
-                  <div className="mt-4 flex items-center justify-between px-4 py-3 rounded-2xl bg-violet-600/5 border border-violet-500/25 shadow-inner">
-                    <span className="text-xs text-violet-200/80 font-medium">Grand Total (Incl. Add-ons)</span>
-                    <span className="text-sm font-bold text-white tracking-wide">₹{grandTotal.toLocaleString()}</span>
-                  </div>
-                )}
+
               </div>
 
-              {/* Book WhatsApp CTA */}
-              <button
-                type="button"
-                onClick={handleBook}
-                className="flex items-center justify-center gap-2.5 w-full py-3.5 rounded-2xl bg-[#25D366] hover:bg-[#20b858] text-white font-bold text-sm transition-all duration-300 hover:shadow-[0_4px_20px_rgba(37,211,102,0.3)] hover:scale-102 active:scale-98 cursor-pointer mt-2"
-              >
-                <MessageCircle size={18} />
-                Book on WhatsApp
-              </button>
+
             </div>
           </div>
+        </div>
+
+        {/* Sticky Footer CTA */}
+        <div className="shrink-0 px-5 py-4 border-t border-white/5 bg-neutral-950/80 backdrop-blur-sm">
+          {selectedAddons.size > 0 && (
+            <div className="flex items-center justify-between px-4 py-3 rounded-2xl bg-violet-600/5 border border-violet-500/25 shadow-inner mb-3">
+              <span className="text-xs text-violet-200/80 font-medium">Grand Total (Incl. Add-ons)</span>
+              <span className="text-sm font-bold text-white tracking-wide">₹{grandTotal.toLocaleString()}</span>
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={handleBook}
+            className="flex items-center justify-center gap-2.5 w-full py-3.5 rounded-2xl bg-[#25D366] hover:bg-[#20b858] text-white font-bold text-sm transition-all duration-300 hover:shadow-[0_4px_20px_rgba(37,211,102,0.3)] hover:scale-102 active:scale-98 cursor-pointer"
+          >
+            <MessageCircle size={18} />
+            Book on WhatsApp
+          </button>
         </div>
       </motion.div>
     </motion.div>
