@@ -110,7 +110,7 @@ const Hero = () => {
       <div className="relative z-10 max-w-7xl mx-auto h-full flex items-end pb-20 justify-center px-4 pointer-events-none">
         <a
           href="#categories"
-          className="btn-funky inline-flex items-center justify-center text-center min-w-55 pointer-events-auto"
+          className="btn-funky inline-flex items-center justify-center text-center min-w-55 pointer-events-auto shadow-inner shadow-violet-100/70"
         >
           View Categories
         </a>

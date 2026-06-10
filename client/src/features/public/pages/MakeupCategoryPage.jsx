@@ -77,8 +77,8 @@ const MakeupCategoryPage = () => {
             <button
               onClick={() => setActiveTab("__all__")}
               className={`px-5 py-2 rounded-full text-sm font-medium transition-all capitalize ${activeTab === "__all__"
-                ? "bg-violet-600 text-white border-y-[1.55px] border-violet-300/60"
-                : "bg-white/5 text-neutral-400 border-y-[1.55px] border-white/7 hover:bg-white/10 hover:text-white"
+                ? "bg-violet-600 text-white shadow-inner shadow-violet-200/80 border-y-[1.55px] border-violet-300/60"
+                : "bg-white/5 shadow-inner shadow-white/8 text-neutral-400 border-y-[1.55px] border-white/7 hover:bg-white/10 hover:text-white"
                 }`}
             >
               All
@@ -87,9 +87,9 @@ const MakeupCategoryPage = () => {
               <button
                 key={sub}
                 onClick={() => setActiveTab(sub)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all capitalize ${activeTab === sub
-                  ? "bg-violet-600 text-white border-y-[1.55px] border-violet-300/60"
-                  : "bg-white/5 text-neutral-400 border-y-[1.55px] border-white/7 hover:bg-white/10 hover:text-white"
+                className={`px-4 py-2 rounded-full   text-sm font-medium transition-all capitalize ${activeTab === sub
+                  ? "bg-violet-600 text-white shadow-inner shadow-violet-200/80 border-y-[1.55px] border-violet-300/60"
+                  : "bg-white/5 shadow-inner shadow-white/8 text-neutral-400 border-y-[1.55px] border-white/7 hover:bg-white/10 hover:text-white"
                   }`}
               >
                 {sub}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { X, ChevronLeft, ChevronRight, CheckCircle2, MessageCircle } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, CheckCircle2, MessageCircle, ArrowRight } from "lucide-react";
 import OptimizedImage from "../../../shared/components/OptimizedImage";
 import { openWhatsApp } from "../../../../services/whatsapp";
 
@@ -96,7 +96,7 @@ const PackageDetailModal = ({ pkg, onClose }) => {
         exit={{ scale: 0.97, y: 30, opacity: 0 }}
         transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
         onClick={(e) => e.stopPropagation()}
-        className="h-[84vh] md:h-[95vh] mx-4 w-full md:w-[60vw] relative bg-neutral-900 rounded-3xl shadow-2xl overflow-y-scroll"
+        className="h-[84vh] md:h-[95vh] mx-2 w-full md:w-[60vw] relative bg-neutral-900 rounded-3xl shadow-2xl overflow-y-scroll"
       >
         <div className="flex items-center justify-between px-5  py-3.5 border-b border-white/5 " style={{ flexShrink: 0 }}>
           <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Package Details</span>
@@ -282,7 +282,7 @@ const PackageDetailModal = ({ pkg, onClose }) => {
 
         <div className="p-4">
 
-          <div className="relative overflow-hidden rounded-3xl border border-white/4 shadow-[inset_5px_5px_16px_rgba(1,1,1,0.9),inset_-5px_-5px_12px_rgba(60,60,60,0.8)] p-5 mb-4">
+          <div className="relative overflow-hidden rounded-3xl border border-white/3 shadow-[inset_5px_5px_16px_rgba(1,1,1,0.9),inset_-5px_-5px_16px_rgba(50,50,50,0.8)] p-5 mb-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[10px]  tracking-[0.2em] text-violet-300/60">
@@ -337,7 +337,7 @@ const PackageDetailModal = ({ pkg, onClose }) => {
             </span>
 
             <span className="relative z-10 transition-transform duration-300 group-hover:translate-x-1">
-              →
+              <ArrowRight />
             </span>
           </button>
 

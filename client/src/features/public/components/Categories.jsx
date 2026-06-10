@@ -103,13 +103,13 @@ const Categories = () => {
         <div className="flex items-center justify-center gap-1 mb-8">
           <button
             onClick={() => setActiveTab("categories")}
-            className={`px-4 py-2 rounded-tl-2xl rounded-br-2xl text-sm font-medium transition-all inline-flex items-center gap-2 border ${activeTab === "categories" ? "bg-linear-to-r from-violet-600 to-fuchsia-500 border-violet-400 text-white" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40"}`}
+            className={`px-4 py-2 rounded-tl-2xl rounded-br-2xl text-sm font-medium transition-all inline-flex items-center gap-2 border-y ${activeTab === "categories" ? "bg-linear-to-r from-violet-600 to-fuchsia-500 shadow-inner shadow-white/85 border-violet-400 text-white" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40 shadow-inner shadow-white/15"}`}
           >
             <HiOutlineSquares2X2 size={14} /> Categories
           </button>
           <button
             onClick={() => setActiveTab("combos")}
-            className={`px-4 py-2 rounded-tr-2xl rounded-bl-2xl text-sm font-medium transition-all border inline-flex items-center gap-2 ${activeTab === "combos" ? "bg-linear-to-r from-fuchsia-500 to-violet-700 border-violet-400 text-white" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40"}`}
+            className={`px-4 py-2 rounded-tr-2xl rounded-bl-2xl text-sm font-medium transition-all border-y inline-flex items-center gap-2 ${activeTab === "combos" ? "bg-linear-to-r from-fuchsia-500 to-violet-700 border-violet-400 text-white shadow-inner shadow-white/85" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40 shadow-inner shadow-white/15"}`}
           >
             <Sparkles size={14} /> Makeup
           </button>

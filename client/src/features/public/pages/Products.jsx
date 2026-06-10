@@ -285,7 +285,7 @@ const Products = () => {
 
             {pagination && pagination.totalPages > 1 && (
               <div className="flex items-center justify-center mt-10 mb-12">
-                <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-full border-y border-white/10 bg-white/2.5 backdrop-blur-md">
+                <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-full border-y-2 border-white/10 bg-white/2.5 shadow-inner shadow-white/15 backdrop-blur-md">
                   <button
                     onClick={handlePrevPage}
                     disabled={!pagination.hasPrevPage}
@@ -299,7 +299,7 @@ const Products = () => {
                   </button>
 
                   <div className="flex items-center gap-2.5 px-3 font-mono text-sm select-none">
-                    <span className="flex items-center dm-sans justify-center min-w-7 h-7 px-2 rounded-full bg-violet-500/15 border-y border-violet-500/30 text-violet-300 font-semibold">
+                    <span className="flex items-center dm-sans justify-center min-w-7 h-7 px-2 rounded-full bg-violet-500/15 border-y shadow-inner shadow-violet-700/40 border-violet-500/30 text-violet-300 font-semibold">
                       {pagination.currentPage}
                     </span>
                     <span className="text-neutral-500 text-md font-sans">of</span>
