@@ -19,12 +19,12 @@ const TAG_COLORS = {
 };
 
 const ADDON_SERVICES = [
-  { id: "makeup",        label: "Makeup",            price: 1500 },
-  { id: "hairstyle",     label: "Hairstyle",         price: 800  },
-  { id: "saree-draping", label: "Saree Draping",     price: 500  },
-  { id: "saree-folding", label: "Saree Box Folding", price: 300  },
-  { id: "jewellery",     label: "Jewellery",         price: null, depends: true },
-  { id: "flowers",       label: "Flowers",           price: null, depends: true },
+  { id: "makeup", label: "Makeup", price: 1500 },
+  { id: "hairstyle", label: "Hairstyle", price: 800 },
+  { id: "saree-draping", label: "Saree Draping", price: 500 },
+  { id: "saree-folding", label: "Saree Box Folding", price: 300 },
+  { id: "jewellery", label: "Jewellery", price: null, depends: true },
+  { id: "flowers", label: "Flowers", price: null, depends: true },
 ];
 
 const PackageDetailModal = ({ pkg, onClose }) => {
@@ -87,7 +87,7 @@ const PackageDetailModal = ({ pkg, onClose }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-0 md:p-4"
+      className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-0 md:p-4"
       onClick={onClose}
     >
       <motion.div
@@ -177,7 +177,7 @@ const PackageDetailModal = ({ pkg, onClose }) => {
                     {TAG_LABELS[pkg.tag]}
                   </span>
                 )}
-                <h2 className="text-2xl font-bold text-white instrument-serif leading-tight">{pkg.name}</h2>
+                <h2 className="text-2xl font-bold text-white instrument-serif">{pkg.name}</h2>
                 {pkg.artistName && (
                   <p className="text-sm text-neutral-400 mt-1 font-medium">by {pkg.artistName}</p>
                 )}
@@ -211,20 +211,17 @@ const PackageDetailModal = ({ pkg, onClose }) => {
                 </div>
               )}
 
-              {/* Description */}
               {pkg.shortDescription && (
                 <p className="text-sm text-neutral-300 leading-relaxed font-normal">{pkg.shortDescription}</p>
               )}
 
-              {/* Package Details */}
               {pkg.packageDetails && (
-                <div className="space-y-1">
+                <div className="space-y-2">
                   <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Package Details</p>
-                  <p className="text-sm text-neutral-300 leading-relaxed whitespace-pre-line font-normal">{pkg.packageDetails}</p>
+                  <p className="text-sm text-neutral-300 leading-relaxed  whitespace-pre-line font-normal">{pkg.packageDetails}</p>
                 </div>
               )}
 
-              {/* Complimentary */}
               {pkg.complimentary?.length > 0 && (
                 <div className="space-y-2">
                   <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Included Complimentaries</p>
@@ -239,7 +236,6 @@ const PackageDetailModal = ({ pkg, onClose }) => {
                 </div>
               )}
 
-              {/* Add-on Options */}
               <div className="space-y-3">
                 <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Add-on Options</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -284,20 +280,67 @@ const PackageDetailModal = ({ pkg, onClose }) => {
           </div>
         </div>
 
-        {/* ── Fixed Footer CTA ── uses .pkg-modal-footer for guaranteed flex-shrink:0 */}
-        <div className="pkg-modal-footer px-5 py-4 border-t border-white/5 bg-neutral-950/80 backdrop-blur-sm">
-          <div className="flex items-center justify-between px-4 py-3 rounded-2xl bg-violet-600/5 border border-violet-500/25 shadow-inner mb-3">
-            <span className="text-xs text-violet-200/80 font-medium">Grand Total (Incl. Add-ons)</span>
-            <span className="text-sm font-bold text-white tracking-wide">₹{grandTotal.toLocaleString()}</span>
+        <div className="p-4">
+
+          <div className="relative overflow-hidden rounded-3xl border border-white/4 shadow-[inset_5px_5px_16px_rgba(1,1,1,0.9),inset_-5px_-5px_12px_rgba(60,60,60,0.8)] p-5 mb-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[10px]  tracking-[0.2em] text-violet-300/60">
+                  Grand Total
+                </p>
+
+                <h3 className="text-2xl font-black text-white mt-1">
+                  ₹ {grandTotal.toLocaleString()}
+                </h3>
+
+                <p className="text-xs text-neutral-400 mt-1">
+                  Includes all selected add-ons
+                </p>
+              </div>
+            </div>
           </div>
           <button
             type="button"
             onClick={handleBook}
-            className="flex items-center justify-center gap-2.5 w-full py-3.5 rounded-2xl bg-[#25D366] hover:bg-[#20b858] text-white font-bold text-sm transition-all duration-300 hover:shadow-[0_4px_20px_rgba(37,211,102,0.3)] hover:scale-102 active:scale-98 cursor-pointer"
+            className="
+            group
+            relative
+            overflow-hidden
+            flex
+            items-center
+            justify-center
+            gap-3
+            w-full
+            py-4
+            rounded-2xl
+            bg-gradient-to-r
+            from-green-500
+            via-green-400
+            to-emerald-500
+            text-white
+            font-bold
+            text-sm
+            cursor-pointer
+            transition-all  
+            duration-300
+            hover:scale-[1.02]
+            hover:shadow-[0_10px_35px_rgba(34,197,94,0.45)]
+            active:scale-[0.98]
+          "
           >
-            <MessageCircle size={18} />
-            Book on WhatsApp
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-r from-white/10 via-white/20 to-white/10" />
+
+            <MessageCircle size={20} className="relative z-10" />
+
+            <span className="relative z-10">
+              Book on WhatsApp
+            </span>
+
+            <span className="relative z-10 transition-transform duration-300 group-hover:translate-x-1">
+              →
+            </span>
           </button>
+
         </div>
       </motion.div>
     </motion.div>

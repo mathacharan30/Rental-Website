@@ -10,7 +10,6 @@ import { getMakeupPackagesByCategory } from "../../../services/makeupPackageServ
 import PackageTile from "../components/makeup/PackageTile";
 import PackageDetailModal from "../components/makeup/PackageDetailModal";
 
-// ── Main page ──────────────────────────────────────────────────────────────────
 const MakeupCategoryPage = () => {
   const { categoryId } = useParams();
   const [activeTab, setActiveTab] = useState("__all__");
@@ -74,12 +73,12 @@ const MakeupCategoryPage = () => {
         </div>
 
         {subcategories.length > 0 && (
-          <div className="flex justify-center gap-2 mb-8 flex-wrap">
+          <div className="flex justify-center gap-1.5 mb-6 flex-wrap">
             <button
               onClick={() => setActiveTab("__all__")}
               className={`px-5 py-2 rounded-full text-sm font-medium transition-all capitalize ${activeTab === "__all__"
-                ? "bg-violet-600 text-white"
-                : "bg-white/5 text-neutral-400 hover:bg-white/10 hover:text-white"
+                ? "bg-violet-600 text-white border-y-[1.55px] border-violet-300/60"
+                : "bg-white/5 text-neutral-400 border-y-[1.55px] border-white/7 hover:bg-white/10 hover:text-white"
                 }`}
             >
               All
@@ -88,9 +87,9 @@ const MakeupCategoryPage = () => {
               <button
                 key={sub}
                 onClick={() => setActiveTab(sub)}
-                className={`px-5 py-2 rounded-full text-sm font-medium transition-all capitalize ${activeTab === sub
-                  ? "bg-violet-600 text-white"
-                  : "bg-white/5 text-neutral-400 hover:bg-white/10 hover:text-white"
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all capitalize ${activeTab === sub
+                  ? "bg-violet-600 text-white border-y-[1.55px] border-violet-300/60"
+                  : "bg-white/5 text-neutral-400 border-y-[1.55px] border-white/7 hover:bg-white/10 hover:text-white"
                   }`}
               >
                 {sub}
