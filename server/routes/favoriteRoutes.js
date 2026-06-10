@@ -7,6 +7,7 @@ const { allowRoles } = require('../middlewares/roleMiddleware');
 
 const {
   getFavorites,
+  getFavoriteIds,
   addFavorite,
   removeFavorite,
   checkFavorite,
@@ -24,6 +25,7 @@ const validate = (req, res, next) => {
 };
 
 router.get('/', ...customerGuard, getFavorites);
+router.get('/ids', ...customerGuard, getFavoriteIds);
 
 router.post(
   '/',

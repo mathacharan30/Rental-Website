@@ -285,13 +285,13 @@ const Products = () => {
 
             {pagination && pagination.totalPages > 1 && (
               <div className="flex items-center justify-center mt-10 mb-12">
-                <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-full border-y border-white/10 bg-white/[0.025] backdrop-blur-md">
+                <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-full border-y border-white/10 bg-white/2.5 backdrop-blur-md">
                   <button
                     onClick={handlePrevPage}
                     disabled={!pagination.hasPrevPage}
                     className={`flex items-center justify-center p-2 rounded-full border transition-all duration-300 ${pagination.hasPrevPage
                       ? "bg-white/5 border-white/10 text-white hover:bg-violet-600/20 hover:border-violet-500/40 hover:scale-105 active:scale-95 cursor-pointer"
-                      : "bg-white/[0.01] border-white/5 text-neutral-600 cursor-not-allowed"
+                      : "bg-white/1 border-white/5 text-neutral-600 cursor-not-allowed"
                       }`}
                     aria-label="Previous page"
                   >
@@ -299,7 +299,7 @@ const Products = () => {
                   </button>
 
                   <div className="flex items-center gap-2.5 px-3 font-mono text-sm select-none">
-                    <span className="flex items-center dm-sans justify-center min-w-[28px] h-7 px-2 rounded-full bg-violet-500/15 border-y border-violet-500/30 text-violet-300 font-semibold">
+                    <span className="flex items-center dm-sans justify-center min-w-7 h-7 px-2 rounded-full bg-violet-500/15 border-y border-violet-500/30 text-violet-300 font-semibold">
                       {pagination.currentPage}
                     </span>
                     <span className="text-neutral-500 text-md font-sans">of</span>
@@ -313,7 +313,7 @@ const Products = () => {
                     disabled={!pagination.hasNextPage}
                     className={`flex items-center justify-center p-2 rounded-full border transition-all duration-300 ${pagination.hasNextPage
                       ? "bg-white/5 border-white/10 text-white hover:bg-violet-600/20 hover:border-violet-500/40 hover:scale-105 active:scale-95 cursor-pointer"
-                      : "bg-white/[0.01] border-white/5 text-neutral-600 cursor-not-allowed"
+                      : "bg-white/1 border-white/5 text-neutral-600 cursor-not-allowed"
                       }`}
                     aria-label="Next page"
                   >

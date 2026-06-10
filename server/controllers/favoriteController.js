@@ -79,6 +79,18 @@ exports.removeFavorite = async (req, res) => {
   }
 };
 
+// GET /api/favorites/ids - Return all favorited product IDs for the user (lightweight)
+exports.getFavoriteIds = async (req, res) => {
+  try {
+    const userId = req.user.dbId;
+    const favorites = await Favorite.find({ user: userId }, { product: 1, _id: 0 }).lean();
+    res.json({ ids: favorites.map(f => f.product.toString()) });
+  } catch (error) {
+    console.error('[Favorites] GetIds error:', error.message);
+    res.status(500).json({ message: 'Server error fetching favorite IDs' });
+  }
+};
+
 // GET /api/favorites/check/:productId - Check if a product is favorited
 exports.checkFavorite = async (req, res) => {
   try {

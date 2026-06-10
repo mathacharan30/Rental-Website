@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { AuthProvider } from "./context/AuthContext";
+import { FavoritesProvider } from "./context/FavoritesContext";
 
 import ProtectedRoute from "./utils/ProtectedRoute";
 import ScrollToTop from "./utils/ScrollToTop";
@@ -75,6 +76,7 @@ const HideLoaderOnce = () => {
 const App = () => {
   return (
     <AuthProvider>
+      <FavoritesProvider>
       <BrowserRouter>
         <ComingSoonGate>
           <div className="min-h-screen dm-sans tracking-tight  bg-[#0a0a0a] text-white">
@@ -188,6 +190,7 @@ const App = () => {
           />
         </ComingSoonGate>
       </BrowserRouter>
+      </FavoritesProvider>
     </AuthProvider>
   );
 };
