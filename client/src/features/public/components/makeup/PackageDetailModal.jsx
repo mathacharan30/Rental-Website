@@ -115,15 +115,15 @@ const PackageDetailModal = ({ pkg, onClose }) => {
               <div className="relative rounded-2xl overflow-hidden aspect-[4/4.2] md:aspect-square border border-white/5 bg-neutral-950/60 shadow-lg">
                 {images.length > 0 ? (
                   <>
-                    <OptimizedImage
-                      url={images[imgIdx].url}
-                      type="modal"
+                    <img
+                      key={imgIdx}
+                      src={images[imgIdx].url}
                       alt={`${pkg.name} ${imgIdx + 1}`}
                       className="w-full h-full object-contain"
                     />
 
                     {images.length > 1 && (
-                      <span className="absolute bottom-3 right-3 px-3 py-1 rounded-full bg-black/60 border border-white/10 text-white text-xs font-mono select-none font-medium">
+                      <span className="absolute bottom-3 right-3 z-10 px-3 py-1 rounded-full bg-black/60 border border-white/10 text-white text-xs font-mono select-none font-medium">
                         {imgIdx + 1} / {images.length}
                       </span>
                     )}
@@ -132,13 +132,13 @@ const PackageDetailModal = ({ pkg, onClose }) => {
                       <>
                         <button
                           onClick={prev}
-                          className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 hover:scale-105 transition-all border border-white/5 cursor-pointer"
+                          className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 hover:scale-105 transition-all border border-white/5 cursor-pointer"
                         >
                           <ChevronLeft size={16} />
                         </button>
                         <button
                           onClick={next}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 hover:scale-105 transition-all border border-white/5 cursor-pointer"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 hover:scale-105 transition-all border border-white/5 cursor-pointer"
                         >
                           <ChevronRight size={16} />
                         </button>
@@ -313,7 +313,7 @@ const PackageDetailModal = ({ pkg, onClose }) => {
             w-full
             py-4
             rounded-2xl
-            bg-gradient-to-r
+            bg-linear-to-r
             from-green-500
             via-green-400
             to-emerald-500
@@ -328,7 +328,7 @@ const PackageDetailModal = ({ pkg, onClose }) => {
             active:scale-[0.98]
           "
           >
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-r from-white/10 via-white/20 to-white/10" />
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-linear-to-r from-white/10 via-white/20 to-white/10" />
 
             <MessageCircle size={20} className="relative z-10" />
 
