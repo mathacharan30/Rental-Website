@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { IKImage } from "imagekitio-react";
 
 const LQIP_BY_TYPE = {
@@ -17,7 +17,34 @@ const OptimizedImage = ({
   decoding = "async",
   fetchpriority,
 }) => {
+  const placeholderRef = useRef(null);
+  // eager images (hero) load immediately; lazy ones wait for IntersectionObserver
+  const [inView, setInView] = useState(loading !== "lazy");
+
+  useEffect(() => {
+    if (inView) return;
+    const el = placeholderRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "200px 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [inView]);
+
   if (!url) return null;
+
+  // Placeholder occupies the same space until the element scrolls into view
+  if (!inView) {
+    return <span ref={placeholderRef} className={className} aria-hidden="true" />;
+  }
 
   const extraProps = {};
   if (fetchpriority) extraProps.fetchpriority = fetchpriority;
@@ -103,7 +130,6 @@ const OptimizedImage = ({
       lqip={LQIP_BY_TYPE[type] ?? { active: true, quality: 15 }}
       alt={alt}
       className={className}
-      loading={loading}
       {...extraProps}
     />
   );

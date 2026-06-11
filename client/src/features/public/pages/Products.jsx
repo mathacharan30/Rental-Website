@@ -248,7 +248,7 @@ const Products = () => {
           </div>
         </div>
 
-        {hasBothListings && !loading && (
+        {hasBothListings && (
           <div className="flex justify-center gap-2 mb-6">
             {["rent", "sale"].map((tab) => (
               <button
@@ -256,7 +256,7 @@ const Products = () => {
                 onClick={() => setListingTab(tab)}
                 className={`px-5 py-2 rounded-full text-sm font-medium transition-all capitalize ${listingTab === tab
                   ? "bg-violet-600 shadow-inner shadow-violet-200/90 text-white"
-                  : "bg-white/2 text-neutral-400 hover:bg-white/10 text-neutral-400 shadow-inner shadow-white/24 hover:text-white"
+                  : "bg-white/2 text-neutral-400 hover:bg-white/10 shadow-inner shadow-white/24 hover:text-white"
                   }`}
               >
                 {tab}
