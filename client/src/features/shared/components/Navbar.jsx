@@ -509,7 +509,7 @@ const Navbar = () => {
                   y: -28,
                   transition: { duration: 0.3 },
                 }}
-                className="bg-[#0f0f0f] rounded-3xl  flex flex-col gap-1 py-2 px-2 pt-2 text-sm border border-white/10"
+                className="bg-[#141414] rounded-3xl flex flex-col gap-1.5 py-2.5 px-2.5 text-sm border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
                 style={{ transformOrigin: "top right" }}
               >
                 {isPublicOrCustomer && isHomePage && (
@@ -519,7 +519,7 @@ const Navbar = () => {
                         key={item.href}
                         href={item.href}
                         onClick={handleMobileLink}
-                        className="block px-4 py-3  bg-white/5 rounded-2xl text-neutral-300 hover:text-white hover:bg-white/5"
+                        className="block px-4 py-3 rounded-2xl text-neutral-300 hover:text-white bg-[#1a1a1a] shadow-[3px_3px_8px_rgba(0,0,0,0.6),-3px_-3px_8px_rgba(55,55,55,0.15)] hover:shadow-[inset_2px_2px_6px_rgba(0,0,0,0.5),inset_-2px_-2px_6px_rgba(55,55,55,0.12)] active:shadow-[inset_3px_3px_8px_rgba(0,0,0,0.6),inset_-3px_-3px_8px_rgba(55,55,55,0.1)] transition-all duration-200"
                       >
                         {item.label}
                       </a>
@@ -531,7 +531,7 @@ const Navbar = () => {
                   <Link
                     to={dashboardLink}
                     onClick={handleMobileLink}
-                    className="block px-4 py-3 rounded-xl text-neutral-300 hover:text-white hover:bg-white/5"
+                    className="block px-4 py-3 rounded-2xl text-neutral-300 hover:text-white bg-[#1a1a1a] shadow-[3px_3px_8px_rgba(0,0,0,0.6),-3px_-3px_8px_rgba(55,55,55,0.15)] hover:shadow-[inset_2px_2px_6px_rgba(0,0,0,0.5),inset_-2px_-2px_6px_rgba(55,55,55,0.12)] active:shadow-[inset_3px_3px_8px_rgba(0,0,0,0.6),inset_-3px_-3px_8px_rgba(55,55,55,0.1)] transition-all duration-200"
                   >
                     {dashboardLabel}
                   </Link>
@@ -545,14 +545,14 @@ const Navbar = () => {
                     <Link
                       to="/login"
                       onClick={handleMobileLink}
-                      className="block px-4 py-3 w-full rounded-l-2xl rounded-r-sm bg-violet-300/20 text-center text-white hover:text-white hover:bg-white/5"
+                      className="block px-4 py-3 w-full rounded-l-2xl rounded-r-sm text-center text-white bg-[#1a1a1a] shadow-[3px_3px_8px_rgba(0,0,0,0.6),-3px_-3px_8px_rgba(55,55,55,0.15)] hover:shadow-[inset_2px_2px_6px_rgba(0,0,0,0.5),inset_-2px_-2px_6px_rgba(55,55,55,0.12)] active:shadow-[inset_3px_3px_8px_rgba(0,0,0,0.6),inset_-3px_-3px_8px_rgba(55,55,55,0.1)] transition-all duration-200"
                     >
                       Log in
                     </Link>
                     <Link
                       to="/signup"
                       onClick={handleMobileLink}
-                      className="block py-3 rounded-l-sm w-full rounded-r-2xl text-center bg-violet-600 text-white hover:bg-violet-700 transition-colors"
+                      className="block py-3 rounded-l-sm w-full rounded-r-2xl text-center text-white bg-violet-600 shadow-[3px_3px_10px_rgba(0,0,0,0.5),-3px_-3px_10px_rgba(139,92,246,0.15)] hover:shadow-[inset_2px_2px_6px_rgba(0,0,0,0.4),inset_-2px_-2px_6px_rgba(139,92,246,0.2)] active:shadow-[inset_3px_3px_8px_rgba(0,0,0,0.5),inset_-3px_-3px_8px_rgba(139,92,246,0.15)] transition-all duration-200"
                     >
                       <span>Sign up</span>
                     </Link>
@@ -563,7 +563,7 @@ const Navbar = () => {
                       <Link
                         to="/favorites"
                         onClick={handleMobileLink}
-                        className="flex items-center justify-center gap-1.5 px-4 py-2.5 text-center w-full bg-white/[0.04] border border-white/8 rounded-l-2xl rounded text-neutral-300 hover:text-white hover:bg-white/10"
+                        className="flex items-center justify-center gap-1.5 px-4 py-2.5 text-center w-full rounded-l-2xl rounded text-neutral-300 hover:text-white bg-[#1a1a1a] shadow-[3px_3px_8px_rgba(0,0,0,0.6),-3px_-3px_8px_rgba(55,55,55,0.15)] hover:shadow-[inset_2px_2px_6px_rgba(0,0,0,0.5),inset_-2px_-2px_6px_rgba(55,55,55,0.12)] active:shadow-[inset_3px_3px_8px_rgba(0,0,0,0.6),inset_-3px_-3px_8px_rgba(55,55,55,0.1)] transition-all duration-200"
                       >
                         <Heart size={14} className="text-violet-400" />
                         <span>Favorites</span>
@@ -571,14 +571,14 @@ const Navbar = () => {
                       <Link
                         to={`/${uid}/profile`}
                         onClick={handleMobileLink}
-                        className="flex items-center justify-center gap-1.5 px-4 py-2.5 w-full text-center bg-violet-600/40 border border-violet-600/60 hover:bg-violet-550 rounded-r-2xl rounded text-white font-semibold shadow-md"
+                        className="flex items-center justify-center gap-1.5 px-4 py-2.5 w-full text-center rounded-r-2xl rounded text-white font-semibold bg-violet-600/30 shadow-[3px_3px_10px_rgba(0,0,0,0.5),-3px_-3px_10px_rgba(139,92,246,0.12)] hover:shadow-[inset_2px_2px_6px_rgba(0,0,0,0.4),inset_-2px_-2px_6px_rgba(139,92,246,0.15)] active:shadow-[inset_3px_3px_8px_rgba(0,0,0,0.5),inset_-3px_-3px_8px_rgba(139,92,246,0.12)] transition-all duration-200"
                       >
                         <User size={14} />
                         <span>Profile</span>
                       </Link>
                     </div>
 
-                    <div className="flex items-center bg-red-950/10 border border-red-500/20 rounded-2xl justify-between px-4 py-2.5">
+                    <div className="flex items-center rounded-2xl justify-between px-4 py-2.5 bg-[#1a1a1a] shadow-[3px_3px_8px_rgba(0,0,0,0.6),-3px_-3px_8px_rgba(55,55,55,0.15)] hover:shadow-[inset_2px_2px_6px_rgba(0,0,0,0.5),inset_-2px_-2px_6px_rgba(55,55,55,0.12)] transition-all duration-200">
                       <button
                         onClick={handleLogout}
                         className="text-sm text-red-400 hover:text-red-300 transition-colors text-center w-full flex items-center justify-center gap-1.5 cursor-pointer"
