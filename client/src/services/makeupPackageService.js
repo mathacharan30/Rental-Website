@@ -70,12 +70,13 @@ export async function createMakeupPackage({
 }
 
 export async function updateMakeupPackage(id, {
-  name, artistName, subcategory, tag, pricing,
+  categoryId, name, artistName, subcategory, tag, pricing,
   imageSlots, packageDetails, shortDescription, complimentary,
 }) {
   const images = await resolveImageSlots(imageSlots);
 
   const body = { name, pricing, images, complimentary: complimentary || [] };
+  if (categoryId   !== undefined) body.category        = categoryId;
   if (artistName   !== undefined) body.artistName      = artistName;
   if (subcategory  !== undefined) body.subcategory      = subcategory;
   if (tag          !== undefined) body.tag              = tag;

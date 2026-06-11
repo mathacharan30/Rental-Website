@@ -141,7 +141,7 @@ exports.updateMakeupPackage = async (req, res) => {
   try {
     const { id } = req.params;
     const {
-      name, artistName, subcategory, tag, pricing,
+      category, name, artistName, subcategory, tag, pricing,
       images, packageDetails, shortDescription, complimentary,
     } = req.body;
 
@@ -159,6 +159,8 @@ exports.updateMakeupPackage = async (req, res) => {
       pkg.images = images.filter((img) => img && img.url && img.publicId).slice(0, 4);
     }
 
+    const oldCategoryId = pkg.category.toString();
+    if (category && mongoose.Types.ObjectId.isValid(category)) pkg.category = category;
     if (name)                  pkg.name              = name.trim();
     if (artistName !== undefined) pkg.artistName     = artistName?.trim() || undefined;
     if (subcategory !== undefined) pkg.subcategory   = subcategory || null;
@@ -176,6 +178,7 @@ exports.updateMakeupPackage = async (req, res) => {
     await pkg.save();
 
     await Promise.all([
+      cache.invalidate(pkgCacheKey(oldCategoryId)),
       cache.invalidate(pkgCacheKey(pkg.category.toString())),
       cache.invalidate(pkgCacheKey(null)),
     ]);
