@@ -50,23 +50,25 @@ const Hero = () => {
 
   return (
     <section
-      className="relative w-full h-screen overflow-hidden bg-[#0e0e0e]"
+      className="relative w-full h-screen overflow-hidden "
       style={{ marginTop: "calc(var(--floating-nav-footprint) * -1)" }}
     >
       {activeBanner && (
-        <OptimizedImage
-          key={activeBanner._id || activeBanner.imageUrl}
-          url={activeBanner.imageUrl}
-          type="hero"
-          alt={
-            activeBanner.title ||
-            "People & Style — Rent designer outfits in Bangalore"
-          }
-          loading="eager"
-          decoding="async"
-          fetchpriority="high"
-          className="absolute inset-0 h-full w-full md:mt-7 mt-4.5 object-cover"
-        />
+        <div className="absolute inset-0 p-2 md:pt-10 pt-6">
+          <OptimizedImage
+            key={activeBanner._id || activeBanner.imageUrl}
+            url={activeBanner.imageUrl}
+            type="hero"
+            alt={
+              activeBanner.title ||
+              "People & Style — Rent designer outfits in Bangalore"
+            }
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+            className="w-full h-full object-cover rounded-2xl"
+          />
+        </div>
       )}
 
       {banners.length === 0 && <HeroSkeleton />}

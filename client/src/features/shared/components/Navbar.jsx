@@ -208,7 +208,7 @@ const Navbar = () => {
 
   return (
     <motion.header
-      className="sticky z-50 px-2 sm:px-4"
+      className="sticky z-50 px-4"
       style={{ top: "var(--floating-nav-offset)" }}
       initial={{ opacity: 0, y: -16 }}
       animate={{ opacity: 1, y: 0 }}
