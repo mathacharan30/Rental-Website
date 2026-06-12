@@ -77,7 +77,7 @@ const MakeupCategoryPage = () => {
             <button
               onClick={() => setActiveTab("__all__")}
               className={`px-5 py-2 rounded-full text-sm font-medium transition-all capitalize ${activeTab === "__all__"
-                ? "bg-violet-600 text-white shadow-inner shadow-violet-200/90 border-b-[1.55px] border-violet-300/60"
+                ? "bg-violet-600 text-white shadow-inner shadow-white border-b-[1.55px] border-violet-300/40 hover:bg-violet-500"
                 : "bg-white/2 shadow-inner shadow-white/24 text-neutral-400 border-b-[1.55px] border-white/7 hover:bg-white/10 hover:text-white"
                 }`}
             >
@@ -88,7 +88,7 @@ const MakeupCategoryPage = () => {
                 key={sub}
                 onClick={() => setActiveTab(sub)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all capitalize ${activeTab === sub
-                  ? "bg-violet-600 text-white shadow-inner shadow-violet-200/90 border-b-[1.55px] border-violet-300/60"
+                  ? "bg-violet-600 text-white shadow-inner shadow-white border-b-[1.55px] border-violet-300/40 hover:bg-violet-500"
                   : "bg-white/2 shadow-inner shadow-white/24 text-neutral-400 border-b-[1.55px] border-white/7 hover:bg-white/10 hover:text-white"
                   }`}
               >
