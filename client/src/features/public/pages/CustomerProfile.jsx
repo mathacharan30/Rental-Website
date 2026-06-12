@@ -122,14 +122,14 @@ const CustomerProfile = () => {
   return (
     <div className="relative min-h-[80vh] py-10 md:py-14 px-4 mx-auto overflow-visible">
       <div className="max-w-xl mx-auto flex justify-center px-4 pb-4">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-violet-400 transition-colors"
+        <button
+          onClick={() => navigate(-1)}
+          className="inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-violet-400 transition-colors cursor-pointer"
         >
           <ArrowLeft size={14} /> Back to Home
-        </Link>
+        </button>
       </div>
-      <div className="relative flex p-1 mx-auto max-w-xl rounded-xl bg-white/[0.02] border border-white/[0.08] backdrop-blur-md mb-6 z-20">
+      <div className="relative flex p-1 mx-auto max-w-xl rounded-xl bg-white/2 border border-white/8 backdrop-blur-md mb-6 z-20">
         {["profile", "orders"].map((t) => (
           <button
             key={t}
@@ -154,9 +154,9 @@ const CustomerProfile = () => {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className="w-full bg-white/[0.02] max-w-5xl mx-auto border border-white/[0.08] backdrop-blur-md rounded-2xl p-6 md:p-7 shadow-2xl shadow-black/40"
+          className="w-full bg-white/2 max-w-5xl mx-auto border border-white/8 backdrop-blur-md rounded-2xl p-6 md:p-7 shadow-2xl shadow-black/40"
         >
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-6 pb-6 border-b border-white/[0.06] mb-6 relative w-full text-center md:text-left">
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-6 pb-6 border-b border-white/6 mb-6 relative w-full text-center md:text-left">
             <div className="relative w-20 h-20 shrink-0">
               <div className="absolute inset-0 rounded-full bg-violet-600/20 blur-xl animate-pulse" />
               <div className="w-20 h-20 rounded-full bg-linear-to-tr from-violet-600 to-fuchsia-500 p-0.5 shadow-xl shadow-black/40 relative">
@@ -169,7 +169,7 @@ const CustomerProfile = () => {
               </div>
             </div>
             <div className="flex-1 min-w-0">
-              <h2 className="text-xl md:text-2xl font-black text-white tracking-wide display-font bg-clip-text text-transparent bg-gradient-to-r from-white via-neutral-100 to-violet-200">
+              <h2 className="text-xl md:text-2xl font-black tracking-wide display-font bg-clip-text text-transparent bg-linear-to-r from-white via-neutral-100 to-violet-200">
                 {name}
               </h2>
               <p className="text-xs text-neutral-400 mt-1 font-medium flex items-center justify-center md:justify-start gap-1.5">
@@ -241,7 +241,7 @@ const CustomerProfile = () => {
             onClick={handleLogout}
             className="mt-8 w-full relative group overflow-hidden border border-red-500/30 bg-red-500/5 hover:bg-red-500/15 text-red-400 hover:text-red-300 font-bold py-3 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-md cursor-pointer"
           >
-            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-linear-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
             <LogOut size={14} />
             <span className="text-xs tracking-wider">Sign out</span>
           </button>
@@ -257,7 +257,7 @@ const CustomerProfile = () => {
           {ordersLoading ? (
             <OrdersSkeleton count={3} />
           ) : orders.length === 0 ? (
-            <div className="bg-white/[0.02] max-w-5xl mx-auto border border-white/[0.08] backdrop-blur-md rounded-2xl p-10 text-center text-neutral-450 shadow-xl flex flex-col items-center justify-center">
+            <div className="bg-white/2 max-w-5xl mx-auto border border-white/8 backdrop-blur-md rounded-2xl p-10 text-center text-neutral-450 shadow-xl flex flex-col items-center justify-center">
               <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-neutral-500 mb-3 border border-white/5 animate-none">
                 <ShoppingBag size={20} />
               </div>
@@ -290,14 +290,14 @@ const CustomerProfile = () => {
                 return (
                   <motion.div
                     key={o._id}
-                    className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md p-5 flex flex-col gap-4 shadow-xl shadow-black/20 hover:border-violet-500/30 transition-all duration-300 group"
+                    className="relative overflow-hidden rounded-2xl border border-white/8 bg-white/2 backdrop-blur-md p-5 flex flex-col gap-4 shadow-xl shadow-black/20 hover:border-violet-500/30 transition-all duration-300 group"
                   >
                     {/* Dynamic Inner Card Glow */}
                     <div className="absolute top-0 right-0 w-20 h-20 bg-violet-600/10 rounded-full blur-2xl pointer-events-none group-hover:bg-violet-600/20 transition-all" />
-                    <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none z-10" />
+                    <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-linear-to-r from-transparent via-white/5 to-transparent pointer-events-none z-10" />
 
                     {/* Receipt-style Header */}
-                    <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-white/[0.06] relative z-20">
+                    <div className="flex flex-wrap items-center justify-between gap-4 pb-3 border-b border-white/6 relative z-20">
                       <div className="flex items-center gap-2.5">
                         <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-neutral-300">
                           <ShoppingBag size={14} />
@@ -307,7 +307,7 @@ const CustomerProfile = () => {
                             Order ID
                           </p>
                           <div className="flex items-center gap-1 mt-0.5">
-                            <span className="text-[11px] font-mono font-medium text-neutral-300 truncate max-w-[100px] md:max-w-none">
+                            <span className="text-[11px] font-mono font-medium text-neutral-300 truncate max-w-25 md:max-w-none">
                               {o._id}
                             </span>
                             <button
@@ -336,7 +336,7 @@ const CustomerProfile = () => {
                         <img
                           src={o.product.images[0].url}
                           alt={o.product?.name || "Product image"}
-                          className="w-14 h-14 object-cover rounded-xl border border-white/[0.08] bg-neutral-900 shrink-0 shadow-lg"
+                          className="w-14 h-14 object-cover rounded-xl border border-white/8 bg-neutral-900 shrink-0 shadow-lg"
                         />
                       )}
                       <div className="flex-1 min-w-0">
@@ -359,7 +359,7 @@ const CustomerProfile = () => {
                     </div>
 
                     {/* Cost Summary Section */}
-                    <div className="grid grid-cols-3 gap-3 p-3.5 rounded-xl bg-white/[0.01] border border-white/[0.04] relative z-20">
+                    <div className="grid grid-cols-3 gap-3 p-3.5 rounded-xl bg-white/1 border border-white/4 relative z-20">
                       <div>
                         <span className="text-neutral-500 block text-[9px] uppercase tracking-wider font-bold">
                           Total Paid
@@ -381,7 +381,7 @@ const CustomerProfile = () => {
                         <div />
                       )}
                       <div className="text-right">
-                        <span className="text-neutral-500 block text-[9px] uppercase tracking-wider font-bold flex items-center justify-end gap-1">
+                        <span className="text-neutral-500 text-[9px] uppercase tracking-wider font-bold flex items-center justify-end gap-1">
                           <Calendar size={8} /> Date
                         </span>
                         <span className="text-[11px] font-semibold text-neutral-350 mt-0.5 block">
@@ -443,11 +443,11 @@ const CustomerProfile = () => {
                 <X size={14} />
               </button>
 
-              <h3 className="text-lg font-bold text-white mb-3.5 display-font bg-clip-text text-transparent bg-gradient-to-r from-white to-violet-300">
+              <h3 className="text-lg font-bold mb-3.5 display-font bg-clip-text text-transparent bg-linear-to-r from-white to-violet-300">
                 Write Testimonial
               </h3>
 
-              <div className="mb-4.5 flex items-center gap-3 p-2.5 bg-white/[0.02] border border-white/[0.06] rounded-xl">
+              <div className="mb-4.5 flex items-center gap-3 p-2.5 bg-white/2 border border-white/6 rounded-xl">
                 <img
                   src={
                     reviewOrder.product?.images?.[0]?.url ||
@@ -502,7 +502,7 @@ const CustomerProfile = () => {
                   <textarea
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
-                    className="w-full bg-white/[0.02] border border-white/[0.08] focus:border-violet-500/50 rounded-xl p-3.5 text-white text-xs outline-none transition-all duration-300 resize-none"
+                    className="w-full bg-white/2 border border-white/8 focus:border-violet-500/50 rounded-xl p-3.5 text-white text-xs outline-none transition-all duration-300 resize-none"
                     rows={4}
                     placeholder="Share your honest experience..."
                     required
@@ -514,7 +514,7 @@ const CustomerProfile = () => {
                     Add Photo (Optional)
                   </label>
                   <div className="grid grid-cols-2 gap-2.5">
-                    <label className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-white/[0.08] bg-white/[0.02] text-xs font-semibold hover:border-violet-500/40 hover:bg-white/[0.05] cursor-pointer transition-all duration-300 text-white animate-none">
+                    <label className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-white/8 bg-white/2 text-xs font-semibold hover:border-violet-500/40 hover:bg-white/5 cursor-pointer transition-all duration-300 text-white animate-none">
                       <Camera size={13} className="text-violet-400 shrink-0" />
                       <span>Take Photo</span>
                       <input
@@ -526,7 +526,7 @@ const CustomerProfile = () => {
                       />
                     </label>
 
-                    <label className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-white/[0.08] bg-white/[0.02] text-xs font-semibold hover:border-violet-500/40 hover:bg-white/[0.05] cursor-pointer transition-all duration-300 text-white animate-none">
+                    <label className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-white/8 bg-white/2 text-xs font-semibold hover:border-violet-500/40 hover:bg-white/5 cursor-pointer transition-all duration-300 text-white animate-none">
                       <Upload size={13} className="text-violet-400 shrink-0" />
                       <span>Upload Image</span>
                       <input
@@ -565,7 +565,7 @@ const CustomerProfile = () => {
                     disabled={submittingReview}
                     className="relative group/submit w-full overflow-hidden bg-violet-600 hover:bg-violet-500 text-white rounded-xl py-3 font-bold shadow-xl shadow-violet-600/20 transition-all duration-300 disabled:opacity-50 cursor-pointer animate-none"
                   >
-                    <div className="absolute inset-0 -translate-x-full group-hover/submit:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+                    <div className="absolute inset-0 -translate-x-full group-hover/submit:translate-x-full transition-transform duration-1000 ease-out bg-linear-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
                     <span className="text-xs">
                       {submittingReview ? "Submitting..." : "Submit Testimonial"}
                     </span>

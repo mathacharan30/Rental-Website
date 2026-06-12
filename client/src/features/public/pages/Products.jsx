@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
-import { useParams, Link, useLocation } from "react-router-dom";
+import { useParams, Link, useLocation, useNavigate } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
@@ -16,6 +16,7 @@ import { ProductListSkeleton } from "../loaders";
 
 const Products = () => {
   const { category } = useParams();
+  const navigate = useNavigate();
 
   const decodedCategory = category
     ? decodeURIComponent(category).toLowerCase()
@@ -217,13 +218,13 @@ const Products = () => {
       </Helmet>
       <div className="max-w-6xl mx-auto ">
         <div className="flex justify-center">
-          <Link
-            to="/"
-            className="text-sm flex items-center gap-1.5 text-neutral-500 hover:text-violet-400 transition-colors"
+          <button
+            onClick={() => navigate(-1)}
+            className="text-sm flex items-center gap-1.5 text-neutral-500 hover:text-violet-400 transition-colors cursor-pointer"
           >
             <ArrowLeft size={14} />
             Back to Home
-          </Link>
+          </button>
         </div>
 
         <div className="flex flex-col justify-center items-center text-center">

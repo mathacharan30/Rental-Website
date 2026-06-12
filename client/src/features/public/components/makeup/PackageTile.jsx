@@ -19,7 +19,7 @@ const TAG_COLORS = {
 
 const PackageTile = ({ pkg, onClick }) => {
   const cover = pkg.images?.[0]?.url;
-  const offer = pkg.pricing?.offerPrice;
+  const offer = (pkg.pricing?.offerPrice || 0) + (pkg.pricing?.commission || 0);
   const actual = pkg.pricing?.actualPrice;
 
   return (

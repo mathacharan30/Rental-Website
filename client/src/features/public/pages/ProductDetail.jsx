@@ -276,12 +276,12 @@ const ProductDetail = () => {
         </script>
       </Helmet>
       <div className="max-w-6xl mx-auto px-4 pt-8">
-        <Link
-          to={`/products/${encodeURIComponent(product.category)}`}
-          className="inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-violet-400 transition-colors"
+        <button
+          onClick={() => navigate(-1)}
+          className="inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-violet-400 transition-colors cursor-pointer"
         >
           <ArrowLeft size={14} /> Back to Products
-        </Link>
+        </button>
       </div>
 
       <div className="flex flex-col md:flex-row md:items-start md:gap-8 max-w-6xl mx-auto mt-4 px-2 md:px-4">

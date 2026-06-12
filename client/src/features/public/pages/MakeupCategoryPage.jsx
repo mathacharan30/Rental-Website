@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import { ArrowLeft } from "lucide-react";
@@ -12,6 +12,7 @@ import PackageDetailModal from "../components/makeup/PackageDetailModal";
 
 const MakeupCategoryPage = () => {
   const { categoryId } = useParams();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("__all__");
   const [selectedPkg, setSelectedPkg] = useState(null);
 
@@ -53,13 +54,13 @@ const MakeupCategoryPage = () => {
 
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-center">
-          <Link
-            to="/"
-            className="text-sm flex items-center gap-1.5 text-neutral-500 hover:text-violet-400 transition-colors"
+          <button
+            onClick={() => navigate("/", { state: { activeTab: "combos" } })}
+            className="text-sm flex items-center gap-1.5 text-neutral-500 hover:text-violet-400 transition-colors cursor-pointer"
           >
             <ArrowLeft size={14} />
             Back to Home
-          </Link>
+          </button>
         </div>
         <div className="flex flex-col justify-center items-center text-center mb-2">
           <div className="flex flex-col my-4 items-center">

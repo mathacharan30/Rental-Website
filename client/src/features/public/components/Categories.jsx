@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getCategories } from "../../../services/categoryService";
@@ -32,7 +32,16 @@ function mapCategory(c = {}) {
 }
 
 const Categories = () => {
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState("categories");
+
+  useEffect(() => {
+    if (location.state?.activeTab === "combos") {
+      setActiveTab("combos");
+      document.getElementById("categories")?.scrollIntoView({ behavior: "smooth" });
+      window.history.replaceState({}, "");
+    }
+  }, [location.state]);
   const {
     data: categories = [],
     isLoading,

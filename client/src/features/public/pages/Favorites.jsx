@@ -69,15 +69,15 @@ const Favorites = () => {
   return (
     <div className="relative min-h-screen py-10 bg-[#0a0a0a] overflow-hidden flex flex-col justify-between">
       <div className="max-w-6xl mx-auto px-4 py-2">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-violet-400 transition-colors"
+        <button
+          onClick={() => navigate(-1)}
+          className="inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-violet-400 transition-colors cursor-pointer"
         >
           <ArrowLeft size={14} /> Back to Home
-        </Link>
+        </button>
       </div>
       <div className="max-w-7xl mx-auto px-4 py-5 w-full flex-1">
-        <div className="flex items-center justify-center border-b border-white/[0.06] pb-5 mb-6 relative z-20">
+        <div className="flex items-center justify-center border-b border-white/6 pb-5 mb-6 relative z-20">
           <div className="flex flex-col items-center justify-center gap-1">
             <h1 className="text-xl md:text-2xl font-black display-font text-white tracking-wide">
               My Favourites
@@ -100,7 +100,7 @@ const Favorites = () => {
             transition={{ duration: 0.4 }}
             className="text-center py-12 relative"
           >
-            <div className="bg-white/[0.02] border border-white/[0.08] backdrop-blur-md rounded-3xl p-10 max-w-sm mx-auto shadow-2xl relative overflow-hidden">
+            <div className="bg-white/2 border border-white/8 backdrop-blur-md rounded-3xl p-10 max-w-sm mx-auto shadow-2xl relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-violet-600/5 rounded-full blur-3xl pointer-events-none" />
 
               <div className="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center text-neutral-500 mb-5 mx-auto border border-white/5">
@@ -147,9 +147,9 @@ const Favorites = () => {
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.35, delay: index * 0.04 }}
-                  className="relative flex flex-row bg-white/[0.02] border border-white/[0.08] backdrop-blur-md rounded-2xl overflow-hidden shadow-xl shadow-black/20 hover:border-violet-500/30 transition-all duration-300 group hover:shadow-2xl hover:shadow-violet-600/5 h-[140px] md:h-[180px]"
+                  className="relative flex flex-row bg-white/2 border border-white/8 backdrop-blur-md rounded-2xl overflow-hidden shadow-xl shadow-black/20 hover:border-violet-500/30 transition-all duration-300 group hover:shadow-2xl hover:shadow-violet-600/5 h-35 md:h-45"
                 >
-                  <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none z-20" />
+                  <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-linear-to-r from-transparent via-white/5 to-transparent pointer-events-none z-20" />
                   <div className="relative w-32 p-2 md:w-48 h-full shrink-0 overflow-hidden">
                     <Link
                       to={`/product/${product._id}`}
@@ -160,7 +160,7 @@ const Favorites = () => {
                         alt={product.name}
                         className="w-full h-full rounded-md object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/40 via-transparent to-transparent opacity-60 transition-opacity duration-300" />
+                      <div className="absolute inset-0 bg-linear-to-t from-neutral-950/40 via-transparent to-transparent opacity-60 transition-opacity duration-300" />
                     </Link>
                   </div>
 
@@ -190,7 +190,7 @@ const Favorites = () => {
                       </p>
                     </div>
 
-                    <div className="flex items-center justify-between pt-2.5 border-t border-white/[0.04] mt-auto">
+                    <div className="flex items-center justify-between pt-2.5 border-t border-white/4 mt-auto">
                       <div>
                         <p className="text-[8px] uppercase tracking-wider text-neutral-500 font-bold animate-none">
                           Rental Price

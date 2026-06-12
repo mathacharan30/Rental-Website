@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -23,6 +23,7 @@ const cardMotion = {
 
 const BridalCombo = () => {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const combo = useMemo(
     () =>
       comboCategories.find((item) => item.slug === slug) || comboCategories[0],
@@ -112,12 +113,12 @@ const BridalCombo = () => {
 
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 pt-3 pb-6">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-violet-400 transition-colors"
+        <button
+          onClick={() => navigate("/", { state: { activeTab: "combos" } })}
+          className="inline-flex items-center gap-1.5 text-sm text-neutral-500 hover:text-violet-400 transition-colors cursor-pointer"
         >
           <ArrowLeft size={14} /> Back to Home
-        </Link>
+        </button>
       </div>
 
       <motion.div

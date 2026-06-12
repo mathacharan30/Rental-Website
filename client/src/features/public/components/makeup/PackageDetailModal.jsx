@@ -299,6 +299,17 @@ const PackageDetailModal = ({ pkg, onClose }) => {
               </div>
             </div>
           </div>
+          <div className="flex flex-col gap-1.5 mb-4">
+            <p className="text-[11px] text-neutral-400 flex items-start gap-1.5">
+              <span className="text-amber-400 mt-0.5">•</span>
+              50% advance on or before the previous day of the event
+            </p>
+            <p className="text-[11px] text-neutral-400 flex items-start gap-1.5">
+              <span className="text-amber-400 mt-0.5">•</span>
+              Travelling charges extra based on your location
+            </p>
+          </div>
+
           <button
             type="button"
             onClick={handleBook}
