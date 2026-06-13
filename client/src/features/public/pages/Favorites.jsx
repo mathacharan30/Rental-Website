@@ -77,59 +77,41 @@ const Favorites = () => {
         </button>
       </div>
       <div className="max-w-7xl mx-auto px-4 py-5 w-full flex-1">
-        <div className="flex items-center justify-center border-b border-white/6 pb-5 mb-6 relative z-20">
-          <div className="flex flex-col items-center justify-center gap-1">
-            <h1 className="text-xl md:text-2xl font-black display-font text-white tracking-wide">
-              My Favourites
-            </h1>
-            <p className="text-neutral-400 text-xs">
-              {favorites.length > 0
-                ? `${favorites.length} ${favorites.length === 1 ? "item" : "items"} saved`
-                : "Your curated wishlist"}
-            </p>
-
-          </div>
-
-
+        <div className="text-center pb-5 mb-6 border-b border-white/6">
+          <h1 className="text-xl md:text-2xl font-bold text-white tracking-wide">
+            My Favourites
+          </h1>
+          <p className="text-neutral-500 text-xs mt-1">
+            {favorites.length > 0
+              ? `${favorites.length} ${favorites.length === 1 ? "item" : "items"} saved`
+              : "Your curated wishlist"}
+          </p>
         </div>
 
         {favorites.length === 0 ? (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4 }}
-            className="text-center py-12 relative"
-          >
-            <div className="bg-white/2 border border-white/8 backdrop-blur-md rounded-3xl p-10 max-w-sm mx-auto shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-violet-600/5 rounded-full blur-3xl pointer-events-none" />
-
-              <div className="w-14 h-14 rounded-full bg-white/5 flex items-center justify-center text-neutral-500 mb-5 mx-auto border border-white/5">
-                <Heart className="text-neutral-400" size={20} />
+          <div className="text-center py-12">
+            <div className="bg-white/2 border border-white/6 rounded-2xl p-10 max-w-md mx-auto shadow-xl">
+              <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center text-neutral-500 mb-4 mx-auto">
+                <Heart size={20} />
               </div>
-              <h2 className="text-xl font-bold text-white mb-2 display-font">
+              <h2 className="text-lg font-bold text-white mb-1.5">
                 No Wishlist Items
               </h2>
-              <p className="text-neutral-500 text-xs mb-6 leading-relaxed max-w-xs mx-auto">
-                Explore our premium designer rental collection and tap the heart
-                icon to save outfits.
+              <p className="text-neutral-500 text-xs mb-6 max-w-xs mx-auto leading-relaxed">
+                Explore our premium designer rental collection and tap the heart icon to save outfits.
               </p>
               <Link
                 to="/products"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-violet-600 hover:bg-violet-500 text-white rounded-xl font-bold text-xs transition-all shadow-lg shadow-violet-600/20 hover:scale-102 cursor-pointer"
+                className="px-5 py-2.5 bg-violet-600 text-white shadow-inner shadow-white border-b-[1.55px] border-violet-300/40 hover:bg-violet-500 rounded-full font-bold text-xs transition-all inline-flex items-center gap-1.5 cursor-pointer"
               >
                 <span>Browse Outfits</span>
-                <ArrowRight size={14} />
+                <ArrowRight size={13} />
               </Link>
             </div>
-          </motion.div>
+          </div>
         ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, delay: 0.1 }}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-6"
-          >
-            {favorites.map((fav, index) => {
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
+            {favorites.map((fav) => {
               const product = fav.product;
               if (!product) return null;
 
@@ -142,85 +124,74 @@ const Favorites = () => {
               const category = product.category?.name || "Uncategorized";
 
               return (
-                <motion.div
+                <div
                   key={fav._id}
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.35, delay: index * 0.04 }}
-                  className="relative flex flex-row bg-white/2 border border-white/8 backdrop-blur-md rounded-2xl overflow-hidden shadow-xl shadow-black/20 hover:border-violet-500/30 transition-all duration-300 group hover:shadow-2xl hover:shadow-violet-600/5 h-35 md:h-45"
+                  className="relative flex gap-4 bg-white/2 border border-white/6 hover:border-white/10 rounded-2xl p-4 transition-all duration-300 group"
                 >
-                  <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-linear-to-r from-transparent via-white/5 to-transparent pointer-events-none z-20" />
-                  <div className="relative w-32 p-2 md:w-48 h-full shrink-0 overflow-hidden">
-                    <Link
-                      to={`/product/${product._id}`}
-                      className="block h-full w-full animate-none"
-                    >
-                      <img
-                        src={mainImage}
-                        alt={product.name}
-                        className="w-full h-full rounded-md object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-linear-to-t from-neutral-950/40 via-transparent to-transparent opacity-60 transition-opacity duration-300" />
-                    </Link>
-                  </div>
+                  {/* Image */}
+                  <Link
+                    to={`/product/${product._id}`}
+                    className="w-24 h-24 md:w-28 md:h-28 shrink-0 overflow-hidden rounded-xl border border-white/5 bg-neutral-900"
+                  >
+                    <img
+                      src={mainImage}
+                      alt={product.name}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </Link>
 
                   {/* Right Side: Product Details */}
-                  <div className="flex-1 p-3 md:p-5 flex flex-col justify-between relative min-w-0">
-                    {/* Floating Remove Button inside Right Metadata Box */}
-                    <button
-                      onClick={() => handleRemove(product._id, product.name)}
-                      className="absolute top-3 right-3 z-25 w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-neutral-450 hover:text-red-450 hover:bg-red-500/10 hover:border-red-500/20 transition-all duration-300 cursor-pointer animate-none"
-                      title="Remove from wishlist"
-                    >
-                      <Trash2 size={13} />
-                    </button>
+                  <div className="flex-1 flex flex-col justify-between min-w-0">
+                    <div>
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <span className="text-[10px] font-bold text-violet-400 uppercase tracking-wider">
+                            {category}
+                          </span>
+                          <Link to={`/product/${product._id}`}>
+                            <h3 className="font-semibold text-white text-sm md:text-base truncate hover:text-violet-400 transition-colors mt-0.5">
+                              {product.name}
+                            </h3>
+                          </Link>
+                        </div>
 
-                    <div className="pr-7 min-w-0">
-                      <span className="text-[9px] uppercase tracking-wider font-bold text-violet-400 bg-violet-500/10 px-2 py-0.5 rounded border border-violet-500/20 inline-block mb-1.5">
-                        {category}
-                      </span>
-                      <Link to={`/product/${product._id}`} className="animate-none">
-                        <h3 className="text-sm md:text-base font-bold text-white tracking-wide truncate hover:text-violet-400 transition-colors">
-                          {product.name}
-                        </h3>
-                      </Link>
-                      <p className="text-[11px] md:text-xs text-neutral-400 line-clamp-1 md:line-clamp-2 mt-1 leading-relaxed">
-                        {product.description ||
-                          "Premium designer wear from our collection."}
+                        <button
+                          onClick={() => handleRemove(product._id, product.name)}
+                          className="p-1.5 rounded-full bg-white/5 hover:bg-red-500/10 hover:text-red-400 text-neutral-400 border border-white/5 transition-all cursor-pointer shrink-0"
+                          title="Remove from wishlist"
+                        >
+                          <Trash2 size={12} />
+                        </button>
+                      </div>
+                      <p className="text-xs text-neutral-400 line-clamp-1 mt-1 leading-relaxed">
+                        {product.description || "Premium designer wear from our collection."}
                       </p>
                     </div>
 
-                    <div className="flex items-center justify-between pt-2.5 border-t border-white/4 mt-auto">
+                    <div className="flex items-center justify-between pt-3 mt-3 border-t border-white/5">
                       <div>
-                        <p className="text-[8px] uppercase tracking-wider text-neutral-500 font-bold animate-none">
+                        <span className="text-[9px] text-neutral-500 font-bold uppercase tracking-wider">
                           Rental Price
-                        </p>
-                        <span className="text-xs md:text-sm font-black text-violet-400 mt-0.5 block">
-                          {typeof price === "number"
-                            ? `₹${price.toLocaleString()}`
-                            : price}
-                          <span className="text-[9px] font-medium text-neutral-450 ml-0.5">
-                            /day
-                          </span>
                         </span>
+                        <p className="text-xs md:text-sm font-bold text-white mt-0.5">
+                          {typeof price === "number" ? `₹${price.toLocaleString()}` : price}
+                          <span className="text-[10px] text-neutral-400 font-normal ml-0.5">/day</span>
+                        </p>
                       </div>
 
                       <Link
                         to={`/product/${product._id}`}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-violet-600/10 border border-violet-500/20 text-[10px] md:text-xs font-bold text-violet-300 hover:text-white hover:bg-violet-600 hover:border-violet-500 transition-all duration-300 group/btn cursor-pointer"
+                        className="px-3.5 py-1.5 bg-violet-600 text-white shadow-inner shadow-white border-b-[1.55px] border-violet-300/40 hover:bg-violet-500 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5"
                       >
-                        <span>View Outfit</span>
-                        <ArrowRight
-                          size={11}
-                          className="transition-transform group-hover/btn:translate-x-0.5"
-                        />
+                        <span>View Details</span>
+                        <ArrowRight size={12} />
                       </Link>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               );
             })}
-          </motion.div>
+          </div>
         )}
       </div>
       <Footer />

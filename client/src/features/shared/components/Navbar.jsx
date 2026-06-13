@@ -215,9 +215,9 @@ const Navbar = () => {
       transition={{ duration: 0.35, ease: "easeOut" }}
     >
       <div
-        className={`max-w-7xl mx-auto rounded-full border-y-2 border transition-all duration-300 ${scrolled
-          ? "border-white/12 bg-linear-to-r from-[#0a0a0a]/68  shadow-[#11111190] shadow-2xl backdrop-blur-xl"
-          : "border-white/8 bg-linear-to-r from-[#0a0a0a]/48  shadow-[#12121250] shadow-lg backdrop-blur-xl"
+        className={`max-w-7xl mx-auto rounded-full border transition-all duration-300 ${scrolled
+          ? "border-white/10 bg-[#0a0a0a]/80 shadow-lg shadow-black/30 backdrop-blur-xl"
+          : "border-white/5 bg-[#0a0a0a]/40 shadow-md backdrop-blur-md"
           }`}
       >
         <div className="flex items-center justify-between px-4 py-1 md:px-2.5 md:py-2.5 gap-3">
@@ -231,15 +231,15 @@ const Navbar = () => {
 
             {isPublicOrCustomer && isHomePage && (
               <nav
-                className="hidden md:flex items-center gap-1 text-sm"
+                className="hidden md:flex items-center gap-2 text-xs"
                 aria-label="Primary Navigation"
               >
                 {HOME_NAV_ITEMS.map((item) => (
                   <motion.a
                     key={item.href}
                     href={item.href}
-                    className="px-4 py-1.5 rounded-full bg-white/10 text-neutral-300 hover:text-white transition-colors duration-150"
-                    whileHover={{ y: -1, scale: 1.03 }}
+                    className="px-4 py-1.5 rounded-full bg-white/2 shadow-inner shadow-white/24 text-neutral-400 border-b-[1.55px] border-white/7 hover:bg-white/10 hover:text-white transition-all duration-200"
+                    whileHover={{ y: -0.5, scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
                     {item.label}
@@ -255,7 +255,7 @@ const Navbar = () => {
               >
                 <Link
                   to={dashboardLink}
-                  className="px-3 py-1.5 rounded-full flex items-center gap-1 text-violet-400 capitalize border hover:bg-violet-500/20 border-violet-500/20 bg-violet-500/10 transition-all"
+                  className="px-4 py-1.5 rounded-full bg-white/2 shadow-inner shadow-white/24 text-violet-400 border-b-[1.55px] border-white/7 hover:bg-white/10 hover:text-violet-300 text-xs font-semibold transition-all flex items-center gap-1 cursor-pointer"
                 >
                   {dashboardLabel} <ArrowRight size={20} />
                 </Link>
@@ -278,7 +278,7 @@ const Navbar = () => {
                   value={searchQuery}
                   onChange={(e) => handleSearchChange(e.target.value)}
                   onFocus={() => setShowSuggestions(true)}
-                  className="w-full bg-white/8 text-white placeholder-neutral-400 rounded-full py-2 pl-4 pr-10 text-sm focus:outline-none focus:border-violet-400 focus:bg-white/25 transition-all"
+                  className="w-full bg-white/5 border border-white/8 text-white placeholder-neutral-500 rounded-full py-1.5 pl-4 pr-10 text-xs focus:outline-none focus:border-violet-500/50 focus:bg-white/10 transition-all"
                 />
                 <button
                   type="submit"
@@ -338,34 +338,34 @@ const Navbar = () => {
             </div>
 
             {!loading && (
-              <div className="hidden md:flex items-center ml-4 mr-1">
+              <div className="hidden md:flex items-center ml-4 mr-1 gap-2">
                 {!firebaseUser ? (
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1.5">
                     <Link
                       to="/login"
-                      className="text-sm text-white hover:text-white bg-white/10 rounded-l-4xl rounded-r-md transition-colors px-5 py-2 hover:bg-white/5"
+                      className="text-xs font-semibold text-neutral-300 hover:text-white px-4 py-2 hover:bg-white/5 rounded-full transition-all"
                     >
                       Log in
                     </Link>
                     <Link
                       to="/signup"
-                      className="text-sm bg-violet-600 text-white py-2 px-5 rounded-r-4xl rounded-l-md hover:bg-violet-700 transition-colors"
+                      className="px-4 py-2 bg-violet-600 text-white shadow-inner shadow-white border-b-[1.55px] border-violet-300/40 hover:bg-violet-500 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer"
                     >
                       <span>Sign up</span>
                     </Link>
                   </div>
                 ) : role === "customer" ? (
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1.5">
                     <Link
                       to="/favorites"
-                      className="text-sm border border-violet-400/20 hover:border-violet-500/30 bg-white/[0.02] text-neutral-300 hover:text-white transition-colors px-3.5 py-1.5 rounded-l-4xl rounded-md flex items-center gap-1.5 hover:bg-violet-500/20"
+                      className="px-3.5 py-1.5 bg-white/2 shadow-inner shadow-white/24 text-neutral-100 border-b-[1.55px] border-white/7 hover:bg-white/10 hover:text-white rounded-full text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer"
                     >
                       <Heart size={13} className="text-violet-400 fill-violet-400/10" />
                       <span>Favorites</span>
                     </Link>
                     <Link
                       to={`/${uid}/profile`}
-                      className="text-sm bg-violet-600/10 border border-violet-300/20 hover:bg-violet-500/60 text-white font-semibold transition-colors px-4 py-1.5 rounded flex items-center gap-1.5"
+                      className="px-4 py-1.5 bg-violet-600 text-white shadow-inner shadow-white border-b-[1.55px] border-violet-300/40 hover:bg-violet-500 rounded-full text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer"
                     >
                       <User size={13} />
                       <span>Profile</span>
@@ -373,7 +373,7 @@ const Navbar = () => {
 
                     <button
                       onClick={handleLogout}
-                      className="text-sm bg-red-650/20 border border-red-500/20 text-red-400 hover:text-red-300 transition-colors px-3.5 py-1.5 rounded-r-4xl rounded-l-md hover:bg-red-500/20 flex items-center gap-1.5 cursor-pointer"
+                      className="px-3.5 py-1.5 rounded-full border border-red-500/20 bg-red-500/5 hover:bg-red-500/10 text-red-400 hover:text-red-300 text-xs font-semibold tracking-wider transition-all flex items-center gap-1.5 cursor-pointer"
                     >
                       <LogOut size={12} />
                       <span>Logout</span>
@@ -383,7 +383,7 @@ const Navbar = () => {
                   <>
                     <button
                       onClick={handleLogout}
-                      className="text-sm text-white mx-4 bg-red-600 px-4 py-1.5 rounded-full hover:bg-red-800 transition-colors"
+                      className="text-xs font-semibold border border-red-500/20 bg-red-500/5 hover:bg-red-500/10 text-red-400 hover:text-red-300 px-4 py-1.5 rounded-full transition-all cursor-pointer"
                     >
                       Logout
                     </button>
@@ -509,61 +509,61 @@ const Navbar = () => {
                   y: -28,
                   transition: { duration: 0.3 },
                 }}
-                className="bg-[#141414] rounded-3xl flex flex-col gap-1.5 py-2.5 px-2.5 text-sm border border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
+                className="bg-[#111]/95 border border-white/10 rounded-2xl flex flex-col gap-1.5 py-2.5 px-2.5 text-sm shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
                 style={{ transformOrigin: "top right" }}
               >
                 {isPublicOrCustomer && isHomePage && (
-                  <>
+                  <div className="flex flex-col gap-1.5 my-1">
                     {HOME_NAV_ITEMS.map((item) => (
                       <a
                         key={item.href}
                         href={item.href}
                         onClick={handleMobileLink}
-                        className="block px-4 py-3 rounded-2xl text-neutral-300 hover:text-white bg-[#1a1a1a] shadow-[3px_3px_8px_rgba(0,0,0,0.6),-3px_-3px_8px_rgba(55,55,55,0.15)] hover:shadow-[inset_2px_2px_6px_rgba(0,0,0,0.5),inset_-2px_-2px_6px_rgba(55,55,55,0.12)] active:shadow-[inset_3px_3px_8px_rgba(0,0,0,0.6),inset_-3px_-3px_8px_rgba(55,55,55,0.1)] transition-all duration-200"
+                        className="block w-full text-center px-4 py-2.5 rounded-full bg-white/2 shadow-inner shadow-white/24 text-neutral-400 border-b-[1.55px] border-white/7 hover:bg-white/10 hover:text-white transition-all text-sm font-semibold"
                       >
                         {item.label}
                       </a>
                     ))}
-                  </>
+                  </div>
                 )}
 
                 {(isAdmin || isSuperAdmin) && (
                   <Link
                     to={dashboardLink}
                     onClick={handleMobileLink}
-                    className="block px-4 py-3 rounded-2xl text-neutral-300 hover:text-white bg-[#1a1a1a] shadow-[3px_3px_8px_rgba(0,0,0,0.6),-3px_-3px_8px_rgba(55,55,55,0.15)] hover:shadow-[inset_2px_2px_6px_rgba(0,0,0,0.5),inset_-2px_-2px_6px_rgba(55,55,55,0.12)] active:shadow-[inset_3px_3px_8px_rgba(0,0,0,0.6),inset_-3px_-3px_8px_rgba(55,55,55,0.1)] transition-all duration-200"
+                    className="block w-full text-left px-4 py-2.5 rounded-xl text-neutral-300 hover:text-white hover:bg-white/5 transition-all text-sm font-medium"
                   >
                     {dashboardLabel}
                   </Link>
                 )}
                 {isHomePage && (
-                  <div className="border-t border-white/10 my-4"></div>
+                  <div className="border-t border-white/10 my-2"></div>
                 )}
 
                 {!firebaseUser ? (
-                  <div className="flex flex-row  gap-1">
+                  <div className="flex flex-row gap-1 mt-1">
                     <Link
                       to="/login"
                       onClick={handleMobileLink}
-                      className="block px-4 py-3 w-full rounded-l-2xl rounded-r-sm text-center text-white bg-[#1a1a1a] shadow-[3px_3px_8px_rgba(0,0,0,0.6),-3px_-3px_8px_rgba(55,55,55,0.15)] hover:shadow-[inset_2px_2px_6px_rgba(0,0,0,0.5),inset_-2px_-2px_6px_rgba(55,55,55,0.12)] active:shadow-[inset_3px_3px_8px_rgba(0,0,0,0.6),inset_-3px_-3px_8px_rgba(55,55,55,0.1)] transition-all duration-200"
+                      className="block px-4 py-2.5 w-full rounded-full text-center text-neutral-300 hover:text-white bg-white/5 border border-white/5 hover:bg-white/10 transition-all text-sm font-medium"
                     >
                       Log in
                     </Link>
                     <Link
                       to="/signup"
                       onClick={handleMobileLink}
-                      className="block py-3 rounded-l-sm w-full rounded-r-2xl text-center text-white bg-violet-600 shadow-[3px_3px_10px_rgba(0,0,0,0.5),-3px_-3px_10px_rgba(139,92,246,0.15)] hover:shadow-[inset_2px_2px_6px_rgba(0,0,0,0.4),inset_-2px_-2px_6px_rgba(139,92,246,0.2)] active:shadow-[inset_3px_3px_8px_rgba(0,0,0,0.5),inset_-3px_-3px_8px_rgba(139,92,246,0.15)] transition-all duration-200"
+                      className="block py-2.5 w-full text-center text-white bg-violet-600 shadow-inner shadow-white border-b-[1.55px] border-violet-300/40 hover:bg-violet-500 rounded-full text-sm font-semibold transition-all"
                     >
                       <span>Sign up</span>
                     </Link>
                   </div>
                 ) : role === "customer" ? (
-                  <div className="flex flex-col gap-1.5">
-                    <div className="flex flex-row gap-1 mb-1">
+                  <div className="flex flex-col gap-1.5 mt-1">
+                    <div className="flex flex-row gap-1">
                       <Link
                         to="/favorites"
                         onClick={handleMobileLink}
-                        className="flex items-center justify-center gap-1.5 px-4 py-2.5 text-center w-full rounded-l-2xl rounded text-neutral-300 hover:text-white bg-[#1a1a1a] shadow-[3px_3px_8px_rgba(0,0,0,0.6),-3px_-3px_8px_rgba(55,55,55,0.15)] hover:shadow-[inset_2px_2px_6px_rgba(0,0,0,0.5),inset_-2px_-2px_6px_rgba(55,55,55,0.12)] active:shadow-[inset_3px_3px_8px_rgba(0,0,0,0.6),inset_-3px_-3px_8px_rgba(55,55,55,0.1)] transition-all duration-200"
+                        className="flex items-center justify-center gap-1.5 px-4 py-2.5 text-center w-full rounded-full bg-violet-600/10 shadow-inner shadow-white/24 text-neutral-400 border-b-[1.55px] border-white/7 hover:bg-white/10 hover:text-white transition-all text-sm font-semibold"
                       >
                         <Heart size={14} className="text-violet-400" />
                         <span>Favorites</span>
@@ -571,25 +571,24 @@ const Navbar = () => {
                       <Link
                         to={`/${uid}/profile`}
                         onClick={handleMobileLink}
-                        className="flex items-center justify-center gap-1.5 px-4 py-2.5 w-full text-center rounded-r-2xl rounded text-white font-semibold bg-violet-600/30 shadow-[3px_3px_10px_rgba(0,0,0,0.5),-3px_-3px_10px_rgba(139,92,246,0.12)] hover:shadow-[inset_2px_2px_6px_rgba(0,0,0,0.4),inset_-2px_-2px_6px_rgba(139,92,246,0.15)] active:shadow-[inset_3px_3px_8px_rgba(0,0,0,0.5),inset_-3px_-3px_8px_rgba(139,92,246,0.12)] transition-all duration-200"
+                        className="flex items-center justify-center gap-1.5 px-4 py-2.5 w-full text-center rounded-full bg-violet-600 text-white shadow-inner shadow-white border-b-[1.55px] border-violet-300/40 hover:bg-violet-500 transition-all text-sm font-semibold"
                       >
                         <User size={14} />
                         <span>Profile</span>
                       </Link>
                     </div>
 
-                    <div className="flex items-center rounded-2xl justify-between px-4 py-2.5 bg-[#1a1a1a] shadow-[3px_3px_8px_rgba(0,0,0,0.6),-3px_-3px_8px_rgba(55,55,55,0.15)] hover:shadow-[inset_2px_2px_6px_rgba(0,0,0,0.5),inset_-2px_-2px_6px_rgba(55,55,55,0.12)] transition-all duration-200">
-                      <button
-                        onClick={handleLogout}
-                        className="text-sm text-red-400 hover:text-red-300 transition-colors text-center w-full flex items-center justify-center gap-1.5 cursor-pointer"
-                      >
-                        <LogOut size={14} />
-                        <span>Logout</span>
-                      </button>
-                    </div>
+
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center rounded-full justify-center px-4 py-2.5 border border-red-500/20 bg-red-500/5 hover:bg-red-500/10 text-red-400 hover:text-red-300 transition-all text-sm font-semibold cursor-pointer"
+                    >
+                      <LogOut size={14} className="mr-1.5" />
+                      <span>Logout</span>
+                    </button>
                   </div>
                 ) : (
-                  <div className="flex items-center justify-between px-4 py-3">
+                  <div className="flex items-center justify-between px-4 py-3 border-t border-white/10 mt-2">
                     <span className="text-xs text-violet-400 capitalize border border-violet-500/20 bg-violet-500/10 px-3 py-1 rounded-lg">
                       {role === "store_owner" ? "Store Admin" : "Super Admin"}
                     </span>

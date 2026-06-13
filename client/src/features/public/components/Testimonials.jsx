@@ -60,26 +60,24 @@ const Testimonials = () => {
                 {quotes.map((q) => (
                   <article
                     key={q.id}
-                    className="group relative w-72 md:w-80 shrink-0 mx-2 rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-md p-12 md:p-14 flex flex-col justify-between transition-all duration-500 hover:border-violet-500/40 hover:bg-white/[0.04] hover:shadow-xl hover:shadow-violet-950/10 overflow-hidden"
+                    className="relative w-72 md:w-80 shrink-0 mx-2 rounded-2xl border border-white/6 bg-white/2 p-6 md:p-8 flex flex-col justify-between hover:border-white/10 transition-all duration-300"
                   >
-                    <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none z-10" />
-                    <span className="absolute top-2 right-4 text-7xl font-serif text-violet-500/10 pointer-events-none select-none">
+                    <span className="absolute top-2 right-4 text-6xl font-serif text-violet-500/10 pointer-events-none select-none">
                       “
                     </span>
 
-                    <div className="flex flex-col gap-3 relative z-10">
-
-                      <p className="text-neutral-300 text-[13px] md:text-[14px] leading-relaxed font-medium italic">
+                    <div className="flex flex-col gap-3 relative z-10 flex-1">
+                      <p className="text-neutral-300 text-sm leading-relaxed font-medium italic">
                         "{q.text}"
                       </p>
                     </div>
 
                     <div className="mt-5 flex items-center gap-3 relative z-10">
-                      <div className="w-10 h-10 rounded-full bg-violet-600/10 border border-violet-500/30 flex items-center justify-center font-bold text-violet-300 text-sm shadow-inner shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-violet-600/10 border border-violet-500/20 flex items-center justify-center font-bold text-violet-400 text-sm shrink-0">
                         {q.name?.charAt(0) || "U"}
                       </div>
                       <div className="min-w-0">
-                        <p className="text-white text-xs md:text-sm font-semibold truncate">
+                        <p className="text-white text-xs font-semibold truncate">
                           {q.name}
                         </p>
                         <p className="text-[10px] text-violet-400 font-medium tracking-wide">
@@ -100,9 +98,8 @@ const Testimonials = () => {
             href={INFO_VIDEO_LINK}
             target="_blank"
             rel="noreferrer"
-            className="relative group inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/[0.02] border border-white/[0.08] text-violet-300 hover:text-white hover:border-violet-500/40 hover:bg-violet-600/10 transition-all duration-300 text-xs md:text-sm tracking-wide font-medium shadow-md overflow-hidden"
+            className="px-5 py-2.5 bg-white/2 shadow-inner shadow-white/24 text-neutral-400 border-b-[1.55px] border-white/7 hover:bg-white/10 hover:text-white rounded-full text-xs font-semibold transition-all inline-flex items-center gap-1.5 cursor-pointer"
           >
-            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
             <span>▶ Watch Info Video</span>
           </a>
         </div>
