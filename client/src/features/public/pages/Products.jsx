@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
-import { useParams, Link, useLocation, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
@@ -22,11 +22,10 @@ const Products = () => {
     ? decodeURIComponent(category).toLowerCase()
     : null;
 
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
+  const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
+  const currentPage = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
 
-  const [currentPage, setCurrentPage] = useState(1);
   const [listingTab, setListingTab] = useState("rent");
   const ITEMS_PER_PAGE = 10;
 
@@ -69,10 +68,16 @@ const Products = () => {
   const items = productsData?.products || [];
   const pagination = productsData?.pagination;
 
-  // Reset to page 1 when category, search, or listing tab changes
+  // Reset to page 1 when listing tab changes (category/search changes reset naturally via URL)
   useEffect(() => {
-    setCurrentPage(1);
-  }, [decodedCategory, searchQuery, listingTab]);
+    setSearchParams(
+      (prev) => {
+        prev.delete("page");
+        return prev;
+      },
+      { replace: true }
+    );
+  }, [listingTab]);
 
   // Reset listing tab when navigating to a different category
   useEffect(() => {
@@ -81,14 +86,20 @@ const Products = () => {
 
   const handleNextPage = () => {
     if (pagination && pagination.hasNextPage) {
-      setCurrentPage((prev) => prev + 1);
+      setSearchParams((prev) => {
+        prev.set("page", String(currentPage + 1));
+        return prev;
+      });
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
   const handlePrevPage = () => {
     if (pagination && pagination.hasPrevPage) {
-      setCurrentPage((prev) => prev - 1);
+      setSearchParams((prev) => {
+        prev.set("page", String(currentPage - 1));
+        return prev;
+      });
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };

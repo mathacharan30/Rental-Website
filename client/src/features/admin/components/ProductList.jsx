@@ -21,6 +21,7 @@ const ProductList = ({ products = [], onEdit, onDelete, onToggleAvailability }) 
             <th className="px-6 py-4">Product</th>
             <th className="px-6 py-4">Category</th>
             <th className="px-6 py-4">Price</th>
+            <th className="px-6 py-4">Advance</th>
             <th className="px-6 py-4">Stock</th>
             <th className="px-6 py-4 text-center">Availability</th>
             <th className="px-6 py-4 text-center">Edit</th>
@@ -59,6 +60,9 @@ const ProductList = ({ products = [], onEdit, onDelete, onToggleAvailability }) 
               </td>
               <td className="px-6 py-4 text-sm font-medium text-white">
                 {p.price}
+              </td>
+              <td className="px-6 py-4 text-sm font-medium text-amber-400">
+                {p.advanceAmount ? `₹${p.advanceAmount}` : <span className="text-neutral-600">—</span>}
               </td>
               <td className="px-6 py-4 text-sm text-neutral-400">{p.stock}</td>
 
