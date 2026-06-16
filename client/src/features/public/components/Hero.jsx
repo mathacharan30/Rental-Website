@@ -54,7 +54,7 @@ const Hero = () => {
       style={{ marginTop: "calc(var(--floating-nav-footprint) * -1)" }}
     >
       {activeBanner && (
-        <div className="absolute inset-0 p-2 md:pt-10 pt-6">
+        <div className="absolute inset-0 md:pt-10 pt-5">
           <OptimizedImage
             key={activeBanner._id || activeBanner.imageUrl}
             url={activeBanner.imageUrl}
@@ -66,7 +66,7 @@ const Hero = () => {
             loading="eager"
             decoding="async"
             fetchpriority="high"
-            className="w-full h-full object-cover rounded-2xl"
+            className="w-full h-full object-cover "
           />
         </div>
       )}

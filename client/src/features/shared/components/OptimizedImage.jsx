@@ -16,10 +16,13 @@ const OptimizedImage = ({
   loading = "lazy",
   decoding = "async",
   fetchpriority,
+  onClick,
 }) => {
   const placeholderRef = useRef(null);
   // eager images (hero) load immediately; lazy ones wait for IntersectionObserver
   const [inView, setInView] = useState(loading !== "lazy");
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     if (inView) return;
@@ -43,35 +46,76 @@ const OptimizedImage = ({
 
   // Placeholder occupies the same space until the element scrolls into view
   if (!inView) {
-    return <span ref={placeholderRef} className={className} aria-hidden="true" />;
+    return (
+      <div
+        ref={placeholderRef}
+        className={`${className} flex items-center justify-center bg-white/5 overflow-hidden`}
+        aria-hidden="true"
+      >
+        <span className="text-[10px] text-violet-400 font-medium tracking-widest uppercase animate-pulse text-center px-2">Loading...</span>
+      </div>
+    );
   }
+
+  const handleLoad = () => setIsLoaded(true);
+  const handleError = () => {
+    setIsLoaded(true);
+    setHasError(true);
+  };
 
   const extraProps = {};
   if (fetchpriority) extraProps.fetchpriority = fetchpriority;
+  if (onClick) extraProps.onClick = onClick;
+
+  const imageClass = `${className} transition-opacity duration-500 ${!isLoaded || hasError ? 'absolute w-0 h-0 opacity-0 pointer-events-none overflow-hidden border-none p-0 m-0' : 'opacity-100'}`.trim();
+
+  const renderPlaceholder = () => {
+    if (isLoaded && !hasError) return null;
+    return (
+      <div className={`${className} flex items-center justify-center bg-white/5 overflow-hidden`}>
+        {hasError ? (
+          <div className="text-[12px] text-neutral-500 font-medium tracking-widest uppercase text-center px-2">Not Found</div>
+        ) : (
+          <div className="text-[12px] flex flex-col items-center justify-center gap-2 text-violet-400 font-medium uppercase animate-pulse text-center px-2">
+            <div className="h-5 w-5 border-t-2 border-violet-400 rounded-full animate-spin"></div>
+            Loading...
+          </div>
+        )}
+      </div>
+    );
+  };
 
   if (!url.startsWith("http")) {
     return (
-      <img
-        src={url}
-        alt={alt}
-        className={className}
-        loading={loading}
-        decoding={decoding}
-        {...extraProps}
-      />
+      <>
+        {renderPlaceholder()}
+        <img
+          src={url}
+          alt={alt}
+          className={imageClass}
+          decoding={decoding}
+          onLoad={handleLoad}
+          onError={handleError}
+          {...extraProps}
+        />
+      </>
     );
   }
 
   if (url.includes("ik.imagekit.io")) {
     return (
-      <img
-        src={url}
-        alt={alt}
-        className={className}
-        loading={loading}
-        decoding={decoding}
-        {...extraProps}
-      />
+      <>
+        {renderPlaceholder()}
+        <img
+          src={url}
+          alt={alt}
+          className={imageClass}
+          decoding={decoding}
+          onLoad={handleLoad}
+          onError={handleError}
+          {...extraProps}
+        />
+      </>
     );
   }
 
@@ -109,29 +153,38 @@ const OptimizedImage = ({
         : urlObj.pathname;
     } catch {
       return (
-        <img
-          src={url}
-          alt={alt}
-          className={className}
-          loading={loading}
-          decoding={decoding}
-          {...extraProps}
-        />
+        <>
+          {renderPlaceholder()}
+          <img
+            src={url}
+            alt={alt}
+            className={imageClass}
+            decoding={decoding}
+            onLoad={handleLoad}
+            onError={handleError}
+            {...extraProps}
+          />
+        </>
       );
     }
   }
 
   return (
-    <IKImage
-      path={path}
-      transformation={[
-        { width: width.toString(), quality: "auto", format: "auto" },
-      ]}
-      lqip={LQIP_BY_TYPE[type] ?? { active: true, quality: 15 }}
-      alt={alt}
-      className={className}
-      {...extraProps}
-    />
+    <>
+      {renderPlaceholder()}
+      <IKImage
+        path={path}
+        transformation={[
+          { width: width.toString(), quality: "auto", format: "auto" },
+        ]}
+        lqip={{ active: false }}
+        alt={alt}
+        className={imageClass}
+        onLoad={handleLoad}
+        onError={handleError}
+        {...extraProps}
+      />
+    </>
   );
 };
 
