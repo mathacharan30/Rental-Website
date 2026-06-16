@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
 import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
@@ -27,6 +27,7 @@ const Products = () => {
   const currentPage = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
 
   const [listingTab, setListingTab] = useState("rent");
+  const listingTabMounted = useRef(false);
   const ITEMS_PER_PAGE = 10;
 
   // Fetch category metadata to determine listingMode (cached, lightweight)
@@ -68,8 +69,12 @@ const Products = () => {
   const items = productsData?.products || [];
   const pagination = productsData?.pagination;
 
-  // Reset to page 1 when listing tab changes (category/search changes reset naturally via URL)
+  // Reset to page 1 when listing tab changes (skip on initial mount to preserve page in URL)
   useEffect(() => {
+    if (!listingTabMounted.current) {
+      listingTabMounted.current = true;
+      return;
+    }
     setSearchParams(
       (prev) => {
         prev.delete("page");
