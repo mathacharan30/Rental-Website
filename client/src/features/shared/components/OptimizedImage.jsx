@@ -72,7 +72,7 @@ const OptimizedImage = ({
   const renderPlaceholder = () => {
     if (isLoaded && !hasError) return null;
     return (
-      <div className={`${className} flex items-center justify-center bg-white/5 overflow-hidden`}>
+      <div className={`${className} flex items-center justify-center overflow-hidden`}>
         {hasError ? (
           <div className="text-[12px] text-neutral-500 font-medium tracking-widest uppercase text-center px-2">Not Found</div>
         ) : (
