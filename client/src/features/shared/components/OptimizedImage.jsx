@@ -49,7 +49,7 @@ const OptimizedImage = ({
     return (
       <div
         ref={placeholderRef}
-        className={`${className} flex items-center justify-center bg-white/5 overflow-hidden`}
+        className={`${className} flex items-center justify-center overflow-hidden`}
         aria-hidden="true"
       >
         <span className="text-[10px] text-violet-400 font-medium tracking-widest uppercase animate-pulse text-center px-2">Loading...</span>
