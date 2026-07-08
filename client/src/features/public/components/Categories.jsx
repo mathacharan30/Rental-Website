@@ -112,13 +112,13 @@ const Categories = () => {
         <div className="flex items-center justify-center gap-1 mb-8">
           <button
             onClick={() => setActiveTab("categories")}
-            className={`px-4 py-2 rounded-tl-2xl rounded-br-2xl text-sm font-medium transition-all inline-flex items-center gap-2 border-y ${activeTab === "categories" ? "bg-linear-to-r from-violet-600 to-fuchsia-500 shadow-inner shadow-white/85 border-violet-400 text-white" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40 shadow-inner shadow-white/15"}`}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all inline-flex items-center gap-2 border-y ${activeTab === "categories" ? "bg-linear-to-r from-violet-600 to-fuchsia-500 shadow-inner shadow-white/85 border-violet-400 text-white" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40 shadow-inner shadow-white/15"}`}
           >
             <HiOutlineSquares2X2 size={14} /> Categories
           </button>
           <button
             onClick={() => setActiveTab("combos")}
-            className={`px-4 py-2 rounded-tr-2xl rounded-bl-2xl text-sm font-medium transition-all border-y inline-flex items-center gap-2 ${activeTab === "combos" ? "bg-linear-to-r from-fuchsia-500 to-violet-700 border-violet-400 text-white shadow-inner shadow-white/85" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40 shadow-inner shadow-white/15"}`}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all border-y inline-flex items-center gap-2 ${activeTab === "combos" ? "bg-linear-to-r from-fuchsia-500 to-violet-700 border-violet-400 text-white shadow-inner shadow-white/85" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40 shadow-inner shadow-white/15"}`}
           >
             <Sparkles size={14} /> Makeup
           </button>
@@ -158,7 +158,7 @@ const Categories = () => {
                 >
                   <Link
                     to={`/products/${encodeURIComponent((c.name || "").toLowerCase())}`}
-                    className="relative group overflow-hidden rounded-bl-3xl rounded-tr-3xl h-56 w-38 md:w-42 md:h-64 flex items-end
+                    className="relative group overflow-hidden rounded-bl-4xl rounded-tr-4xl h-56 w-38 md:w-42 md:h-64 flex items-end
                  bg-purple-950/40 border border-white/10
                  hover:shadow-[0_12px_40px_rgba(139,92,246,0.25)]
                  hover:scale-[1.03] transition-all duration-300"
@@ -170,10 +170,10 @@ const Categories = () => {
                       alt={c.name}
                       loading="lazy"
                       className="absolute inset-0 w-full h-full object-cover
-                   group-hover:scale-90 transition-transform duration-500 ease-out  rounded-bl-3xl rounded-tr-3xl"
+                   group-hover:scale-90 transition-transform duration-500 ease-out  rounded-bl-4xl rounded-tr-4xl"
                     />
                     <div
-                      className="absolute inset-0 pointer-events-none overflow-hidden rounded-bl-3xl rounded-tr-3xl z-10 backdrop-blur-xs"
+                      className="absolute inset-0 pointer-events-none overflow-hidden rounded-bl-5xl rounded-tr-5xl z-10 backdrop-blur-xs"
                       style={{
                         maskImage: "linear-gradient(to top, black 0%, black 10%, transparent 50%)",
                         WebkitMaskImage: "linear-gradient(to top, black 0%, black 10%, transparent 50%)",
@@ -230,7 +230,7 @@ const Categories = () => {
                   >
                     <Link
                       to={`/makeup/${cid}`}
-                      className="relative group overflow-hidden rounded-t-[75px] rounded-xl h-56 w-36 md:w-42 md:h-66 flex items-end
+                      className="relative group overflow-hidden rounded-tl-[70px] rounded-br-[70px] h-56 w-36 md:w-42 md:h-66 flex items-end
                        bg-fuchsia-950/20 border border-white/10
                        hover:shadow-[0_12px_40px_rgba(217,70,239,0.25)]
                        hover:scale-[1.03] transition-all duration-300"
@@ -242,16 +242,16 @@ const Categories = () => {
                         alt={c.name}
                         loading="lazy"
                         className="absolute inset-0 w-full h-full object-cover
-                         group-hover:scale-90 transition-transform duration-500 ease-out rounded-t-[75px] rounded"
+                         group-hover:scale-90 transition-transform duration-500 ease-out rounded-tl-[70px] rounded-br-3xl"
                       />
                       <div
-                        className="absolute inset-0 pointer-events-none overflow-hidden rounded-t-full rounded-b-2xl z-10 backdrop-blur-xs"
+                        className="absolute inset-0 pointer-events-none overflow-hidden  rounded-br-[67px] z-10 backdrop-blur-xs"
                         style={{
                           maskImage: "linear-gradient(to top, black 0%, black 10%, transparent 50%)",
                           WebkitMaskImage: "linear-gradient(to top, black 0%, black 10%, transparent 50%)",
                         }}
                       />
-                      <div className="relative w-full pb-4 px-4 pt-10 flex items-center justify-between z-20">
+                      <div className="relative w-full pb-2 px-4 pt-10 flex items-center justify-between z-20">
                         <span className="text-white font-medium text-xs uppercase md:text-sm ">
                           {c.name}
                         </span>

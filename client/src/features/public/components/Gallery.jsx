@@ -208,7 +208,7 @@ const Gallery = () => {
                 url={galleryImages[activeIndex]}
                 type="modal"
                 alt={`Selected gallery preview ${activeIndex + 1}`}
-                className="max-h-[80vh] max-w-[80vw] object-contain rounded-2xl border border-white/10 shadow-2xl pointer-events-auto"
+                className="max-h-[80vh] max-w-[80vw] object-contain rounded-2xl  shadow-2xl pointer-events-auto"
                 onClick={(e) => e.stopPropagation()}
                 draggable={false}
               />
