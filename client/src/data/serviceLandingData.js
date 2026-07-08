@@ -10,7 +10,7 @@ export const servicePages = {
     introParagraphs: [
       "Planning your wedding in Mysuru? Looking stunning on your big day doesn't have to cost a fortune. At People & Style, we offer a premium collection of bridal and wedding clothing on rent in Mysuru — designer lehengas, wedding gowns, silk sarees, sherwanis, and Indo-western outfits for every function and budget. Whether you need a wedding lehenga rental for the ceremony or a reception gown for the evening, we have you covered.",
       "A designer bridal lehenga can cost ₹40,000 or more to buy outright, and you wear it exactly once. Our rental collection gives you access to the same stunning designs at a fraction of the price. Browse over 200 outfits spanning classic Banarasi and Kanjeevaram styles, contemporary gowns, and embroidered sherwanis — all professionally cleaned and quality-checked before each rental.",
-      "Booking is simple: choose your outfit online, select your rental dates, and pick it up from our store or have it delivered to your doorstep anywhere in Mysuru. Our team is always available on WhatsApp to help you choose the right style, size, and colour for your occasion.",
+      "Booking is simple: choose your outfit online, select your rental dates, and have it delivered to your doorstep anywhere in Mysuru. Our team is always available on WhatsApp to help you choose the right style, size, and colour for your occasion.",
     ],
     highlights: [
       { icon: '👗', label: '200+ designer outfits', desc: 'Lehengas, gowns, sherwanis, sarees, and Indo-western wear' },
@@ -35,7 +35,7 @@ export const servicePages = {
       },
       {
         q: 'Can I try on the outfit before confirming my booking?',
-        a: 'Yes, you can visit our Mysuru store for a trial fitting. We strongly recommend a trial 2–3 weeks before your event to allow time for any adjustments.',
+        a: 'Yes, we arrange trial fittings at your location in Mysuru. We strongly recommend a trial 2–3 weeks before your event to allow time for any adjustments. WhatsApp us to schedule.',
       },
       {
         q: "What if the outfit doesn't fit properly on the day?",
@@ -314,9 +314,9 @@ export const servicePages = {
     h1: 'Complete Bridal Package in Mysuru',
     city: 'Mysuru',
     service: 'Bridal Package',
-    ctaLink: '/contact',
-    ctaText: 'Get a Package Quote',
-    productFilter: null,
+    ctaLink: '/bridal-combo',
+    ctaText: 'View All Packages',
+    productFilter: { type: 'bridal-combo' },
     introParagraphs: [
       "Planning a wedding in Mysuru involves coordinating dozens of vendors — and that coordination is stressful. People & Style's complete bridal package brings everything together under one roof: bridal clothing rental, jewellery rental, professional makeup, and wedding photography. One team, one point of contact, and a cohesive look across every service — at a price that's significantly lower than booking each separately.",
       "Our bridal packages are built around you. We start with a consultation to understand your wedding functions, style preferences, and budget. From there, we curate a clothing shortlist from our 200+ outfit collection, match jewellery to complement your look, brief the makeup artist on your reference styles, and plan the photography coverage for each function. Everything is coordinated so nothing falls through the gaps.",
@@ -366,9 +366,9 @@ export const servicePages = {
     h1: 'Complete Bridal Package in Bangalore',
     city: 'Bangalore',
     service: 'Bridal Package',
-    ctaLink: '/contact',
-    ctaText: 'Get a Package Quote',
-    productFilter: null,
+    ctaLink: '/bridal-combo',
+    ctaText: 'View All Packages',
+    productFilter: { type: 'bridal-combo' },
     introParagraphs: [
       "Bangalore is one of India's top wedding destinations — and brides here expect the best. People & Style's complete bridal package in Bangalore delivers just that: premium bridal clothing rental, stunning jewellery, expert makeup, and professional photography, all coordinated by a single team that understands how to make your wedding day seamless and spectacular.",
       "The challenge with planning a Bangalore wedding is that every vendor operates separately — your makeup artist doesn't know your outfit, your photographer hasn't seen your venue. Our bundled bridal package changes that. We bring all four services together, conduct a single joint consultation, and plan every detail in advance so your team arrives on the day already briefed and ready. No last-minute coordination stress.",
@@ -397,7 +397,7 @@ export const servicePages = {
       },
       {
         q: 'Do you travel to all parts of Bangalore for the package services?',
-        a: 'Yes, our makeup artists and photographers travel across Bangalore — Koramangala, Whitefield, Jayanagar, Indiranagar, Hebbal, JP Nagar, and all other areas. Clothing and jewellery can be delivered or picked up from our store.',
+        a: 'Yes, our makeup artists and photographers travel across Bangalore — Koramangala, Whitefield, Jayanagar, Indiranagar, Hebbal, JP Nagar, and all other areas. Clothing and jewellery are delivered to your doorstep with free return pickup.',
       },
       {
         q: 'What is the booking process for the bridal package?',
@@ -420,7 +420,7 @@ export const servicePages = {
     service: 'Bridal Makeup',
     ctaLink: '/contact',
     ctaText: 'Book a Consultation',
-    productFilter: null,
+    productFilter: { type: 'makeup', limit: 6 },
     introParagraphs: [
       "Your wedding day makeup should be flawless, long-lasting, and uniquely you. People & Style's professional wedding makeup artists in Mysuru specialise in bridal makeup that looks stunning in person and photographs beautifully — through the ceremony, reception, and everything in between. Whether you're looking for a traditional bridal look or a modern finish, our team delivers.",
       "Our Mysuru-based makeup artists are trained in a full range of bridal styles: from traditional South Indian looks that complement silk sarees and temple jewellery to contemporary HD and airbrush finishes for modern brides who want a high-definition, polished look. We work with your skin tone, facial features, and outfit to create a look that feels like the best version of you.",
@@ -472,7 +472,7 @@ export const servicePages = {
     service: 'Bridal Makeup',
     ctaLink: '/contact',
     ctaText: 'Book a Consultation',
-    productFilter: null,
+    productFilter: { type: 'makeup', limit: 6 },
     introParagraphs: [
       "Bangalore brides deserve makeup that is as vibrant and modern as the city itself. People & Style's professional wedding makeup artists in Bangalore bring expert artistry to your doorstep — delivering flawless, long-lasting bridal looks for every wedding function. Trusted by brides across Bangalore for HD, airbrush, and traditional wedding makeup.",
       "Our Bangalore makeup artists are skilled in a wide range of bridal styles: traditional South Indian looks for Kannada, Tamil, and Telugu ceremonies; dramatic North Indian bridal looks; and soft contemporary finishes for church or court weddings. Every look is tailored to your face shape, skin tone, and outfit.",
