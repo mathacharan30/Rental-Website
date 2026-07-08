@@ -90,10 +90,18 @@ export async function getTopPicks() {
   return Array.isArray(data) ? data.map(mapProduct) : [];
 }
 
-export async function getAllProducts(search = "") {
-  const { data } = await api.get("/api/products", {
-    params: search ? { search } : {}
-  });
+export async function getAllProducts(search = "", page = null, limit = null) {
+  const params = {};
+  if (search) params.search = search;
+  if (page !== null) params.page = page;
+  if (limit !== null) params.limit = limit;
+  const { data } = await api.get("/api/products", { params });
+  if (data && data.products && data.pagination) {
+    return {
+      products: Array.isArray(data.products) ? data.products.map(mapProduct) : [],
+      pagination: data.pagination,
+    };
+  }
   return Array.isArray(data) ? data.map(mapProduct) : [];
 }
 

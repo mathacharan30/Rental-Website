@@ -35,19 +35,43 @@ function calcSaleCommission(salePrice) {
 // GET /api/products  (public – all products for the storefront)
 exports.getAllProducts = async (req, res) => {
   try {
-    const { search } = req.query;
-    const cacheKey = `products:list:${search || ''}`;
+    const { search, page, limit } = req.query;
+    const pageNum = page ? Math.max(1, parseInt(page, 10)) : null;
+    const limitNum = limit ? Math.min(50, Math.max(1, parseInt(limit, 10))) : null;
+    const paginate = pageNum !== null && limitNum !== null;
 
+    const cacheKey = `products:list:${search || ''}:${paginate ? `${pageNum}:${limitNum}` : 'all'}`;
     const cached = await cache.get(cacheKey);
     if (cached) return res.json(cached);
 
     let query = {};
-
     if (search) {
       const searchRegex = new RegExp(search, "i");
       const matchingCategories = await Category.find({ name: searchRegex }).select("_id");
       const categoryIds = matchingCategories.map((c) => c._id);
       query = { $or: [{ name: searchRegex }, { category: { $in: categoryIds } }] };
+    }
+
+    if (paginate) {
+      const total = await Product.countDocuments(query);
+      const totalPages = Math.ceil(total / limitNum);
+      const products = await Product.find(query)
+        .populate("category")
+        .sort({ createdAt: -1 })
+        .skip((pageNum - 1) * limitNum)
+        .limit(limitNum);
+      const result = {
+        products,
+        pagination: {
+          currentPage: pageNum,
+          totalPages,
+          totalItems: total,
+          hasNextPage: pageNum < totalPages,
+          hasPrevPage: pageNum > 1,
+        },
+      };
+      await cache.set(cacheKey, result, 60);
+      return res.json(result);
     }
 
     const products = await Product.find(query)

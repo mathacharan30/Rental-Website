@@ -45,7 +45,7 @@ const Products = () => {
   const { data: productsData, isLoading: loading } = useQuery({
     queryKey: decodedCategory
       ? ["products", decodedCategory, currentPage, searchQuery, hasBothListings ? listingTab : ""]
-      : ["products", "all", searchQuery],
+      : ["products", "all", currentPage, searchQuery],
     queryFn: async () => {
       if (decodedCategory) {
         const result = await getProductsByCategorySlug(
@@ -57,8 +57,9 @@ const Products = () => {
         );
         return result;
       } else {
-        const data = await getAllProducts(searchQuery);
-        return { products: data, pagination: null };
+        const result = await getAllProducts(searchQuery, currentPage, ITEMS_PER_PAGE);
+        if (result && result.products && result.pagination) return result;
+        return { products: Array.isArray(result) ? result : [], pagination: null };
       }
     },
     keepPreviousData: true,
@@ -88,6 +89,18 @@ const Products = () => {
   useEffect(() => {
     setListingTab("rent");
   }, [decodedCategory]);
+
+  // Reset to page 1 when search query changes
+  const prevSearchRef = useRef(searchQuery);
+  useEffect(() => {
+    if (prevSearchRef.current !== searchQuery) {
+      prevSearchRef.current = searchQuery;
+      setSearchParams(
+        (prev) => { prev.delete("page"); return prev; },
+        { replace: true }
+      );
+    }
+  }, [searchQuery]);
 
   const handleNextPage = () => {
     if (pagination && pagination.hasNextPage) {
