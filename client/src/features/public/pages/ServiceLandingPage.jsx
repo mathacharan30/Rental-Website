@@ -1,8 +1,16 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import Footer from "../../shared/components/Footer";
 import { servicePages } from "../../../data/serviceLandingData";
+import ProductCard from "../components/ProductCard";
+import {
+  getAllProducts,
+  getProductsByCategorySlug,
+} from "../../../services/productService";
+
+const WA_NUMBER = "919187668280";
 
 const FAQItem = ({ q, a }) => {
   const [open, setOpen] = useState(false);
@@ -32,9 +40,27 @@ const FAQItem = ({ q, a }) => {
 
 const ServiceLandingPage = () => {
   const { pathname } = useLocation();
-  const slug = pathname.replace(/^\//, '');
+  const slug = pathname.replace(/^\//, "");
   const data = servicePages[slug];
   if (!data) return null;
+
+  const pf = data.productFilter;
+
+  const { data: products = [] } = useQuery({
+    queryKey: ["service-landing-products", slug],
+    queryFn: async () => {
+      if (!pf) return [];
+      if (pf.type === "category") {
+        const result = await getProductsByCategorySlug(pf.slug, 1, pf.limit);
+        return result.products || [];
+      }
+      const all = await getAllProducts();
+      return all.slice(0, pf.limit);
+    },
+    enabled: !!pf,
+    staleTime: 1000 * 60 * 5,
+  });
+
   return (
     <div className="bg-[#0e0e0e] min-h-screen text-white">
       {/* ── Hero ─────────────────────────────────────────────────────── */}
@@ -63,7 +89,7 @@ const ServiceLandingPage = () => {
             {data.ctaText}
           </Link>
           <a
-            href="https://wa.me/message/FRASHXI7BJGSG1"
+            href={`https://wa.me/${WA_NUMBER}`}
             target="_blank"
             rel="noreferrer"
             className="px-6 py-3 rounded-full border border-white/20 text-white hover:bg-white/10 transition-colors text-sm font-medium"
@@ -74,6 +100,68 @@ const ServiceLandingPage = () => {
       </section>
 
       <div className="h-px w-full bg-white/5" />
+
+      {/* ── Products Grid ─────────────────────────────────────────────── */}
+      {pf && products.length > 0 && (
+        <>
+          <section className="max-w-5xl mx-auto px-4 py-12">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-xl md:text-2xl font-semibold">
+                {pf.type === "category" ? "Our Jewellery Collection" : "Our Outfit Collection"}
+              </h2>
+              <Link
+                to={data.ctaLink}
+                className="text-violet-400 text-sm hover:text-violet-300 transition-colors"
+              >
+                View all →
+              </Link>
+            </div>
+            <div className="flex flex-wrap gap-3 justify-center sm:justify-start">
+              {products.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </section>
+          <div className="h-px w-full bg-white/5" />
+        </>
+      )}
+
+      {/* ── Service CTA (for makeup/photography/bridal) ──────────────── */}
+      {!pf && (
+        <>
+          <section className="max-w-4xl mx-auto px-4 py-12">
+            <div className="glass rounded-2xl border border-white/10 p-8 text-center">
+              <p className="text-violet-400 text-xs font-semibold uppercase tracking-widest mb-3">
+                Book Your Service
+              </p>
+              <h2 className="text-xl md:text-2xl font-semibold mb-4">
+                Ready to get started?
+              </h2>
+              <p className="text-neutral-400 text-sm mb-6 max-w-md mx-auto">
+                WhatsApp us your event date and requirements — we'll get back to
+                you with pricing and availability within a few hours.
+              </p>
+              <div className="flex flex-wrap gap-3 justify-center">
+                <a
+                  href={`https://wa.me/${WA_NUMBER}?text=Hi, I'm interested in ${encodeURIComponent(data.service)} for my event in ${data.city}. Can you share pricing and availability?`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn-funky inline-flex items-center justify-center"
+                >
+                  WhatsApp Us Now
+                </a>
+                <Link
+                  to="/contact"
+                  className="px-6 py-3 rounded-full border border-white/20 text-white hover:bg-white/10 transition-colors text-sm font-medium"
+                >
+                  Contact Form
+                </Link>
+              </div>
+            </div>
+          </section>
+          <div className="h-px w-full bg-white/5" />
+        </>
+      )}
 
       {/* ── Highlights ───────────────────────────────────────────────── */}
       <section className="max-w-4xl mx-auto px-4 py-12">

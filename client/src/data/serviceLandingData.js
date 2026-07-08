@@ -6,6 +6,7 @@ export const servicePages = {
     service: 'Rental Clothing',
     ctaLink: '/products',
     ctaText: 'Browse Our Collection',
+    productFilter: { type: 'all', limit: 8 },
     introParagraphs: [
       "Planning your wedding in Mysuru? Looking stunning on your big day doesn't have to cost a fortune. At People & Style, we offer a premium collection of bridal and wedding clothing on rent in Mysuru — designer lehengas, wedding gowns, silk sarees, sherwanis, and Indo-western outfits for every function and budget. Whether you need a wedding lehenga rental for the ceremony or a reception gown for the evening, we have you covered.",
       "A designer bridal lehenga can cost ₹40,000 or more to buy outright, and you wear it exactly once. Our rental collection gives you access to the same stunning designs at a fraction of the price. Browse over 200 outfits spanning classic Banarasi and Kanjeevaram styles, contemporary gowns, and embroidered sherwanis — all professionally cleaned and quality-checked before each rental.",
@@ -57,6 +58,7 @@ export const servicePages = {
     service: 'Rental Clothing',
     ctaLink: '/products',
     ctaText: 'Browse Our Collection',
+    productFilter: { type: 'all', limit: 8 },
     introParagraphs: [
       "Looking for the perfect wedding dress rental in Bangalore without the high cost of buying? People & Style brings you a curated collection of bridal and wedding clothing on rent in Bangalore — designer lehengas, wedding gowns, silk sarees, reception dresses, and sherwanis for every occasion and budget. From wedding lehenga rentals to sherwani hire, every look is covered.",
       "Bangalore is home to some of India's most stylish weddings, and your outfit should match the occasion. Our rental collection features over 200 handpicked designs — from heavily embroidered Banarasi lehengas and flowing Indo-western gowns to classic Kanjeevaram silk sarees and elegant sherwanis. Every outfit is available in a range of sizes and is professionally cleaned before delivery.",
@@ -106,8 +108,9 @@ export const servicePages = {
     h1: 'Bridal Jewellery on Rent in Mysuru',
     city: 'Mysuru',
     service: 'Rental Jewellery',
-    ctaLink: '/contact',
-    ctaText: 'Enquire Now',
+    ctaLink: '/products/jewels',
+    ctaText: 'Browse Jewellery',
+    productFilter: { type: 'category', slug: 'jewels', limit: 8 },
     introParagraphs: [
       "Complete your bridal look with the perfect jewellery — without the cost of buying gold. At People & Style, we offer a wide range of bridal and wedding jewellery on rent in Mysuru, from full temple jewellery sets and gold-finish necklaces to stone-studded maang tikka sets and stacked bangles. Our wedding jewellery rental collection covers every style and budget.",
       "Bridal jewellery is one of the biggest expenses in any Indian wedding. A single gold necklace set can cost ₹50,000 or more, and once the wedding is over, it sits in a locker rarely worn again. Renting gives you access to the same stunning look — beautifully crafted, heavy-looking jewellery — at a fraction of the price.",
@@ -157,8 +160,9 @@ export const servicePages = {
     h1: 'Bridal Jewellery on Rent in Bangalore',
     city: 'Bangalore',
     service: 'Rental Jewellery',
-    ctaLink: '/contact',
-    ctaText: 'Enquire Now',
+    ctaLink: '/products/jewels',
+    ctaText: 'Browse Jewellery',
+    productFilter: { type: 'category', slug: 'jewels', limit: 8 },
     introParagraphs: [
       "Why spend a fortune on jewellery you'll wear just once? People & Style offers premium bridal and wedding jewellery on rent in Bangalore — complete sets that make you look like a million rupees without the price tag. Our wedding jewellery rental service in Bangalore covers every style from temple sets to contemporary kundan.",
       "Our Bangalore collection covers every jewellery style from traditional South Indian temple sets to North Indian kundan, polki, and meenakari bridal jewellery. Whether your wedding is a traditional Karnataka ceremony, a grand North Indian shaadi, or a contemporary fusion event, we have the right jewellery to complete your look.",
@@ -210,6 +214,7 @@ export const servicePages = {
     service: 'Wedding Photography',
     ctaLink: '/contact',
     ctaText: 'Book a Consultation',
+    productFilter: null,
     introParagraphs: [
       "Your wedding photographs are the one thing you will look at for the rest of your life — they deserve to be exceptional. People & Style's professional wedding photographers in Mysuru capture every emotion, every stolen glance, and every burst of laughter with a natural, storytelling approach. From the early morning rituals to the last dance of the reception, we document your day as it truly was.",
       "Mysuru is one of India's most beautiful cities for weddings — its palaces, gardens, and heritage venues create a stunning backdrop. Our photographers know the city intimately and use every location to its fullest. Whether your wedding is at a traditional hall in Chamrajpura, an outdoor venue near Brindavan Gardens, or a destination setting at a heritage property, we bring the light and the story together beautifully.",
@@ -260,6 +265,7 @@ export const servicePages = {
     service: 'Wedding Photography',
     ctaLink: '/contact',
     ctaText: 'Book a Consultation',
+    productFilter: null,
     introParagraphs: [
       "Bangalore weddings are among the most vibrant in India — a blend of South Indian traditions, cosmopolitan style, and spectacular venues. People & Style's wedding photographers in Bangalore specialise in capturing this energy authentically. From intimate home ceremonies in Jayanagar to grand ballroom receptions in Whitefield, our photographers bring creative vision and professional precision to every event.",
       "Our approach blends candid documentary photography — capturing real emotions as they happen — with carefully composed traditional portraits that your family will treasure. We work unobtrusively during ceremonies so nothing feels staged, and we set aside dedicated time for portraits that look timeless rather than posed. The result is a full story of your day, from the smallest detail to the biggest moments.",
@@ -310,6 +316,7 @@ export const servicePages = {
     service: 'Bridal Package',
     ctaLink: '/contact',
     ctaText: 'Get a Package Quote',
+    productFilter: null,
     introParagraphs: [
       "Planning a wedding in Mysuru involves coordinating dozens of vendors — and that coordination is stressful. People & Style's complete bridal package brings everything together under one roof: bridal clothing rental, jewellery rental, professional makeup, and wedding photography. One team, one point of contact, and a cohesive look across every service — at a price that's significantly lower than booking each separately.",
       "Our bridal packages are built around you. We start with a consultation to understand your wedding functions, style preferences, and budget. From there, we curate a clothing shortlist from our 200+ outfit collection, match jewellery to complement your look, brief the makeup artist on your reference styles, and plan the photography coverage for each function. Everything is coordinated so nothing falls through the gaps.",
@@ -361,6 +368,7 @@ export const servicePages = {
     service: 'Bridal Package',
     ctaLink: '/contact',
     ctaText: 'Get a Package Quote',
+    productFilter: null,
     introParagraphs: [
       "Bangalore is one of India's top wedding destinations — and brides here expect the best. People & Style's complete bridal package in Bangalore delivers just that: premium bridal clothing rental, stunning jewellery, expert makeup, and professional photography, all coordinated by a single team that understands how to make your wedding day seamless and spectacular.",
       "The challenge with planning a Bangalore wedding is that every vendor operates separately — your makeup artist doesn't know your outfit, your photographer hasn't seen your venue. Our bundled bridal package changes that. We bring all four services together, conduct a single joint consultation, and plan every detail in advance so your team arrives on the day already briefed and ready. No last-minute coordination stress.",
@@ -412,6 +420,7 @@ export const servicePages = {
     service: 'Bridal Makeup',
     ctaLink: '/contact',
     ctaText: 'Book a Consultation',
+    productFilter: null,
     introParagraphs: [
       "Your wedding day makeup should be flawless, long-lasting, and uniquely you. People & Style's professional wedding makeup artists in Mysuru specialise in bridal makeup that looks stunning in person and photographs beautifully — through the ceremony, reception, and everything in between. Whether you're looking for a traditional bridal look or a modern finish, our team delivers.",
       "Our Mysuru-based makeup artists are trained in a full range of bridal styles: from traditional South Indian looks that complement silk sarees and temple jewellery to contemporary HD and airbrush finishes for modern brides who want a high-definition, polished look. We work with your skin tone, facial features, and outfit to create a look that feels like the best version of you.",
@@ -463,6 +472,7 @@ export const servicePages = {
     service: 'Bridal Makeup',
     ctaLink: '/contact',
     ctaText: 'Book a Consultation',
+    productFilter: null,
     introParagraphs: [
       "Bangalore brides deserve makeup that is as vibrant and modern as the city itself. People & Style's professional wedding makeup artists in Bangalore bring expert artistry to your doorstep — delivering flawless, long-lasting bridal looks for every wedding function. Trusted by brides across Bangalore for HD, airbrush, and traditional wedding makeup.",
       "Our Bangalore makeup artists are skilled in a wide range of bridal styles: traditional South Indian looks for Kannada, Tamil, and Telugu ceremonies; dramatic North Indian bridal looks; and soft contemporary finishes for church or court weddings. Every look is tailored to your face shape, skin tone, and outfit.",

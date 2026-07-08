@@ -4,7 +4,7 @@ import { FaInstagram, FaWhatsapp, FaYoutube } from "react-icons/fa6";
 
 const SOCIAL_LINKS = {
   instagram: "https://www.instagram.com/peopleandstyle.in",
-  whatsapp: "https://wa.me/message/FRASHXI7BJGSG1",
+  whatsapp: "https://wa.me/919187668280",
   youtube: "https://youtube.com/@peopleandstyle_in",
 };
 
