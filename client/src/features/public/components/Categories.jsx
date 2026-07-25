@@ -4,12 +4,15 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getCategories } from "../../../services/categoryService";
 import { getMakeupCategories } from "../../../services/makeupCategoryService";
+import { getEvents } from "../../../services/eventService";
 import toast from "react-hot-toast";
-import { ArrowRight, Sparkles, RefreshCw } from "lucide-react";
+import { ArrowRight, Sparkles, RefreshCw, PartyPopper } from "lucide-react";
 import OptimizedImage from "../../shared/components/OptimizedImage";
 import { CategoriesSkeleton } from "../loaders";
 import { motion, AnimatePresence } from "framer-motion";
 import { HiOutlineSquares2X2 } from "react-icons/hi2";
+import EventTile from "./events/EventTile";
+import EventDetailModal from "./events/EventDetailModal";
 
 const tabVariants = {
   hidden: { opacity: 0, filter: "blur(8px)", scale: 0.98 },
@@ -34,6 +37,7 @@ function mapCategory(c = {}) {
 const Categories = () => {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState("categories");
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   useEffect(() => {
     if (location.state?.activeTab === "combos") {
@@ -76,6 +80,23 @@ const Categories = () => {
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 8000),
   });
 
+  const {
+    data: events = [],
+    isLoading: eventsLoading,
+    isError: eventsError,
+    refetch: eventsRefetch,
+  } = useQuery({
+    queryKey: ["events"],
+    queryFn: async () => {
+      const data = await getEvents();
+      return Array.isArray(data) ? data : [];
+    },
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
+    retry: 3,
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 8000),
+  });
+
   useEffect(() => {
     if (isError) toast.error("Failed to load categories");
   }, [isError]);
@@ -83,6 +104,10 @@ const Categories = () => {
   useEffect(() => {
     if (makeupError) toast.error("Failed to load makeup categories");
   }, [makeupError]);
+
+  useEffect(() => {
+    if (eventsError) toast.error("Failed to load events");
+  }, [eventsError]);
 
   return (
     <section id="categories" className="py-15">
@@ -99,7 +124,11 @@ const Categories = () => {
             >
               - Browse{" "}
               <span className="text-violet-400 italic">
-                {activeTab === "categories" ? "Categories -" : "Combos -"}
+                {activeTab === "categories"
+                  ? "Categories -"
+                  : activeTab === "events"
+                    ? "Events -"
+                    : "Combos -"}
               </span>
             </motion.h2>
           </AnimatePresence>
@@ -121,6 +150,12 @@ const Categories = () => {
             className={`px-4 py-2 rounded-full text-sm font-medium transition-all border-y inline-flex items-center gap-2 ${activeTab === "combos" ? "bg-linear-to-r from-fuchsia-500 to-violet-700 border-violet-400 text-white shadow-inner shadow-white/85" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40 shadow-inner shadow-white/15"}`}
           >
             <Sparkles size={14} /> Makeup
+          </button>
+          <button
+            onClick={() => setActiveTab("events")}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all border-y inline-flex items-center gap-2 ${activeTab === "events" ? "bg-linear-to-r from-fuchsia-500 to-violet-700 border-violet-400 text-white shadow-inner shadow-white/85" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40 shadow-inner shadow-white/15"}`}
+          >
+            <PartyPopper size={14} /> Events
           </button>
         </div>
 
@@ -195,7 +230,7 @@ const Categories = () => {
               ))
             )}
           </motion.div>
-        ) : (
+        ) : activeTab === "combos" ? (
           <motion.div
             key="makeup"
             initial="hidden"
@@ -266,9 +301,43 @@ const Categories = () => {
               })
             )}
           </motion.div>
+        ) : (
+          <motion.div
+            key="events"
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            className="flex flex-wrap gap-2 justify-center"
+          >
+            {eventsLoading ? (
+              <CategoriesSkeleton count={4} />
+            ) : eventsError ? (
+              <div className="flex flex-col items-center gap-4 py-12 text-neutral-400">
+                <p className="text-sm">Could not load events.</p>
+                <button
+                  onClick={() => eventsRefetch()}
+                  className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-fuchsia-500/10 border border-fuchsia-400/30 text-fuchsia-300 hover:bg-fuchsia-500/20 transition-all text-sm"
+                >
+                  <RefreshCw size={14} /> Try again
+                </button>
+              </div>
+            ) : events.length === 0 ? (
+              <div className="text-neutral-400 py-12">No events found.</div>
+            ) : (
+              events.map((ev) => (
+                <EventTile key={ev._id} event={ev} onClick={setSelectedEvent} />
+              ))
+            )}
+          </motion.div>
         )}
 
       </div>
+
+      <AnimatePresence>
+        {selectedEvent && (
+          <EventDetailModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />
+        )}
+      </AnimatePresence>
     </section>
   );
 };

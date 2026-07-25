@@ -27,6 +27,7 @@ import TestimonialsAdmin from "./TestimonialsAdmin";
 import SuperAdminOrders from "./SuperAdminOrders";
 import MakeupCategoriesAdmin from "./MakeupCategoriesAdmin";
 import MakeupPackagesAdmin from "./MakeupPackagesAdmin";
+import EventsAdmin from "./EventsAdmin";
 
 async function authHeader() {
   const token = await getIdToken();
@@ -40,6 +41,7 @@ const MENU_ITEMS = [
   { id: "categories", label: "Categories", icon: Tag },
   { id: "makeup-categories", label: "Makeup Categories", icon: Tag },
   { id: "makeup-packages",   label: "Makeup Packages",   icon: Tag },
+  { id: "events",            label: "Events",            icon: Tag },
   { id: "banners", label: "Banner Images", icon: Image },
   { id: "gallery", label: "Gallery Images", icon: Image },
   { id: "instagram", label: "Instagram Posts", icon: Instagram },
@@ -301,6 +303,7 @@ export default function SuperAdminDashboard() {
             {activeTab === "categories" && <CategoriesAdmin />}
             {activeTab === "makeup-categories" && <MakeupCategoriesAdmin />}
             {activeTab === "makeup-packages"   && <MakeupPackagesAdmin />}
+            {activeTab === "events"            && <EventsAdmin />}
             {activeTab === "banners" && <BannerImagesAdmin />}
             {activeTab === "gallery" && <HeroImagesAdmin />}
             {activeTab === "instagram" && <InstaAdmin />}
