@@ -6,7 +6,6 @@ Comprehensive Node.js + Express + MongoDB (Mongoose) API powering a dynamic clot
 - Category-driven product listing (Category -> Products -> Product detail)
 - Multi-image Product uploads to Cloudinary
 - Banner Management (single `banners` folder)
-- Instagram Post Link Management
 - Secure deletion of Cloudinary assets
 - Environment variable configuration with `dotenv`
 
@@ -34,14 +33,12 @@ models/
   Product.js
   Category.js
   Banner.js
-  InstaPost.js
   Admin.js
   User.js
 controllers/
   productController.js
   categoryController.js
   bannerController.js
-  instaController.js
   authController.js
 middlewares/
   upload.js
@@ -50,7 +47,6 @@ routes/
   productRoutes.js
   categoryRoutes.js
   bannerRoutes.js
-  instaRoutes.js
   authRoutes.js
 ```
 
@@ -99,14 +95,7 @@ imagePublicId: String (required)
 timestamps
 ```
 
-### 4.4 Instagram Post (`models/InstaPost.js`)
-```
-caption: String (optional)
-postUrl: String (required, validated as Instagram URL)
-timestamps
-`````
-  
-### 4.5 Admin (`models/Admin.js`)
+### 4.4 Admin (`models/Admin.js`)
 ```
 name: String
 email: String (required, unique)
@@ -207,16 +196,7 @@ Response includes populated category and array `images` with URLs.
 
 Multipart POST: `title` (optional), `image` (file).
 
-### 7.5 Instagram Posts
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /api/insta | List Instagram posts |
-| POST | /api/insta | Add post (caption, postUrl) |
-| DELETE | /api/insta/:id | Delete post |
-
-Validation: `postUrl` must match pattern for `instagram.com/p|reel|tv/...`.
-
-### 7.6 Admin Auth
+### 7.5 Admin Auth
 | Method | Endpoint | Body |
 |--------|----------|------|
 | POST | /api/admin/register | `{ name, email, password }` |
@@ -274,13 +254,6 @@ curl.exe http://localhost:5000/api/categories/<CATEGORY_ID>/products
 curl.exe -X POST http://localhost:5000/api/banners `
   -F "title=Homepage Hero" `
   -F "image=@'C:\Images\hero.png'"
-```
-
-### Instagram Post Add
-```powershell
-curl.exe -X POST http://localhost:5000/api/insta `
-  -H "Content-Type: application/json" `
-  -d '{"caption":"Holiday Reel","postUrl":"https://www.instagram.com/reel/ABC12345/"}'
 ```
 
 ### Admin Token Refresh
@@ -351,6 +324,5 @@ ISC
 | Category Products | GET /api/categories/:id/products | - | - | - |
 | Products | GET /api/products | GET /api/products/:id | POST /api/products | DELETE /api/products/:id |
 | Banners | GET /api/banners | - | POST /api/banners | DELETE /api/banners/:id |
-| Instagram Posts | GET /api/insta | - | POST /api/insta | DELETE /api/insta/:id |
 | Auth | - | GET /api/auth/profile | POST /api/auth/register /login /token /logout | - |
 

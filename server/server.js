@@ -43,7 +43,6 @@ const connectDB  = require("./config/db");
 
 const productRoutes          = require("./routes/productRoutes");
 const bannerRoutes           = require("./routes/bannerRoutes");
-const instaRoutes            = require("./routes/instaRoutes");
 const authRoutes             = require("./routes/authRoutes");
 const categoryRoutes         = require("./routes/categoryRoutes");
 const testimonialRoutes      = require("./routes/testimonialRoutes");
@@ -167,7 +166,6 @@ app.get("/", (req, res) => {
 // ── API routes ────────────────────────────────────────────────────────────────
 app.use("/api/products",              productRoutes);
 app.use("/api/banners",               bannerRoutes);
-app.use("/api/insta",                 instaRoutes);
 app.use("/api/auth",                  authRoutes);
 app.use("/api/categories",            categoryRoutes);
 app.use("/api/testimonials",          testimonialRoutes);

@@ -344,7 +344,6 @@ super-admin/
 ├── CategoriesAdmin.jsx     ← Manage product categories
 ├── HeroImagesAdmin.jsx     ← Manage hero banner images
 ├── BannerImagesAdmin.jsx   ← Manage other banners
-├── InstaAdmin.jsx          ← Manage Instagram feed section
 ├── TestimonialsAdmin.jsx   ← Manage customer testimonials
 └── CitiesAdmin.jsx         ← Manage delivery cities and charges
 ```
@@ -405,7 +404,6 @@ services/
 ├── bannerService.js          ← getBanners (hero banners, category banners)
 ├── testimonialService.js     ← getTestimonials
 ├── productTestimonialService.js ← product-specific reviews
-├── instaService.js           ← getInstaPosts (Instagram feed section)
 ├── orderService.js           ← createOrder, getMyOrders, getAllOrders
 ├── paymentService.js         ← initiate/verify PhonePe payment
 ├── favoriteService.js        ← getFavorites, addFavorite, removeFavorite

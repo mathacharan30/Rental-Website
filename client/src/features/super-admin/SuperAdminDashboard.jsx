@@ -9,7 +9,6 @@ import {
   Users,
   Tag,
   Image,
-  Instagram,
   Heart,
   Box,
   MapPin,
@@ -22,7 +21,6 @@ import CitiesAdmin from "./CitiesAdmin";
 import CategoriesAdmin from "./CategoriesAdmin";
 import HeroImagesAdmin from "./HeroImagesAdmin";
 import BannerImagesAdmin from "./BannerImagesAdmin";
-import InstaAdmin from "./InstaAdmin";
 import TestimonialsAdmin from "./TestimonialsAdmin";
 import SuperAdminOrders from "./SuperAdminOrders";
 import MakeupCategoriesAdmin from "./MakeupCategoriesAdmin";
@@ -46,7 +44,6 @@ const MENU_ITEMS = [
   { id: "events",            label: "Events",            icon: Tag },
   { id: "banners", label: "Banner Images", icon: Image },
   { id: "gallery", label: "Gallery Images", icon: Image },
-  { id: "instagram", label: "Instagram Posts", icon: Instagram },
   { id: "testimonials", label: "Testimonials", icon: Heart },
   { id: "orders", label: "All Orders", icon: Box },
   { id: "cities", label: "Delivery Cities", icon: MapPin },
@@ -342,7 +339,6 @@ export default function SuperAdminDashboard() {
             {activeTab === "events"            && <EventsAdmin />}
             {activeTab === "banners" && <BannerImagesAdmin />}
             {activeTab === "gallery" && <HeroImagesAdmin />}
-            {activeTab === "instagram" && <InstaAdmin />}
             {activeTab === "testimonials" && <TestimonialsAdmin />}
             {activeTab === "orders" && <SuperAdminOrders />}
             {activeTab === "cities" && (
