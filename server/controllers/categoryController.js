@@ -1,5 +1,6 @@
 const Category = require('../models/Category');
 const Product = require('../models/Product');
+const Store = require('../models/Store');
 const { s3, S3_BUCKET, deleteFromS3 } = require('../config/s3');
 const { PutObjectCommand } = require('@aws-sdk/client-s3');
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
@@ -104,11 +105,16 @@ exports.getProductsByCategory = async (req, res) => {
     const skip = (pageNum - 1) * limitNum;
 
     // Build the query object
-    const { listingType } = req.query;
+    const { listingType, city } = req.query;
     let query = { category: id };
     if (search) {
       const searchRegex = new RegExp(search, "i");
       query.name = searchRegex;
+    }
+    // Filter by city: products belong to stores, and each store has a city.
+    if (city) {
+      const storeIds = await Store.find({ city }).distinct("_id");
+      query.store = { $in: storeIds };
     }
     if (listingType === "sale") {
       query.listingType = "sale";

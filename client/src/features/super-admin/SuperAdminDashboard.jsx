@@ -28,6 +28,8 @@ import SuperAdminOrders from "./SuperAdminOrders";
 import MakeupCategoriesAdmin from "./MakeupCategoriesAdmin";
 import MakeupPackagesAdmin from "./MakeupPackagesAdmin";
 import EventsAdmin from "./EventsAdmin";
+import StoreCitiesAdmin from "./StoreCitiesAdmin";
+import { getStoreCities } from "../../services/cityService";
 
 async function authHeader() {
   const token = await getIdToken();
@@ -48,6 +50,7 @@ const MENU_ITEMS = [
   { id: "testimonials", label: "Testimonials", icon: Heart },
   { id: "orders", label: "All Orders", icon: Box },
   { id: "cities", label: "Delivery Cities", icon: MapPin },
+  { id: "store-cities", label: "Store Cities", icon: MapPin },
 ];
 
 export default function SuperAdminDashboard() {
@@ -60,8 +63,10 @@ export default function SuperAdminDashboard() {
     email: "",
     password: "",
     storeName: "",
+    city: "",
   });
   const [busy, setBusy] = useState(false);
+  const [storeCities, setStoreCities] = useState([]);
 
   const [cities, setCities] = useState([]);
   const [cityBusy, setCityBusy] = useState(false);
@@ -98,11 +103,23 @@ export default function SuperAdminDashboard() {
     }
   }, []);
 
+  const loadStoreCities = useCallback(async () => {
+    try {
+      setStoreCities(await getStoreCities());
+    } catch {
+      toast.error("Failed to load store cities");
+    }
+  }, []);
+
   useEffect(() => {
-    if (activeTab === "view-stores") loadStores();
+    if (activeTab === "view-stores") {
+      loadStores();
+      loadStoreCities();
+    }
     if (activeTab === "all-users") loadUsers();
     if (activeTab === "cities") loadCities();
-  }, [activeTab, loadStores, loadUsers, loadCities]);
+    if (activeTab === "add-store") loadStoreCities();
+  }, [activeTab, loadStores, loadUsers, loadCities, loadStoreCities]);
 
   const handleCreateStore = async (e) => {
     e.preventDefault();
@@ -117,7 +134,7 @@ export default function SuperAdminDashboard() {
       const headers = await authHeader();
       await api.post("/api/superadmin/stores", form, { headers });
       toast.success("Store owner created!", { id: tid });
-      setForm({ name: "", email: "", password: "", storeName: "" });
+      setForm({ name: "", email: "", password: "", storeName: "", city: "" });
       setActiveTab("view-stores");
     } catch (err) {
       toast.error(err?.response?.data?.message || "Failed to create", {
@@ -125,6 +142,22 @@ export default function SuperAdminDashboard() {
       });
     } finally {
       setBusy(false);
+    }
+  };
+
+  const handleUpdateStore = async (id, updates) => {
+    const tid = toast.loading("Updating store...");
+    try {
+      const headers = await authHeader();
+      await api.put(`/api/superadmin/stores/${id}`, updates, { headers });
+      toast.success("Store updated!", { id: tid });
+      loadStores();
+      return true;
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Failed to update store", {
+        id: tid,
+      });
+      return false;
     }
   };
 
@@ -288,6 +321,8 @@ export default function SuperAdminDashboard() {
                 navigate={navigate}
                 handleDelete={handleDelete}
                 handleResetPassword={handleResetPassword}
+                handleUpdateStore={handleUpdateStore}
+                storeCities={storeCities}
                 setActiveTab={setActiveTab}
               />
             )}
@@ -297,6 +332,7 @@ export default function SuperAdminDashboard() {
                 setForm={setForm}
                 handleCreateStore={handleCreateStore}
                 busy={busy}
+                storeCities={storeCities}
               />
             )}
             {activeTab === "all-users" && <AllUsers users={users} />}
@@ -323,6 +359,7 @@ export default function SuperAdminDashboard() {
                 handleCityDelete={handleCityDelete}
               />
             )}
+            {activeTab === "store-cities" && <StoreCitiesAdmin />}
           </div>
         </div>
       </main>

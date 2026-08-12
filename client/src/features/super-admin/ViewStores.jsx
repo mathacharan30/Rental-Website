@@ -64,11 +64,145 @@ function PasswordCell({ password, uid, onReset }) {
   );
 }
 
+const inputCls =
+  "bg-white/10 text-white text-sm px-2 py-1 rounded border border-white/20 outline-none focus:border-violet-500 w-full";
+
+function StoreRow({
+  store: s,
+  storeCities,
+  navigate,
+  handleDelete,
+  handleResetPassword,
+  handleUpdateStore,
+}) {
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [draft, setDraft] = useState({ name: "", slug: "", city: "" });
+
+  const startEdit = () => {
+    setDraft({
+      name: s.name || "",
+      slug: s.slug || "",
+      city: s.city?._id || "",
+    });
+    setEditing(true);
+  };
+
+  const save = async () => {
+    if (!draft.name.trim() || !draft.slug.trim()) return;
+    setSaving(true);
+    const ok = await handleUpdateStore(s._id, {
+      name: draft.name.trim(),
+      slug: draft.slug.trim(),
+      city: draft.city, // "" clears the city on the server
+    });
+    setSaving(false);
+    if (ok) setEditing(false);
+  };
+
+  return (
+    <tr className="hover:bg-white/5 transition-colors">
+      <td className="px-6 py-4 text-white font-medium">
+        {editing ? (
+          <input
+            className={inputCls}
+            value={draft.name}
+            onChange={(e) => setDraft((d) => ({ ...d, name: e.target.value }))}
+          />
+        ) : (
+          s.name
+        )}
+      </td>
+      <td className="px-6 py-4 text-neutral-400">{s.owner?.email || "-"}</td>
+      <td className="px-6 py-4">
+        <PasswordCell
+          password={s.owner?.loginPassword}
+          uid={s.owner?.uid}
+          onReset={handleResetPassword}
+        />
+      </td>
+      <td className="px-6 py-4 text-neutral-400">
+        {editing ? (
+          <input
+            className={inputCls}
+            value={draft.slug}
+            onChange={(e) => setDraft((d) => ({ ...d, slug: e.target.value }))}
+          />
+        ) : (
+          s.slug
+        )}
+      </td>
+      <td className="px-6 py-4 text-neutral-400">
+        {editing ? (
+          <select
+            className={inputCls}
+            value={draft.city}
+            onChange={(e) => setDraft((d) => ({ ...d, city: e.target.value }))}
+          >
+            <option value="" className="bg-neutral-900">
+              — No city —
+            </option>
+            {storeCities.map((c) => (
+              <option key={c._id} value={c._id} className="bg-neutral-900">
+                {c.name}
+              </option>
+            ))}
+          </select>
+        ) : (
+          s.city?.name || <span className="text-neutral-600">-</span>
+        )}
+      </td>
+      <td className="px-6 py-4">
+        {editing ? (
+          <div className="flex gap-3">
+            <button
+              onClick={save}
+              disabled={saving || !draft.name.trim() || !draft.slug.trim()}
+              className="text-green-400 hover:text-green-300 text-sm font-medium disabled:opacity-40"
+            >
+              {saving ? "Saving..." : "Save"}
+            </button>
+            <button
+              onClick={() => setEditing(false)}
+              className="text-neutral-500 hover:text-neutral-300 text-sm font-medium"
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <div className="flex gap-3">
+            <button
+              onClick={startEdit}
+              className="text-blue-400 hover:text-blue-300 text-sm font-medium"
+            >
+              Edit
+            </button>
+            <button
+              onClick={() => navigate(`/admin/${s.slug}`)}
+              className="text-violet-400 hover:text-violet-300 text-sm font-medium"
+            >
+              View
+            </button>
+            <button
+              onClick={() => handleDelete(s.owner?.uid)}
+              className="text-red-400 hover:text-red-300 text-sm font-medium"
+            >
+              Delete
+            </button>
+          </div>
+        )}
+      </td>
+    </tr>
+  );
+}
+
 export default function ViewStores({
   stores,
   navigate,
   handleDelete,
   handleResetPassword,
+  handleUpdateStore,
+  storeCities = [],
   setActiveTab,
 }) {
   return (
@@ -89,7 +223,7 @@ export default function ViewStores({
           <table className="w-full text-sm">
             <thead className="bg-white/5 border-b border-white/10">
               <tr>
-                {["Name", "Email", "Password", "Store Slug", "Actions"].map((h) => (
+                {["Name", "Email", "Password", "Store Slug", "City", "Actions"].map((h) => (
                   <th
                     key={h}
                     className="text-left px-6 py-4 font-medium text-neutral-400"
@@ -101,34 +235,15 @@ export default function ViewStores({
             </thead>
             <tbody className="divide-y divide-white/5">
               {stores.map((s) => (
-                <tr key={s._id} className="hover:bg-white/5 transition-colors">
-                  <td className="px-6 py-4 text-white font-medium">{s.name}</td>
-                  <td className="px-6 py-4 text-neutral-400">
-                    {s.owner?.email || "-"}
-                  </td>
-                  <td className="px-6 py-4">
-                    <PasswordCell
-                      password={s.owner?.loginPassword}
-                      uid={s.owner?.uid}
-                      onReset={handleResetPassword}
-                    />
-                  </td>
-                  <td className="px-6 py-4 text-neutral-400">{s.slug}</td>
-                  <td className="px-6 py-4 flex gap-3">
-                    <button
-                      onClick={() => navigate(`/admin/${s.slug}`)}
-                      className="text-violet-400 hover:text-violet-300 text-sm font-medium"
-                    >
-                      View
-                    </button>
-                    <button
-                      onClick={() => handleDelete(s.owner?.uid)}
-                      className="text-red-400 hover:text-red-300 text-sm font-medium"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
+                <StoreRow
+                  key={s._id}
+                  store={s}
+                  storeCities={storeCities}
+                  navigate={navigate}
+                  handleDelete={handleDelete}
+                  handleResetPassword={handleResetPassword}
+                  handleUpdateStore={handleUpdateStore}
+                />
               ))}
             </tbody>
           </table>

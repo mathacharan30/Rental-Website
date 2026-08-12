@@ -2,6 +2,7 @@ const firebaseAdmin  = require('../config/firebase');
 const User           = require('../models/User');
 const Store          = require('../models/Store');
 const DeliveryCity   = require('../models/DeliveryCity');
+const City           = require('../models/City');
 
 // ─── GET /api/superadmin/stores ───────────────────────────────────────────────
 // Returns all Store documents with owner info populated.
@@ -9,6 +10,7 @@ exports.getStores = async (req, res) => {
   try {
     const stores = await Store.find()
       .populate('owner', 'name email uid loginPassword')
+      .populate('city', 'name')
       .sort({ createdAt: -1 })
       .lean();
     return res.json({ stores });
@@ -22,7 +24,7 @@ exports.getStores = async (req, res) => {
 // Creates a Firebase user + MongoDB User doc + MongoDB Store doc.
 // Body: { name, email, password, storeName }
 exports.createStore = async (req, res) => {
-  const { name, email, password, storeName } = req.body;
+  const { name, email, password, storeName, city } = req.body;
   if (!name || !email || !password || !storeName) {
     return res.status(400).json({ message: 'name, email, password and storeName are required' });
   }
@@ -48,7 +50,7 @@ exports.createStore = async (req, res) => {
     });
 
     // 3. Create Store document
-    const store = await Store.create({ name, slug, owner: user._id });
+    const store = await Store.create({ name, slug, owner: user._id, city: city || null });
 
     // 4. Link storeId back onto the User
     user.storeId = store._id;
@@ -64,6 +66,46 @@ exports.createStore = async (req, res) => {
       return res.status(409).json({ message: 'Email already in use' });
     }
     return res.status(500).json({ message: 'Server error creating store' });
+  }
+};
+
+// ─── PUT /api/superadmin/stores/:id ──────────────────────────────────────────
+// Updates store name, slug and/or city. Email is intentionally NOT editable.
+// Keeps the owner's storeName (URL slug) in sync when the slug changes.
+exports.updateStore = async (req, res) => {
+  const { id } = req.params;
+  const { name, slug, city } = req.body;
+  try {
+    const store = await Store.findById(id);
+    if (!store) return res.status(404).json({ message: 'Store not found' });
+
+    let newSlug = store.slug;
+    if (slug !== undefined) {
+      newSlug = slug.trim().toLowerCase().replace(/\s+/g, '-');
+      store.slug = newSlug;
+    }
+    if (name !== undefined) store.name = name.trim();
+    if (city !== undefined) store.city = city || null;
+
+    await store.save();
+
+    // Keep the owner User's storeName (URL slug) aligned with the store slug.
+    if (slug !== undefined) {
+      await User.findByIdAndUpdate(store.owner, { storeName: newSlug });
+    }
+
+    const populated = await Store.findById(store._id)
+      .populate('owner', 'name email uid loginPassword')
+      .populate('city', 'name')
+      .lean();
+
+    return res.json({ message: 'Store updated', store: populated });
+  } catch (err) {
+    console.error('[SuperAdmin] updateStore:', err.message);
+    if (err.code === 11000) {
+      return res.status(409).json({ message: 'Store slug already in use' });
+    }
+    return res.status(500).json({ message: 'Server error updating store' });
   }
 };
 
@@ -181,6 +223,82 @@ exports.deleteCity = async (req, res) => {
     return res.json({ message: 'City deleted' });
   } catch (err) {
     console.error('[SuperAdmin] deleteCity:', err.message);
+    return res.status(500).json({ message: 'Server error deleting city' });
+  }
+};
+
+// ─── Store Cities ───────────────────────────────────────────────────────────
+// Location cities assigned to stores and used to filter products by city.
+
+// GET /api/store-cities  (public — store dropdown + category-page filter)
+exports.getStoreCities = async (req, res) => {
+  try {
+    const cities = await City.find({ active: true }).sort({ name: 1 }).lean();
+    return res.json({ cities });
+  } catch (err) {
+    console.error('[SuperAdmin] getStoreCities:', err.message);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// GET /api/superadmin/store-cities  (super admin — includes inactive)
+exports.getAllStoreCities = async (req, res) => {
+  try {
+    const cities = await City.find().sort({ name: 1 }).lean();
+    return res.json({ cities });
+  } catch (err) {
+    console.error('[SuperAdmin] getAllStoreCities:', err.message);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// POST /api/superadmin/store-cities
+exports.createStoreCity = async (req, res) => {
+  const { name } = req.body;
+  if (!name || !name.trim()) {
+    return res.status(400).json({ message: 'name is required' });
+  }
+  try {
+    const city = await City.create({ name: name.trim() });
+    return res.status(201).json({ city });
+  } catch (err) {
+    console.error('[SuperAdmin] createStoreCity:', err.message);
+    if (err.code === 11000) {
+      return res.status(409).json({ message: 'City already exists' });
+    }
+    return res.status(500).json({ message: 'Server error creating city' });
+  }
+};
+
+// PUT /api/superadmin/store-cities/:id
+exports.updateStoreCity = async (req, res) => {
+  const { id } = req.params;
+  const { name, active } = req.body;
+  try {
+    const updates = {};
+    if (name !== undefined)   updates.name   = name.trim();
+    if (active !== undefined) updates.active = Boolean(active);
+    const city = await City.findByIdAndUpdate(id, updates, { new: true });
+    if (!city) return res.status(404).json({ message: 'City not found' });
+    return res.json({ city });
+  } catch (err) {
+    console.error('[SuperAdmin] updateStoreCity:', err.message);
+    if (err.code === 11000) {
+      return res.status(409).json({ message: 'City already exists' });
+    }
+    return res.status(500).json({ message: 'Server error updating city' });
+  }
+};
+
+// DELETE /api/superadmin/store-cities/:id
+exports.deleteStoreCity = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const city = await City.findByIdAndDelete(id);
+    if (!city) return res.status(404).json({ message: 'City not found' });
+    return res.json({ message: 'City deleted' });
+  } catch (err) {
+    console.error('[SuperAdmin] deleteStoreCity:', err.message);
     return res.status(500).json({ message: 'Server error deleting city' });
   }
 };

@@ -12,6 +12,7 @@ import {
   getProductsByCategorySlug,
 } from "../../../services/productService";
 import { getCategories } from "../../../services/categoryService";
+import { getStoreCities } from "../../../services/cityService";
 import { ProductListSkeleton } from "../loaders";
 
 const Products = () => {
@@ -24,7 +25,15 @@ const Products = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
+  const cityFilter = searchParams.get("city") || "";
   const currentPage = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
+
+  // City list for the "Filter by City" dropdown (same list superadmin manages)
+  const { data: storeCities = [] } = useQuery({
+    queryKey: ["store-cities"],
+    queryFn: getStoreCities,
+    staleTime: 300000,
+  });
 
   const [listingTab, setListingTab] = useState("rent");
   const listingTabMounted = useRef(false);
@@ -44,8 +53,8 @@ const Products = () => {
 
   const { data: productsData, isLoading: loading } = useQuery({
     queryKey: decodedCategory
-      ? ["products", decodedCategory, currentPage, searchQuery, hasBothListings ? listingTab : ""]
-      : ["products", "all", currentPage, searchQuery],
+      ? ["products", decodedCategory, currentPage, searchQuery, hasBothListings ? listingTab : "", cityFilter]
+      : ["products", "all", currentPage, searchQuery, cityFilter],
     queryFn: async () => {
       if (decodedCategory) {
         const result = await getProductsByCategorySlug(
@@ -54,10 +63,11 @@ const Products = () => {
           ITEMS_PER_PAGE,
           searchQuery,
           hasBothListings ? listingTab : "",
+          cityFilter,
         );
         return result;
       } else {
-        const result = await getAllProducts(searchQuery, currentPage, ITEMS_PER_PAGE);
+        const result = await getAllProducts(searchQuery, currentPage, ITEMS_PER_PAGE, cityFilter);
         if (result && result.products && result.pagination) return result;
         return { products: Array.isArray(result) ? result : [], pagination: null };
       }
@@ -275,6 +285,40 @@ const Products = () => {
                 Showing results matching your search terms
               </p>
             )}
+          </div>
+        </div>
+
+        <div className="flex justify-center mb-6">
+          <div className="flex items-center gap-2">
+            <label
+              htmlFor="city-filter"
+              className="text-sm text-neutral-400"
+            >
+              Filter by city
+            </label>
+            <select
+              id="city-filter"
+              value={cityFilter}
+              onChange={(e) => {
+                const value = e.target.value;
+                setSearchParams((prev) => {
+                  if (value) prev.set("city", value);
+                  else prev.delete("city");
+                  prev.delete("page");
+                  return prev;
+                });
+              }}
+              className="bg-white/5 border border-white/10 text-white text-sm rounded-full px-4 py-2 outline-none focus:border-violet-500 hover:bg-white/10 transition-colors cursor-pointer"
+            >
+              <option value="" className="bg-neutral-900">
+                All Cities
+              </option>
+              {storeCities.map((c) => (
+                <option key={c._id} value={c._id} className="bg-neutral-900">
+                  {c.name}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 

@@ -55,7 +55,7 @@ const favoriteRoutes            = require("./routes/favoriteRoutes");
 const makeupCategoryRoutes      = require("./routes/makeupCategoryRoutes");
 const makeupPackageRoutes       = require("./routes/makeupPackageRoutes");
 const eventRoutes               = require("./routes/eventRoutes");
-const { getCities }             = require("./controllers/superAdminController");
+const { getCities, getStoreCities } = require("./controllers/superAdminController");
 
 const app = express();
 
@@ -180,6 +180,7 @@ app.use("/api/makeup-categories",     makeupCategoryRoutes);
 app.use("/api/makeup-packages",       makeupPackageRoutes);
 app.use("/api/events",                eventRoutes);
 app.get("/api/cities",                getCities); // public — delivery city dropdown
+app.get("/api/store-cities",          getStoreCities); // public — store city dropdown + product filter
 
 // ── 404 handler ───────────────────────────────────────────────────────────────
 app.use((req, res) => {

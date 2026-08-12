@@ -35,12 +35,12 @@ function calcSaleCommission(salePrice) {
 // GET /api/products  (public – all products for the storefront)
 exports.getAllProducts = async (req, res) => {
   try {
-    const { search, page, limit } = req.query;
+    const { search, page, limit, city } = req.query;
     const pageNum = page ? Math.max(1, parseInt(page, 10)) : null;
     const limitNum = limit ? Math.min(50, Math.max(1, parseInt(limit, 10))) : null;
     const paginate = pageNum !== null && limitNum !== null;
 
-    const cacheKey = `products:list:${search || ''}:${paginate ? `${pageNum}:${limitNum}` : 'all'}`;
+    const cacheKey = `products:list:${search || ''}:${city || ''}:${paginate ? `${pageNum}:${limitNum}` : 'all'}`;
     const cached = await cache.get(cacheKey);
     if (cached) return res.json(cached);
 
@@ -50,6 +50,11 @@ exports.getAllProducts = async (req, res) => {
       const matchingCategories = await Category.find({ name: searchRegex }).select("_id");
       const categoryIds = matchingCategories.map((c) => c._id);
       query = { $or: [{ name: searchRegex }, { category: { $in: categoryIds } }] };
+    }
+    // Filter by city via the product's store.
+    if (city) {
+      const storeIds = await Store.find({ city }).distinct("_id");
+      query.store = { $in: storeIds };
     }
 
     if (paginate) {

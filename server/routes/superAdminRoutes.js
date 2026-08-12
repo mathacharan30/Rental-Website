@@ -8,6 +8,7 @@ const { allowRoles }      = require('../middlewares/roleMiddleware');
 const {
   getStores,
   createStore,
+  updateStore,
   deleteStore,
   resetStorePassword,
   getAllUsers,
@@ -15,6 +16,10 @@ const {
   createCity,
   updateCity,
   deleteCity,
+  getAllStoreCities,
+  createStoreCity,
+  updateStoreCity,
+  deleteStoreCity,
 } = require('../controllers/superAdminController');
 
 // All superadmin routes require: valid Firebase token + super_admin role
@@ -38,9 +43,22 @@ router.post(
     body('email').trim().isEmail().withMessage('Valid email is required').normalizeEmail(),
     body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
     body('storeName').trim().notEmpty().withMessage('storeName is required').isLength({ max: 100 }),
+    body('city').optional({ nullable: true, checkFalsy: true }).isMongoId().withMessage('Invalid city id'),
   ],
   validate,
   createStore,
+);
+router.put(
+  '/stores/:id',
+  ...guard,
+  [
+    param('id').isMongoId().withMessage('Invalid store id'),
+    body('name').optional().trim().notEmpty().withMessage('name cannot be empty').isLength({ max: 100 }),
+    body('slug').optional().trim().notEmpty().withMessage('slug cannot be empty').isLength({ max: 100 }),
+    body('city').optional({ nullable: true, checkFalsy: true }).isMongoId().withMessage('Invalid city id'),
+  ],
+  validate,
+  updateStore,
 );
 router.patch(
   '/stores/:uid/password',
@@ -91,6 +109,34 @@ router.delete(
   [param('id').isMongoId().withMessage('Invalid city id')],
   validate,
   deleteCity,
+);
+
+// Store location cities (super admin only)
+router.get('/store-cities',    ...guard, getAllStoreCities);
+router.post(
+  '/store-cities',
+  ...guard,
+  [body('name').trim().notEmpty().withMessage('name is required').isLength({ max: 100 })],
+  validate,
+  createStoreCity,
+);
+router.put(
+  '/store-cities/:id',
+  ...guard,
+  [
+    param('id').isMongoId().withMessage('Invalid city id'),
+    body('name').optional().trim().isLength({ max: 100 }),
+    body('active').optional().isBoolean().withMessage('active must be boolean'),
+  ],
+  validate,
+  updateStoreCity,
+);
+router.delete(
+  '/store-cities/:id',
+  ...guard,
+  [param('id').isMongoId().withMessage('Invalid city id')],
+  validate,
+  deleteStoreCity,
 );
 
 module.exports = router;

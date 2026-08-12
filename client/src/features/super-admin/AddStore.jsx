@@ -2,7 +2,7 @@ import React from "react";
 import toast from "react-hot-toast";
 import { validatePassword, PASSWORD_HINT } from "../../utils/passwordValidation";
 
-export default function AddStore({ form, setForm, handleCreateStore, busy }) {
+export default function AddStore({ form, setForm, handleCreateStore, busy, storeCities = [] }) {
   function handleSubmit(e) {
     const pwdError = validatePassword(form.password);
     if (pwdError) {
@@ -62,6 +62,32 @@ export default function AddStore({ form, setForm, handleCreateStore, busy }) {
               )}
             </div>
           ))}
+          <div>
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
+              City
+            </label>
+            <select
+              value={form.city || ""}
+              onChange={(e) =>
+                setForm((p) => ({ ...p, city: e.target.value }))
+              }
+              className="w-full border border-white/10 bg-white/5 px-4 py-3 rounded-lg text-white focus:outline-none focus:border-violet-500"
+            >
+              <option value="" className="bg-neutral-900">
+                — Select a city —
+              </option>
+              {storeCities.map((c) => (
+                <option key={c._id} value={c._id} className="bg-neutral-900">
+                  {c.name}
+                </option>
+              ))}
+            </select>
+            {storeCities.length === 0 && (
+              <p className="mt-1 text-xs text-neutral-500">
+                No cities yet — add them under “Store Cities” first.
+              </p>
+            )}
+          </div>
           <button
             type="submit"
             disabled={busy}
