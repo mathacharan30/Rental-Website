@@ -14,12 +14,6 @@ import { HiOutlineSquares2X2 } from "react-icons/hi2";
 import EventTile from "./events/EventTile";
 import EventDetailModal from "./events/EventDetailModal";
 
-const tabVariants = {
-  hidden: { opacity: 0, filter: "blur(8px)", scale: 0.98 },
-  visible: { opacity: 1, filter: "blur(0px)", scale: 1, transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] } },
-  exit: { opacity: 0, filter: "blur(8px)", scale: 0.98, transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] } }
-};
-
 function mapCategory(c = {}) {
   const imageSource = c.image || "/saree.jpg";
   const imageUrl =
@@ -42,7 +36,9 @@ const Categories = () => {
   useEffect(() => {
     if (location.state?.activeTab === "combos") {
       setActiveTab("combos");
-      document.getElementById("categories")?.scrollIntoView({ behavior: "smooth" });
+      document
+        .getElementById("categories")
+        ?.scrollIntoView({ behavior: "smooth" });
       window.history.replaceState({}, "");
     }
   }, [location.state]);
@@ -138,22 +134,22 @@ const Categories = () => {
           </p>
         </div>
 
-        <div className="flex items-center justify-center gap-1 mb-8">
+        <div className="flex items-center justify-center gap-2 mb-8">
           <button
             onClick={() => setActiveTab("categories")}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all inline-flex items-center gap-2 border-y ${activeTab === "categories" ? "bg-linear-to-r from-violet-600 to-fuchsia-500 shadow-inner shadow-white/85 border-violet-400 text-white" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40 shadow-inner shadow-white/15"}`}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all inline-flex items-center gap-2 ${activeTab === "categories" ? "bg-linear-to-r from-violet-600 to-fuchsia-500 shadow-inner shadow-white/85 border-violet-400 text-white" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40 shadow-inner shadow-white/15"}`}
           >
             <HiOutlineSquares2X2 size={14} /> Categories
           </button>
           <button
             onClick={() => setActiveTab("combos")}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all border-y inline-flex items-center gap-2 ${activeTab === "combos" ? "bg-linear-to-r from-fuchsia-500 to-violet-700 border-violet-400 text-white shadow-inner shadow-white/85" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40 shadow-inner shadow-white/15"}`}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all inline-flex items-center gap-2 ${activeTab === "combos" ? "bg-linear-to-r from-fuchsia-500 to-violet-700 border-violet-400 text-white shadow-inner shadow-white/85" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40 shadow-inner shadow-white/15"}`}
           >
             <Sparkles size={14} /> Makeup
           </button>
           <button
             onClick={() => setActiveTab("events")}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all border-y inline-flex items-center gap-2 ${activeTab === "events" ? "bg-linear-to-r from-fuchsia-500 to-violet-700 border-violet-400 text-white shadow-inner shadow-white/85" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40 shadow-inner shadow-white/15"}`}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all inline-flex items-center gap-2 ${activeTab === "events" ? "bg-linear-to-r from-fuchsia-500 to-violet-700 border-violet-400 text-white shadow-inner shadow-white/85" : "bg-white/5 border-white/10 text-neutral-400 hover:text-white hover:border-violet-500/40 shadow-inner shadow-white/15"}`}
           >
             <PartyPopper size={14} /> Events
           </button>
@@ -210,8 +206,10 @@ const Categories = () => {
                     <div
                       className="absolute inset-0 pointer-events-none overflow-hidden rounded-bl-5xl rounded-tr-5xl z-10 backdrop-blur-xs"
                       style={{
-                        maskImage: "linear-gradient(to top, black 0%, black 10%, transparent 50%)",
-                        WebkitMaskImage: "linear-gradient(to top, black 0%, black 10%, transparent 50%)",
+                        maskImage:
+                          "linear-gradient(to top, black 0%, black 10%, transparent 50%)",
+                        WebkitMaskImage:
+                          "linear-gradient(to top, black 0%, black 10%, transparent 50%)",
                       }}
                     />
                     <div className="relative w-full pb-3 px-4 pt-10 flex items-center justify-between z-20">
@@ -251,7 +249,9 @@ const Categories = () => {
                 </button>
               </div>
             ) : makeupCategories.length === 0 ? (
-              <div className="text-neutral-400 py-12">No makeup categories found.</div>
+              <div className="text-neutral-400 py-12">
+                No makeup categories found.
+              </div>
             ) : (
               makeupCategories.map((c) => {
                 const cid = c.id || c._id;
@@ -282,16 +282,20 @@ const Categories = () => {
                       <div
                         className="absolute inset-0 pointer-events-none overflow-hidden  rounded-br-[67px] z-10 backdrop-blur-xs"
                         style={{
-                          maskImage: "linear-gradient(to top, black 0%, black 10%, transparent 50%)",
-                          WebkitMaskImage: "linear-gradient(to top, black 0%, black 10%, transparent 50%)",
+                          maskImage:
+                            "linear-gradient(to top, black 0%, black 10%, transparent 50%)",
+                          WebkitMaskImage:
+                            "linear-gradient(to top, black 0%, black 10%, transparent 50%)",
                         }}
                       />
                       <div className="relative w-full pb-2 px-4 pt-10 flex items-center justify-between z-20">
                         <span className="text-white font-medium text-xs uppercase md:text-sm ">
                           {c.name}
                         </span>
-                        <span className="flex items-center justify-center w-8 h-8 text-white
-                         group-hover:text-fuchsia-400 group-hover:translate-x-0.5 transition-all duration-300">
+                        <span
+                          className="flex items-center justify-center w-8 h-8 text-white
+                         group-hover:text-fuchsia-400 group-hover:translate-x-0.5 transition-all duration-300"
+                        >
                           <ArrowRight size={20} className="rotate-315" />
                         </span>
                       </div>
@@ -330,12 +334,14 @@ const Categories = () => {
             )}
           </motion.div>
         )}
-
       </div>
 
       <AnimatePresence>
         {selectedEvent && (
-          <EventDetailModal event={selectedEvent} onClose={() => setSelectedEvent(null)} />
+          <EventDetailModal
+            event={selectedEvent}
+            onClose={() => setSelectedEvent(null)}
+          />
         )}
       </AnimatePresence>
     </section>

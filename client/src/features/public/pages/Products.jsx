@@ -9,7 +9,7 @@ import {
 } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Minus } from "lucide-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Footer from "../../shared/components/Footer";
 import {
@@ -285,7 +285,7 @@ const Products = () => {
         <div className="flex justify-center">
           <button
             onClick={() => navigate(-1)}
-            className="text-sm flex items-center gap-1.5 text-neutral-500 hover:text-violet-400 transition-colors cursor-pointer"
+            className="text-sm flex items-center gap-1 text-neutral-500 hover:text-violet-400 transition-colors cursor-pointer"
           >
             <ArrowLeft size={14} />
             Back to Home
@@ -314,7 +314,7 @@ const Products = () => {
           </div>
         </div>
 
-        <div className="flex justify-center mb-6">
+        <div className="flex justify-center mb-4">
           <div className="flex items-center border border-white/10 rounded-full px-5 shadow-inner shadow-white/10 py-1">
             <label htmlFor="city-filter" className="text-xs text-neutral-400">
               Filter by city
@@ -331,7 +331,7 @@ const Products = () => {
                   return prev;
                 });
               }}
-              className=" text-white rounded-full px-4 py-2 outline-none transition-colors cursor-pointer"
+              className=" text-white rounded-full px-4 py-1.5 outline-none transition-colors cursor-pointer"
             >
               <option value="" className="bg-neutral-900 text-sm">
                 All Cities

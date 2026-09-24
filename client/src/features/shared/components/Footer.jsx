@@ -11,16 +11,12 @@ const SOCIAL_LINKS = {
 const Footer = () => {
   return (
     <>
-      <div className="mt-20">
-        <div className="h-px w-full bg-white/5" />
-      </div>
-
-      <footer className="bg-[#191919] pt-12 pb-8 text-black relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <footer className="bg-gradient-to-t from-[#2a2a2a] to-[#0a0a0a] pb-3 pt-12  text-black relative">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
             <div className="md:col-span-1">
               <h3 className="text-4xl font-medium text-white instrument-serif tracking-tight">
-                People & style
+                People <span className="text-violet-400">&</span> Style
               </h3>
               <p className="mt-6 text-neutral-500 text-sm max-w-xs leading-relaxed">
                 Premium clothing rentals for weddings, events, and special
@@ -31,7 +27,7 @@ const Footer = () => {
                   href={SOCIAL_LINKS.instagram}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-9 h-9 rounded-lg  flex items-center justify-center text-neutral-400 hover:text-violet-400 transition-colors duration-150"
+                  className="w-9 h-9 rounded-lg  flex items-center justify-center text-neutral-300 hover:text-violet-400 transition-colors duration-150"
                   aria-label="Instagram"
                 >
                   <FaInstagram size={24} />
@@ -40,7 +36,7 @@ const Footer = () => {
                   href={SOCIAL_LINKS.whatsapp}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-9 h-9 rounded-lg  flex items-center justify-center text-neutral-400 hover:text-green-400 transition-colors duration-150"
+                  className="w-9 h-9 rounded-lg  flex items-center justify-center text-neutral-300 hover:text-green-400 transition-colors duration-150"
                   aria-label="WhatsApp"
                 >
                   <FaWhatsapp size={24} />
@@ -49,7 +45,7 @@ const Footer = () => {
                   href={SOCIAL_LINKS.youtube}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-9 h-9  flex items-center justify-center text-neutral-400 hover:text-red-400 transition-colors duration-150"
+                  className="w-9 h-9  flex items-center justify-center text-neutral-300 hover:text-red-400 transition-colors duration-150"
                   aria-label="YouTube"
                 >
                   <FaYoutube size={24} />
@@ -62,7 +58,7 @@ const Footer = () => {
                 <h4 className="font-semibold text-sm text-white mb-4 uppercase tracking-wider">
                   Services — Mysuru
                 </h4>
-                <ul className="space-y-3 text-neutral-500 text-sm">
+                <ul className="space-y-3 text-neutral-400 text-sm">
                   <li>
                     <Link
                       to="/rental-clothing-mysuru"
@@ -109,7 +105,7 @@ const Footer = () => {
                 <h4 className="font-semibold text-sm text-white mb-4 uppercase tracking-wider">
                   Services — Bangalore
                 </h4>
-                <ul className="space-y-3 text-neutral-500 text-sm">
+                <ul className="space-y-3 text-neutral-400 text-sm">
                   <li>
                     <Link
                       to="/rental-clothing-bangalore"
@@ -156,7 +152,7 @@ const Footer = () => {
                 <h4 className="font-semibold text-sm text-white mb-4 uppercase tracking-wider">
                   Company
                 </h4>
-                <ul className="space-y-3 text-neutral-500 text-sm">
+                <ul className="space-y-3 text-neutral-400 text-sm">
                   <li>
                     <Link
                       to="/about"
@@ -194,7 +190,7 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="py-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-xs text-neutral-600">
+          <div className="py-6 border-t border-white/40 flex flex-col sm:flex-row justify-between items-center text-xs text-neutral-400">
             <p>
               © {new Date().getFullYear()} People & Style. All rights reserved.
               &middot;
