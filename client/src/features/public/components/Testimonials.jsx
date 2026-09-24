@@ -39,7 +39,6 @@ const Testimonials = () => {
     <section className="relative py-20 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-12 flex flex-col items-center justify-center">
-
           <h2 className="text-3xl md:text-4xl font-medium instrument-serif tracking-wide text-white">
             - Customer <span className="text-violet-400 italic">Love -</span>
           </h2>
@@ -60,7 +59,7 @@ const Testimonials = () => {
                 {quotes.map((q) => (
                   <article
                     key={q.id}
-                    className="relative w-72 md:w-80 shrink-0 mx-2 rounded-2xl border border-white/6 bg-white/2 p-6 md:p-8 flex flex-col justify-between hover:border-white/10 transition-all duration-300"
+                    className="relative w-72 md:w-80 shrink-0 mx-2 rounded-4xl border-t-2 border-b border-white/10 bg-white/2 p-6 md:p-8 flex flex-col justify-between hover:border-white/10 transition-all duration-300"
                   >
                     <span className="absolute top-2 right-4 text-6xl font-serif text-violet-500/10 pointer-events-none select-none">
                       “

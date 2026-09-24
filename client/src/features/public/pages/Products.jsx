@@ -1,7 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet-async";
-import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  useParams,
+  Link,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
@@ -26,7 +31,10 @@ const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
   const cityFilter = searchParams.get("city") || "";
-  const currentPage = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
+  const currentPage = Math.max(
+    1,
+    parseInt(searchParams.get("page") || "1", 10),
+  );
 
   // City list for the "Filter by City" dropdown (same list superadmin manages)
   const { data: storeCities = [] } = useQuery({
@@ -47,13 +55,20 @@ const Products = () => {
   });
 
   const currentCategoryMeta = categoriesList?.find(
-    (c) => (c.name || "").toLowerCase() === decodedCategory
+    (c) => (c.name || "").toLowerCase() === decodedCategory,
   );
   const hasBothListings = currentCategoryMeta?.listingMode === "both";
 
   const { data: productsData, isLoading: loading } = useQuery({
     queryKey: decodedCategory
-      ? ["products", decodedCategory, currentPage, searchQuery, hasBothListings ? listingTab : "", cityFilter]
+      ? [
+          "products",
+          decodedCategory,
+          currentPage,
+          searchQuery,
+          hasBothListings ? listingTab : "",
+          cityFilter,
+        ]
       : ["products", "all", currentPage, searchQuery, cityFilter],
     queryFn: async () => {
       if (decodedCategory) {
@@ -67,9 +82,17 @@ const Products = () => {
         );
         return result;
       } else {
-        const result = await getAllProducts(searchQuery, currentPage, ITEMS_PER_PAGE, cityFilter);
+        const result = await getAllProducts(
+          searchQuery,
+          currentPage,
+          ITEMS_PER_PAGE,
+          cityFilter,
+        );
         if (result && result.products && result.pagination) return result;
-        return { products: Array.isArray(result) ? result : [], pagination: null };
+        return {
+          products: Array.isArray(result) ? result : [],
+          pagination: null,
+        };
       }
     },
     keepPreviousData: true,
@@ -91,7 +114,7 @@ const Products = () => {
         prev.delete("page");
         return prev;
       },
-      { replace: true }
+      { replace: true },
     );
   }, [listingTab]);
 
@@ -106,8 +129,11 @@ const Products = () => {
     if (prevSearchRef.current !== searchQuery) {
       prevSearchRef.current = searchQuery;
       setSearchParams(
-        (prev) => { prev.delete("page"); return prev; },
-        { replace: true }
+        (prev) => {
+          prev.delete("page");
+          return prev;
+        },
+        { replace: true },
       );
     }
   }, [searchQuery]);
@@ -289,11 +315,8 @@ const Products = () => {
         </div>
 
         <div className="flex justify-center mb-6">
-          <div className="flex items-center gap-2">
-            <label
-              htmlFor="city-filter"
-              className="text-sm text-neutral-400"
-            >
+          <div className="flex items-center border border-white/10 rounded-full px-5 shadow-inner shadow-white/10 py-1">
+            <label htmlFor="city-filter" className="text-xs text-neutral-400">
               Filter by city
             </label>
             <select
@@ -308,9 +331,9 @@ const Products = () => {
                   return prev;
                 });
               }}
-              className="bg-white/5 border border-white/10 text-white text-sm rounded-full px-4 py-2 outline-none focus:border-violet-500 hover:bg-white/10 transition-colors cursor-pointer"
+              className=" text-white rounded-full px-4 py-2 outline-none transition-colors cursor-pointer"
             >
-              <option value="" className="bg-neutral-900">
+              <option value="" className="bg-neutral-900 text-sm">
                 All Cities
               </option>
               {storeCities.map((c) => (
@@ -328,10 +351,11 @@ const Products = () => {
               <button
                 key={tab}
                 onClick={() => setListingTab(tab)}
-                className={`px-5 py-2 rounded-full text-sm font-medium transition-all capitalize ${listingTab === tab
-                  ? "bg-violet-600 shadow-inner shadow-white text-white"
-                  : "bg-white/2 text-neutral-400 hover:bg-white/10 shadow-inner shadow-white/24 hover:text-white"
-                  }`}
+                className={`px-5 py-2 rounded-full text-sm font-medium transition-all capitalize ${
+                  listingTab === tab
+                    ? "bg-violet-600 shadow-inner shadow-white text-white"
+                    : "bg-white/2 text-neutral-400 hover:bg-white/10 shadow-inner shadow-white/24 hover:text-white"
+                }`}
               >
                 {tab}
               </button>
@@ -344,9 +368,9 @@ const Products = () => {
             <ProductListSkeleton count={10} />
           </div>
         ) : (hasBothListings
-          ? items.filter((p) => p.listingType === listingTab)
-          : items
-        ).length > 0 ? (
+            ? items.filter((p) => p.listingType === listingTab)
+            : items
+          ).length > 0 ? (
           <>
             <div className=" justify-center md:justify-start items-center flex gap-2  flex-wrap mt-4">
               {(hasBothListings
@@ -363,10 +387,11 @@ const Products = () => {
                   <button
                     onClick={handlePrevPage}
                     disabled={!pagination.hasPrevPage}
-                    className={`flex items-center justify-center p-2 rounded-full border transition-all duration-300 ${pagination.hasPrevPage
-                      ? "bg-white/5 border-white/10 text-white hover:bg-violet-600/20 hover:border-violet-500/40 hover:scale-105 active:scale-95 cursor-pointer"
-                      : "bg-white/1 border-white/5 text-neutral-600 cursor-not-allowed"
-                      }`}
+                    className={`flex items-center justify-center p-2 rounded-full border transition-all duration-300 ${
+                      pagination.hasPrevPage
+                        ? "bg-white/5 border-white/10 text-white hover:bg-violet-600/20 hover:border-violet-500/40 hover:scale-105 active:scale-95 cursor-pointer"
+                        : "bg-white/1 border-white/5 text-neutral-600 cursor-not-allowed"
+                    }`}
                     aria-label="Previous page"
                   >
                     <ChevronLeft size={18} />
@@ -376,7 +401,9 @@ const Products = () => {
                     <span className="flex items-center dm-sans justify-center min-w-7 h-7 px-2 rounded-full bg-violet-500/10 border-b shadow-inner shadow-violet-400/60 border-violet-500/30 text-violet-300 font-semibold">
                       {pagination.currentPage}
                     </span>
-                    <span className="text-neutral-500 text-md font-sans">of</span>
+                    <span className="text-neutral-500 text-md font-sans">
+                      of
+                    </span>
                     <span className="text-white/90 dm-sans font-semibold">
                       {pagination.totalPages}
                     </span>
@@ -385,10 +412,11 @@ const Products = () => {
                   <button
                     onClick={handleNextPage}
                     disabled={!pagination.hasNextPage}
-                    className={`flex items-center justify-center p-2 rounded-full border transition-all duration-300 ${pagination.hasNextPage
-                      ? "bg-white/5 border-white/10 text-white hover:bg-violet-600/20 hover:border-violet-500/40 hover:scale-105 active:scale-95 cursor-pointer"
-                      : "bg-white/1 border-white/5 text-neutral-600 cursor-not-allowed"
-                      }`}
+                    className={`flex items-center justify-center p-2 rounded-full border transition-all duration-300 ${
+                      pagination.hasNextPage
+                        ? "bg-white/5 border-white/10 text-white hover:bg-violet-600/20 hover:border-violet-500/40 hover:scale-105 active:scale-95 cursor-pointer"
+                        : "bg-white/1 border-white/5 text-neutral-600 cursor-not-allowed"
+                    }`}
                     aria-label="Next page"
                   >
                     <ChevronRight size={18} />
