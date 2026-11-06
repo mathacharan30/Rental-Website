@@ -2,27 +2,33 @@
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import ReactApp from '../../components/ReactApp.jsx'
 
-export const prerender = true
+// Rendered per request (not prebuilt) so EVERY category in the database gets a
+// real page with proper meta / link previews — previously only 4 hardcoded
+// categories existed and all others were served as "Page Not Found" (HTTP 404)
+// to Google, Instagram, WhatsApp etc.
+export const prerender = false
 
-export async function getStaticPaths() {
-  return [
-    { params: { category: 'lehenga' } },
-    { params: { category: 'gowns' } },
-    { params: { category: 'men' } },
-    { params: { category: 'jewels' } },
-  ]
-}
+const SITE = 'https://peopleandstyle.in'
+const API_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/+$/, '')
 
 const { category } = Astro.params
-const decoded = decodeURIComponent(category ?? '').toLowerCase()
-
-type CategoryMeta = {
-  title: string
-  description: string
-  keywords: string
+let slug = ''
+try {
+  slug = decodeURIComponent(category ?? '').trim().toLowerCase()
+} catch {
+  slug = String(category ?? '').trim().toLowerCase()
 }
 
-const categoryMap: Record<string, CategoryMeta> = {
+// Old URLs that were published (sitemap / shared links) → their real category
+const ALIASES: Record<string, string> = { gowns: 'gown' }
+if (ALIASES[slug]) {
+  return Astro.redirect(`/products/${encodeURIComponent(ALIASES[slug])}`, 301)
+}
+
+type CategoryMeta = { title: string; description: string; keywords: string }
+
+// Hand-written SEO copy for the main categories (keys = lowercased category name)
+const curated: Record<string, CategoryMeta> = {
   lehenga: {
     title: 'Bridal Lehenga on Rent in Mysuru & Bangalore | People & Style',
     description:
@@ -30,10 +36,10 @@ const categoryMap: Record<string, CategoryMeta> = {
     keywords:
       'bridal lehenga on rent in Mysuru, bridal lehenga on rent in Bangalore, designer lehenga on rent, wedding lehenga rental, red bridal lehenga on rent, reception lehenga on rent, half saree on rent',
   },
-  gowns: {
+  gown: {
     title: 'Bridal Gown on Rent in Mysuru & Bangalore | Wedding Gown Rental',
     description:
-      'Rent bridal gown, wedding gown, reception gown & designer gown in Mysuru and Bangalore. White bridal gown, maternity gown, pre-wedding & photoshoot gown rental.',
+      'Rent bridal gown, wedding gown, reception gown & designer gown in Mysuru and Bangalore. White bridal gown, pre-wedding & photoshoot gown rental.',
     keywords:
       'wedding gown on rent in Mysuru, wedding gown on rent in Bangalore, bridal gown on rent, reception gown on rent, white bridal gown rental, designer gown on rent, photoshoot gown on rent',
   },
@@ -51,22 +57,101 @@ const categoryMap: Record<string, CategoryMeta> = {
     keywords:
       'bridal jewellery on rent, temple jewellery on rent, imitation jewellery on rent, jewellery rental Mysuru, jewellery rental Bangalore, necklace set on rent, bridal crown on rent',
   },
+  'maternity gowns': {
+    title: 'Maternity Gown on Rent in Mysuru & Bangalore | Baby Shower & Photoshoot',
+    description:
+      'Rent maternity gowns for baby shower, seemantham and maternity photoshoots in Mysuru and Bangalore. Elegant, comfortable designer gowns at People & Style.',
+    keywords:
+      'maternity gown on rent, maternity gown rental Mysuru, maternity gown rental Bangalore, baby shower gown on rent, maternity photoshoot gown, seemantham dress on rent',
+  },
+  sarees: {
+    title: 'Designer Saree on Rent in Mysuru & Bangalore | People & Style',
+    description:
+      'Rent silk sarees, designer sarees and wedding sarees in Mysuru and Bangalore. Kanjeevaram, Banarasi and party-wear sarees for every occasion.',
+    keywords:
+      'saree on rent Mysuru, saree on rent Bangalore, silk saree on rent, wedding saree rental, designer saree on rent, kanjeevaram saree on rent',
+  },
 }
 
-const meta = categoryMap[decoded] ?? {
-  title: `${decoded.charAt(0).toUpperCase() + decoded.slice(1)} on Rent in Mysuru & Bangalore | People & Style`,
-  description: `Rent ${decoded} in Mysuru and Bangalore at People & Style. Premium rental for weddings and special occasions.`,
-  keywords: `${decoded} on rent Mysuru, ${decoded} on rent Bangalore, ${decoded} rental`,
+type ApiCategory = { _id: string; name: string; description?: string; image?: { url?: string } | string; listingMode?: string }
+
+let found: ApiCategory | undefined
+let apiFailed = false
+if (API_URL && slug) {
+  try {
+    const res = await fetch(`${API_URL}/api/categories`)
+    if (res.ok) {
+      const list: ApiCategory[] = await res.json()
+      found = list.find((c) => String(c?.name ?? '').trim().toLowerCase() === slug)
+    } else {
+      apiFailed = true
+    }
+  } catch {
+    apiFailed = true
+  }
+} else {
+  apiFailed = true
 }
 
-const canonical = `https://peopleandstyle.in/products/${encodeURIComponent(decoded)}`
+const titleCase = (s: string) => s.replace(/\b\w/g, (ch) => ch.toUpperCase())
+
+let meta: CategoryMeta
+let ogImage: string | undefined
+let notFound = false
+
+if (found) {
+  const name = String(found.name).trim()
+  const isSale = found.listingMode === 'sale'
+  const verb = isSale ? 'Buy' : 'Rent'
+  meta = curated[slug] ?? {
+    title: `${name} — ${verb} in Mysuru & Bangalore | People & Style`,
+    description:
+      (found.description && String(found.description).slice(0, 160)) ||
+      `${verb} ${name.toLowerCase()} in Mysuru and Bangalore at People & Style. Premium collection for weddings and special occasions.`,
+    keywords: `${name.toLowerCase()} Mysuru, ${name.toLowerCase()} Bangalore, ${name.toLowerCase()} ${isSale ? 'online' : 'on rent'}, People and Style`,
+  }
+  const img = typeof found.image === 'string' ? found.image : found.image?.url
+  if (img) {
+    // Serve a small 1200×630 preview through ImageKit — WhatsApp/Instagram skip large images
+    const S3_BASE = 'https://people-and-style-assets-mumbai.s3.ap-south-1.amazonaws.com/'
+    ogImage = img.startsWith(S3_BASE)
+      ? `https://ik.imagekit.io/kayivtq3l/${img.slice(S3_BASE.length)}?tr=w-1200,h-630,fo-auto,q-80,f-jpg`
+      : img
+  }
+} else if (apiFailed) {
+  // API unreachable: still serve a sensible page (never tell crawlers a real page is missing)
+  const pretty = titleCase(slug)
+  meta = curated[slug] ?? {
+    title: `${pretty} | People & Style`,
+    description: `Browse ${slug} at People & Style — bridal wear, jewellery and more in Mysuru and Bangalore.`,
+    keywords: `${slug} Mysuru, ${slug} Bangalore, People and Style`,
+  }
+} else {
+  notFound = true
+  Astro.response.status = 404
+  meta = {
+    title: 'Page Not Found | People & Style',
+    description:
+      'The page you are looking for does not exist. Browse bridal wear rental, jewellery rental, makeup and photography at People & Style.',
+    keywords: '',
+  }
+}
+
+// Let Vercel's CDN cache the HTML briefly so crawlers and visitors get it instantly
+if (!apiFailed) {
+  Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=600, stale-while-revalidate=86400')
+}
+
+const canonical = `${SITE}/products/${encodeURIComponent(slug)}`
 ---
 
 <BaseLayout
   title={meta.title}
   description={meta.description}
-  canonical={canonical}
+  canonical={notFound ? undefined : canonical}
   keywords={meta.keywords}
+  ogImage={ogImage}
+  noindex={notFound}
 >
   <ReactApp client:only="react" />
 </BaseLayout>

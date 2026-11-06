@@ -20,10 +20,6 @@ export const GET: APIRoute = async () => {
     { loc: '/photography-services-bangalore',lastmod: '2026-05-27' },
     { loc: '/bridal-package-mysuru',         lastmod: '2026-05-27' },
     { loc: '/bridal-package-bangalore',      lastmod: '2026-05-27' },
-    { loc: '/products/lehenga',              lastmod: '2026-05-10' },
-    { loc: '/products/gowns',               lastmod: '2026-05-10' },
-    { loc: '/products/men',                 lastmod: '2026-05-10' },
-    { loc: '/products/jewels',              lastmod: '2026-05-10' },
     { loc: '/about',                         lastmod: '2026-05-10' },
     { loc: '/contact',                       lastmod: '2026-05-10' },
     { loc: '/faq',                           lastmod: '2026-05-10' },
@@ -40,6 +36,24 @@ export const GET: APIRoute = async () => {
   }
 
   let productPages: ProductEntry[] = []
+
+  // Every category page, generated from the live category list
+  try {
+    const res = await fetch(`${API}/api/categories`)
+    const cats: { name?: string; updatedAt?: string }[] = await res.json()
+    if (Array.isArray(cats)) {
+      for (const c of cats) {
+        const name = String(c?.name ?? '').trim().toLowerCase()
+        if (!name) continue
+        staticPages.push({
+          loc: `/products/${encodeURIComponent(name)}`,
+          lastmod: c.updatedAt ? new Date(c.updatedAt).toISOString().slice(0, 10) : '2026-11-06',
+        })
+      }
+    }
+  } catch {
+    // Skip category pages if the API is unreachable
+  }
 
   try {
     const res  = await fetch(`${API}/api/products`)

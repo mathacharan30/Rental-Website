@@ -9,6 +9,7 @@ interface Props {
   ogType?: string
   keywords?: string
   schema?: Record<string, unknown> | Array<Record<string, unknown>>
+  noindex?: boolean
 }
 
 const SITE = 'https://peopleandstyle.in'
@@ -21,6 +22,7 @@ const {
   ogType = 'website',
   keywords = 'bridal wear on rent in Mysuru, bridal wear on rent in Bangalore, bridal lehenga on rent Mysuru, wedding gown rental Mysuru, sherwani on rent Mysuru, bridal jewellery on rent Mysuru, makeup artist Mysuru, wedding photographer Mysuru',
   schema,
+  noindex = false,
 } = Astro.props
 
 const canonicalUrl = canonical ?? `${SITE}${Astro.url.pathname}`
@@ -84,7 +86,7 @@ const activeSchema = schema ?? defaultSchema
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="keywords" content={keywords} />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow"} />
     <meta name="author" content="People & Style" />
 
     <link rel="canonical" href={canonicalUrl} />
