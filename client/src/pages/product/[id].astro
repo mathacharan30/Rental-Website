@@ -2,65 +2,141 @@
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import ReactApp from '../../components/ReactApp.jsx'
 
-const { id } = Astro.params
+// Server-rendered per request so link previews (WhatsApp, Instagram, Facebook)
+// and Google get the real product name, photo and price.
+export const prerender = false
 
+const SITE = 'https://peopleandstyle.in'
 const API_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/+$/, '')
+const S3_BASE = 'https://people-and-style-assets-mumbai.s3.ap-south-1.amazonaws.com/'
+
+const { id = '' } = Astro.params
+
+type ApiImage = { url?: string } | string
+type ApiProduct = {
+  _id: string
+  name?: string
+  description?: string
+  listingType?: 'rent' | 'sale'
+  price?: number
+  rentPrice?: number
+  salePrice?: number
+  commissionPrice?: number
+  stock?: number
+  available?: boolean
+  images?: ApiImage[]
+  category?: { name?: string } | string | null
+}
+
+// API images are { url, publicId } objects (older data may be plain strings)
+const imageUrl = (img: ApiImage | undefined): string =>
+  !img ? '' : typeof img === 'string' ? img : img.url ?? ''
+
+// 1200×630 link-preview image: the WHOLE product fitted on the brand's dark
+// background (outfits are tall; a plain crop would cut off heads or hems)
+const previewImage = (url: string): string =>
+  url.startsWith(S3_BASE)
+    ? `https://ik.imagekit.io/kayivtq3l/${url.slice(S3_BASE.length)}?tr=w-1200,h-630,cm-pad_resize,bg-0E0E0E,q-80,f-jpg`
+    : url
 
 let title = 'Rental Outfit | People & Style'
-let description = 'Rent this premium outfit from People & Style. Available for delivery in Mysuru and Bangalore, Karnataka.'
-let ogImage: string | undefined = undefined
-let productSchema: Record<string, unknown> | undefined = undefined
+let description = 'Premium bridal wear and jewellery from People & Style, Mysuru and Bangalore.'
+let ogImage: string | undefined
+let productSchema: Record<string, unknown> | undefined
+let notFound = false
+let apiFailed = false
 
-if (API_URL && id) {
+if (API_URL && /^[a-f0-9]{24}$/i.test(id)) {
   try {
     const res = await fetch(`${API_URL}/api/products/${id}`)
-    if (res.ok) {
-      const product = await res.json()
-      const name: string = product?.title ?? product?.name ?? ''
-      if (name) {
-        title = `${name} — Rent in Mysuru & Bangalore | People & Style`
-        description = product?.description
-          ? String(product.description).slice(0, 160)
-          : `Rent ${name} from People & Style. Premium rental available in Mysuru and Bangalore.`
-        const firstImage: string = product?.images?.[0] ?? product?.image ?? ''
-        if (firstImage) ogImage = firstImage
+    if (res.status === 404) {
+      notFound = true // deleted product (or a private test-store product)
+    } else if (!res.ok) {
+      apiFailed = true
+    } else {
+      const product: ApiProduct = await res.json()
+      const name = String(product?.name ?? '').trim()
+      if (!name) {
+        notFound = true
+      } else {
+        const isSale = product.listingType === 'sale'
+        const verb = isSale ? 'Buy' : 'Rent'
+        const categoryName =
+          typeof product.category === 'object' && product.category ? product.category.name ?? '' : ''
+        // Same total the site shows: (rent or sale) + commission
+        const price = Math.round(
+          Number(product.price) ||
+            (isSale ? Number(product.salePrice) || 0 : Number(product.rentPrice) || 0) +
+              (Number(product.commissionPrice) || 0),
+        )
+        const inStock = isSale
+          ? product.available !== false && (Number(product.stock) || 0) > 0
+          : product.available !== false
 
-        const price = String(product?.advanceAmount ?? product?.rentPrice ?? '0').replace(/[^0-9.]/g, '')
+        const images = (product.images ?? []).map(imageUrl).filter(Boolean)
+
+        title = `${name} — ${verb} in Mysuru & Bangalore | People & Style`
+        description = (
+          product.description?.trim() ||
+          `${verb} ${name}${categoryName ? ` (${categoryName})` : ''} from People & Style.${
+            price ? ` ₹${price.toLocaleString('en-IN')}.` : ''
+          } Available in Mysuru and Bangalore.`
+        ).slice(0, 160)
+        if (images[0]) ogImage = previewImage(images[0])
+
         productSchema = {
           '@context': 'https://schema.org',
           '@type': 'Product',
           name,
-          image: product?.images?.length ? product.images : firstImage ? [firstImage] : [],
-          description: product?.description ?? `Premium ${product?.category ?? 'outfit'} available for rent at People & Style`,
+          image: images.slice(0, 5),
+          description,
+          ...(categoryName && { category: categoryName }),
           brand: { '@type': 'Brand', name: 'People & Style' },
           offers: {
             '@type': 'Offer',
-            url: `https://peopleandstyle.in/product/${id}`,
+            url: `${SITE}/product/${id}`,
             priceCurrency: 'INR',
-            price,
-            availability: 'https://schema.org/InStock',
-            itemCondition: 'https://schema.org/UsedCondition',
+            price: String(price),
+            availability: inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+            itemCondition: isSale ? 'https://schema.org/NewCondition' : 'https://schema.org/UsedCondition',
             priceValidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
-            seller: { '@type': 'Organization', name: 'People & Style', url: 'https://peopleandstyle.in' },
+            seller: { '@type': 'Organization', name: 'People & Style', url: SITE },
           },
         }
       }
     }
   } catch {
-    // fall through to defaults
+    apiFailed = true
   }
+} else if (API_URL) {
+  notFound = true // not a valid product id
+} else {
+  apiFailed = true
 }
 
-const canonical = `https://peopleandstyle.in/product/${id}`
+if (notFound) {
+  Astro.response.status = 404
+  title = 'Page Not Found | People & Style'
+  description =
+    'The page you are looking for does not exist. Browse bridal wear rental, jewellery rental, makeup and photography at People & Style.'
+}
+
+// Let Vercel's CDN keep the HTML for 10 min so previews/crawlers get it instantly
+if (!apiFailed) {
+  Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=600, stale-while-revalidate=86400')
+}
+
+const canonical = `${SITE}/product/${id}`
 ---
 
 <BaseLayout
   title={title}
   description={description}
-  canonical={canonical}
+  canonical={notFound ? undefined : canonical}
   ogImage={ogImage}
   ogType="product"
   schema={productSchema}
+  noindex={notFound}
 >
   <ReactApp client:only="react" />
 </BaseLayout>
