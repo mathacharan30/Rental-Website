@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro'
+import { comboCategories } from '../data/combos.js'
 
 const escapeXml = (s: string) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
@@ -53,6 +54,28 @@ export const GET: APIRoute = async () => {
     }
   } catch {
     // Skip category pages if the API is unreachable
+  }
+
+  // Combo pages (defined in code)
+  for (const combo of comboCategories) {
+    if (combo?.slug) staticPages.push({ loc: `/combos/${combo.slug}`, lastmod: '2026-11-17' })
+  }
+
+  // Makeup category pages, from the live list
+  try {
+    const res = await fetch(`${API}/api/makeup-categories`)
+    const cats: { _id?: string; updatedAt?: string }[] = await res.json()
+    if (Array.isArray(cats)) {
+      for (const c of cats) {
+        if (!c?._id) continue
+        staticPages.push({
+          loc: `/makeup/${c._id}`,
+          lastmod: c.updatedAt ? new Date(c.updatedAt).toISOString().slice(0, 10) : '2026-11-17',
+        })
+      }
+    }
+  } catch {
+    // Skip makeup pages if the API is unreachable
   }
 
   try {

@@ -1,0 +1,73 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import ReactApp from '../../components/ReactApp.jsx'
+import { comboCategories } from '../../data/combos.js'
+
+// Bridal/graduation combos are defined in code (data/combos.js), so their pages
+// are prebuilt at deploy. Without this file Astro had no route for /combos/*, and
+// link previews / Google got "Page Not Found" (HTTP 404) even though the React
+// app rendered the page for visitors. Unknown slugs fall through to 404.astro.
+export const prerender = true
+
+export function getStaticPaths() {
+  return comboCategories.map((combo) => ({ params: { slug: combo.slug }, props: { combo } }))
+}
+
+const SITE = 'https://peopleandstyle.in'
+const { combo } = Astro.props
+
+// Small 1200×630 preview images made for link previews (public/og/combos/<slug>.jpg)
+const OG_IMAGES: Record<string, string> = {
+  'graduation-glam-combo': '/og/combos/graduation-glam-combo.jpg',
+  'bridal-combo': '/og/combos/bridal-combo.jpg',
+}
+const ogImage = `${SITE}${OG_IMAGES[combo.slug] ?? combo.image}`
+
+const prices: number[] = (combo.packages ?? []).map((p: { price?: number }) => Number(p.price) || 0).filter((n: number) => n > 0)
+const minPrice = prices.length ? Math.min(...prices) : undefined
+
+const title = `${combo.title} in Mysuru & Bangalore | People & Style`
+const description = String(
+  [combo.subtitle, combo.priceNote].filter(Boolean).join(' ') ||
+    `${combo.title} by People & Style — makeup, saree draping and hairstyling in Mysuru and Bangalore.`,
+).slice(0, 160)
+const canonical = `${SITE}/combos/${combo.slug}`
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: combo.title,
+    description,
+    image: ogImage,
+    url: canonical,
+    provider: { '@type': 'LocalBusiness', name: 'People & Style', url: SITE, telephone: '+919187668280' },
+    areaServed: [
+      { '@type': 'City', name: 'Mysuru' },
+      { '@type': 'City', name: 'Bangalore' },
+    ],
+    ...(minPrice && {
+      offers: { '@type': 'Offer', priceCurrency: 'INR', price: String(minPrice), url: canonical },
+    }),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE}/` },
+      { '@type': 'ListItem', position: 2, name: combo.title, item: canonical },
+    ],
+  },
+]
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+  ogImage={ogImage}
+  keywords={`${combo.title.toLowerCase()} Mysuru, ${combo.title.toLowerCase()} Bangalore, bridal makeup package Mysuru, makeup and saree draping Mysuru, People and Style`}
+  schema={schema}
+>
+  <ReactApp client:only="react" />
+</BaseLayout>

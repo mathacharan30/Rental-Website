@@ -1,0 +1,105 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import ReactApp from '../../components/ReactApp.jsx'
+
+// Makeup categories live in the database, so this page is rendered per request.
+// Without it Astro had no route for /makeup/*, and link previews / Google got
+// "Page Not Found" (HTTP 404) even though the React app rendered the page.
+export const prerender = false
+
+const SITE = 'https://peopleandstyle.in'
+const API_URL = (import.meta.env.VITE_API_URL ?? '').replace(/\/+$/, '')
+const S3_BASE = 'https://people-and-style-assets-mumbai.s3.ap-south-1.amazonaws.com/'
+
+const { categoryId = '' } = Astro.params
+
+type MakeupCategory = { _id: string; name: string; image?: { url?: string } | string; subcategories?: string[] }
+type MakeupPackage = { pricing?: { totalPrice?: number; offerPrice?: number } }
+
+let found: MakeupCategory | undefined
+let minPrice: number | undefined
+let apiFailed = false
+
+if (API_URL && /^[a-f0-9]{24}$/i.test(categoryId)) {
+  try {
+    const [catRes, pkgRes] = await Promise.all([
+      fetch(`${API_URL}/api/makeup-categories`),
+      fetch(`${API_URL}/api/makeup-packages?category=${categoryId}`),
+    ])
+    if (catRes.ok) {
+      const list: MakeupCategory[] = await catRes.json()
+      found = list.find((c) => String(c._id) === categoryId)
+    } else {
+      apiFailed = true
+    }
+    if (pkgRes.ok) {
+      const pkgs: MakeupPackage[] = await pkgRes.json()
+      const prices = (Array.isArray(pkgs) ? pkgs : [])
+        .map((p) => Number(p?.pricing?.totalPrice || p?.pricing?.offerPrice) || 0)
+        .filter((n) => n > 0)
+      if (prices.length) minPrice = Math.min(...prices)
+    }
+  } catch {
+    apiFailed = true
+  }
+} else if (!API_URL) {
+  apiFailed = true
+}
+
+let title: string
+let description: string
+let ogImage: string | undefined
+let notFound = false
+
+if (found) {
+  const name = String(found.name).trim()
+  // "Bridal" → "Bridal Makeup"; "Individual Services" → "Individual Makeup Services"
+  const label = /makeup/i.test(name)
+    ? name
+    : /services?/i.test(name)
+      ? name.replace(/services?/i, (s) => `Makeup ${s}`)
+      : `${name} Makeup`
+  title = `${label} in Mysuru & Bangalore | People & Style`
+  const subs = (found.subcategories ?? []).filter(Boolean).slice(0, 4).join(', ')
+  description = [
+    `${name} makeup packages by People & Style in Mysuru and Bangalore.`,
+    subs && `Includes ${subs}.`,
+    minPrice && `Packages from ₹${minPrice.toLocaleString('en-IN')}.`,
+    'Book on WhatsApp.',
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .slice(0, 160)
+  const img = typeof found.image === 'string' ? found.image : found.image?.url
+  if (img) {
+    ogImage = img.startsWith(S3_BASE)
+      ? `https://ik.imagekit.io/kayivtq3l/${img.slice(S3_BASE.length)}?tr=w-1200,h-630,fo-auto,q-80,f-jpg`
+      : img
+  }
+} else if (apiFailed) {
+  // API unreachable: serve a sensible page rather than telling crawlers it doesn't exist
+  title = 'Makeup Services in Mysuru & Bangalore | People & Style'
+  description = 'Bridal, party and occasion makeup packages by People & Style in Mysuru and Bangalore. Book on WhatsApp.'
+} else {
+  notFound = true
+  Astro.response.status = 404
+  title = 'Page Not Found | People & Style'
+  description =
+    'The page you are looking for does not exist. Browse bridal wear rental, jewellery rental, makeup and photography at People & Style.'
+}
+
+if (!apiFailed) {
+  Astro.response.headers.set('Cache-Control', 'public, max-age=0, s-maxage=600, stale-while-revalidate=86400')
+}
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={notFound ? undefined : `${SITE}/makeup/${categoryId}`}
+  ogImage={ogImage}
+  keywords="makeup artist Mysuru, bridal makeup Mysuru, makeup artist Bangalore, bridal makeup package, party makeup Mysuru, People and Style"
+  noindex={notFound}
+>
+  <ReactApp client:only="react" />
+</BaseLayout>
