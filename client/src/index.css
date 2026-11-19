@@ -165,6 +165,22 @@ body {
   color: white;
 }
 
+/* Native dropdowns (<select>): the app styles them with white text on a dark
+   field, but browsers (notably Chrome on Windows) draw the open option list
+   with a white background, so options were invisible until hovered.
+   Make the open list dark everywhere so it matches the theme. */
+select {
+  color-scheme: dark;
+}
+select option,
+select optgroup {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+select option:disabled {
+  color: #737373;
+}
+
 /* From Uiverse.io by abrahamcalsin */
 .dot-spinner {
   --uib-size: 2.8rem;
