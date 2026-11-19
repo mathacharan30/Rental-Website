@@ -1,5 +1,75 @@
 const Testimonial = require('../models/Testimonial');
 const cache = require('../config/cache');
+const { s3, S3_BUCKET, deleteFromS3 } = require('../config/s3');
+const { PutObjectCommand } = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+
+const MAX_IMAGES = 3;
+const IMAGE_PREFIX = 'testimonials/';
+const SIGN_UPLOAD_ALLOWED_EXTS  = new Set(['.jpg', '.jpeg', '.png', '.webp']);
+const SIGN_UPLOAD_ALLOWED_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
+
+const publicUrlFor = (key) => `https://${S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+
+/**
+ * Validates an `images` array from the client. Only photos uploaded through our
+ * own sign-upload (our bucket, testimonials/ prefix) are accepted, so nobody can
+ * point the home page at an arbitrary external image.
+ * Returns { images } or { error }.
+ */
+function parseImages(raw) {
+  if (raw === undefined) return { images: undefined };
+  if (!Array.isArray(raw)) return { error: 'images must be an array' };
+  if (raw.length > MAX_IMAGES) return { error: `A testimonial can have at most ${MAX_IMAGES} photos` };
+  const images = [];
+  for (const img of raw) {
+    const publicId = String(img?.publicId || '');
+    if (!publicId.startsWith(IMAGE_PREFIX) || publicId.includes('..')) {
+      return { error: 'Invalid photo' };
+    }
+    images.push({ url: publicUrlFor(publicId), publicId });
+  }
+  return { images };
+}
+
+async function deleteImages(images = []) {
+  for (const img of images) {
+    try {
+      await deleteFromS3(img.publicId);
+    } catch (err) {
+      console.error('[Testimonials] S3 delete failed:', img.publicId, err.message);
+    }
+  }
+}
+
+// GET /api/testimonials/sign-upload  (store_owner / super_admin)
+// Presigned S3 PUT URL so the browser uploads the photo directly to S3.
+exports.signTestimonialUpload = async (req, res) => {
+  try {
+    const { filename, contentType } = req.query;
+    if (!filename) return res.status(400).json({ message: 'filename query param is required' });
+
+    const ext = filename.includes('.') ? filename.substring(filename.lastIndexOf('.')).toLowerCase() : '';
+    if (!SIGN_UPLOAD_ALLOWED_EXTS.has(ext)) {
+      return res.status(400).json({ message: 'Invalid file type. Allowed: jpg, jpeg, png, webp' });
+    }
+    const baseName = filename.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9\-_]/g, '-').slice(0, 60);
+    const safeContentType = SIGN_UPLOAD_ALLOWED_TYPES.has(contentType) ? contentType : 'image/jpeg';
+    const key = `${IMAGE_PREFIX}${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${baseName}${ext}`;
+
+    const command = new PutObjectCommand({
+      Bucket: S3_BUCKET,
+      Key: key,
+      ContentType: safeContentType,
+      CacheControl: 'public, max-age=31536000, immutable',
+    });
+    const presignedUrl = await getSignedUrl(s3, command, { expiresIn: 300 });
+    return res.json({ presignedUrl, publicUrl: publicUrlFor(key), key });
+  } catch (error) {
+    console.error('[Testimonials] signUpload error:', error.message);
+    return res.status(500).json({ message: 'Failed to generate upload URL' });
+  }
+};
 
 // POST /api/testimonials
 exports.createTestimonial = async (req, res) => {
@@ -9,6 +79,8 @@ exports.createTestimonial = async (req, res) => {
     if (!userName || !comment || !rating || !product) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
+    const { images, error } = parseImages(req.body.images);
+    if (error) return res.status(400).json({ message: error });
 
     const testimonial = new Testimonial({
       userName,
@@ -16,6 +88,7 @@ exports.createTestimonial = async (req, res) => {
       comment,
       rating,
       product,
+      images: images || [],
       isTop: typeof isTop === 'string' ? ['true', '1', 'on'].includes(isTop.toLowerCase()) : Boolean(isTop),
     });
     const saved = await testimonial.save();
@@ -119,8 +192,22 @@ exports.updateTestimonial = async (req, res) => {
     }
     if (isTop !== undefined) updates.isTop = Boolean(isTop);
 
+    const { images, error } = parseImages(req.body.images);
+    if (error) return res.status(400).json({ message: error });
+
+    const existing = await Testimonial.findById(id).select('images');
+    if (!existing) return res.status(404).json({ message: 'Testimonial not found' });
+    if (images !== undefined) updates.images = images;
+
     const updated = await Testimonial.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
     if (!updated) return res.status(404).json({ message: 'Testimonial not found' });
+
+    // Remove photos that were taken off this testimonial from S3
+    if (images !== undefined) {
+      const kept = new Set(images.map((i) => i.publicId));
+      await deleteImages((existing.images || []).filter((i) => !kept.has(i.publicId)));
+    }
+
     await cache.invalidatePattern('testimonials:*');
     return res.status(200).json(updated);
   } catch (error) {
@@ -135,6 +222,7 @@ exports.deleteTestimonial = async (req, res) => {
     const { id } = req.params;
     const deleted = await Testimonial.findByIdAndDelete(id);
     if (!deleted) return res.status(404).json({ message: 'Testimonial not found' });
+    await deleteImages(deleted.images);
     await cache.invalidatePattern('testimonials:*');
     return res.status(200).json({ message: 'Testimonial deleted' });
   } catch (error) {

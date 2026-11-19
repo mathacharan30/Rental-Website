@@ -8,6 +8,7 @@ const {
   getTestimonialsByProduct,
   updateTestimonial,
   deleteTestimonial,
+  signTestimonialUpload,
 } = require('../controllers/testimonialController');
 
 const verifyFirebaseToken = require('../middlewares/verifyFirebaseToken');
@@ -35,15 +36,27 @@ router.post(
     body('rating').isInt({ min: 1, max: 5 }).withMessage('rating must be between 1 and 5'),
     body('product').isMongoId().withMessage('Invalid product id'),
     body('isTop').optional().isBoolean(),
+    body('images').optional().isArray({ max: 3 }).withMessage('At most 3 photos'),
   ],
   validate,
   createTestimonial,
 );
 
+// sign-upload must come before any /:id route
+router.get('/sign-upload',          ...storeGuard, signTestimonialUpload);
 router.get('/',                     getAllTestimonials);
 router.get('/top/by-product',       getTopTestimonialsAcrossProducts);
 router.get('/product/:productId',   getTestimonialsByProduct);
-router.put('/:id',                  ...storeGuard, updateTestimonial);
+router.put(
+  '/:id',
+  ...storeGuard,
+  [
+    param('id').isMongoId().withMessage('Invalid testimonial id'),
+    body('images').optional().isArray({ max: 3 }).withMessage('At most 3 photos'),
+  ],
+  validate,
+  updateTestimonial,
+);
 router.delete(
   '/:id',
   ...storeGuard,

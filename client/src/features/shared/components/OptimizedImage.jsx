@@ -135,6 +135,9 @@ const OptimizedImage = ({
     case "modal":
       width = isMobile ? 800 : 1400;
       break;
+    case "testimonial": // tall photo cards (~260–300px wide, sharp on 2× screens)
+      width = isMobile ? 560 : 640;
+      break;
     default:
       width = 800;
   }
